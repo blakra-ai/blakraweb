@@ -10,6 +10,8 @@ export const es: Dict = {
     investorsDescription: 'Productos de software que BLAKRA desarrolló por cuenta propia, abiertos a un patrocinador, un licenciatario o un comprador. Demo y revisión de código bajo NDA.',
     privacyTitle: 'Privacidad — BLAKRA',
     privacyDescription: 'Qué datos recopila BLAKRA a través de este sitio, para qué y qué ocurre con ellos.',
+    legalTitle: 'Aviso legal — BLAKRA',
+    legalDescription: 'Quién gestiona blakra.us: BLAKRA LLC, su dirección y cómo contactar con ella.',
     notFoundTitle: 'Página no encontrada — BLAKRA',
     ogAlt: 'BLAKRA: Software con gravedad.',
   },
@@ -20,6 +22,7 @@ export const es: Dict = {
     nav: { work: 'Proyectos', engine: 'Capacidades', products: 'Productos', people: 'Equipo', investors: 'Patrocinio y compra' },
     cta: 'Iniciar un proyecto',
     pauseMotion: 'Pausar las animaciones',
+    menu: 'Menú',
     motion: 'Animaciones',
     on: 'activadas',
     off: 'desactivadas',
@@ -281,7 +284,7 @@ export const es: Dict = {
     },
   },
 
-  footer: { line: 'Software con gravedad.', investors: 'Patrocinio y compra', privacy: 'Privacidad', rights: 'BLAKRA', join: 'Ingenieros y diseñadores que quieran sumarse a un proyecto:' },
+  footer: { line: 'Software con gravedad.', investors: 'Patrocinio y compra', privacy: 'Privacidad', legal: 'Aviso legal', join: 'Ingenieros y diseñadores que quieran sumarse a un proyecto:' },
 
   investors: {
     eyebrow: 'Nuestros productos',
@@ -307,16 +310,27 @@ export const es: Dict = {
     eyebrow: 'Privacidad',
     title: 'Qué pasa con lo que nos envía.',
     updated: 'Última actualización: 27 de octubre de 2026.',
+    whoTitle: 'Quiénes somos',
+    who: 'BLAKRA LLC es responsable de este sitio y de lo que nos envía a través de él (responsable del tratamiento según el RGPD):',
     sections: [
-      { heading: 'Qué recopilamos', text: 'Lo que escribe en el formulario de contacto (el motivo de su mensaje, un nombre o una empresa, un correo electrónico y su mensaje), además de la hora del envío, la página desde la que lo envió y el idioma de esa página. Este sitio no instala cookies publicitarias ni de analítica, y sus fuentes y archivos se sirven desde nuestro propio servidor.' },
-      { heading: 'Para qué', text: 'Para responderle y, si nos lo pide, para hablar de un proyecto, una alianza, o del patrocinio o la compra de uno de nuestros productos. No vendemos sus datos ni le añadimos a ninguna lista de correo.' },
-      { heading: 'Adónde van', text: 'El formulario se envía mediante Google Apps Script a la bandeja de entrada de nuestra empresa y a una hoja de Google Sheets que contiene nuestro registro de consultas. Ambas están alojadas en Google.' },
+      { heading: 'Qué recopilamos', text: 'Lo que escribe en el formulario de contacto (el motivo de su mensaje, un nombre o una empresa, un correo electrónico y su mensaje), además de la hora del envío, la página desde la que lo envió y el idioma de esa página. Este sitio no instala cookies publicitarias ni de analítica, y sus fuentes y archivos se sirven desde nuestro propio servidor. Como cualquier servidor web, el nuestro registra cada petición (dirección IP, hora, página y navegador) para mantener el sitio en funcionamiento y seguro; esos registros se eliminan a los 14 días.' },
+      { heading: 'Para qué', text: 'Para responderle y, si nos lo pide, para hablar de un proyecto, una alianza, o del patrocinio o la compra de uno de nuestros productos. No vendemos sus datos ni le añadimos a ninguna lista de correo. La base jurídica son las gestiones que nos pide antes de un posible contrato (artículo 6.1.b del RGPD) y, para otras preguntas, nuestro interés legítimo en responderlas (artículo 6.1.f). Usar el formulario es voluntario; sin un correo electrónico no podemos responderle.' },
+      { heading: 'Adónde van', text: 'BLAKRA LLC está establecida en Estados Unidos, así que lo que nos envía llega allí. El formulario se envía mediante Google Apps Script a la bandeja de entrada de nuestra empresa y a una hoja de Google Sheets que contiene nuestro registro de consultas. Ambas están alojadas en Google.' },
       { heading: 'Cuánto tiempo', text: 'Conservamos cada consulta hasta 12 meses después de nuestro último intercambio, y luego la eliminamos. Si da lugar a un contrato, se conserva con los registros de ese contrato.' },
       { heading: 'En su navegador', text: 'Si desactiva las animaciones, esa preferencia se guarda en el almacenamiento local de su navegador. Nunca sale de su dispositivo.' },
-      { heading: 'Sus opciones', text: 'Puede preguntarnos en cualquier momento qué datos tenemos sobre usted, y pedirnos que los corrijamos o eliminemos.' },
+      { heading: 'Sus derechos', text: 'Puede preguntarnos en cualquier momento qué datos tenemos sobre usted y pedirnos que los corrijamos, los eliminemos, le entreguemos una copia o limitemos su uso, u oponerse a él. También puede reclamar ante la autoridad de protección de datos de su país (en España, la AEPD).' },
     ],
     questions: 'Preguntas:',
   },
 
+  legal: {
+    eyebrow: 'Aviso legal',
+    title: 'Quién gestiona este sitio.',
+    providerTitle: 'Titular',
+    contactTitle: 'Contacto',
+    emailLabel: 'Correo electrónico',
+    phoneLabel: 'Teléfono',
+    country: 'Estados Unidos',
+  },
   notFound: { eyebrow: '404', title: 'Esta página cayó más allá del horizonte.', text: 'No existe, o se ha movido.', back: 'Volver al inicio' },
 }

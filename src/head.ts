@@ -14,6 +14,8 @@ function titleFor(route: Route, t: Dict) {
       return { title: m.investorsTitle, description: m.investorsDescription }
     case 'privacy':
       return { title: m.privacyTitle, description: m.privacyDescription }
+    case 'legal':
+      return { title: m.legalTitle, description: m.legalDescription }
     default:
       return { title: m.notFoundTitle, description: m.homeDescription }
   }
@@ -58,13 +60,23 @@ function organization(route: Route, t: Dict) {
     '@context': 'https://schema.org',
     '@type': 'Organization',
     name: company.name,
+    legalName: company.legalName,
     url: company.url,
     email: company.email,
+    telephone: company.phone.replace(/[^+\d]/g, ''),
+    address: {
+      '@type': 'PostalAddress',
+      streetAddress: company.address.street,
+      addressLocality: company.address.city,
+      addressRegion: company.address.region,
+      postalCode: company.address.postalCode,
+      addressCountry: company.address.country,
+    },
     foundingDate: String(company.founded),
     logo: `${company.url}/apple-touch-icon.png`,
     description: t.meta.homeDescription,
     inLanguage: locales[route.locale].lang,
-    sameAs: company.social.map((s) => s.href),
+    ...(company.social.length ? { sameAs: company.social.map((s) => s.href) } : {}),
     founder: { '@type': 'Person', name: people[0].name, alternateName: people[0].known, jobTitle: t.people.roles[0].role },
     knowsAbout: Object.values(t.engine.layers).map((l) => l.name),
     subjectOf: chapters.map((c) => ({ '@type': 'CreativeWork', name: t.chapters[c.id].system, about: t.chapters[c.id].sector })),

@@ -35,7 +35,8 @@
   --step-4: clamp(2.625rem, 1.45rem + 5.6vw, 7rem);
   --step-5: clamp(5rem, 1.5rem + 16vw, 20rem);
 
-  --margin: clamp(1.25rem, 0.4rem + 4.2vw, 5rem);
+  /* Never under a notch or rounded corner: a phone in landscape has side insets (viewport-fit=cover). */
+  --margin: max(clamp(1.25rem, 0.4rem + 4.2vw, 5rem), env(safe-area-inset-left, 0px), env(safe-area-inset-right, 0px));
   --gutter: clamp(1rem, 0.6rem + 1.6vw, 2rem);
   --header-h: 4.5rem;
   --radius: 14px;

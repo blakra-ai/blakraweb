@@ -123,41 +123,150 @@
 .cta:active {
   transform: scale(0.97);
 }
+/* The menu: only below 1100 px, where the links have no room in the bar. */
+.menu {
+  display: none;
+  flex: none;
+}
+.menuButton {
+  display: grid;
+  place-items: center;
+  width: 2.5rem;
+  height: 2.5rem;
+  border: 1px solid rgba(255, 255, 255, 0.45);
+  border-radius: 999px;
+  cursor: pointer;
+  list-style: none;
+  transition: border-color 0.3s;
+}
+.menuButton::-webkit-details-marker {
+  display: none;
+}
+.menuButton:hover {
+  border-color: #fff;
+}
+/* Two lines that cross when the menu is open. */
+.menuIcon,
+.menuIcon::before {
+  display: block;
+  width: 14px;
+  height: 1.6px;
+  border-radius: 1px;
+  background: currentColor;
+  transition: transform 0.35s var(--ease-out);
+}
+.menuIcon {
+  position: relative;
+  transform: translateY(-2.5px);
+}
+.menuIcon::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  transform: translateY(5px);
+}
+.menu[open] .menuIcon {
+  transform: rotate(45deg);
+}
+.menu[open] .menuIcon::before {
+  transform: rotate(-90deg);
+}
+.sheet {
+  position: fixed;
+  top: var(--header-h);
+  left: 0;
+  right: 0;
+  max-height: calc(100svh - var(--header-h));
+  overflow-y: auto;
+  padding: 0.25rem var(--margin) 1.25rem;
+  background: #050507;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+  box-shadow: 0 24px 48px rgba(0, 0, 0, 0.5);
+}
+.sheetLinks a {
+  display: flex;
+  align-items: center;
+  min-height: 3.25rem;
+  font-size: var(--step-1);
+  letter-spacing: -0.01em;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+}
+.sheetLinks a[aria-current] {
+  text-decoration: underline;
+  text-underline-offset: 0.35em;
+}
+.sheetLang {
+  display: none;
+  margin-top: 0.75rem;
+}
+.sheetMotion {
+  display: none;
+  align-items: center;
+  gap: 0.5rem;
+  min-height: 3rem;
+  margin-top: 0.5rem;
+  padding: 0;
+  border: 0;
+  background: none;
+  color: rgba(238, 236, 230, 0.7);
+  font: inherit;
+  font-size: var(--step--1);
+  cursor: pointer;
+}
+.sheetMotion span {
+  color: #eeece6;
+}
+
 .cta:focus-visible,
+.menuButton:focus-visible,
+.sheetMotion:focus-visible,
 .motion:focus-visible {
   outline: 2px solid #fff;
   outline-offset: 3px;
 }
 
 @media (max-width: 1099px) {
+  .header {
+    --actions-w: 16.5rem;
+  }
   .nav {
     display: none;
   }
-}
-@media (max-width: 899px) {
-  .header {
-    --actions-w: 12rem;
+  .menu {
+    display: block;
   }
 }
-/* Small screens: the motion switch lives in the footer, the clock stays. */
+
+/* Phones: the languages and the motion switch move into the menu. */
 @media (max-width: 599px) {
-  .motion {
+  .header {
+    --actions-w: 13rem;
+  }
+  .motion,
+  .lang {
     display: none;
   }
+  .sheetLang {
+    display: block;
+  }
+  .sheetMotion {
+    display: inline-flex;
+  }
 }
-/* Phones: brand, language and the primary action; the clock lives in the content. */
-@media (max-width: 599px) {
-}
+/* The narrowest phones (and 400% zoom): the name stays, its icon gives way. */
 @media (max-width: 339px) {
   .header {
     --actions-w: 11.5rem;
   }
+  .mark {
+    display: none;
+  }
   .cta {
-    padding: 0 0.75rem;
+    padding: 0 0.65rem;
   }
 }
 
-/* Off the home page there is no clock, so the motion switch takes its place on the right. */
+/* The motion switch sits at the right end of the bar, next to the actions. */
 .nav + .motion {
   margin-left: auto;
 }

@@ -19,7 +19,9 @@ export type FieldErrors = Partial<Record<'org' | 'email' | 'msg', ErrorCode>>
 export const intents: readonly Intent[] = ['commission', 'partner', 'invest']
 export const limits = { org: 120, email: 254, msgMin: 10, msg: 2000, minMs: 3000 } as const
 
-const EMAIL = /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/
+// One plain address: no spaces, quotes, brackets, commas, angle brackets or invisible characters
+// (the server checks the same).
+const EMAIL = /^[^\s@<>()[\]\\,;:"\u0080-\u009f\u200b-\u200f\u2028-\u202e\u2060-\u2069\ufeff]+@[^\s@<>()[\]\\,;:"\u0080-\u009f\u200b-\u200f\u2028-\u202e\u2060-\u2069\ufeff]+\.[^\s@<>()[\]\\,;:".\u0080-\u009f\u200b-\u200f\u2028-\u202e\u2060-\u2069\ufeff]{2,}$/
 
 export function normalize(f: ContactFields): ContactFields {
   return { intent: intents.includes(f.intent) ? f.intent : 'commission', org: f.org.trim(), email: f.email.trim(), msg: f.msg.trim() }

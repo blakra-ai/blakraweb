@@ -77,6 +77,8 @@ export interface Dict {
     investorsDescription: string
     privacyTitle: string
     privacyDescription: string
+    legalTitle: string
+    legalDescription: string
     notFoundTitle: string
     ogAlt: string
   }
@@ -86,6 +88,8 @@ export interface Dict {
     nav: { work: string; engine: string; products: string; people: string; investors: string }
     cta: string
     pauseMotion: string
+    /** The header's menu button (below 1100 px). */
+    menu: string
     motion: string
     on: string
     off: string
@@ -205,7 +209,8 @@ export interface Dict {
     line: string
     investors: string
     privacy: string
-    rights: string
+    /** The provider identification page: Legal notice, Impressum, Mentions légales, Aviso legal. */
+    legal: string
     /** Before the email link, for specialists who want to join a project. */
     join: string
   }
@@ -229,8 +234,21 @@ export interface Dict {
     eyebrow: string
     title: string
     updated: string
+    /** Who the controller is; the company's name, address and email follow it. */
+    whoTitle: string
+    who: string
     sections: { heading: string; text: string }[]
     questions: string
+  }
+  /** Provider identification; the facts themselves are in shared.ts (company). */
+  legal: {
+    eyebrow: string
+    title: string
+    providerTitle: string
+    contactTitle: string
+    emailLabel: string
+    phoneLabel: string
+    country: string
   }
   notFound: { eyebrow: string; title: string; text: string; back: string }
 }

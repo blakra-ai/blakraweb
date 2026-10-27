@@ -10,6 +10,8 @@ export const fr: Dict = {
     investorsDescription: 'Des logiciels développés par BLAKRA à ses frais, ouverts à un financeur, à un preneur de licence ou à un acquéreur. Démo et revue de code sous NDA.',
     privacyTitle: 'Confidentialité – BLAKRA',
     privacyDescription: 'Ce que BLAKRA collecte via ce site, pourquoi, et ce qu’il en advient.',
+    legalTitle: 'Mentions légales – BLAKRA',
+    legalDescription: 'Qui édite blakra.us : BLAKRA LLC, son adresse et comment la joindre.',
     notFoundTitle: 'Page introuvable – BLAKRA',
     ogAlt: 'BLAKRA : du logiciel qui a de la gravité.',
   },
@@ -20,6 +22,7 @@ export const fr: Dict = {
     nav: { work: 'Réalisations', engine: 'Expertises', products: 'Produits', people: 'Équipe', investors: 'Financeurs et acquéreurs' },
     cta: 'Lancer un projet',
     pauseMotion: 'Mettre les animations en pause',
+    menu: 'Menu',
     motion: 'Animations',
     on: 'activées',
     off: 'coupées',
@@ -281,7 +284,7 @@ export const fr: Dict = {
     },
   },
 
-  footer: { line: 'Du logiciel qui a de la gravité.', investors: 'Financeurs et acquéreurs', privacy: 'Confidentialité', rights: 'BLAKRA', join: 'Ingénieurs et designers souhaitant rejoindre un projet :' },
+  footer: { line: 'Du logiciel qui a de la gravité.', investors: 'Financeurs et acquéreurs', privacy: 'Confidentialité', legal: 'Mentions légales', join: 'Ingénieurs et designers souhaitant rejoindre un projet :' },
 
   investors: {
     eyebrow: 'Nos produits',
@@ -307,16 +310,27 @@ export const fr: Dict = {
     eyebrow: 'Confidentialité',
     title: 'Ce que deviennent les informations que vous nous envoyez.',
     updated: 'Dernière mise à jour : 27 octobre 2026.',
+    whoTitle: 'Qui nous sommes',
+    who: 'BLAKRA LLC est responsable de ce site et de ce que vous nous envoyez par son intermédiaire (responsable du traitement au sens du RGPD) :',
     sections: [
-      { heading: 'Ce que nous collectons', text: 'Ce que vous saisissez dans le formulaire de contact (le motif de votre message, un nom ou une entreprise, une adresse e-mail et votre message), ainsi que l’heure d’envoi, la page d’où vous l’avez envoyé et la langue de cette page. Ce site ne dépose aucun cookie publicitaire ni de mesure d’audience, et ses polices et fichiers sont servis depuis notre propre serveur.' },
-      { heading: 'Pourquoi', text: 'Pour vous répondre et, si vous le demandez, pour échanger sur un projet, un partenariat, ou le financement ou l’achat d’un de nos produits. Nous ne vendons pas vos données et ne vous inscrivons à aucune liste de diffusion.' },
-      { heading: 'Où vont vos données', text: 'Le formulaire est transmis via Google Apps Script vers la messagerie de notre société et vers un fichier Google Sheets où nous consignons les demandes reçues. Les deux sont hébergés chez Google.' },
+      { heading: 'Ce que nous collectons', text: 'Ce que vous saisissez dans le formulaire de contact (le motif de votre message, un nom ou une entreprise, une adresse e-mail et votre message), ainsi que l’heure d’envoi, la page d’où vous l’avez envoyé et la langue de cette page. Ce site ne dépose aucun cookie publicitaire ni de mesure d’audience, et ses polices et fichiers sont servis depuis notre propre serveur. Comme tout serveur web, le nôtre journalise chaque requête (adresse IP, heure, page et navigateur) pour assurer le fonctionnement et la sécurité du site ; ces journaux sont supprimés au bout de 14 jours.' },
+      { heading: 'Pourquoi', text: 'Pour vous répondre et, si vous le demandez, pour échanger sur un projet, un partenariat, ou le financement ou l’achat d’un de nos produits. Nous ne vendons pas vos données et ne vous inscrivons à aucune liste de diffusion. La base légale est constituée des démarches que vous demandez avant un éventuel contrat (article 6, paragraphe 1, point b, du RGPD) et, pour les autres questions, de notre intérêt légitime à y répondre (point f). L’utilisation du formulaire est facultative ; sans adresse e-mail, nous ne pouvons pas vous répondre.' },
+      { heading: 'Où vont vos données', text: 'BLAKRA LLC est établie aux États-Unis : ce que vous envoyez nous parvient donc là-bas. Le formulaire est transmis via Google Apps Script vers la messagerie de notre société et vers un fichier Google Sheets où nous consignons les demandes reçues. Les deux sont hébergés chez Google.' },
       { heading: 'Combien de temps', text: 'Nous conservons une demande au maximum 12 mois après notre dernier échange, puis nous la supprimons. Si elle aboutit à un contrat, elle est conservée avec les pièces de ce contrat.' },
       { heading: 'Dans votre navigateur', text: 'Si vous désactivez les animations, ce choix est enregistré dans le stockage local de votre navigateur. Il ne quitte jamais votre appareil.' },
-      { heading: 'Vos choix', text: 'Vous pouvez à tout moment savoir quelles données nous détenons à votre sujet, et les faire corriger ou supprimer.' },
+      { heading: 'Vos droits', text: 'Vous pouvez à tout moment savoir quelles données nous détenons à votre sujet, et demander leur rectification, leur suppression, une copie ou la limitation de leur usage, ou vous y opposer. Vous pouvez aussi introduire une réclamation auprès de l’autorité de protection des données de votre pays (en France, la CNIL).' },
     ],
     questions: 'Questions :',
   },
 
+  legal: {
+    eyebrow: 'Mentions légales',
+    title: 'Qui édite ce site.',
+    providerTitle: 'Éditeur',
+    contactTitle: 'Contact',
+    emailLabel: 'E-mail',
+    phoneLabel: 'Téléphone',
+    country: 'États-Unis',
+  },
   notFound: { eyebrow: '404', title: 'Cette page est tombée au-delà de l’horizon.', text: 'Elle n’existe pas, ou elle a déménagé.', back: 'Retour au début' },
 }

@@ -1,6 +1,6 @@
 import { availableLocales, localeFromPath, locales, type Locale } from './i18n'
 
-export type PageId = 'home' | 'investors' | 'privacy' | 'notFound'
+export type PageId = 'home' | 'investors' | 'privacy' | 'legal' | 'notFound'
 
 export interface Route {
   id: PageId
@@ -12,7 +12,7 @@ export interface Route {
   indexable: boolean
 }
 
-const pagePaths = { home: '/', investors: '/investors/', privacy: '/privacy/' } as const
+const pagePaths = { home: '/', investors: '/investors/', privacy: '/privacy/', legal: '/legal/' } as const
 type PageWithPath = keyof typeof pagePaths
 
 export function pathFor(id: PageWithPath, locale: Locale, hash = ''): string {

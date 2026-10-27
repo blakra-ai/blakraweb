@@ -33,6 +33,9 @@ export function Footer({ route, sky, time }: { route: Route; sky: SkyId; time: n
             <li>
               <a href={pathFor('privacy', locale)}>{t.footer.privacy}</a>
             </li>
+            <li>
+              <a href={pathFor('legal', locale)}>{t.footer.legal}</a>
+            </li>
             {company.social.map((l) => (
               <li key={l.href}>
                 <a href={l.href} rel="me noopener" target="_blank">
@@ -52,7 +55,7 @@ export function Footer({ route, sky, time }: { route: Route; sky: SkyId; time: n
           )}
           {/* The year is the build's; a visit after New Year before the next build keeps it quietly. */}
           <p className={s.legal} suppressHydrationWarning>
-            © {company.founded}–{new Date().getFullYear()} {t.footer.rights}
+            © {company.founded}–{new Date().getFullYear()} {company.legalName}
           </p>
         </div>
       </div>

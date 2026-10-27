@@ -147,7 +147,8 @@ export function MotionProvider({ children }: { children: ReactNode }) {
     setUserOffState(readStoredOff())
     // Pins change the page height, so a linked section is scrolled to after they exist.
     if (location.hash) initialHashRef.current = location.hash
-    document.documentElement.classList.add('js')
+    // 'booted' tells the watchdog in index.html that the app runs (it keeps the motion layout).
+    document.documentElement.classList.add('js', 'booted')
     setReady(true)
     mq.addEventListener('change', sync)
     return () => mq.removeEventListener('change', sync)
@@ -208,6 +209,11 @@ export function MotionProvider({ children }: { children: ReactNode }) {
     let spent = 0
     let calibrating = true
     let calibrationEnds = 0
+    // A phone in Low Power Mode (or a laptop saving energy) runs at 30 fps however fast its GPU
+    // is. A step down that does not make frames faster shows that: the step is undone, and
+    // slowness is judged against that pace from then on (budget: frame time over 60 fps's).
+    let budget = 1
+    let stepAvg = 0
     let lastScrollAt = 0
     let lastScrollY = window.scrollY
     // Last resort on very slow GPUs: stop the idle animation and draw only when something changes.
@@ -342,20 +348,32 @@ export function MotionProvider({ children }: { children: ReactNode }) {
       frames = 0
       spent = 0
       if (profile) profile.steps.push(`${Math.round(now)} avg ${avg.toFixed(1)} calibrating ${calibrating}`)
-      // Targets in milliseconds per frame: below about 45 fps is too slow, 60 fps or better has headroom.
+      // Targets in milliseconds per frame at 60 Hz (scaled by the display's own pace): below about
+      // 45 fps is too slow, 60 fps or better has headroom.
       if (now < firstDraw + 1500) return // the first frames warm up shaders and textures
       // Quality only ever steps down: a still page always has headroom that scrolling then spends.
       if (calibrating) {
-        if (avg > 22) renderer.adjust(-1)
-        else if (now > calibrationEnds) calibrating = false
+        if (stepAvg && avg > stepAvg * 0.9) {
+          // The last step down did not help: the pace is set by the display, not the GPU.
+          renderer.adjust(1)
+          budget = Math.min(3, Math.max(1, avg / (1000 / 60)))
+          stepAvg = 0
+          if (profile) profile.steps.push(`paced at ${avg.toFixed(1)} ms: step undone, budget ${budget.toFixed(2)}`)
+        } else if (avg > 22 * budget) stepAvg = renderer.adjust(-1) ? avg : 0
+        else {
+          stepAvg = 0
+          if (now > calibrationEnds) calibrating = false
+        }
         if (now > calibrationEnds + 4000) calibrating = false
-      } else if (avg > 30) {
+      } else if (avg > 30 * budget) {
         // Sustained slowness after settling: one step down, or stop animating at the bottom.
         if (!renderer.adjust(-1)) throttled = true
       }
     }
 
     let disposed = false
+    let lostWorld: EngineRenderer | null = null
+    let restarts = 0
     const start = async () => {
       const canvas = canvasRef.current
       if (!canvas) return
@@ -367,11 +385,13 @@ export function MotionProvider({ children }: { children: ReactNode }) {
       // three.js loads only now, after the page is up, so it never delays the first paint.
       const { createWorld } = await import('./world/world')
       if (disposed) return
-      renderer = createWorld(canvas, () => {
+      const world = createWorld(canvas, () => {
+        lostWorld = world
         renderer = null
         document.documentElement.classList.remove('gl-live')
         document.documentElement.classList.add('gl-off')
       })
+      renderer = world
       if (!renderer) {
         document.documentElement.classList.add('gl-off')
         return
@@ -383,6 +403,19 @@ export function MotionProvider({ children }: { children: ReactNode }) {
       renderer?.resize()
       measure()
     }
+    // iOS drops the context when the visitor switches apps; low-memory Android when it must.
+    // The world lost with it is rebuilt on the restored context (twice at most per visit).
+    const onRestored = () => {
+      if (disposed || !lostWorld || restarts >= 2) return
+      restarts++
+      lostWorld.dispose()
+      lostWorld = null
+      document.documentElement.classList.remove('gl-off')
+      firstDraw = 0
+      void start()
+    }
+    const canvasEl = canvasRef.current
+    canvasEl?.addEventListener('webglcontextrestored', onRestored)
 
     measure()
     gsap.ticker.add(tick)
@@ -422,7 +455,9 @@ export function MotionProvider({ children }: { children: ReactNode }) {
       window.removeEventListener('pointermove', onPointer)
       window.removeEventListener('load', schedule)
       window.cancelIdleCallback?.(idleId)
+      canvasEl?.removeEventListener('webglcontextrestored', onRestored)
       renderer?.dispose()
+      lostWorld?.dispose()
       document.documentElement.classList.remove('gl-live')
     }
   }, [])

@@ -86,6 +86,56 @@ export function DayTrack() {
   useMotionSetup(ref, (root) => {
     const mm = gsap.matchMedia()
     mm.add(layouts.pinned, () => {
+      const cards = [...root.querySelectorAll<HTMLElement>('[data-card]')]
+      // A held card has the screen's height. If any of its text would not fit (a short laptop
+      // screen, a long translation, larger text or the reader's own text spacing), the day
+      // reads as a list instead: nothing is ever cut off.
+      // Boxes as drawn (the interface may be zoomed); the track moves sideways only, so the
+      // vertical comparison holds at any scroll position.
+      const fits = () =>
+        cards.every((card) => {
+          const box = card.getBoundingClientRect()
+          return [...card.children].every((part) => {
+            const r = part.getBoundingClientRect()
+            return r.top >= box.top - 1 && r.bottom <= box.bottom + 1
+          })
+        })
+      let release = () => {}
+      const choose = () => {
+        release()
+        delete root.dataset.flow
+        if (fits()) release = hold()
+        else {
+          root.dataset.flow = 'list'
+          release = () => delete root.dataset.flow
+        }
+      }
+      choose()
+      // Text that grows later (web fonts, the reader's text spacing) re-checks; a resize may also
+      // make room again.
+      let frame = 0
+      const recheck = () => {
+        if (frame) return
+        frame = requestAnimationFrame(() => {
+          frame = 0
+          if (root.dataset.flow || !fits()) choose()
+        })
+      }
+      const grow = new ResizeObserver(() => {
+        if (!root.dataset.flow && !fits()) recheck()
+      })
+      // The cards too: a card that gets shorter (the heading above it wrapping once fonts load) re-checks.
+      cards.forEach((card) => [card, ...card.children].forEach((el) => grow.observe(el)))
+      window.addEventListener('resize', recheck)
+      return () => {
+        cancelAnimationFrame(frame)
+        grow.disconnect()
+        window.removeEventListener('resize', recheck)
+        release()
+      }
+    })
+
+    function hold() {
       const track = root.querySelector<HTMLElement>('[data-track]')!
       const viewport = track.parentElement!
       const fill = root.querySelector<HTMLElement>('[data-fill]')
@@ -148,7 +198,7 @@ export function DayTrack() {
         pinnedRef.current = null
         tracker.current = null
       }
-    })
+    }
   })
 
   // Links to a card (#h06 …) from anywhere: pinned, a card is a scroll position along the track;
@@ -233,22 +283,23 @@ export function DayTrack() {
                           </li>
                         ))}
                       </ul>
-                      <p className={s.layers}>
-                        <span className={s.layersLabel}>{t.ui.usesEngine}</span>
-                        {c.layers.map((l) => (
-                          <a key={l} href={`#layer-${l}`} style={{ '--chakra': chakraColors[chakraOf[l]] } as CSSProperties}>
-                            {t.engine.layers[l].name}
-                          </a>
-                        ))}
-                        <span className={s.stack}>
-                          <span className="sr-only">{t.ui.builtWith}: </span>
-                          {c.stack.join(' · ')}
-                        </span>
-                      </p>
                     </div>
                     <div className={s.visual} data-visual>
                       <Visual scene={c.scene} />
                     </div>
+                    {/* Under the interface on wide screens, so the story column keeps its height. */}
+                    <p className={s.layers}>
+                      <span className={s.layersLabel}>{t.ui.usesEngine}</span>
+                      {c.layers.map((l) => (
+                        <a key={l} href={`#layer-${l}`} style={{ '--chakra': chakraColors[chakraOf[l]] } as CSSProperties}>
+                          {t.engine.layers[l].name}
+                        </a>
+                      ))}
+                      <span className={s.stack}>
+                        <span className="sr-only">{t.ui.builtWith}: </span>
+                        {c.stack.join(' · ')}
+                      </span>
+                    </p>
                   </li>
                 )
               })}

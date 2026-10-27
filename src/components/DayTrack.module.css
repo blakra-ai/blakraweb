@@ -11,10 +11,10 @@
 @media (min-width: 900px) and (min-height: 700px) {
   /* Tall enough for the track to cross the screen (JS refines it to the pixel), so the
      page height is already right before the motion setup runs. */
-  :global(html.motion-on) .day {
+  :global(html.motion-on) .day:not([data-flow='list']) {
     height: calc(100svh + 0.3 * (5 * min(82vw, 74rem) + 4 * clamp(1rem, 2vw, 2rem) + 2 * var(--margin) - 100vw));
   }
-  :global(html.motion-on) .pin {
+  :global(html.motion-on) .day:not([data-flow='list']) .pin {
     position: sticky;
     top: 0;
     height: 100svh;
@@ -68,7 +68,7 @@
 }
 /* Only where the vertical scroll moves the track sideways. */
 @media (min-width: 900px) and (min-height: 700px) {
-  :global(html.motion-on) .hint {
+  :global(html.motion-on) .day:not([data-flow='list']) .hint {
     display: block;
     grid-column: 2;
   }
@@ -105,8 +105,12 @@
   flex: 0 0 min(82vw, 74rem);
   display: grid;
   grid-template-columns: minmax(0, 1fr) minmax(0, 1.1fr);
+  grid-template-rows: minmax(0, 1fr) auto;
+  grid-template-areas:
+    'text visual'
+    'text layers';
   align-items: center;
-  gap: clamp(1.5rem, 3vw, 3.5rem);
+  gap: clamp(0.9rem, 2vh, 1.5rem) clamp(1.5rem, 3vw, 3.5rem);
   height: 100%;
   max-height: 46rem;
   padding: clamp(1.25rem, 2.4vw, 2.5rem);
@@ -140,6 +144,7 @@
 }
 
 .text {
+  grid-area: text;
   display: grid;
   align-content: center;
   gap: clamp(0.45rem, 1.1vh, 0.85rem);
@@ -218,6 +223,8 @@
   color: var(--ink-2);
 }
 .layers {
+  grid-area: layers;
+  align-self: end;
   display: flex;
   flex-wrap: wrap;
   align-items: center;
@@ -257,6 +264,7 @@
   color: var(--ink-2);
 }
 .visual {
+  grid-area: visual;
   min-width: 0;
 }
 
@@ -301,6 +309,59 @@
   font-family: var(--font-mono);
 }
 
+/* Held on a laptop-height screen: a wider story column, a smaller interface and tighter
+   spacing, so every card still shows all its text (DayTrack falls back to the list if not). */
+@media (min-width: 900px) and (min-height: 700px) and (max-height: 940px) {
+  :global(html.motion-on) .day:not([data-flow='list']) .pin {
+    gap: 0.75rem;
+  }
+  :global(html.motion-on) .day:not([data-flow='list']) .title {
+    font-size: clamp(1.5rem, 0.8rem + 1.5vw, 2.2rem);
+  }
+  :global(html.motion-on) .day:not([data-flow='list']) .card {
+    grid-template-columns: minmax(0, 1.3fr) minmax(0, 1fr);
+    row-gap: 0.75rem;
+    padding: 1.25rem 1.75rem;
+  }
+  :global(html.motion-on) .day:not([data-flow='list']) .text {
+    gap: 0.5rem;
+  }
+  :global(html.motion-on) .day:not([data-flow='list']) .moment {
+    font-size: clamp(1.3rem, 0.9rem + 0.8vw, 1.7rem);
+  }
+  :global(html.motion-on) .day:not([data-flow='list']) .story {
+    gap: 0.45rem;
+    font-size: 0.875rem;
+    line-height: 1.45;
+  }
+  :global(html.motion-on) .day:not([data-flow='list']) .visual {
+    zoom: 0.8;
+  }
+}
+@media (min-width: 900px) and (min-height: 700px) and (max-height: 800px) {
+  /* Wider cards; the same height estimate as above for them (JS refines it to the pixel). */
+  :global(html.motion-on) .day:not([data-flow='list']) {
+    height: calc(100svh + 0.3 * (5 * min(88vw, 76rem) + 4 * clamp(1rem, 2vw, 2rem) + 2 * var(--margin) - 100vw));
+  }
+  :global(html.motion-on) .day:not([data-flow='list']) .pin {
+    gap: 0.6rem;
+  }
+  :global(html.motion-on) .day:not([data-flow='list']) .title {
+    font-size: clamp(1.4rem, 0.8rem + 1.2vw, 1.9rem);
+  }
+  :global(html.motion-on) .day:not([data-flow='list']) .card {
+    flex-basis: min(88vw, 76rem);
+    row-gap: 0.6rem;
+    padding: 1rem 1.5rem;
+  }
+  :global(html.motion-on) .day:not([data-flow='list']) .text {
+    gap: 0.4rem;
+  }
+  :global(html.motion-on) .day:not([data-flow='list']) .visual {
+    zoom: 0.7;
+  }
+}
+
 /* Phones: a native swipe carousel, one card per screen. */
 @media (max-width: 899px) {
   .viewport {
@@ -319,13 +380,12 @@
   .card {
     flex-basis: calc(100vw - 2 * var(--margin));
     grid-template-columns: 1fr;
+    grid-template-rows: auto;
+    grid-template-areas: 'visual' 'text' 'layers';
     max-height: none;
     height: auto;
     scroll-snap-align: center;
     border-radius: 24px;
-  }
-  .visual {
-    order: -1;
   }
   .tickLabel {
     display: none;
@@ -369,6 +429,24 @@
     max-height: none;
   }
   :global(html.motion-on) .progress {
+    display: none;
+  }
+}
+@media (min-width: 900px) {
+  .day[data-flow='list'] .viewport {
+    overflow: visible;
+  }
+  .day[data-flow='list'] .track {
+    flex-direction: column;
+    width: auto;
+    height: auto;
+  }
+  .day[data-flow='list'] .card {
+    flex-basis: auto;
+    height: auto;
+    max-height: none;
+  }
+  .day[data-flow='list'] .progress {
     display: none;
   }
 }

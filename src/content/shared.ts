@@ -7,20 +7,24 @@ import type { ChapterId, LayerId, NeedId, ProductId, StageId } from './types'
  * launch (they are all listed in src/content/FACTS.md).
  */
 
-// As stated on the live blakra.us (2026-10-26) and confirmed by the owner: contact is by
-// email only (no postal address or phone is published), founded in 2024.
+// As stated on the live blakra.us (2026-10-26) and confirmed by the owner, founded in 2024.
+// The legal entity, its address and phone: owner, 2026-10-27 (footer, Legal notice, Privacy).
 export const company = {
   name: 'BLAKRA',
+  legalName: 'BLAKRA LLC',
+  address: { street: '901 H St Ste 120', city: 'Sacramento', region: 'CA', postalCode: '95814-1817', country: 'US' },
+  phone: '+1 (279) 300-9011',
   url: 'https://blakra.us',
   email: 'hello@blakra.us',
   founded: 2024,
   /** Promised reply time, in hours (the copy says it in words). */
   replyHours: 24,
-  social: [
-    { label: 'LinkedIn', href: 'https://www.linkedin.com/company/blakra' },
-    { label: 'GitHub', href: 'https://github.com/blakra' },
-    { label: 'X', href: 'https://twitter.com/blakra' },
-  ],
+  /**
+   * Only accounts BLAKRA owns (they show in the footer and as sameAs in the structured data).
+   * Empty since 2026-10-27: github.com/blakra belongs to someone else, and the LinkedIn and
+   * X pages the old site linked do not exist (FACTS.md).
+   */
+  social: [] as readonly { label: string; href: string }[],
 } as const
 
 export type SceneId = 'stock' | 'routes' | 'documents' | 'line' | 'queue'

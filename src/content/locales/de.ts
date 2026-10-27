@@ -10,6 +10,8 @@ export const de: Dict = {
     investorsDescription: 'Softwareprodukte, auf eigene Kosten von BLAKRA entwickelt, offen für Sponsor, Lizenznehmer oder Käufer. Demo und Code-Review unter NDA.',
     privacyTitle: 'Datenschutz – BLAKRA',
     privacyDescription: 'Welche Daten BLAKRA über diese Website erhebt, wozu und was mit ihnen geschieht.',
+    legalTitle: 'Impressum – BLAKRA',
+    legalDescription: 'Wer blakra.us betreibt: die BLAKRA LLC, ihre Anschrift und wie Sie sie erreichen.',
     notFoundTitle: 'Seite nicht gefunden – BLAKRA',
     ogAlt: 'BLAKRA: Software mit Anziehungskraft.',
   },
@@ -20,6 +22,7 @@ export const de: Dict = {
     nav: { work: 'Projekte', engine: 'Leistungen', products: 'Produkte', people: 'Team', investors: 'Sponsoren und Käufer' },
     cta: 'Projekt starten',
     pauseMotion: 'Animationen anhalten',
+    menu: 'Menü',
     motion: 'Animation',
     on: 'an',
     off: 'aus',
@@ -281,7 +284,7 @@ export const de: Dict = {
     },
   },
 
-  footer: { line: 'Software mit Anziehungskraft.', investors: 'Sponsoren und Käufer', privacy: 'Datenschutz', rights: 'BLAKRA', join: 'Engineers und Designer, die bei Projekten mitwirken möchten:' },
+  footer: { line: 'Software mit Anziehungskraft.', investors: 'Sponsoren und Käufer', privacy: 'Datenschutz', legal: 'Impressum', join: 'Engineers und Designer, die bei Projekten mitwirken möchten:' },
 
   investors: {
     eyebrow: 'Unsere Produkte',
@@ -307,16 +310,27 @@ export const de: Dict = {
     eyebrow: 'Datenschutz',
     title: 'Was mit dem geschieht, was Sie uns senden.',
     updated: 'Stand: 27. Oktober 2026.',
+    whoTitle: 'Wer wir sind',
+    who: 'Verantwortlich für diese Website und für das, was Sie über sie senden (Verantwortlicher im Sinne der DSGVO), ist die BLAKRA LLC:',
     sections: [
-      { heading: 'Was wir erheben', text: 'Was Sie in das Kontaktformular eingeben (den Anlass Ihrer Nachricht, einen Namen oder ein Unternehmen, eine E-Mail-Adresse und Ihre Nachricht), dazu den Zeitpunkt des Absendens, die Seite, von der Sie gesendet haben, und deren Sprache. Diese Website setzt keine Werbe- oder Analyse-Cookies, und ihre Schriften und Dateien werden von unserem eigenen Server ausgeliefert.' },
-      { heading: 'Wozu', text: 'Um Ihnen zu antworten und, wenn Sie es wünschen, über ein Projekt, eine Partnerschaft oder das Sponsoring oder den Kauf eines unserer Produkte zu sprechen. Wir verkaufen Ihre Daten nicht und tragen Sie in keine Mailingliste ein.' },
-      { heading: 'Wohin die Daten gehen', text: 'Das Formular wird über Google Apps Script an das Postfach unseres Unternehmens und in ein Google Sheet übermittelt, in dem wir Anfragen erfassen. Beides wird von Google gehostet.' },
+      { heading: 'Was wir erheben', text: 'Was Sie in das Kontaktformular eingeben (den Anlass Ihrer Nachricht, einen Namen oder ein Unternehmen, eine E-Mail-Adresse und Ihre Nachricht), dazu den Zeitpunkt des Absendens, die Seite, von der Sie gesendet haben, und deren Sprache. Diese Website setzt keine Werbe- oder Analyse-Cookies, und ihre Schriften und Dateien werden von unserem eigenen Server ausgeliefert. Wie jeder Webserver protokolliert auch unserer jeden Abruf (IP-Adresse, Zeitpunkt, Seite und Browser), um die Website betriebsfähig und sicher zu halten; diese Protokolle werden nach 14 Tagen gelöscht.' },
+      { heading: 'Wozu', text: 'Um Ihnen zu antworten und, wenn Sie es wünschen, über ein Projekt, eine Partnerschaft oder das Sponsoring oder den Kauf eines unserer Produkte zu sprechen. Wir verkaufen Ihre Daten nicht und tragen Sie in keine Mailingliste ein. Rechtsgrundlage sind die Schritte, die Sie vor einem möglichen Vertrag anfragen (Art. 6 Abs. 1 lit. b DSGVO), und bei anderen Fragen unser berechtigtes Interesse, sie zu beantworten (Art. 6 Abs. 1 lit. f DSGVO). Die Nutzung des Formulars ist freiwillig; ohne E-Mail-Adresse können wir nicht antworten.' },
+      { heading: 'Wohin die Daten gehen', text: 'Die BLAKRA LLC ist in den USA ansässig; was Sie senden, gelangt also dorthin zu uns. Das Formular wird über Google Apps Script an das Postfach unseres Unternehmens und in ein Google Sheet übermittelt, in dem wir Anfragen erfassen. Beides wird von Google gehostet.' },
       { heading: 'Wie lange', text: 'Wir speichern eine Anfrage bis zu 12 Monate nach unserem letzten Austausch und löschen sie danach. Führt sie zu einem Vertrag, wird sie mit den Unterlagen dieses Vertrags aufbewahrt.' },
       { heading: 'In Ihrem Browser', text: 'Wenn Sie die Animationen ausschalten, wird diese Einstellung im lokalen Speicher Ihres Browsers abgelegt. Sie verlässt Ihr Gerät nie.' },
-      { heading: 'Ihre Möglichkeiten', text: 'Sie können jederzeit erfragen, welche Daten wir über Sie speichern, und deren Berichtigung oder Löschung verlangen.' },
+      { heading: 'Ihre Rechte', text: 'Sie können jederzeit Auskunft darüber verlangen, welche Daten wir über Sie speichern, und deren Berichtigung, Löschung, Herausgabe als Kopie oder eingeschränkte Verarbeitung verlangen oder der Verarbeitung widersprechen. Außerdem können Sie sich bei der Datenschutzaufsichtsbehörde an Ihrem Wohnort beschweren.' },
     ],
     questions: 'Fragen:',
   },
 
+  legal: {
+    eyebrow: 'Impressum',
+    title: 'Wer diese Website betreibt.',
+    providerTitle: 'Anbieter',
+    contactTitle: 'Kontakt',
+    emailLabel: 'E-Mail',
+    phoneLabel: 'Telefon',
+    country: 'USA',
+  },
   notFound: { eyebrow: '404', title: 'Diese Seite ist hinter den Horizont gefallen.', text: 'Es gibt sie nicht, oder sie ist umgezogen.', back: 'Zurück zum Anfang' },
 }

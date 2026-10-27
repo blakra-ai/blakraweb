@@ -13,6 +13,8 @@ export const en: Dict = {
     investorsDescription: 'Software products BLAKRA built at its own cost, open to a sponsor, a licensee or a buyer. Demo and code review under NDA.',
     privacyTitle: 'Privacy — BLAKRA',
     privacyDescription: 'What BLAKRA collects through this site, why, and what happens to it.',
+    legalTitle: 'Legal notice — BLAKRA',
+    legalDescription: 'Who runs blakra.us: BLAKRA LLC, its address and how to reach it.',
     notFoundTitle: 'Not found — BLAKRA',
     ogAlt: 'BLAKRA: Software with gravity.',
   },
@@ -23,6 +25,7 @@ export const en: Dict = {
     nav: { work: 'Work', engine: 'Capabilities', products: 'Products', people: 'People', investors: 'Sponsors and buyers' },
     cta: 'Start a project',
     pauseMotion: 'Pause motion',
+    menu: 'Menu',
     motion: 'Motion',
     on: 'on',
     off: 'off',
@@ -284,7 +287,7 @@ export const en: Dict = {
     },
   },
 
-  footer: { line: 'Software with gravity.', investors: 'Sponsors and buyers', privacy: 'Privacy', rights: 'BLAKRA', join: 'Engineers and designers who want to join a project:' },
+  footer: { line: 'Software with gravity.', investors: 'Sponsors and buyers', privacy: 'Privacy', legal: 'Legal notice', join: 'Engineers and designers who want to join a project:' },
 
   investors: {
     eyebrow: 'Our products',
@@ -310,16 +313,27 @@ export const en: Dict = {
     eyebrow: 'Privacy',
     title: 'What happens to what you send us.',
     updated: 'Last updated 27 October 2026.',
+    whoTitle: 'Who we are',
+    who: 'BLAKRA LLC is responsible for this site and for what you send through it (the controller under the GDPR):',
     sections: [
-      { heading: 'What we collect', text: 'What you type into the contact form (why you are writing, a name or company, an email address and your message), plus the time you sent it, the page you sent it from and the page’s language. This site sets no advertising or analytics cookies, and its fonts and files are served from our own server.' },
-      { heading: 'Why', text: 'To reply to you and, if you ask us to, to discuss a project, a partnership, or sponsoring or buying one of our products. We don’t sell your details or add you to a mailing list.' },
-      { heading: 'Where it goes', text: 'The form is delivered through Google Apps Script to our company inbox and to a Google Sheet that holds our record of enquiries. Both are hosted by Google.' },
+      { heading: 'What we collect', text: 'What you type into the contact form (why you are writing, a name or company, an email address and your message), plus the time you sent it, the page you sent it from and the page’s language. This site sets no advertising or analytics cookies, and its fonts and files are served from our own server. Like any web server, ours also logs each request (the IP address, time, page and browser) to keep the site running and secure; those logs are deleted after 14 days.' },
+      { heading: 'Why', text: 'To reply to you and, if you ask us to, to discuss a project, a partnership, or sponsoring or buying one of our products. We don’t sell your details or add you to a mailing list. The legal basis is the steps you ask for before a possible contract (GDPR Art. 6(1)(b)) and, for other questions, our legitimate interest in answering them (Art. 6(1)(f)). Using the form is voluntary; without an email address we cannot reply.' },
+      { heading: 'Where it goes', text: 'BLAKRA LLC is based in the United States, so what you send comes to us there. The form is delivered through Google Apps Script to our company inbox and to a Google Sheet that holds our record of enquiries. Both are hosted by Google.' },
       { heading: 'How long', text: 'We keep an enquiry for up to 12 months after our last exchange, then delete it. If it leads to a contract, it is kept with that contract’s records.' },
       { heading: 'In your browser', text: 'If you switch motion off, that choice is saved in your browser’s local storage. It never leaves your device.' },
-      { heading: 'Your choices', text: 'You can ask us at any time what we hold about you, and ask us to correct or delete it.' },
+      { heading: 'Your rights', text: 'You can ask us at any time what we hold about you, and ask us to correct or delete it, to give you a copy, or to restrict or stop using it. You can also complain to the data protection authority where you live.' },
     ],
     questions: 'Questions:',
   },
 
+  legal: {
+    eyebrow: 'Legal notice',
+    title: 'Who runs this site.',
+    providerTitle: 'Provider',
+    contactTitle: 'Contact',
+    emailLabel: 'Email',
+    phoneLabel: 'Phone',
+    country: 'United States',
+  },
   notFound: { eyebrow: '404', title: 'This page fell past the horizon.', text: 'It doesn’t exist, or it has moved.', back: 'Back to the start' },
 }

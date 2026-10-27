@@ -90,6 +90,7 @@
 }
 .list div {
   display: grid;
+  align-content: start;
   gap: 0.5rem;
   padding-top: 1.25rem;
   border-top: 1px solid var(--line);
@@ -102,6 +103,18 @@
 .list dd {
   color: var(--ink-2);
   max-width: 60ch;
+}
+.list dd a {
+  color: var(--ink);
+  border-bottom: 1px solid var(--line);
+}
+.address {
+  margin: 0.6rem 0;
+  font-style: normal;
+  color: var(--ink);
+}
+.address:first-child {
+  margin-top: 0;
 }
 @media (min-width: 800px) {
   .list {

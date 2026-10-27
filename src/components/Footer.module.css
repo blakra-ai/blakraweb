@@ -55,7 +55,11 @@
   gap: 0.5rem 1.5rem;
   font-size: var(--step--1);
 }
+/* At least 24 px tall: standalone links, not text inside a sentence (WCAG 2.5.8). */
 .links a {
+  display: inline-flex;
+  align-items: center;
+  min-height: 24px;
   color: var(--ink-2);
   transition: color 0.3s;
 }

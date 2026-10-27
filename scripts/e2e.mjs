@@ -51,7 +51,8 @@ try {
       t.process.title, ...t.process.terms, t.people.title, ...t.people.roles.map((r) => r.ask), t.contact.title, t.contact.horizon,
     ]
     expected[`${p}/investors/`] = [t.investors.title, ...t.investors.thesis, t.investors.ask, t.investors.ndaTitle, t.investors.deck, t.investors.disclaimer]
-    expected[`${p}/privacy/`] = [t.privacy.title, ...t.privacy.sections.map((x) => x.text)]
+    expected[`${p}/privacy/`] = [t.privacy.title, t.privacy.who, ...t.privacy.sections.map((x) => x.text)]
+    expected[`${p}/legal/`] = [t.legal.title, t.legal.providerTitle, 'BLAKRA LLC', '901 H St Ste 120']
     expected[`${p}/404.html`] = [t.notFound.title]
   }
   const noJs = await browser.newContext({ javaScriptEnabled: false, viewport: { width: 1440, height: 900 } })
@@ -167,7 +168,7 @@ try {
   // AC7: no horizontal scroll at four widths, on every page.
   for (const width of [375, 768, 1440, 1920]) {
     const page = await browser.newPage({ viewport: { width, height: width < 800 ? 812 : 900 } })
-    for (const path of Object.keys(dicts).flatMap((code) => ['/', '/investors/', '/privacy/', '/404.html'].map((x) => prefix(code) + x))) {
+    for (const path of Object.keys(dicts).flatMap((code) => ['/', '/investors/', '/privacy/', '/legal/', '/404.html'].map((x) => prefix(code) + x))) {
       await page.goto(BASE + path)
       await page.waitForTimeout(600)
       const over = await page.evaluate(() => document.documentElement.scrollWidth - document.documentElement.clientWidth)

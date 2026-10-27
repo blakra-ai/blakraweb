@@ -89,6 +89,24 @@ export function Investors() {
   )
 }
 
+/** The company's postal address, one line per part. */
+function Address({ country }: { country: string }) {
+  const a = company.address
+  return (
+    <address className={s.address}>
+      {company.legalName}
+      <br />
+      {a.street}
+      <br />
+      {a.city}, {a.region} {a.postalCode}
+      <br />
+      {country}
+    </address>
+  )
+}
+
+const tel = `tel:${company.phone.replace(/[^+\d]/g, '')}`
+
 export function Privacy() {
   const { t } = useI18n()
   const p = t.privacy
@@ -103,6 +121,14 @@ export function Privacy() {
           {p.title}
         </h1>
         <dl className={s.list}>
+          <div data-reveal>
+            <dt>{p.whoTitle}</dt>
+            <dd>
+              {p.who}
+              <Address country={t.legal.country} />
+              <a href={`mailto:${company.email}`}>{company.email}</a>
+            </dd>
+          </div>
           {p.sections.map((sec) => (
             <div key={sec.heading} data-reveal>
               <dt>{sec.heading}</dt>
@@ -113,6 +139,41 @@ export function Privacy() {
         <p className={s.fine}>
           {p.questions} <a href={`mailto:${company.email}`}>{company.email}</a>. {p.updated}
         </p>
+      </div>
+    </Section>
+  )
+}
+
+/** Provider identification (Impressum, mentions légales, aviso legal). */
+export function Legal() {
+  const { t } = useI18n()
+  const l = t.legal
+  const ref = useRef<HTMLElement>(null)
+  useReveals(ref)
+  useStage(ref, { pose: { ...(poses.overview as Pose), fade: 0.45, shift: [0.6, 0] } }, 780)
+  return (
+    <Section ref={ref} sky="ink" time={[780, 780]} className={s.page} aria-labelledby="page-title">
+      <div className={s.wrap}>
+        <p className={s.eyebrow}>{l.eyebrow}</p>
+        <h1 id="page-title" className={s.title}>
+          {l.title}
+        </h1>
+        <dl className={s.list}>
+          <div data-reveal>
+            <dt>{l.providerTitle}</dt>
+            <dd>
+              <Address country={l.country} />
+            </dd>
+          </div>
+          <div data-reveal>
+            <dt>{l.contactTitle}</dt>
+            <dd>
+              {l.emailLabel}: <a href={`mailto:${company.email}`}>{company.email}</a>
+              <br />
+              {l.phoneLabel}: <a href={tel}>{company.phone}</a>
+            </dd>
+          </div>
+        </dl>
       </div>
     </Section>
   )

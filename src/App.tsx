@@ -9,12 +9,13 @@ import { MotionProvider } from './motion/MotionProvider'
 import { Header } from './components/Header'
 import { Footer } from './components/Footer'
 import { Home } from './pages/Home'
-import { Investors, NotFound, Privacy } from './pages/Simple'
+import { Investors, Legal, NotFound, Privacy } from './pages/Simple'
 
 const pages: Record<PageId, { Page: () => JSX.Element; footer: SkyId; time: number }> = {
   home: { Page: Home, footer: 'dawn', time: times.tomorrow + 1 },
   investors: { Page: Investors, footer: 'night', time: 120 },
   privacy: { Page: Privacy, footer: 'ink', time: 780 },
+  legal: { Page: Legal, footer: 'ink', time: 780 },
   notFound: { Page: NotFound, footer: 'night', time: 0 },
 }
 

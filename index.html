@@ -3,8 +3,10 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
-    <!-- Before the first paint: the motion layout (sticky sections) is in place from the start, so the page never re-lays out on load. Allowed by its hash in the CSP (deploy/blakra-headers.conf). -->
-    <script>(function(c){c.add('js');var off;try{off=localStorage.getItem('blakra:motion')==='off'}catch(e){}c.add(off||matchMedia('(prefers-reduced-motion: reduce)').matches?'motion-off':'motion-on')})(document.documentElement.classList)</script>
+    <!-- Before the first paint: the motion layout (sticky sections) is in place from the start, so the page never re-lays out on load.
+         If the app never starts (a script that fails to load, an old browser), the still layout returns at once or 5 s after load, so no content stays hidden.
+         Allowed by its hash in the CSP (deploy/blakra-headers.conf). -->
+    <script>(function(c){c.add('js');var off;try{off=localStorage.getItem('blakra:motion')==='off'}catch(e){}c.add(off||matchMedia('(prefers-reduced-motion: reduce)').matches?'motion-off':'motion-on');function still(){if(!c.contains('booted')){c.remove('motion-on');c.add('motion-off')}}addEventListener('error',function(e){var t=e.target;if(t&&t.tagName==='SCRIPT')still()},true);addEventListener('load',function(){setTimeout(still,5000)})})(document.documentElement.classList)</script>
     <!--head-->
   </head>
   <body>

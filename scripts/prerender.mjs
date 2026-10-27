@@ -48,3 +48,5 @@ await writeFile(join(dist, 'sitemap.xml'), `<?xml version="1.0" encoding="UTF-8"
 console.log(`sitemap: ${pages.length} urls`)
 
 await rm(ssrDir, { recursive: true, force: true })
+// The manifest was only for this script; it is not part of the site.
+await rm(join(dist, '.vite'), { recursive: true, force: true })

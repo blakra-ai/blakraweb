@@ -1,3 +1,4 @@
+import { useEffect, useRef } from 'react'
 import { company } from '../content/shared'
 import { useI18n } from '../i18n'
 import { useMotion } from '../motion/MotionProvider'
@@ -21,6 +22,7 @@ export function Header({ route }: { route: Route }) {
   const { t, locale } = useI18n()
   const home = route.id === 'home'
   const { userOff, systemReduced, setUserOff } = useMotion()
+  const menuRef = useRef<HTMLDetailsElement>(null)
 
   const homePath = pathFor('home', locale)
   const nav = [
@@ -31,6 +33,39 @@ export function Header({ route }: { route: Route }) {
     { label: t.ui.nav.investors, href: pathFor('investors', locale) },
   ]
 
+  // Below 1100 px the links live in a menu: a <details>, so it opens without JS too. With JS it
+  // closes on a link, on Escape (focus back on its button) and on a click outside.
+  useEffect(() => {
+    const menu = menuRef.current
+    if (!menu) return
+    const close = (e: Event) => {
+      if (!menu.open) return
+      if (e instanceof KeyboardEvent) {
+        if (e.key !== 'Escape') return
+        menu.open = false
+        menu.querySelector('summary')?.focus()
+        return
+      }
+      const target = e.target as Element
+      if (menu.contains(target) && !target.closest('a')) return
+      menu.open = false
+    }
+    document.addEventListener('keydown', close)
+    document.addEventListener('click', close)
+    return () => {
+      document.removeEventListener('keydown', close)
+      document.removeEventListener('click', close)
+    }
+  }, [])
+
+  const links = nav.map((item) => (
+    <li key={item.href}>
+      <a href={item.href} aria-current={!home && item.href === route.path ? 'page' : undefined}>
+        {item.label}
+      </a>
+    </li>
+  ))
+
   return (
     <header className={s.header}>
       {/* Two fixed layers: the bar blends with the sky (difference), the actions keep their own colours. */}
@@ -40,15 +75,7 @@ export function Header({ route }: { route: Route }) {
           <span className={s.word}>{company.name}</span>
         </a>
         <nav className={s.nav} aria-label="Primary">
-          <ul>
-            {nav.map((item) => (
-              <li key={item.href}>
-                <a href={item.href} aria-current={!home && item.href === route.path ? 'page' : undefined}>
-                  {item.label}
-                </a>
-              </li>
-            ))}
-          </ul>
+          <ul>{links}</ul>
         </nav>
         {!systemReduced && (
           <button type="button" className={s.motion} aria-pressed={userOff} aria-label={t.ui.pauseMotion} title={t.ui.pauseMotion} onClick={() => setUserOff(!userOff)}>
@@ -59,10 +86,32 @@ export function Header({ route }: { route: Route }) {
         )}
       </div>
       <div className={s.actions}>
-        <LanguageSwitch route={route} variant="header" />
+        <div className={s.lang}>
+          <LanguageSwitch route={route} variant="header" />
+        </div>
         <a href={`${homePath}#contact`} className={s.cta}>
           {t.ui.cta}
         </a>
+          <details ref={menuRef} className={s.menu}>
+            <summary className={s.menuButton}>
+              <span className={s.menuIcon} aria-hidden="true" />
+              <span className="sr-only">{t.ui.menu}</span>
+            </summary>
+            <div className={s.sheet}>
+              <nav aria-label="Primary">
+                <ul className={s.sheetLinks}>{links}</ul>
+              </nav>
+              {/* Phones: the languages and the motion switch, which have no room in the bar there. */}
+              <div className={s.sheetLang}>
+                <LanguageSwitch route={route} variant="footer" />
+              </div>
+              {!systemReduced && (
+                <button type="button" className={s.sheetMotion} role="switch" aria-checked={!userOff} onClick={() => setUserOff(!userOff)}>
+                  {t.ui.motion} <span aria-hidden="true">{userOff ? t.ui.off : t.ui.on}</span>
+                </button>
+              )}
+            </div>
+          </details>
       </div>
     </header>
   )

@@ -17,6 +17,16 @@ describe('validate (AC5)', () => {
       expect(validate({ ...good, email }).email).toBe('emailFormat')
     }
   })
+  it('rejects a display name, a list or quotes in place of one plain address', () => {
+    for (const email of ['Google<x@evil.example>', 'a,b@evil.example', '"x"@evil.example', 'x@evil.example;y@evil.example', 'x@[127.0.0.1]', '\u202emoc.live@x.example', 'ceo\u200b@blakra.example']) {
+      expect(validate({ ...good, email }).email).toBe('emailFormat')
+    }
+  })
+  it('accepts ordinary and international addresses', () => {
+    for (const email of ['first.last+tag@sub.example.co.uk', 'josé@münchen.example', 'o\'brien@example.ie']) {
+      expect(validate({ ...good, email })).toEqual({})
+    }
+  })
   it('caps the message length', () => {
     expect(validate({ ...good, msg: 'x'.repeat(limits.msg + 1) }).msg).toBe('msgLong')
   })

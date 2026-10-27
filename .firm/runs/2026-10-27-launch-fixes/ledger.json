@@ -1,0 +1,76 @@
+{
+  "run_status": "done",
+  "tier": "T2",
+  "goal": "Fix the launch-audit findings that need no owner input (.firm/audits/2026-10-27-global-launch.md R1, R2, R3 config part, R5, R6), show the owner a preview of the visible changes, then roll out.",
+  "phase": "done",
+  "updated": "2026-10-27",
+  "note": "Owner asked: remove the social links, make the form safe, fix the nginx config, the case cards, the phone menu and pause control, and the phone and browser issues; preview before rollout. Mid-run the owner supplied the legal entity (BLAKRA LLC, Sacramento address, phone), so the legal notice and privacy details were added. The owner approved the preview and asked for the commit (2026-10-27). Still the owner's: DKIM/DMARC, certbot for www on the server, deploying contact.gs with the hourly digest trigger, the remaining entity details.",
+  "acceptance_criteria": [
+    {
+      "id": "L1",
+      "text": "No link to an account BLAKRA does not own: footer and JSON-LD sameAs carry no social links; FACTS.md records why",
+      "verified": true,
+      "evidence": "company.social is [] (src/content/shared.ts); sameAs only when non-empty (src/head.ts). Built dist: 0 files reference github.com/blakra, LinkedIn/X or sameAs (grep). FACTS.md row records the 2026-10-27 check (github.com/blakra = unrelated 'Blaž'; LinkedIn/X 404). Code review: L1 sound."
+    },
+    {
+      "id": "L2",
+      "text": "contact.gs never rejects a valid enquiry because of volume; every valid enquiry is saved; mail cannot be exhausted for longer than the digest interval; fixed subject and untrusted-content banner; strict email pattern on client and server; ok once saved even if mail fails; formula guard survives CSV export",
+      "verified": true,
+      "evidence": "server/contact.gs rewritten; tests/contact-gs.test.ts runs it in node:vm against fakes: 600 flood posts all ok and saved, 40 instant mails, hourly digest mails the rest 50 at a time and marks only what it mailed, fixed subject + untrusted banner, quoted message (no forged entries), ok when the counter lock times out or mail fails, 'sending' rows never double-mailed, U+2019 formula mark, invisible/bidi characters stripped. Same strict email regex in src/lib/contact.ts (tests/contact.test.ts). vitest 108/108. Security re-check: S1-S5 fixed; its N1-N4 and code-review F1-F3 fixed and covered by tests."
+    },
+    {
+      "id": "L3",
+      "text": "nginx example: 443 www server redirecting to the apex, http keeps the host, dotfiles denied, server_tokens off, explicit TLS 1.2/1.3, per-language 404s with headers and Cache-Control; dist/.vite not shipped",
+      "verified": true,
+      "evidence": "deploy/nginx.conf.example: 443 www -> apex, port 80 -> https://$host, dotfile deny (regex location), ssl_protocols TLSv1.2 TLSv1.3, server_tokens and logrotate notes, per-language 404 locations with headers + no-cache. scripts/prerender.mjs removes dist/.vite (dist has no dotfiles). nginx is not installed here, so `nginx -t` was not run; both reviewers read it (code review L3 sound; security S4/S5 fixed)."
+    },
+    {
+      "id": "L4",
+      "text": "Case cards show all their text in the held layout at 1280x720, 1280x800, 1536x730, 1440x900 and 1920x1080 in all four languages, and nothing is clipped with WCAG 1.4.12 text spacing applied",
+      "verified": true,
+      "evidence": "Rect-based measurement (scratchpad fixes/cards.mjs) on the built site: worst overflow 0 px at 1280x700/720/800, 1366x768, 1536x730, 1440x900, 1600x900, 1920x1080, 2560x1440 in en/de/fr/es; held (horizontal) layout kept at 1280x800, 1366x768, 1536x730 and up in all four; list only at 1280x700 de/fr/es and 1280x720 fr. With WCAG 1.4.12 spacing at 1280x800/1440x900/1920x1080: list layout, 0 px clipped. Screenshot 4-cards-1280x800.png shows the layer row and stack."
+    },
+    {
+      "id": "L5",
+      "text": "Below 1100 px the header has a menu with the five section links; below 600 px the menu also has the motion switch; works with keyboard (Escape closes, focus returns), closes on link use; without JS the menu still opens",
+      "verified": true,
+      "evidence": "Header check (fixes/header.mjs) at 320-1280 px x en/de/fr/es/investors: no overlaps, nothing off screen (320 es gap 3 px before the last CTA padding tweak). Menu shown 320-1099, nav at >=1100; below 600 the sheet holds languages and the motion switch. Screenshots 2/3/5. Code review L5: summary toggling, link/outside close, Escape refocus, one exposed Primary nav. <details> opens without JS by construction."
+    },
+    {
+      "id": "L6",
+      "text": "If the main script never runs, the page falls back to the no-motion layout within a few seconds (all Engine texts and all five cards readable); CSP hash updated",
+      "verified": true,
+      "evidence": "fixes/robust.mjs: main script aborted -> 'motion-off' at 300 ms (error listener), all 7 Engine texts visible, all 5 cards 481-566 px tall. fixes/silent.mjs: script loads but never starts -> motion-on at load, motion-off 5 s later; normal load -> 'motion-on booted' after 6 s. CSP hash matches the inline script in all 20 built pages."
+    },
+    {
+      "id": "L7",
+      "text": "A 30 fps frame cap does not drop quality to the lowest level or stop the animation",
+      "verified": true,
+      "evidence": "Real GPU (Intel UHD, Vulkan), rAF capped at 30 fps (fixes/gov-gpu.mjs cap): 'paced at 32.9 ms: step undone, budget 1.98', pixel ratio stays 0.85, still gl-live and drawing at 33.3 ms after 30 s (before the fix: 0.55 by ~9 s). Without the cap: 16.7 ms, ratio 0.85, no steps."
+    },
+    {
+      "id": "L8",
+      "text": "After a WebGL context loss and restore, the 3D world comes back",
+      "verified": true,
+      "evidence": "fixes/robust.mjs with a hardware GPU name: loseContext -> gl-off; restoreContext -> gl-live again, no page errors."
+    },
+    {
+      "id": "L9",
+      "text": "Side margins respect the safe-area insets (notched phones in landscape)",
+      "verified": true,
+      "evidence": "src/styles/global.css --margin = max(clamp(...), env(safe-area-inset-left), env(safe-area-inset-right)). Code review: correct. Not device-tested (headless Chrome has no notch insets)."
+    },
+    {
+      "id": "L10",
+      "text": "typecheck, unit tests, build and e2e pass; Lighthouse mobile perf >= 90 on /; owner approves the preview before commit",
+      "verified": true,
+      "evidence": "Final build 2026-10-27: tsc clean; vitest 108/108; build 20 pages + sitemap (16 urls); e2e 126/126 (scratchpad fixes/e2e3.log; AC9 11.9 screens); Lighthouse mobile / 90, /de/ 90, /legal/ 95, a11y/best practices/SEO 100 (fixes/lh2.log). Owner approved the preview in chat on 2026-10-27 (\"I've seen the preview and it's approved. Commit the changes.\")."
+    },
+    {
+      "id": "L11",
+      "text": "The owner's company details (BLAKRA LLC, address, phone; 2026-10-27) appear on a Legal notice page in four languages, in the Privacy 'Who we are' block with the GDPR items (legal basis, US location, rights incl. complaint, server logs), in the footer and in the JSON-LD; FACTS.md lists what is still missing",
+      "verified": true,
+      "evidence": "dist/legal, /de/legal, /fr/legal, /es/legal built and in the sitemap; e2e AC1 no-JS copy on all four legal pages, AC7 no overflow; JSON-LD legalName/telephone/PostalAddress read from dist/index.html; screenshots 6-impressum-de.png, 7-privacy-who.png, 8-footer.png. FACTS.md open item: state of organization, entity number, representative, EU representative, hosting provider (LCEN), log retention to set on the server."
+    }
+  ]
+}
