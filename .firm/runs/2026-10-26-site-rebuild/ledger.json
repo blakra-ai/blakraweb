@@ -1,0 +1,126 @@
+{
+  "run_status": "done",
+  "tier": "T3",
+  "goal": "Replace blakra.us with a new React site that tells one true, story-driven narrative with Awwwards-level motion and converts visitors into discovery calls.",
+  "phase": "handoff",
+  "updated": "2026-10-26",
+  "note": "v4 shipped locally: black-hole + chakra stage, scroll-driven camera, 4 languages. 89 unit tests, 102/102 e2e, Lighthouse mobile 92\u201394/100/100/100. Reviews: UX 10 (8 fixed), code 6 (6 fixed), security 3 (3 fixed). Not deployed, not committed (no git repo).",
+  "acceptance_criteria": [
+    {
+      "id": "AC1",
+      "text": "Prerendered HTML for /, /investors/, /privacy/, /404.html contains full copy",
+      "verified": true,
+      "evidence": "npm run e2e \u2192 'no-JS copy' PASS on all 16 pages (en, de, fr, es \u00d7 home, investors, privacy, 404), 2026-10-26"
+    },
+    {
+      "id": "AC2",
+      "text": "Reduced motion or toggle off: no pin, scrub, Lenis or shader animation; scenes show final state",
+      "verified": true,
+      "evidence": "npm run e2e \u2192 reduced motion: 0 pins, no Lenis, day track vertical, all card/layer text visible, every card inside the day section: PASS"
+    },
+    {
+      "id": "AC3",
+      "text": "Lighthouse mobile: perf >= 90, a11y 100, best practices >= 95, SEO 100",
+      "verified": true,
+      "evidence": "Lighthouse 13.5 mobile (simulated 4G, 4\u00d7 CPU) on vite preview: / 92/100/100/100, /de/ 93/100/100/100, /investors/ 94/100/100/100 (perf/a11y/bp/seo); TBT 0\u201340 ms, CLS 0.002"
+    },
+    {
+      "id": "AC4",
+      "text": "Every number and claim traces to the confirmed facts in spec.md",
+      "verified": true,
+      "evidence": "src/content/FACTS.md lists every claim with its source; placeholders flagged DRAFT (dev badge) and listed for the owner"
+    },
+    {
+      "id": "AC5",
+      "text": "Form: valid posts {org,email,msg}; invalid shows announced inline error; honeypot or <3 s sends nothing",
+      "verified": true,
+      "evidence": "tests/contact.test.ts (validation, delivery only on {ok:true}, honeypot and timing drop) + e2e AC5 (invalid \u2192 3 inline errors and focus; unconfirmed delivery \u2192 error with email; valid \u2192 posts intent/org/email/msg; bot \u2192 nothing sent): PASS"
+    },
+    {
+      "id": "AC6",
+      "text": "Body text >= 4.5:1, large text and graphics >= 3:1 on every sky palette",
+      "verified": true,
+      "evidence": "tests/contrast.test.ts (palette and ink tokens) PASS; Lighthouse accessibility 100 on three pages (axe color-contrast included)"
+    },
+    {
+      "id": "AC7",
+      "text": "No horizontal scroll or overlap at 375/768/1440/1920",
+      "verified": true,
+      "evidence": "npm run e2e \u2192 no horizontal scroll at 375/768/1440/1920 on all 16 pages: PASS (768 people-card overflow fixed)"
+    },
+    {
+      "id": "AC8",
+      "text": "Keyboard: all controls reachable with visible focus; skip link works",
+      "verified": true,
+      "evidence": "npm run e2e \u2192 skip link first and focuses main; every focus stop visible; doors, fields, language and motion switches reachable: PASS"
+    },
+    {
+      "id": "AC9",
+      "text": "Desktop home page is at most 12 screens tall (1440x900, motion on)",
+      "verified": true,
+      "evidence": "npm run e2e \u2192 11.8 screens at 1440\u00d7900 with motion on (fresh context): PASS"
+    }
+  ],
+  "work_packages": [
+    {
+      "id": "WP1",
+      "title": "Scaffold + SSG pipeline",
+      "owner": "lead",
+      "status": "done"
+    },
+    {
+      "id": "WP2",
+      "title": "Content model, 4 languages",
+      "owner": "lead",
+      "status": "done"
+    },
+    {
+      "id": "WP3",
+      "title": "Hero, day track, engine, process, products, people, contact",
+      "owner": "lead",
+      "status": "done"
+    },
+    {
+      "id": "WP4",
+      "title": "3D stage: shader, camera path, governor, fallback",
+      "owner": "lead",
+      "status": "done"
+    },
+    {
+      "id": "WP5",
+      "title": "Contact form + Apps Script",
+      "owner": "lead",
+      "status": "done"
+    },
+    {
+      "id": "WP6",
+      "title": "SEO, OG, sitemap, 404",
+      "owner": "lead",
+      "status": "done"
+    },
+    {
+      "id": "WP7",
+      "title": "Verify + review fixes",
+      "owner": "lead",
+      "status": "done"
+    }
+  ],
+  "decisions": [
+    "T3 \u2014 new project, motion-heavy, multi-session; risk triggers: contact form (untrusted input, personal data), public claims, SEO migration",
+    "Full creative freedom over copy, style, colour, type, structure and titles (user, 2026-10-26); company name BLAKRA kept",
+    "Story direction chosen by lead: one working day, 06:00 to 22:00, each hour a real shipped project",
+    "Facts: no headline stats; all five case studies; three named people; /investors separate page (user, 2026-10-26)",
+    "Stack: React 19.3 + Vite 8 + TS 7, custom SSG via react-dom/server, GSAP 3.15 + Lenis 1.3, raw WebGL2 sky, CSS Modules (lead, research 2026-10-26)",
+    "Form: keep existing Apps Script endpoint via env var + hardened server/contact.gs (lead)",
+    "v2 scope (user, 2026-10-26): add the product ecosystem, richer team and expertise, three audiences (clients, partners, investors), upgraded narrative motion",
+    "v3 direction (lead, after user rejection): custom raymarched glass engine (no three.js), compact scroll budget <= 10 screens, horizontal case-study track, keep content model, i18n, form and tests",
+    "v3 direction approved by user (2026-10-26): roll out across the site and run all checks",
+    "v4 (user, 2026-10-26): symbols from black holes and chakras, intricate 3D, every scroll purposeful \u2192 raymarched stage, 7 layers = 7 chakras, scroll-interpolated camera (ADR-002)",
+    "Software GPUs get the static SVG symbol (lab scores, VMs); ?gl=force previews the live engine"
+  ],
+  "open_questions": [
+    "Which local apps are BLAKRA's own products, publishable",
+    "Team photos available",
+    "Primary audience for the hero"
+  ]
+}

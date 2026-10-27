@@ -1,0 +1,91 @@
+.header {
+  position: relative;
+}
+.toggle {
+  display: grid;
+  place-items: center;
+  min-width: 2.5rem;
+  height: 2.5rem;
+  padding: 0 0.6rem;
+  border: 1px solid rgba(255, 255, 255, 0.18);
+  border-radius: 999px;
+  background: rgba(10, 12, 16, 0.55);
+  -webkit-backdrop-filter: blur(12px);
+  backdrop-filter: blur(12px);
+  color: #fff;
+  font-family: var(--font-mono);
+  font-size: 0.75rem;
+  letter-spacing: 0.04em;
+  cursor: pointer;
+  transition: border-color 0.3s;
+}
+.toggle:hover,
+.toggle[aria-expanded='true'] {
+  border-color: rgba(255, 255, 255, 0.6);
+}
+.toggle:focus-visible {
+  outline: 2px solid #fff;
+  outline-offset: 3px;
+}
+
+/* A solid panel: it must stay readable over any sky and any content below it. */
+.menu {
+  position: absolute;
+  top: calc(100% + 0.6rem);
+  right: 0;
+  display: grid;
+  min-width: 11rem;
+  padding: 0.4rem;
+  border: 1px solid rgba(255, 255, 255, 0.14);
+  border-radius: 14px;
+  background: rgba(10, 12, 16, 0.94);
+  -webkit-backdrop-filter: blur(16px);
+  backdrop-filter: blur(16px);
+  color: #eeece6;
+  box-shadow: 0 18px 50px rgba(0, 0, 0, 0.35);
+}
+.menu[hidden] {
+  display: none;
+}
+.menu a {
+  display: flex;
+  gap: 0.75rem;
+  padding: 0.55rem 0.7rem;
+  border-radius: 9px;
+  font-size: 0.875rem;
+  white-space: nowrap;
+}
+.menu a:hover,
+.menu a:focus-visible {
+  background: rgba(255, 255, 255, 0.12);
+  outline: none;
+}
+.menu a[aria-current] {
+  text-decoration: underline;
+  text-underline-offset: 0.3em;
+}
+.code {
+  font-family: var(--font-mono);
+  font-size: 0.75rem;
+  opacity: 0.7;
+  width: 1.5rem;
+}
+
+.footer ul {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.4rem 1.1rem;
+  font-size: var(--step--1);
+}
+.footer a {
+  color: var(--ink-2);
+  transition: color 0.3s;
+}
+.footer a:hover,
+.footer a[aria-current] {
+  color: var(--ink);
+}
+.footer a[aria-current] {
+  text-decoration: underline;
+  text-underline-offset: 0.3em;
+}

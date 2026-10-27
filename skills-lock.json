@@ -1,0 +1,19 @@
+{
+  "version": 1,
+  "skills": {
+    "awwwards-design": {
+      "source": "clawhub.ai",
+      "sourceUrl": "https://clawhub.ai/mkhaytman87/skills/awwwards-design",
+      "sourceType": "well-known",
+      "computedHash": "d639450bf2547aeb2d9080ca353318279278214508a6ed0bad6010f021128147",
+      "wellKnownDigest": "sha256:f5756f88f3a4e06b10c81c27dc57fa0dc651e33cfdeb14e86a3df2c8e9246f26"
+    },
+    "ui-ux-pro-max": {
+      "source": "clawhub.ai",
+      "sourceUrl": "https://clawhub.ai/xobi667/skills/ui-ux-pro-max",
+      "sourceType": "well-known",
+      "computedHash": "8e720d6155fe9fa7b3eeca175b68e7524f3a830f424f40d8f4f7b916b20edb25",
+      "wellKnownDigest": "sha256:fbf18a84ba60046fbfc7a10a50ef7bbc0515c094aa127d314529697404a2ff31"
+    }
+  }
+}

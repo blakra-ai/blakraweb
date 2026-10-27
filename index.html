@@ -1,0 +1,14 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+    <!-- Before the first paint: the motion layout (sticky sections) is in place from the start, so the page never re-lays out on load. Allowed by its hash in the CSP (deploy/blakra-headers.conf). -->
+    <script>(function(c){c.add('js');var off;try{off=localStorage.getItem('blakra:motion')==='off'}catch(e){}c.add(off||matchMedia('(prefers-reduced-motion: reduce)').matches?'motion-off':'motion-on')})(document.documentElement.classList)</script>
+    <!--head-->
+  </head>
+  <body>
+    <div id="root"><!--app--></div>
+    <script type="module" src="/src/entry-client.tsx"></script>
+  </body>
+</html>

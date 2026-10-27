@@ -1,0 +1,163 @@
+.header {
+  --actions-w: 14rem;
+  display: contents;
+}
+
+/* A frosted bar: legible over the black hole, the disk and every section, with or without JS. */
+.bar {
+  position: fixed;
+  inset: 0 0 auto;
+  z-index: 40;
+  display: flex;
+  align-items: center;
+  gap: clamp(1rem, 3vw, 3rem);
+  height: var(--header-h);
+  padding: 0 calc(var(--margin) + var(--actions-w) + 0.75rem) 0 var(--margin);
+  color: #eeece6;
+  background: #050507;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+  pointer-events: none;
+}
+.bar a,
+.bar button {
+  pointer-events: auto;
+}
+
+.brand {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.6rem;
+  padding: 0.5rem 0;
+}
+.mark {
+  width: 24px;
+  height: 16px;
+  overflow: visible;
+}
+.word {
+  font-weight: 600;
+  font-size: 0.95rem;
+  letter-spacing: 0.22em;
+  margin-right: -0.22em;
+}
+
+.nav ul {
+  display: flex;
+  gap: clamp(1rem, 2.4vw, 2.25rem);
+}
+.nav a[aria-current] {
+  text-decoration: underline;
+  text-underline-offset: 0.35em;
+}
+.nav a {
+  position: relative;
+  font-size: var(--step--1);
+  padding: 0.5rem 0;
+}
+.nav a::after {
+  content: '';
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0.25rem;
+  height: 1px;
+  background: currentColor;
+  transform: scaleX(0);
+  transform-origin: right;
+  transition: transform 0.5s var(--ease-out);
+}
+.nav a:hover::after {
+  transform: scaleX(1);
+  transform-origin: left;
+}
+
+
+
+.motion {
+  flex: none;
+  display: grid;
+  place-items: center;
+  width: 2.5rem;
+  height: 2.5rem;
+  border: 1px solid rgba(255, 255, 255, 0.45);
+  border-radius: 999px;
+  background: transparent;
+  color: inherit;
+  cursor: pointer;
+  transition: border-color 0.3s;
+}
+.motion svg {
+  width: 14px;
+  height: 14px;
+}
+.motion:hover {
+  border-color: #fff;
+}
+
+.actions {
+  position: fixed;
+  top: calc((var(--header-h) - 2.5rem) / 2);
+  right: var(--margin);
+  z-index: 41;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+.cta {
+  display: inline-flex;
+  justify-content: center;
+  align-items: center;
+  height: 2.5rem;
+  padding: 0 1.1rem;
+  border-radius: 999px;
+  background: var(--cta-bg);
+  color: var(--cta-ink);
+  font-size: var(--step--1);
+  font-weight: 500;
+  white-space: nowrap;
+  transition: transform 0.4s var(--ease-out), background-color 0.3s;
+}
+.cta:hover {
+  background: #ff8148;
+}
+.cta:active {
+  transform: scale(0.97);
+}
+.cta:focus-visible,
+.motion:focus-visible {
+  outline: 2px solid #fff;
+  outline-offset: 3px;
+}
+
+@media (max-width: 1099px) {
+  .nav {
+    display: none;
+  }
+}
+@media (max-width: 899px) {
+  .header {
+    --actions-w: 12rem;
+  }
+}
+/* Small screens: the motion switch lives in the footer, the clock stays. */
+@media (max-width: 599px) {
+  .motion {
+    display: none;
+  }
+}
+/* Phones: brand, language and the primary action; the clock lives in the content. */
+@media (max-width: 599px) {
+}
+@media (max-width: 339px) {
+  .header {
+    --actions-w: 11.5rem;
+  }
+  .cta {
+    padding: 0 0.75rem;
+  }
+}
+
+/* Off the home page there is no clock, so the motion switch takes its place on the right. */
+.nav + .motion {
+  margin-left: auto;
+}

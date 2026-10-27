@@ -1,0 +1,132 @@
+.hero {
+  position: relative;
+  display: grid;
+  min-height: 100svh;
+  padding: calc(var(--header-h) + 2rem) var(--margin) clamp(3rem, 11vh, 7.5rem);
+}
+
+/* Without WebGL (or before it starts) a soft light stands in for the engine. */
+:global(html:not(.gl-live)) .hero::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  background: radial-gradient(40% 50% at 78% 45%, rgba(255, 138, 76, 0.16), transparent 70%);
+  pointer-events: none;
+}
+
+.copy {
+  align-self: end;
+  display: grid;
+  gap: clamp(1.25rem, 3vh, 2rem);
+  max-width: min(50rem, 58vw);
+}
+@media (max-width: 899px) {
+  .hero {
+    padding-top: 46svh;
+  }
+  .copy {
+    max-width: none;
+  }
+}
+
+.eyebrow {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.6rem;
+  font-size: var(--step--1);
+  color: var(--ink-2);
+}
+.dot {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: var(--cta-bg);
+  box-shadow: 0 0 0 4px rgba(255, 106, 43, 0.18);
+}
+
+.title {
+  font-size: clamp(2.6rem, 1rem + 5.4vw, 7.25rem);
+  font-weight: 500;
+  line-height: 0.95;
+  letter-spacing: -0.05em;
+}
+.title em {
+  font-family: var(--font-serif);
+  font-style: italic;
+  font-weight: 400;
+  letter-spacing: -0.025em;
+}
+.line {
+  display: inline-block;
+}
+@media (min-width: 700px) {
+  .line {
+    display: block;
+  }
+}
+
+.lede {
+  max-width: 44ch;
+  font-size: var(--step-1);
+  line-height: 1.5;
+  color: var(--ink-2);
+}
+
+.actions {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.75rem 1.5rem;
+}
+.primary {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.75rem;
+  height: 3.25rem;
+  padding: 0 1.5rem;
+  border-radius: 999px;
+  background: var(--cta-bg);
+  color: var(--cta-ink);
+  font-weight: 500;
+  transition: background-color 0.3s, transform 0.4s var(--ease-out);
+}
+.primary:hover {
+  background: #ff8148;
+}
+.primary span,
+.secondary span {
+  transition: transform 0.4s var(--ease-out);
+}
+.primary:hover span {
+  transform: translateX(4px);
+}
+.secondary {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.6rem;
+  height: 3.25rem;
+  font-weight: 500;
+}
+.secondary:hover span {
+  transform: translateY(3px);
+}
+
+.also {
+  font-size: var(--step--1);
+  color: var(--ink-2);
+}
+.also a {
+  color: var(--ink);
+  border-bottom: 1px solid var(--line);
+  transition: border-color 0.3s;
+}
+.also a:hover {
+  border-color: var(--cta-bg);
+}
+.facts {
+  font-family: var(--font-mono);
+  font-size: 0.75rem;
+  letter-spacing: 0.02em;
+  color: var(--ink-2);
+}

@@ -1,0 +1,440 @@
+.day {
+  position: relative;
+}
+
+.pin {
+  display: grid;
+  grid-template-rows: auto 1fr auto;
+  gap: clamp(1rem, 2.4vh, 1.75rem);
+  padding: calc(var(--header-h) + 0.25rem) 0 clamp(1rem, 2.5vh, 1.75rem);
+}
+@media (min-width: 900px) and (min-height: 700px) {
+  /* Tall enough for the track to cross the screen (JS refines it to the pixel), so the
+     page height is already right before the motion setup runs. */
+  :global(html.motion-on) .day {
+    height: calc(100svh + 0.3 * (5 * min(82vw, 74rem) + 4 * clamp(1rem, 2vw, 2rem) + 2 * var(--margin) - 100vw));
+  }
+  :global(html.motion-on) .pin {
+    position: sticky;
+    top: 0;
+    height: 100svh;
+  }
+  /* Moved by the scroll on every frame. As declared layers they are rasterized once and
+     only moved; without this, each new sub-pixel offset rasterized the cards again. */
+  :global(html.motion-on) .track,
+  :global(html.motion-on) .visual {
+    will-change: transform;
+  }
+  :global(html.motion-on) .track[data-moving] * {
+    animation-play-state: paused !important;
+  }
+}
+
+.head {
+  display: grid;
+  grid-template-columns: minmax(0, 1.25fr) minmax(0, 1fr);
+  align-items: end;
+  gap: 0.75rem 3rem;
+  padding: 0 var(--margin);
+}
+.eyebrow {
+  grid-column: 1 / -1;
+  font-family: var(--font-mono);
+  font-size: var(--step--1);
+  color: var(--ink-2);
+}
+.title {
+  font-size: clamp(1.7rem, 0.9rem + 2vw, 3rem);
+  font-weight: 500;
+  line-height: 1;
+  letter-spacing: -0.04em;
+  max-width: 22ch;
+  outline: none;
+}
+.lede {
+  max-width: 46ch;
+  color: var(--ink-2);
+}
+.hint {
+  display: none;
+  font-family: var(--font-mono);
+  font-size: 0.75rem;
+  color: var(--ink-2);
+}
+.hint span {
+  display: inline-block;
+  margin-left: 0.4rem;
+  color: var(--ink);
+}
+/* Only where the vertical scroll moves the track sideways. */
+@media (min-width: 900px) and (min-height: 700px) {
+  :global(html.motion-on) .hint {
+    display: block;
+    grid-column: 2;
+  }
+  :global(html.motion-on) .hint span {
+    animation: nudge 1.8s var(--ease-in-out) infinite;
+  }
+}
+@keyframes nudge {
+  50% {
+    transform: translateX(5px);
+  }
+}
+@media (max-width: 899px) {
+  .head {
+    grid-template-columns: 1fr;
+  }
+}
+
+.viewport {
+  min-height: 0;
+  overflow: hidden;
+}
+.track {
+  display: flex;
+  gap: clamp(1rem, 2vw, 2rem);
+  width: max-content;
+  height: 100%;
+  padding: 0 var(--margin);
+}
+
+.card {
+  /* Containing block for the scene's positioned parts (the blur that used to provide it is gone). */
+  position: relative;
+  flex: 0 0 min(82vw, 74rem);
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1.1fr);
+  align-items: center;
+  gap: clamp(1.5rem, 3vw, 3.5rem);
+  height: 100%;
+  max-height: 46rem;
+  padding: clamp(1.25rem, 2.4vw, 2.5rem);
+  border-radius: 32px;
+  background:
+    radial-gradient(90% 70% at 100% 0%, color-mix(in srgb, var(--accent) 13%, transparent), transparent 60%),
+    linear-gradient(160deg, rgba(255, 255, 255, 0.06), rgba(255, 255, 255, 0.015) 60%),
+    rgba(6, 7, 10, 0.9);
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.07);
+  overflow: hidden;
+}
+/* The edge, and the accent edge of the card in view. The accent fades in on its own
+   layer: fading the card's own border colour repainted the whole card on every frame
+   of the fade, while the track was moving. */
+.card::before,
+.card::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: inherit;
+  pointer-events: none;
+}
+.card::after {
+  border-color: color-mix(in srgb, var(--accent) 35%, rgba(255, 255, 255, 0.08));
+  opacity: 0;
+  transition: opacity 0.6s;
+}
+.card[data-active]::after {
+  opacity: 1;
+}
+
+.text {
+  display: grid;
+  align-content: center;
+  gap: clamp(0.45rem, 1.1vh, 0.85rem);
+  min-width: 0;
+}
+.time {
+  display: flex;
+  align-items: baseline;
+  gap: 0.9rem;
+}
+.time span {
+  font-family: var(--font-mono);
+  font-size: clamp(2.2rem, 1.2rem + 2.4vw, 3.6rem);
+  font-weight: 300;
+  letter-spacing: -0.06em;
+  line-height: 1;
+  color: var(--accent);
+}
+.time em {
+  font-family: var(--font-serif);
+  font-size: var(--step-1);
+  color: var(--ink-2);
+}
+.sector {
+  font-size: var(--step--1);
+  color: var(--ink-2);
+}
+.moment {
+  font-family: var(--font-serif);
+  font-style: italic;
+  font-weight: 400;
+  font-size: clamp(1.45rem, 1rem + 1.2vw, 2.2rem);
+  line-height: 1.12;
+  letter-spacing: -0.01em;
+  outline: none;
+}
+.moment:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 4px;
+}
+.story {
+  display: grid;
+  gap: 0.6rem;
+  font-size: 0.9375rem;
+  line-height: 1.5;
+}
+.story dt {
+  font-family: var(--font-mono);
+  font-size: 0.75rem;
+  color: var(--ink);
+  margin-bottom: 0.2rem;
+}
+.story dd {
+  color: var(--ink-2);
+  max-width: 52ch;
+}
+.outcomes {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem 2rem;
+  padding-top: 0.7rem;
+  border-top: 1px solid var(--line);
+}
+.outcomes li {
+  display: grid;
+}
+.outcomes strong {
+  font-size: clamp(1.8rem, 1rem + 1.8vw, 2.8rem);
+  font-weight: 500;
+  letter-spacing: -0.04em;
+  line-height: 1;
+  color: var(--accent);
+}
+.outcomes span {
+  font-size: var(--step--1);
+  color: var(--ink-2);
+}
+.layers {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.35rem;
+  font-size: 0.75rem;
+}
+.layersLabel {
+  font-family: var(--font-mono);
+  color: var(--ink-2);
+  margin-right: 0.25rem;
+}
+.layers a {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  padding: 0.15rem 0.55rem;
+  border: 1px solid var(--line);
+  border-radius: 999px;
+  transition: border-color 0.3s;
+}
+/* Each layer carries the colour of its chakra in the engine. */
+.layers a::before {
+  content: '';
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: var(--chakra);
+  box-shadow: 0 0 8px var(--chakra);
+}
+.layers a:hover {
+  border-color: var(--chakra);
+}
+.stack {
+  flex-basis: 100%;
+  margin-top: 0.3rem;
+  font-family: var(--font-mono);
+  color: var(--ink-2);
+}
+.visual {
+  min-width: 0;
+}
+
+.progress {
+  position: relative;
+  padding: 0 var(--margin);
+}
+.rail {
+  position: absolute;
+  left: var(--margin);
+  right: var(--margin);
+  top: 0;
+  height: 1px;
+  background: var(--line);
+  overflow: hidden;
+}
+.fill {
+  display: block;
+  height: 100%;
+  background: var(--ink);
+  transform: scaleX(0);
+  transform-origin: left;
+}
+.progress ol {
+  display: grid;
+  grid-template-columns: repeat(5, minmax(0, 1fr));
+}
+.progress a {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  min-height: 44px;
+  padding-top: 0.4rem;
+  font-size: 0.875rem;
+  color: var(--ink-2);
+  transition: color 0.3s;
+}
+.progress a[aria-current] {
+  color: var(--ink);
+}
+.tickTime {
+  font-family: var(--font-mono);
+}
+
+/* Phones: a native swipe carousel, one card per screen. */
+@media (max-width: 899px) {
+  .viewport {
+    overflow-x: auto;
+    scroll-snap-type: x mandatory;
+    scrollbar-width: none;
+    overscroll-behavior-x: contain;
+  }
+  .viewport::-webkit-scrollbar {
+    display: none;
+  }
+  .track {
+    height: auto;
+    gap: 0.75rem;
+  }
+  .card {
+    flex-basis: calc(100vw - 2 * var(--margin));
+    grid-template-columns: 1fr;
+    max-height: none;
+    height: auto;
+    scroll-snap-align: center;
+    border-radius: 24px;
+  }
+  .visual {
+    order: -1;
+  }
+  .tickLabel {
+    display: none;
+  }
+}
+
+/* Desktop without motion or JS: the day reads top to bottom. */
+@media (min-width: 900px) {
+  :global(html:not(.motion-on)) .viewport {
+    overflow: visible;
+  }
+  :global(html:not(.motion-on)) .track {
+    flex-direction: column;
+    width: auto;
+    height: auto;
+  }
+  :global(html:not(.motion-on)) .card {
+    flex-basis: auto;
+    height: auto;
+    max-height: none;
+  }
+  :global(html:not(.motion-on)) .progress {
+    display: none;
+  }
+}
+
+/* Wide but short screens with motion on: nothing holds the screen there, so the day reads
+   top to bottom as well, instead of hiding four cards in a track that never moves. */
+@media (min-width: 900px) and (max-height: 699px) {
+  :global(html.motion-on) .viewport {
+    overflow: visible;
+  }
+  :global(html.motion-on) .track {
+    flex-direction: column;
+    width: auto;
+    height: auto;
+  }
+  :global(html.motion-on) .card {
+    flex-basis: auto;
+    height: auto;
+    max-height: none;
+  }
+  :global(html.motion-on) .progress {
+    display: none;
+  }
+}
+
+/* Also delivered: client work that can be described but not shown. A panel, so the
+   scene passing behind it never crosses the text. */
+.delivered {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: 1rem 3rem;
+  margin: clamp(1.25rem, 2.5vw, 2rem) var(--margin) 0;
+  padding: clamp(1.25rem, 2.4vw, 1.75rem) clamp(1.25rem, 2.4vw, 2rem);
+  border-radius: 24px;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  background: rgba(6, 7, 10, 0.88);
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.06);
+}
+@media (min-width: 900px) {
+  .delivered {
+    grid-template-columns: minmax(0, 1fr) minmax(0, 3fr);
+    align-items: start;
+  }
+}
+.deliveredHead {
+  display: grid;
+  gap: 0.6rem;
+}
+.deliveredTitle {
+  font-size: var(--step-1);
+  font-weight: 500;
+  letter-spacing: -0.02em;
+}
+.deliveredNote {
+  max-width: 34ch;
+  font-size: var(--step--1);
+  color: var(--ink-2);
+}
+.deliveredList {
+  display: grid;
+  border-top: 1px solid var(--line);
+}
+@media (min-width: 900px) {
+  .deliveredList {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    column-gap: 2rem;
+  }
+}
+@media (min-width: 1200px) {
+  .deliveredList {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+}
+.deliveredList li {
+  display: flex;
+  gap: 0.75rem;
+  align-items: baseline;
+  padding: 0.6rem 0;
+  font-size: var(--step--1);
+  border-bottom: 1px solid var(--line);
+}
+.deliveredList li::before {
+  content: '';
+  flex: none;
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: var(--ink-2);
+  transform: translateY(-0.15em);
+}

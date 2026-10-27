@@ -1,0 +1,82 @@
+{
+  "run_status": "done",
+  "tier": "T3",
+  "goal": "Rebuild blakra.us so it is clear, smooth and feels like a powerful engineering company: one reasoned story (a descent through a black hole), a three.js world with real 3D chakras, native scroll, and copy that presents BLAKRA as building whole products end to end.",
+  "phase": "done",
+  "updated": "2026-10-27",
+  "note": "Closed after the content v6 rollout: all criteria re-verified on the final build. Smoothness pass 2 (proof track repaint fixes, warm-up render) and the content rewrite are recorded in report.md and the v6 run.",
+  "acceptance_criteria": [
+    {
+      "id": "AC1",
+      "text": "Prerendered HTML on every route carries the full copy, including the pulse, the engine crown line, roadmap, terms and people asks",
+      "verified": true,
+      "evidence": "e2e 2026-10-27 final build: 106/106 (scratchpad e2e9.log): AC1 no-JS copy passes on all 16 routes (en/de/fr/es × home, investors, privacy, 404), with the v6 copy."
+    },
+    {
+      "id": "AC2",
+      "text": "Reduced motion: no pins, no Lenis, no sticky holding; the day reads top to bottom; all text visible",
+      "verified": true,
+      "evidence": "e2e 2026-10-27 final build: 106/106 (scratchpad e2e9.log): AC2 reduced motion: 0 pins, no Lenis, day as a vertical list, 0 hidden texts."
+    },
+    {
+      "id": "AC3",
+      "text": "Lighthouse mobile: performance >= 90, accessibility 100, best practices >= 95, SEO 100",
+      "verified": true,
+      "evidence": "Lighthouse mobile final build: / 92 (TBT 60 ms, CLS 0); /de/ 89, 93, 91 over three runs (median 91; TBT 90-180 ms); /investors/ 95; accessibility, best practices and SEO 100 on all three. One /de/ run at 89 is run-to-run variance (the other two 93 and 91)."
+    },
+    {
+      "id": "AC4",
+      "text": "Every claim traces to FACTS.md; placeholders flagged DRAFT",
+      "verified": true,
+      "evidence": "FACTS.md rewritten 2026-10-27: every claim on the site has a row; placeholders removed from the site (v6 run C2)."
+    },
+    {
+      "id": "AC5",
+      "text": "Contact form: validation, unconfirmed delivery, success, honeypot; never calls the real endpoint",
+      "verified": true,
+      "evidence": "e2e 2026-10-27 final build: 106/106 (scratchpad e2e9.log): AC5 validation, unconfirmed delivery, success focus and honeypot pass; endpoint mocked with page.route, never called."
+    },
+    {
+      "id": "AC7",
+      "text": "No horizontal scroll at 375, 768, 1440, 1920 on every page",
+      "verified": true,
+      "evidence": "e2e 2026-10-27 final build: 106/106 (scratchpad e2e9.log): AC7 at 375 on 16 routes; plus a sweep of 64 pages (375/768/1440/1920 × 4 languages × 4 pages): no horizontal overflow."
+    },
+    {
+      "id": "AC8",
+      "text": "Keyboard: skip link, visible focus on every stop, form reachable",
+      "verified": true,
+      "evidence": "e2e 2026-10-27 final build: 106/106 (scratchpad e2e9.log): AC8 skip link first, visible focus on every stop, 316 stops reachable."
+    },
+    {
+      "id": "AC9",
+      "text": "Desktop home page at most 12 screens",
+      "verified": true,
+      "evidence": "e2e 2026-10-27 final build: 106/106 (scratchpad e2e9.log): AC9 11.9 screens at 1440×900 (real GPU: 11.91)."
+    },
+    {
+      "id": "P1",
+      "text": "Pulse: one tap lights its layers, links its proof, marks the engine row, starts the message",
+      "verified": true,
+      "evidence": "e2e 2026-10-27 final build: 106/106 (scratchpad e2e9.log): P1 the 'AI assistant' answer lights its layers, links #h22, starts the message, marks the AI row."
+    },
+    {
+      "id": "S1",
+      "text": "Scroll is never taken over: no pins or Lenis with motion on; page height stable after load; engine holds and climbs",
+      "verified": true,
+      "evidence": "e2e 2026-10-27 final build: 106/106 (scratchpad e2e9.log): S1 no pins, page height stable after load, engine holds and climbs. Engine list now reads root first (owner report)."
+    },
+    {
+      "id": "S2",
+      "text": "Wide but short screens: every case-study card reachable",
+      "verified": true,
+      "evidence": "e2e 2026-10-27 final build: 106/106 (scratchpad e2e9.log): S2 1366×650: the day reads top to bottom, every card reachable."
+    },
+    {
+      "id": "G1",
+      "text": "Real GPU (owner's Intel UHD): static frames at 60 fps; every station renders without errors",
+      "verified": true,
+      "evidence": "Real GPU (Intel UHD, Vulkan), final build: every station renders, no console or page errors; still frames 60 fps (p95 16.7 ms) at hero, engine, products and contact; wheel scroll p50 16.7 ms, 8.7% of frames over 20 ms (was 16-20% before the 2026-10-27 smoothness pass)."
+    }
+  ]
+}

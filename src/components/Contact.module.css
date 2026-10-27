@@ -1,0 +1,262 @@
+.contact {
+  display: grid;
+  gap: clamp(2rem, 5vw, 4rem);
+  min-height: 100svh;
+  align-content: center;
+  padding: calc(var(--header-h) + 2rem) var(--margin) clamp(3rem, 6vw, 4.5rem);
+}
+@media (min-width: 1000px) {
+  .contact {
+    grid-template-columns: minmax(0, 5fr) minmax(0, 6fr);
+    align-items: start;
+  }
+}
+
+.intro {
+  display: grid;
+  gap: 1.5rem;
+  align-content: start;
+}
+.eyebrow {
+  font-family: var(--font-mono);
+  font-size: var(--step--1);
+  color: var(--ink-2);
+}
+.title {
+  font-size: var(--step-4);
+  font-weight: 500;
+  line-height: 0.98;
+  letter-spacing: -0.045em;
+  max-width: 13ch;
+  outline: none;
+}
+.lede {
+  max-width: 44ch;
+  font-size: var(--step-1);
+  line-height: 1.45;
+  color: var(--ink-2);
+}
+.direct {
+  color: var(--ink-2);
+}
+.mail {
+  color: var(--ink);
+  border-bottom: 1px solid var(--line);
+  transition: border-color 0.3s;
+}
+.mail:hover {
+  border-color: var(--ink);
+}
+
+.form {
+  position: relative;
+  display: grid;
+  gap: 1.5rem;
+  padding: clamp(1.25rem, 2.5vw, 2rem);
+  border-radius: 28px;
+  background: linear-gradient(165deg, rgba(255, 255, 255, 0.07), rgba(255, 255, 255, 0.02) 60%), rgba(6, 7, 10, 0.9);
+  border: 1px solid rgba(255, 255, 255, 0.09);
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.07);
+}
+.field {
+  display: grid;
+  gap: 0.5rem;
+}
+.label {
+  font-size: var(--step--1);
+  font-weight: 500;
+}
+.control {
+  width: 100%;
+  min-height: 3rem;
+  padding: 0.75rem 0.9rem;
+  border: 1px solid rgba(255, 255, 255, 0.38);
+  border-radius: 10px;
+  background: rgba(255, 255, 255, 0.03);
+  font-size: var(--step-0);
+  line-height: 1.4;
+  transition: border-color 0.3s;
+  resize: vertical;
+}
+.control::placeholder {
+  color: var(--ink-2);
+  opacity: 0.8;
+  font-size: var(--step--1);
+}
+.control:hover {
+  border-color: rgba(255, 255, 255, 0.55);
+}
+.control:focus-visible {
+  outline: 2px solid var(--signal);
+  outline-offset: 1px;
+  border-color: var(--signal);
+}
+[data-invalid] .control {
+  border-color: var(--signal);
+}
+.error {
+  font-size: var(--step--1);
+  color: var(--ink);
+}
+.error::before {
+  content: '';
+  display: inline-block;
+  width: 0.5em;
+  height: 0.5em;
+  margin-right: 0.5em;
+  border-radius: 50%;
+  background: var(--signal);
+  vertical-align: 0.05em;
+}
+
+.trap {
+  position: absolute;
+  left: -10000px;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+}
+
+.submitRow {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 1rem 1.5rem;
+}
+.submit {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.75rem;
+  height: 3.25rem;
+  padding: 0 1.6rem;
+  border: 0;
+  border-radius: 999px;
+  background: var(--cta-bg);
+  color: var(--cta-ink);
+  font-weight: 500;
+  cursor: pointer;
+  transition: background-color 0.3s, transform 0.3s var(--ease-out);
+}
+.submit:hover:not(:disabled) {
+  background: #ff8148;
+}
+.submit:active:not(:disabled) {
+  transform: scale(0.98);
+}
+.submit:disabled {
+  cursor: progress;
+  opacity: 0.7;
+}
+.arrow {
+  transition: transform 0.4s var(--ease-out);
+}
+.submit:hover .arrow {
+  transform: translateX(4px);
+}
+.privacy {
+  font-size: var(--step--1);
+  color: var(--ink-2);
+}
+.privacy a {
+  color: var(--ink);
+  border-bottom: 1px solid var(--line);
+}
+.failure:empty {
+  display: none;
+}
+.failure p {
+  padding: 1rem 1.25rem;
+  border-left: 3px solid var(--signal);
+  background: var(--surface);
+}
+
+.done {
+  align-self: center;
+  padding: 2rem;
+  border-left: 3px solid var(--signal);
+  background: var(--surface);
+  font-size: var(--step-1);
+  outline: none;
+}
+
+/* Three doors: native radios, drawn as cards. Choosing one is the visitor's first, easy yes. */
+.doors {
+  display: grid;
+  gap: 0.6rem;
+  margin: 0;
+  padding: 0;
+  border: 0;
+  min-width: 0;
+}
+.doors legend {
+  margin-bottom: 0.6rem;
+  padding: 0;
+}
+.door {
+  position: relative;
+  display: grid;
+  gap: 0.2rem;
+  padding: 0.9rem 1rem 0.9rem 2.75rem;
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  cursor: pointer;
+  transition: border-color 0.3s, background-color 0.3s;
+}
+.door:hover {
+  border-color: var(--ink-2);
+}
+.door[data-checked] {
+  border-color: var(--signal);
+  background: var(--surface);
+}
+.door::before {
+  content: '';
+  position: absolute;
+  left: 1rem;
+  top: 1.15rem;
+  width: 0.9rem;
+  height: 0.9rem;
+  border: 1.5px solid var(--ink-2);
+  border-radius: 50%;
+  transition: border-color 0.3s, box-shadow 0.3s;
+}
+.door[data-checked]::before {
+  border-color: var(--signal);
+  box-shadow: inset 0 0 0 3px var(--page), inset 0 0 0 10px var(--signal);
+}
+.door:has(.radio:focus-visible) {
+  outline: 2px solid var(--signal);
+  outline-offset: 3px;
+}
+.radio {
+  position: absolute;
+  opacity: 0;
+  inset: 0;
+  margin: 0;
+  cursor: pointer;
+}
+.doorLabel {
+  font-weight: 500;
+}
+.doorHint {
+  font-size: var(--step--1);
+  color: var(--ink-2);
+}
+@media (min-width: 1300px) {
+  .doors {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+  .doors legend {
+    grid-column: 1 / -1;
+  }
+}
+
+/* The event horizon, written under the form. */
+.horizon {
+  font-family: var(--font-serif);
+  font-style: italic;
+  font-size: var(--step-0);
+  color: var(--ink-2);
+  border-top: 1px solid rgba(255, 255, 255, 0.08);
+  padding-top: 1rem;
+}

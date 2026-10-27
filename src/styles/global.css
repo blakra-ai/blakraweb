@@ -1,0 +1,253 @@
+/* Fonts: self-hosted, latin subset. Geist is the system's voice, Newsreader italic the
+   human moment, Geist Mono the clock. */
+@font-face {
+  font-family: 'Geist';
+  src: url('../assets/fonts/geist-latin-wght-normal.woff2') format('woff2');
+  font-weight: 100 900;
+  font-style: normal;
+  font-display: swap;
+}
+@font-face {
+  font-family: 'Geist Mono';
+  src: url('../assets/fonts/geist-mono-latin-wght-normal.woff2') format('woff2');
+  font-weight: 100 900;
+  font-style: normal;
+  font-display: swap;
+}
+@font-face {
+  font-family: 'Newsreader';
+  src: url('../assets/fonts/newsreader-latin-wght-italic.woff2') format('woff2');
+  font-weight: 200 800;
+  font-style: italic;
+  font-display: swap;
+}
+
+:root {
+  --font-sans: 'Geist', ui-sans-serif, system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
+  --font-serif: 'Newsreader', 'Iowan Old Style', 'Palatino Linotype', Georgia, serif;
+  --font-mono: 'Geist Mono', ui-monospace, 'SF Mono', Menlo, Consolas, monospace;
+
+  --step--1: clamp(0.8125rem, 0.79rem + 0.1vw, 0.875rem);
+  --step-0: clamp(1rem, 0.96rem + 0.18vw, 1.125rem);
+  --step-1: clamp(1.1875rem, 1.08rem + 0.5vw, 1.5rem);
+  --step-2: clamp(1.5rem, 1.25rem + 1.2vw, 2.375rem);
+  --step-3: clamp(1.875rem, 1.35rem + 2.5vw, 3.5rem);
+  --step-4: clamp(2.625rem, 1.45rem + 5.6vw, 7rem);
+  --step-5: clamp(5rem, 1.5rem + 16vw, 20rem);
+
+  --margin: clamp(1.25rem, 0.4rem + 4.2vw, 5rem);
+  --gutter: clamp(1rem, 0.6rem + 1.6vw, 2rem);
+  --header-h: 4.5rem;
+  --radius: 14px;
+  --ease-out: cubic-bezier(0.16, 1, 0.3, 1);
+  --ease-in-out: cubic-bezier(0.65, 0, 0.35, 1);
+
+  --cta-bg: #ff6a2b;
+  --cta-ink: #111317;
+  --page: #050507;
+
+  color-scheme: dark;
+}
+
+/* Tone tokens come from palettes.ts through inline --tone-* variables on each section.
+   With the live sky running, the whole page follows one computed tone instead. */
+[data-tone] {
+  --ink: var(--tone-ink);
+  --ink-2: var(--tone-ink-2);
+  --line: var(--tone-line);
+  --surface: var(--tone-surface);
+  --signal: var(--tone-signal);
+  color: var(--ink);
+}
+
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+html {
+  background: var(--page);
+  -webkit-text-size-adjust: 100%;
+  text-size-adjust: 100%;
+  scrollbar-gutter: stable;
+}
+html.lenis,
+html.lenis body {
+  height: auto;
+}
+.lenis.lenis-smooth {
+  scroll-behavior: auto !important;
+}
+.lenis.lenis-stopped {
+  overflow: clip;
+}
+
+body {
+  margin: 0;
+  min-height: 100svh;
+  font-family: var(--font-sans);
+  font-size: var(--step-0);
+  line-height: 1.55;
+  font-weight: 400;
+  font-feature-settings: 'ss01', 'cv11';
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  text-rendering: optimizeLegibility;
+  color: #eeece6;
+  overflow-x: clip;
+}
+
+h1,
+h2,
+h3,
+h4,
+p,
+figure,
+blockquote,
+dl,
+dd {
+  margin: 0;
+}
+h1,
+h2,
+h3,
+h4 {
+  font-weight: 500;
+  text-wrap: balance;
+}
+p {
+  text-wrap: pretty;
+}
+ul,
+ol {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+a {
+  color: inherit;
+  text-decoration: none;
+}
+button,
+input,
+textarea {
+  font: inherit;
+  color: inherit;
+}
+svg {
+  display: block;
+}
+img,
+svg,
+canvas {
+  max-width: 100%;
+}
+
+::selection {
+  background: var(--cta-bg);
+  color: var(--cta-ink);
+}
+
+:focus-visible {
+  outline: 2px solid var(--signal, #ff6a2b);
+  outline-offset: 3px;
+  border-radius: 4px;
+}
+
+.sr-only {
+  position: absolute !important;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
+  border: 0;
+}
+
+.skip {
+  position: fixed;
+  top: 0.75rem;
+  left: 0.75rem;
+  z-index: 100;
+  padding: 0.75rem 1rem;
+  border-radius: 999px;
+  background: var(--cta-bg);
+  color: var(--cta-ink);
+  font-weight: 500;
+  transform: translateY(-200%);
+}
+.skip:focus-visible {
+  transform: none;
+}
+
+/* Film grain over everything when there is no live 3D world (which grains its own frame):
+   a blended full-screen layer over a moving canvas is re-composited every frame. */
+html.gl-live .grain {
+  display: none;
+}
+/* Film grain over everything: static, so it costs one paint. */
+.grain {
+  position: fixed;
+  inset: 0;
+  z-index: 50;
+  pointer-events: none;
+  opacity: 0.07;
+  mix-blend-mode: overlay;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='180' height='180'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 0.5 0 0 0 0 0.5 0 0 0 0 0.5 0 0 0 1.4 -0.2'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+}
+
+/* The 3D engine renders behind everything; until it starts (or without WebGL) the page is night. */
+.stage-canvas {
+  position: fixed;
+  inset: 0;
+  z-index: -1;
+  width: 100vw;
+  height: 100lvh;
+  pointer-events: none;
+  opacity: 0;
+  transition: opacity 1.2s var(--ease-out);
+}
+html.gl-live .stage-canvas {
+  opacity: 1;
+}
+/* The canvas fades in over the still in the same 1.4s the still fades out. */
+.stage-canvas {
+  transition-duration: 1.4s;
+}
+/* Keeps copy legible over the disk and the mandalas: text lives left on wide screens, low on phones. */
+.stage-scrim {
+  position: fixed;
+  inset: 0;
+  z-index: -1;
+  pointer-events: none;
+  background: linear-gradient(90deg, rgba(5, 5, 7, 0.78) 0%, rgba(5, 5, 7, 0.5) 34%, rgba(5, 5, 7, 0) 60%);
+}
+@media (max-width: 899px) {
+  .stage-scrim {
+    background: linear-gradient(180deg, rgba(5, 5, 7, 0) 0%, rgba(5, 5, 7, 0.45) 38%, rgba(5, 5, 7, 0.82) 70%);
+  }
+}
+
+/* Glass: the surface every panel on the page is made of. */
+.glass {
+  background: linear-gradient(160deg, rgba(255, 255, 255, 0.075), rgba(255, 255, 255, 0.02) 60%), rgba(6, 7, 10, 0.86);
+  border: 1px solid rgba(255, 255, 255, 0.09);
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.08), 0 30px 80px -30px rgba(0, 0, 0, 0.6);
+}
+
+@view-transition {
+  navigation: auto;
+}
+@media (prefers-reduced-motion: reduce) {
+  @view-transition {
+    navigation: none;
+  }
+}
+
+main:focus {
+  outline: none;
+}

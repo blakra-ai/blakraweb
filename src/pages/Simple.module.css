@@ -1,0 +1,199 @@
+.page {
+  min-height: 100svh;
+  padding: calc(var(--header-h) + clamp(4rem, 12vh, 8rem)) var(--margin) clamp(4rem, 10vw, 7rem);
+}
+.center {
+  display: grid;
+  align-items: center;
+}
+
+.wrap {
+  display: grid;
+  gap: clamp(1.75rem, 4vw, 2.75rem);
+  max-width: 62rem;
+}
+
+.eyebrow {
+  font-family: var(--font-mono);
+  font-size: var(--step--1);
+  color: var(--ink-2);
+}
+.title {
+  font-size: var(--step-4);
+  font-weight: 500;
+  line-height: 0.98;
+  letter-spacing: -0.045em;
+  max-width: 15ch;
+  /* Long French and German words must not widen a phone screen. */
+  hyphens: auto;
+  overflow-wrap: break-word;
+}
+.lede {
+  font-size: var(--step-1);
+  color: var(--ink-2);
+  max-width: 44ch;
+}
+
+.prose {
+  display: grid;
+  gap: 1.25rem;
+  max-width: 44ch;
+  font-size: var(--step-1);
+  line-height: 1.5;
+}
+.prose p:last-child {
+  font-family: var(--font-serif);
+  font-style: italic;
+  font-size: var(--step-2);
+  line-height: 1.2;
+}
+
+.actions {
+  display: grid;
+  justify-items: start;
+  gap: 0.75rem;
+}
+.cta {
+  display: inline-flex;
+  align-items: center;
+  height: 3.25rem;
+  padding: 0 1.6rem;
+  border-radius: 999px;
+  background: var(--cta-bg);
+  color: var(--cta-ink);
+  font-weight: 500;
+  justify-self: start;
+  transition: background-color 0.3s;
+}
+.cta:hover {
+  background: #ff8148;
+}
+.note {
+  font-size: var(--step--1);
+  color: var(--ink-2);
+}
+.fine {
+  max-width: 60ch;
+  padding-top: 1.5rem;
+  border-top: 1px solid var(--line);
+  font-size: var(--step--1);
+  color: var(--ink-2);
+}
+.fine a {
+  color: var(--ink);
+  border-bottom: 1px solid var(--line);
+}
+
+.list {
+  display: grid;
+  gap: 2rem var(--gutter);
+}
+.list div {
+  display: grid;
+  gap: 0.5rem;
+  padding-top: 1.25rem;
+  border-top: 1px solid var(--line);
+}
+.list dt {
+  font-family: var(--font-mono);
+  font-size: var(--step--1);
+  font-weight: 500;
+}
+.list dd {
+  color: var(--ink-2);
+  max-width: 60ch;
+}
+@media (min-width: 800px) {
+  .list {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+.block {
+  display: grid;
+  gap: 1.5rem;
+  padding-top: clamp(2rem, 5vw, 3.5rem);
+}
+.blockTitle {
+  font-family: var(--font-mono);
+  font-size: var(--step--1);
+  font-weight: 500;
+  padding-bottom: 1rem;
+  border-bottom: 1px solid var(--line);
+}
+.table {
+  width: 100%;
+  border-collapse: collapse;
+}
+.table th,
+.table td {
+  padding: 1rem 1rem 1rem 0;
+  border-bottom: 1px solid var(--line);
+  text-align: left;
+  vertical-align: baseline;
+}
+.table th {
+  font-weight: 500;
+  white-space: nowrap;
+}
+.table td {
+  color: var(--ink-2);
+}
+.table .stage {
+  font-family: var(--font-mono);
+  font-size: 0.8125rem;
+  color: var(--ink);
+  white-space: nowrap;
+  text-align: right;
+  padding-right: 0;
+}
+@media (max-width: 640px) {
+  /* Name, line and status stacked: side by side they outgrow a phone in French or German. */
+  .table tr {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr);
+    padding: 0.75rem 0;
+    border-bottom: 1px solid var(--line);
+  }
+  .table th,
+  .table td {
+    padding: 0.2rem 0;
+    border: 0;
+  }
+  .table .stage {
+    text-align: left;
+    white-space: normal;
+  }
+}
+.ask {
+  max-width: 40ch;
+  font-family: var(--font-serif);
+  font-style: italic;
+  font-size: var(--step-2);
+  line-height: 1.2;
+}
+.note a {
+  color: var(--ink);
+  border-bottom: 1px solid var(--line);
+}
+
+.thesis {
+  display: grid;
+  gap: 1rem;
+}
+.thesis li {
+  display: grid;
+  grid-template-columns: 7rem 1fr;
+  gap: 1rem;
+  padding-top: 1rem;
+  border-top: 1px solid var(--line);
+}
+.thesis span {
+  font-family: var(--font-mono);
+  font-size: var(--step--1);
+  color: var(--ink-2);
+}
+.deck {
+  max-width: 56ch;
+  color: var(--ink-2);
+}

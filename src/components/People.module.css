@@ -1,0 +1,125 @@
+.people {
+  display: grid;
+  gap: clamp(2rem, 5vw, 3.5rem);
+  padding: clamp(4rem, 8vw, 6rem) var(--margin);
+}
+.head {
+  display: grid;
+  gap: 1.25rem;
+}
+.eyebrow {
+  font-family: var(--font-mono);
+  font-size: var(--step--1);
+  color: var(--ink-2);
+}
+.title {
+  font-family: var(--font-serif);
+  font-style: italic;
+  font-weight: 400;
+  font-size: clamp(2.2rem, 1rem + 3.2vw, 4.4rem);
+  line-height: 1;
+  letter-spacing: -0.02em;
+  max-width: 16ch;
+  outline: none;
+}
+.lede {
+  max-width: 52ch;
+  font-size: var(--step-1);
+  line-height: 1.45;
+  color: var(--ink-2);
+}
+
+.list {
+  display: grid;
+  gap: 3rem var(--gutter);
+}
+@media (min-width: 1100px) {
+  .list {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+}
+.person {
+  display: grid;
+  grid-template-columns: 6.5rem 1fr;
+  align-items: center;
+  gap: 1.25rem;
+  padding: 1.1rem;
+  border-radius: 24px;
+  background: linear-gradient(165deg, rgba(255, 255, 255, 0.06), rgba(255, 255, 255, 0.015) 60%), rgba(6, 7, 10, 0.86);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+}
+.portrait,
+.photo {
+  width: 100%;
+  height: auto;
+  aspect-ratio: 4 / 5;
+}
+.photo {
+  object-fit: cover;
+  border-radius: 999px 999px 0 0;
+}
+.pSky {
+  fill: var(--surface);
+}
+.pFrame {
+  fill: none;
+  stroke: var(--line);
+  stroke-width: 2;
+}
+
+.body {
+  display: grid;
+  gap: 0.4rem;
+  min-width: 0;
+  overflow-wrap: anywhere;
+}
+.name {
+  font-size: var(--step-1);
+  font-weight: 500;
+  letter-spacing: -0.015em;
+}
+.known {
+  font-weight: 400;
+  color: var(--ink-2);
+}
+.role {
+  font-family: var(--font-mono);
+  font-size: var(--step--1);
+}
+.owns {
+  color: var(--ink-2);
+  max-width: 40ch;
+}
+.bench {
+  max-width: 56ch;
+  font-family: var(--font-serif);
+  font-style: italic;
+  font-size: var(--step-1);
+  line-height: 1.4;
+}
+
+.pOrbit {
+  fill: none;
+  stroke: rgba(255, 244, 228, 0.14);
+  stroke-width: 1;
+}
+.pCore {
+  fill: #000;
+}
+.pRing {
+  fill: none;
+  stroke: rgba(255, 228, 196, 0.55);
+  stroke-width: 1.2;
+}
+.pTrail {
+  fill: #fff4e4;
+}
+.pLight {
+  fill: #fff;
+}
+.ask {
+  font-size: var(--step--1);
+  color: var(--ink);
+  border-left: 1px solid rgba(255, 244, 228, 0.35);
+  padding-left: 0.7rem;
+}
