@@ -9,7 +9,7 @@ import { Wordmark } from '../objects/Wordmark'
 import { blackHole, chakras } from '../tokens'
 import { film, LAYERS } from '../state'
 import { AXIS, DISK_TILT, fromDisk, onAxis } from '../space'
-import { beat, beats, cameraAt, centreY, damp, ease, jetBase, span, starAt, stars } from '../timeline'
+import { beat, beats, bloomAt, cameraAt, centreY, damp, ease, jetBase, span, starAt, stars } from '../timeline'
 import { pointer } from '../controllers/pointer'
 const HOLE_R = 0.62
 
@@ -109,13 +109,13 @@ export function Column() {
     const away = ease(span(T, beats.product[0] - 0.015, beats.product[0] + 0.005)) * (1 - ease(span(T, beats.orbit[0] - 0.01, beats.orbit[0] + 0.01)))
     refs.current.forEach((o, k) => {
       if (!o) return
-      const lk = beats.build[0] + 0.03 + k * 0.018
+      const lk = bloomAt(k)
       const bloom = ease(span(T, lk, lk + 0.026))
       const mine = chosen && chosen.layers.includes(LAYERS[k]) ? 1.18 : 1
       // The charge passing through makes each centre swell for a moment.
       const charge = beat(T, beats.charge)
       const swell = 1 + 0.25 * Math.exp(-Math.pow((charge * 7.5 - k - 0.5) / 0.6, 2))
-      const s = 0.5 * bloom * (1 + 0.12 * Math.sin(bloom * Math.PI)) * mine * swell * (1 - away)
+      const s = 0.72 * bloom * (1 + 0.12 * Math.sin(bloom * Math.PI)) * mine * swell * (1 - away)
       o.scale.setScalar(damp(o.scale.x, Math.max(0.0001, s), 8, dt))
       // Not drawn until it blooms (and while the camera looks down the axis).
       o.visible = o.scale.x > 0.002

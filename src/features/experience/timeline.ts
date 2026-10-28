@@ -31,6 +31,13 @@ export const acts = [
   { beat: 'contact', from: beats.running[0], to: beats.running[1] },
 ] as const
 
+/**
+ * How much of a section's scroll its act plays over: the stretch it holds the screen (its
+ * height less one screen), so a held act ends exactly as the hold does; a section that does not
+ * hold plays over most of its height. The rest of the scroll rests on the act's last frame.
+ */
+export const actSpan = (height: number, screen: number) => Math.max(height - screen, height * 0.6)
+
 /** 0 … 1 across [a, b], clamped. */
 export const span = (t: number, a: number, b: number) => Math.min(1, Math.max(0, (t - a) / (b - a)))
 export const beat = (t: number, b: readonly [number, number]) => span(t, b[0], b[1])
@@ -46,8 +53,8 @@ const keys: { t: number; pos: V3; look: V3 }[] = [
   { t: 0.07, pos: [0, 0.6, 17], look: [-1.2, 0, 0] },
   { t: 0.15, pos: [0, 2.6, 13], look: [-3, 0.2, 0] },
   { t: 0.27, pos: [1, 2.3, 12.5], look: [-3.2, 0.2, 0] },
-  { t: 0.31, pos: [6.5, 2.8, 10.5], look: [-1.6, 2.6, 0] },
-  { t: 0.42, pos: [7, 3.6, 11.5], look: [-2, 3.6, 0] },
+  { t: 0.31, pos: [5.4, 3.1, 9.2], look: [-1.6, 2.9, 0] },
+  { t: 0.42, pos: [5.8, 3.9, 9.8], look: [-1.9, 3.9, 0] },
   { t: 0.46, pos: [5.5, 7, 12.5], look: [-1.6, 9, 0] },
   { t: 0.65, pos: [5, 22, 13], look: [-1.8, 24, 0] },
   { t: 0.69, pos: [0.01, 12.5, 0.6], look: [-1.6, 0, 0] },
@@ -83,6 +90,9 @@ export function cameraAt(t: number, portrait: boolean, out: { pos: V3; look: V3 
   }
   return out
 }
+
+/** When centre k (root 0 … crown 6) blooms in Act IV. */
+export const bloomAt = (k: number) => beats.build[0] + 0.03 + k * 0.018
 
 /** Heights of the seven centres on the spin axis, root to crown. */
 export const centreY = (k: number) => 1.1 + k * 0.82

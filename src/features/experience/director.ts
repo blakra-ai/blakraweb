@@ -1,7 +1,7 @@
 import { chapters, needs } from '../../content/shared'
 import type { NeedId } from '../../content/types'
 import { getPulse, onPulse, type PulseChoice } from '../../motion/pulse'
-import { acts, damp } from './timeline'
+import { acts, actSpan, damp } from './timeline'
 import { film, LAYERS } from './state'
 
 /**
@@ -27,7 +27,8 @@ export function createDirector() {
     while (i < acts.length - 1 && y >= tops[i + 1]) i++
     const from = tops[i]
     const to = i < acts.length - 1 ? tops[i + 1] : end
-    const p = Math.min(1, Math.max(0, (y - from) / Math.max(1, to - from)))
+    const span = i < acts.length - 1 ? actSpan(to - from, window.innerHeight) : to - from
+    const p = Math.min(1, Math.max(0, (y - from) / Math.max(1, span)))
     return acts[i].from + p * (acts[i].to - acts[i].from)
   }
 
