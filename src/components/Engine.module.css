@@ -68,27 +68,32 @@
   outline: none;
 }
 
-/* The lede, and at the crown the reason AI sits on top: one place, two texts. */
+/*
+ * The lede, and why AI sits on top. Held: one place, two texts; the crown line takes the
+ * lede's place when the crown blooms. Otherwise (and without JavaScript) both, one after the other.
+ */
 .swap {
   display: grid;
-}
-.lede,
-.crown {
-  grid-area: 1 / 1;
+  gap: 0.8rem;
 }
 .lede {
   color: var(--ink-2);
   line-height: 1.55;
 }
 .crown {
-  display: none;
+  display: grid;
   gap: 0.4rem;
 }
-.text[data-crown] .lede {
+.text[data-held] .lede,
+.text[data-held] .crown {
+  grid-area: 1 / 1;
+}
+.text[data-held] .crown,
+.text[data-held][data-crown] .lede {
   visibility: hidden;
 }
-.text[data-crown] .crown {
-  display: grid;
+.text[data-held][data-crown] .crown {
+  visibility: visible;
 }
 .crownTitle {
   font-family: var(--font-serif);

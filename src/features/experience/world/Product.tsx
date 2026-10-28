@@ -16,7 +16,7 @@ export function ProductMark({ radius }: { radius: number }) {
   const uniforms = useMemo(() => ({ uMap: { value: drawFace() }, uA: { value: 0 }, uTime: { value: 0 } }), [])
   useFrame(() => {
     const T = film.t
-    const a = ease(span(T, productFocus - 0.01, productFocus + 0.008)) * (1 - ease(span(T, beats.orbit[0] - 0.014, beats.orbit[0] - 0.002)))
+    const a = ease(span(T, productFocus - 0.01, productFocus + 0.008)) * (1 - ease(span(T, beats.orbit[0] - 0.001, beats.orbit[0] + 0.008)))
     if (mesh.current) mesh.current.visible = a > 0.001
     const u = mat.current?.uniforms
     if (!u) return

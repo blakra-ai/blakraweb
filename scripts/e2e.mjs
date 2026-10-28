@@ -59,8 +59,10 @@ try {
   for (const [path, needles] of Object.entries(expected)) {
     const page = await noJs.newPage()
     await page.goto(BASE + path)
-    const text = (await page.evaluate(() => document.body.innerText)).replace(/\s+/g, ' ').replace(/\u00a0/g, ' ')
-    const missing = needles.filter((n) => !text.includes(n.replace(/\s+/g, ' ').replace(/\u00a0/g, ' ')))
+    // Case-blind: innerText follows CSS text-transform (eyebrows and fact lines are set in capitals).
+    const norm = (x) => x.replace(/\s+/g, ' ').replace(/\u00a0/g, ' ').toLowerCase()
+    const text = norm(await page.evaluate(() => document.body.innerText))
+    const missing = needles.filter((n) => !text.includes(norm(n)))
     check('AC1', `no-JS copy on ${path}`, missing.length === 0, missing.join(' | '))
     await page.close()
   }
@@ -80,26 +82,31 @@ try {
         await new Promise((r) => setTimeout(r, 30))
       }
     })
-    const state = await page.evaluate(() => ({
-      pins: document.querySelectorAll('.pin-spacer').length,
-      lenis: document.documentElement.classList.contains('lenis'),
-      trackDirection: getComputedStyle(document.querySelector('[data-track]')).flexDirection,
-      trackShift: getComputedStyle(document.querySelector('[data-track]')).transform,
-      hidden: [...document.querySelectorAll('#day [data-card] *, #engine li *')].filter((el) => el.children.length === 0 && el.textContent.trim() && Number(getComputedStyle(el).opacity) < 1).length,
-      details: [...document.querySelectorAll('#engine li')].every((li) => li.lastElementChild.getBoundingClientRect().height > 10),
-      cardsInside: (() => {
-        const day = document.getElementById('day').getBoundingClientRect()
-        return [...document.querySelectorAll('#day [data-card]')].every((c) => {
+    const state = await page.evaluate(() => {
+      const acts = ['#top', '#pulse', '#engine', '#day', '#products', '#approach', '#people', '#contact']
+      // Screen-reader-only text (1 px, clipped on purpose) is not hidden text.
+      const text = [...document.querySelectorAll(acts.map((a) => `${a} *`).join(','))].filter((el) => el.children.length === 0 && el.textContent.trim() && el.getBoundingClientRect().width > 1)
+      const day = document.getElementById('day').getBoundingClientRect()
+      return {
+        pins: document.querySelectorAll('.pin-spacer').length,
+        lenis: document.documentElement.classList.contains('lenis'),
+        held: acts.filter((a) => [...document.querySelectorAll(`${a} *`)].some((el) => getComputedStyle(el).position === 'sticky')),
+        hidden: text.filter((el) => {
+          const cs = getComputedStyle(el)
+          return Number(cs.opacity) < 1 || cs.visibility === 'hidden' || (cs.clipPath !== 'none' && cs.clipPath !== '')
+        }).length,
+        details: [...document.querySelectorAll('#engine li')].every((li) => li.lastElementChild.getBoundingClientRect().height > 10),
+        casesInside: [...document.querySelectorAll('#day li[id^="h"]')].every((c) => {
           const r = c.getBoundingClientRect()
-          return r.top >= day.top - 1 && r.bottom <= day.bottom + 1 && r.height < innerHeight * 1.5
-        })
-      })(),
-    }))
+          return r.top >= day.top - 1 && r.bottom <= day.bottom + 1 && getComputedStyle(c).visibility === 'visible'
+        }),
+      }
+    })
     check('AC2', 'reduced motion: no pinning', state.pins === 0, `${state.pins} pins`)
     check('AC2', 'reduced motion: no smooth scrolling', !state.lenis)
-    check('AC2', 'reduced motion: the day is a vertical list, not a moving track', state.trackDirection === 'column' && (state.trackShift === 'none' || state.trackShift === 'matrix(1, 0, 0, 1, 0, 0)'), `${state.trackDirection} ${state.trackShift}`)
-    check('AC2', 'reduced motion: all case-study and layer text visible', state.hidden === 0 && state.details, `${state.hidden} hidden, details ${state.details}`)
-    check('AC2', 'reduced motion: every case-study card sits inside the day section', state.cardsInside)
+    check('AC2', 'reduced motion: no act holds the screen; every section reads top to bottom', state.held.length === 0, state.held.join(' '))
+    check('AC2', 'reduced motion: all text of every act visible, nothing faded or clipped', state.hidden === 0 && state.details, `${state.hidden} hidden, details ${state.details}`)
+    check('AC2', 'reduced motion: all five cases visible inside the proof section', state.casesInside)
     await page.screenshot({ path: join(shots, 'reduced-motion-full.png'), fullPage: true })
     await page.close()
   }
@@ -250,9 +257,11 @@ try {
     await page.close()
   }
 
-  // F1/F5: links into the pinned tracks land on the right card and the right layer.
+  // F1/F5: links into the held acts land on the moment the right case and the right layer show.
+  // A fresh context: O6 above leaves motion off in `ctx`, and nothing holds without motion.
   {
-    const page = await ctx.newPage()
+    const own = await browser.newContext({ viewport: { width: 1440, height: 900 } })
+    const page = await own.newPage()
     await page.goto(BASE + '/')
     await page.waitForTimeout(3000)
     // From the pulse: the admin-panel answer points to the manufacturing case.
@@ -263,9 +272,9 @@ try {
     const card = await page.evaluate(() => {
       const el = document.getElementById('h17')
       const r = el.getBoundingClientRect()
-      return { left: Math.round(r.left), right: Math.round(r.right), vw: innerWidth, top: Math.round(r.top), active: el.hasAttribute('data-active'), focused: el.contains(document.activeElement) }
+      return { top: Math.round(r.top), bottom: Math.round(r.bottom), vh: innerHeight, state: el.dataset.state, focused: el.contains(document.activeElement) }
     })
-    check('F1', 'a link to 17:00 lands on the 17:00 card, active and focused', card.left >= 0 && card.right <= card.vw && card.top < 600 && card.active && card.focused, JSON.stringify(card))
+    check('F1', 'a link to a case lands when its star lights: the case shown, in view and focused', card.top >= 0 && card.bottom <= card.vh && card.state === 'on' && card.focused, JSON.stringify(card))
     await page.evaluate(() => document.querySelector('#h06 a[href="#layer-data"]').click())
     await page.waitForTimeout(3000)
     const layer = await page.evaluate(() => {
@@ -273,7 +282,7 @@ try {
       return { active: li.hasAttribute('data-active'), focused: li.contains(document.activeElement), top: Math.round(li.getBoundingClientRect().top), vh: innerHeight }
     })
     check('F5', 'a link to the Data layer lights that layer in view', layer.active && layer.focused && layer.top > 0 && layer.top < layer.vh, JSON.stringify(layer))
-    await page.close()
+    await own.close()
   }
 
   // P1: the pulse. One tap names what it takes, points to proof, and starts the message.
@@ -317,10 +326,21 @@ try {
       return { held: h.top >= 0 && h.bottom < innerHeight, active: document.querySelector('#engine li[data-active]')?.id ?? '' }
     })
     check('S1', 'the engine holds the screen and the scroll climbs its layers', engine.held && engine.active.startsWith('layer-'), JSON.stringify(engine))
+    // The proof act holds too: one case at a time, the one whose star has lit.
+    const proof = await page.evaluate(async () => {
+      const el = document.getElementById('day')
+      const top = el.getBoundingClientRect().top + scrollY
+      window.scrollTo({ top: top + (el.offsetHeight - innerHeight) * 0.5, behavior: 'instant' })
+      await new Promise((r) => setTimeout(r, 1400))
+      const on = [...el.querySelectorAll('li[id^="h"][data-state="on"]')]
+      const r = on[0]?.getBoundingClientRect()
+      return { shown: on.map((c) => c.id), inView: Boolean(r && r.top >= 0 && r.bottom <= innerHeight) }
+    })
+    check('S1', 'the proof act holds the screen and shows one case at a time', proof.shown.length === 1 && proof.inView, JSON.stringify(proof))
     await own.close()
   }
 
-  // S2: a wide but short laptop screen (nothing holds there): every case-study card is reachable.
+  // S2: a wide but short laptop screen (nothing holds there): every case is reachable.
   {
     const short = await browser.newContext({ viewport: { width: 1366, height: 650 } })
     const page = await short.newPage()
@@ -328,14 +348,17 @@ try {
     await page.waitForTimeout(2500)
     const res = await page.evaluate(() => {
       const day = document.getElementById('day').getBoundingClientRect()
-      const cards = [...document.querySelectorAll('#day [data-card]')].map((c) => c.getBoundingClientRect())
-      return { direction: getComputedStyle(document.querySelector('[data-track]')).flexDirection, inside: cards.every((r) => r.left >= 0 && r.right <= innerWidth && r.top >= day.top - 1 && r.bottom <= day.bottom + 1) }
+      const cases = [...document.querySelectorAll('#day li[id^="h"]')]
+      return {
+        visible: cases.every((c) => getComputedStyle(c).visibility === 'visible'),
+        inside: cases.map((c) => c.getBoundingClientRect()).every((r) => r.left >= 0 && r.right <= innerWidth && r.top >= day.top - 1 && r.bottom <= day.bottom + 1),
+      }
     })
-    check('S2', '1366×650 with motion on: the day reads top to bottom, every card reachable', res.direction === 'column' && res.inside, JSON.stringify(res))
+    check('S2', '1366×650 with motion on: the proof reads top to bottom, every case reachable', res.visible && res.inside, JSON.stringify(res))
     await short.close()
   }
 
-  // AC9 and the stage: the page is short enough, and the 3D stage is running.
+  // AC9 and the film: the page stays within the film's length, and the world steps aside without a real GPU.
   // A fresh context: the motion-switch test above leaves motion off in `ctx`.
   {
     const fresh = await browser.newContext({ viewport: { width: 1440, height: 900 } })
@@ -343,21 +366,22 @@ try {
     await page.goto(BASE + '/')
     await page.waitForTimeout(4000)
     const res = await page.evaluate(() => {
-      const fb = document.querySelector('picture[class*="fallback"]')
+      const still = document.querySelector('#top [class*="still"]')
       return {
         screens: document.documentElement.scrollHeight / innerHeight,
         live: document.documentElement.classList.contains('gl-live'),
         off: document.documentElement.classList.contains('gl-off'),
-        fallback: fb ? Number(getComputedStyle(fb).opacity) : 0,
+        still: still ? getComputedStyle(still).display !== 'none' : false,
       }
     })
-    check('AC9', 'desktop home page is at most 12 screens tall', res.screens <= 12, `${res.screens.toFixed(1)} screens`)
-    // This machine renders WebGL in software, so the engine must step aside for the static symbol.
-    check('—', 'software GPU: no live 3D, the rendered still shows instead', !res.live && res.off && res.fallback > 0.5, JSON.stringify(res))
+    // The film's own length (seven held acts); a section that grew by accident would show here.
+    check('AC9', 'desktop home page is at most 23 screens tall', res.screens <= 23, `${res.screens.toFixed(1)} screens`)
+    // This machine renders WebGL in software, so the world must step aside for the drawn still.
+    check('—', 'software GPU: no live 3D, the drawn still shows instead', !res.live && res.off && res.still, JSON.stringify(res))
     const forced = await fresh.newPage()
     await forced.goto(BASE + '/?gl=force')
     const live = await forced.waitForFunction(() => document.documentElement.classList.contains('gl-live'), null, { timeout: 60000 }).then(() => true, () => false)
-    check('—', '?gl=force starts the live three.js world', live)
+    check('—', '?gl=force starts the live film', live)
     await forced.close()
     await fresh.close()
   }

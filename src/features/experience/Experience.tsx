@@ -34,18 +34,22 @@ export default function Experience() {
     film.still = !enabled
     film.portrait = window.innerWidth < window.innerHeight
     const director = createDirector()
-    let dirty = true
+    // Still mode draws only while a picture settles: a second of frames after each change (so
+    // the scene that mounts, textures that arrive and damped values all land), then nothing.
+    const SETTLE = 60
+    let settle = SETTLE
     const remeasure = () => {
       film.portrait = window.innerWidth < window.innerHeight
       director.measure()
-      dirty = true
+      settle = SETTLE
     }
     const tick = (_time: number, deltaMs: number) => {
       const dt = Math.min(0.1, deltaMs / 1000)
       const moved = director.update(dt)
       if (!film.still) film.clock += dt
-      if (film.still && !moved && !dirty) return
-      dirty = false
+      if (moved) settle = SETTLE
+      if (film.still && settle <= 0) return
+      settle--
       const t0 = performance.now()
       advance(t0)
       // ?profile: CPU time of each frame's update and draw call (not the GPU's).
