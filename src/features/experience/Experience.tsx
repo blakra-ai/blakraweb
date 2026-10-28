@@ -9,7 +9,8 @@ import { createDirector } from './director'
 import { film } from './state'
 import { colors, quality } from './tokens'
 import { Studio } from './objects/Studio'
-import { Bodies, CameraRig, Column, Hole, Jet, Mote, Orbit, Stars } from './world/Acts'
+import { Bodies, CameraRig, Column, Hole, HOLE_R, Jet, Mote, Orbit, Stars } from './world/Acts'
+import { ProductMark } from './world/Product'
 import { Fragments } from './world/Fragments'
 
 /**
@@ -97,6 +98,7 @@ export default function Experience() {
         {has('column') && <Column />}
         {has('jet') && <Jet />}
         {has('stars') && <Stars layersOf={chapters.map((c) => c.layers)} />}
+        {has('product') && <ProductMark radius={HOLE_R} />}
         {has('orbit') && <Orbit />}
         {has('bodies') && <Bodies />}
         {has('mote') && <Mote phone={phone} />}

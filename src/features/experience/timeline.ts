@@ -84,9 +84,10 @@ const keys: { t: number; pos: V3; look: V3 }[] = [
   { t: 0.46, pos: [4.5, 7, 13.5], look: [-2.2, 8.6, 1.6] },
   ...ride,
   { ...ride[ride.length - 1], t: beats.systems[1] },
-  { t: 0.69, pos: [0.01, 12.5, 0.6], look: [-1.6, 0, 0] },
-  { t: 0.72, pos: [0.01, 11.5, 0.6], look: [-1.6, 0, 0] },
-  { t: 0.77, pos: [0, 4.5, 12], look: [-2.8, 0.3, 0] },
+  // Down the spin axis: straight over the look point (so screen right stays world right), the hole right of centre.
+  { t: 0.69, pos: [-3.1, 11.4, 1.4], look: [-3.1, 0, 0] },
+  { t: 0.72, pos: [-3, 10.6, 1.3], look: [-3, 0, 0] },
+  { t: 0.77, pos: [-0.8, 5.6, 17], look: [-4.2, 1.1, 0] },
   { t: 0.83, pos: [0, 3, 12.5], look: [-2.8, 0.6, 0] },
   { t: 0.92, pos: [0, 0.9, 18.5], look: [-1.8, 1.9, 0] },
   { t: 1, pos: [0, 0.9, 18.5], look: [-1.8, 1.9, 0] },
@@ -124,3 +125,10 @@ export const bloomAt = (k: number) => beats.build[0] + 0.03 + k * 0.018
 /** Heights of the seven centres on the spin axis, root to crown. */
 export const centreY = (k: number) => 1.1 + k * 0.82
 export const jetBase = centreY(6) + 0.6
+
+/** Act VI: our product comes into focus inside the shadow, then its facts, one at a time. */
+export const productFocus = beats.product[0] + 0.024
+export const factAt = (k: number) => beats.product[0] + 0.032 + k * 0.009
+
+/** Act VI: the five stations of how we work light in turn on one orbit; the last is the key. */
+export const stationAt = (k: number) => beats.orbit[0] + 0.01 + k * 0.011

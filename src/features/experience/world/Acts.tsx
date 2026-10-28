@@ -1,7 +1,7 @@
-import { Billboard, Line } from '@react-three/drei'
+import { Billboard } from '@react-three/drei'
 import { useFrame, useThree } from '@react-three/fiber'
 import { useMemo, useRef } from 'react'
-import { Color, Group, Mesh, ShaderMaterial, Vector3 } from 'three'
+import { BufferGeometry, Color, Group, LineBasicMaterial, LineLoop, Mesh, MeshBasicMaterial, ShaderMaterial, Vector3 } from 'three'
 import type { LayerId } from '../../../content/types'
 import { BlackHole } from '../objects/BlackHole'
 import { Lotus } from '../objects/Lotus'
@@ -9,9 +9,9 @@ import { Wordmark } from '../objects/Wordmark'
 import { blackHole, chakras } from '../tokens'
 import { film, LAYERS } from '../state'
 import { AXIS, DISK_TILT, fromDisk, onAxis } from '../space'
-import { beat, beats, bloomAt, cameraAt, centreY, damp, ease, jetBase, span, starAt, stars } from '../timeline'
+import { beat, beats, bloomAt, cameraAt, centreY, damp, ease, jetBase, span, starAt, stars, stationAt } from '../timeline'
 import { pointer } from '../controllers/pointer'
-const HOLE_R = 0.62
+export const HOLE_R = 0.62
 
 /** The camera follows the director's path; the cursor adds a little parallax; the launch shakes it. */
 export function CameraRig() {
@@ -106,7 +106,8 @@ export function Column() {
     const T = film.t
     const chosen = film.need
     // Out of the way while the camera looks down the axis at the ring of light.
-    const away = ease(span(T, beats.product[0] - 0.015, beats.product[0] + 0.005)) * (1 - ease(span(T, beats.orbit[0] - 0.01, beats.orbit[0] + 0.01)))
+    // Away while the camera looks down the axis (they would grow toward it); back once it has turned.
+    const away = ease(span(T, beats.product[0] - 0.015, beats.product[0] + 0.005)) * (1 - ease(span(T, beats.orbit[0] + 0.008, beats.orbit[0] + 0.028)))
     refs.current.forEach((o, k) => {
       if (!o) return
       const lk = bloomAt(k)
@@ -171,7 +172,8 @@ export function Jet() {
     u.uTime.value = film.clock
     u.uFront.value = front
     // Bright at launch, steady through the five systems, a calm trace at the end.
-    u.uA.value = front > 0 ? (T < beats.product[0] ? 1 : T < beats.running[0] ? 0.0 : 0.35) : 0
+    const fade = 1 - ease(span(T, beats.product[0], beats.product[0] + 0.022))
+    u.uA.value = front > 0 ? (T < beats.running[0] ? fade : 0.35) : 0
     if (beam.current) beam.current.visible = u.uA.value > 0
     const v = sheathMat.current?.uniforms
     if (v) {
@@ -183,8 +185,10 @@ export function Jet() {
       if (!d) return
       const h = 1.6 + i * 2.6
       const lit = front * LEN > h ? 1 : 0
-      d.visible = lit > 0 && u.uA.value > 0.5
-      d.scale.setScalar(0.32 + 0.05 * Math.sin(film.clock * 6 + i))
+      // Full only while the jet is: they shrink away with its fade and stay off in the calm trace.
+      const a = T < beats.running[0] ? u.uA.value : 0
+      d.visible = lit > 0 && a > 0.02
+      d.scale.setScalar((0.32 + 0.05 * Math.sin(film.clock * 6 + i)) * a)
     })
   })
   const quat = useMemo(() => {
@@ -300,38 +304,46 @@ export function Stars({ layersOf }: { layersOf: (readonly LayerId[])[] }) {
 }
 
 /** Act VI: how we work as one stable orbit, its stations lighting in turn; the last one is the key. */
+const ORBIT_R = 4.5
 export function Orbit() {
   const g = useRef<Group>(null)
   const dots = useRef<(Mesh | null)[]>([])
-  const points = useMemo(() => {
+  const mats = useRef<(MeshBasicMaterial | null)[]>([])
+  const ring = useMemo(() => {
     const v = new Vector3()
-    return Array.from({ length: 129 }, (_, i) => {
-      const a = (i / 128) * Math.PI * 2
-      fromDisk(Math.cos(a) * 6.2, Math.sin(a) * 6.2, 0, v)
-      return v.clone()
+    const points = Array.from({ length: 161 }, (_, i) => {
+      const a = (i / 160) * Math.PI * 2
+      return fromDisk(Math.cos(a) * ORBIT_R, Math.sin(a) * ORBIT_R, 0, v).clone()
     })
+    return new LineLoop(new BufferGeometry().setFromPoints(points), new LineBasicMaterial({ color: '#0b0b10', transparent: true, opacity: 0.4 }))
   }, [])
-  useFrame(() => {
+  const ink = useMemo(() => new Color('#0b0b10'), [])
+  const grey = useMemo(() => new Color('#b8b4ab'), [])
+  useFrame((_, dt) => {
     const T = film.t
-    const on = beat(T, beats.orbit)
     if (g.current) g.current.visible = T > beats.orbit[0] - 0.01 && T < beats.running[1]
     dots.current.forEach((d, k) => {
       if (!d) return
       const a = (k / 5) * Math.PI * 2 + film.clock * 0.08
-      fromDisk(Math.cos(a) * 6.2, Math.sin(a) * 6.2, 0, d.position)
-      const lit = on * 5 > k ? 1 : 0.35
-      d.scale.setScalar((0.08 + 0.08 * lit) * (T > beats.running[0] + 0.03 ? 0.6 : 1))
+      fromDisk(Math.cos(a) * ORBIT_R, Math.sin(a) * ORBIT_R, 0, d.position)
+      // Grey until its term lights; then ink, with a swell as it does. Smaller once the system runs.
+      const x = span(T, stationAt(k), stationAt(k) + 0.007)
+      const s = (0.13 + 0.07 * (x > 0 ? 1 : 0) + 0.12 * Math.sin(x * Math.PI)) * (T > beats.running[0] + 0.03 ? 0.6 : 1)
+      d.scale.setScalar(film.still ? s : damp(d.scale.x, s, 10, dt))
+      mats.current[k]?.color.lerpColors(grey, ink, ease(x))
     })
   })
   return (
     <group ref={g}>
-      <Line points={points} color="#0b0b10" lineWidth={0.8} transparent opacity={0.35} />
+      <primitive object={ring} />
       {Array.from({ length: 5 }, (_, k) => (
         <mesh key={k} ref={(el) => {
           dots.current[k] = el
         }}>
-          {k === 4 ? <torusGeometry args={[1, 0.28, 16, 48]} /> : <sphereGeometry args={[1, 24, 24]} />}
-          <meshBasicMaterial color="#0b0b10" />
+          {k === 4 ? <torusGeometry args={[1, 0.3, 16, 48]} /> : <sphereGeometry args={[1, 24, 24]} />}
+          <meshBasicMaterial ref={(el) => {
+            mats.current[k] = el
+          }} color="#b8b4ab" />
         </mesh>
       ))}
     </group>
@@ -396,7 +408,10 @@ export function Mote({ phone }: { phone: boolean }) {
     } else if (T < beats.launch[0]) {
       onAxis(centreY(top), p).add(q.set(0.9, 0, 0))
     } else if (T < beats.product[0]) {
-      const k = need ? need.proof : 4
+      // Beside the system its need names; with none named, beside the latest star to ignite.
+      let lit = 0
+      while (lit < stars.length - 1 && T >= starAt(lit + 1)) lit++
+      const k = need && need.proof >= 0 ? need.proof : lit
       const [x, h, dz] = stars[k]
       onAxis(h, p).add(q.set(x, 0, dz)).add(q.set(0.8, 0.5, 0.4))
     } else {
