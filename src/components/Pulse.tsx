@@ -1,27 +1,22 @@
 import { useEffect, useRef, useState, type CSSProperties } from 'react'
-import { chakraColors, chakraOf, chapters, layerOrder, needOrder, needs, needTop, times } from '../content/shared'
+import { chakraColors, chakraOf, chapters, layerOrder, needOrder, needs, needTop } from '../content/shared'
 import { useI18n } from '../i18n'
-import { poses, type Pose } from '../motion/engine3d/stage'
 import { getPulse, onPulse, setPulse, type PulseChoice } from '../motion/pulse'
-import { useReveals } from '../motion/useReveals'
-import { useStage } from '../motion/useStage'
 import { Section } from './Section'
 import s from './Pulse.module.css'
 
 const rootFirst = [...layerOrder].reverse()
 
 /**
- * Why one team, then one question. The answer lights the layers that need takes, from
- * the root up to the visitor's own layer, points to the system that proves it, and is
- * carried into the form.
+ * Act III of the film: why one team, then one question. The answer becomes the film's
+ * protagonist: it falls into the disk as a point of light, the layers it takes light up, it
+ * points to the system that proves it, and it is carried into the form at the end.
  */
 export function Pulse() {
   const { t } = useI18n()
   const p = t.pulse
   const ref = useRef<HTMLElement>(null)
   const [choice, setChoice] = useState<PulseChoice>(null)
-  useReveals(ref)
-  useStage(ref, { pose: poses.pulse as Pose }, times.pulse)
   useEffect(() => {
     setChoice(getPulse().choice)
     return onPulse(setChoice)
@@ -36,6 +31,7 @@ export function Pulse() {
       key={value}
       type="button"
       className={s.option}
+      data-magnetic
       aria-pressed={choice === value}
       onClick={() => setPulse(choice === value ? null : value)}
       style={color ? ({ '--chakra': color } as CSSProperties) : undefined}
@@ -46,20 +42,17 @@ export function Pulse() {
   )
 
   return (
-    <Section ref={ref} id="pulse" beat="need" sky="predawn" time={[times.pulse, times.pulse]} className={s.pulse} aria-labelledby="pulse-title">
+    <Section ref={ref} id="pulse" beat="need" className={s.pulse} aria-labelledby="pulse-title">
+      <div className={s.frame}>
       <div className={s.copy}>
-        <p className={s.eyebrow} data-reveal>
-          {p.eyebrow}
-        </p>
-        <h2 id="pulse-title" className={s.title} data-reveal data-focus tabIndex={-1}>
+        <p className={s.eyebrow}>{p.eyebrow}</p>
+        <h2 id="pulse-title" className={s.title} data-focus tabIndex={-1}>
           {p.title}
         </h2>
-        <p className={s.body} data-reveal>
-          {p.body}
-        </p>
+        <p className={s.body}>{p.body}</p>
       </div>
 
-      <div className={s.ask} role="group" aria-labelledby="pulse-ask" data-reveal>
+      <div className={s.ask} role="group" aria-labelledby="pulse-ask">
         <h3 id="pulse-ask" className={s.askTitle}>
           {p.ask}
         </h3>
@@ -102,6 +95,7 @@ export function Pulse() {
             </>
           )}
         </div>
+      </div>
       </div>
     </Section>
   )
