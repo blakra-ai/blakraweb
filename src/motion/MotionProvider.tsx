@@ -1,6 +1,7 @@
 import { createContext, useCallback, useContext, useEffect, useMemo, useRef, useState, type ReactNode } from 'react'
 import Lenis from 'lenis'
-import { gsap, ScrollTrigger } from './gsap'
+import { gsap } from './gsap'
+import { reflow, reflowNow } from './reflow'
 import { whenMotionIdle } from './schedule'
 
 /**
@@ -139,7 +140,6 @@ export function MotionProvider({ children }: { children: ReactNode }) {
     const lenis = new Lenis({ autoRaf: false, lerp: 0.09, smoothWheel: true, wheelMultiplier: 1 })
     lenisRef.current = lenis
     currentLenis = lenis
-    lenis.on('scroll', ScrollTrigger.update)
     const raf = (time: number) => lenis.raf(time * 1000)
     gsap.ticker.add(raf)
     gsap.ticker.lagSmoothing(0)
@@ -162,7 +162,7 @@ export function MotionProvider({ children }: { children: ReactNode }) {
       refreshFrame = requestAnimationFrame(() => {
         refreshFrame = 0
         measuredHeight = document.body.offsetHeight
-        ScrollTrigger.refresh()
+        reflow()
       })
     })
     heightWatch.observe(document.body)
@@ -210,9 +210,8 @@ export function MotionProvider({ children }: { children: ReactNode }) {
     const restore = restoreRef.current
     restoreRef.current = null
     return whenMotionIdle(() => {
-      // Stage triggers are created before the pins above them exist: sort by position, then measure.
-      ScrollTrigger.sort()
-      ScrollTrigger.refresh()
+      // Every held act has its final height now: measure once, before any scroll that needs it.
+      reflowNow()
       const hash = initialHashRef.current
       initialHashRef.current = null
       if (hash) return scrollToHashRef.current(hash, true)

@@ -1,6 +1,7 @@
 import { useCallback, useRef, useState, type RefObject } from 'react'
 import { acts, actSpan } from '../features/experience/timeline'
-import { gsap, layouts, ScrollTrigger } from './gsap'
+import { gsap, layouts } from './gsap'
+import { onReflow, reflow } from './reflow'
 import { useMotionSetup } from './useMotionSetup'
 
 /**
@@ -52,13 +53,13 @@ export function useActSteps(ref: RefObject<HTMLElement | null>, beat: string, mo
         }
       }
       const decide = () => {
+        const wasList = root.dataset.flow === 'list'
         delete root.dataset.flow
         const fits = !pin || pin.scrollHeight <= pin.clientHeight + 1
         if (!fits) root.dataset.flow = 'list'
-        if (fits === held.current) return
-        hold(fits)
-        // The section's height changed: everything measured below it moves.
-        ScrollTrigger.refresh()
+        if (fits !== held.current) hold(fits)
+        // Held and flowing differ in height: when it switched, everything measured below it moves.
+        if (fits === wasList) reflow()
       }
       decide()
       let frame = 0
@@ -73,12 +74,12 @@ export function useActSteps(ref: RefObject<HTMLElement | null>, beat: string, mo
       const grow = new ResizeObserver(recheck)
       if (pin?.firstElementChild) grow.observe(pin.firstElementChild)
       window.addEventListener('resize', recheck)
-      ScrollTrigger.addEventListener('refresh', measure)
+      const offReflow = onReflow(measure)
       return () => {
         cancelAnimationFrame(frame)
         grow.disconnect()
         window.removeEventListener('resize', recheck)
-        ScrollTrigger.removeEventListener('refresh', measure)
+        offReflow()
         delete root.dataset.flow
         if (held.current) hold(false)
       }

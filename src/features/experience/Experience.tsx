@@ -3,7 +3,8 @@ import { advance, Canvas } from '@react-three/fiber'
 import { useEffect, useState } from 'react'
 import { createPortal } from 'react-dom'
 import { chapters } from '../../content/shared'
-import { gsap, ScrollTrigger } from '../../motion/gsap'
+import { gsap } from '../../motion/gsap'
+import { onReflow } from '../../motion/reflow'
 import { useMotion } from '../../motion/MotionProvider'
 import { createDirector } from './director'
 import { film } from './state'
@@ -57,14 +58,14 @@ export default function Experience() {
     }
     gsap.ticker.add(tick)
     window.addEventListener('resize', remeasure)
-    ScrollTrigger.addEventListener('refresh', remeasure)
+    const offReflow = onReflow(remeasure)
     const reflow = new ResizeObserver(remeasure)
     reflow.observe(document.body)
     document.documentElement.classList.add('gl-live')
     return () => {
       gsap.ticker.remove(tick)
       window.removeEventListener('resize', remeasure)
-      ScrollTrigger.removeEventListener('refresh', remeasure)
+      offReflow()
       reflow.disconnect()
       director.dispose()
       document.documentElement.classList.remove('gl-live')

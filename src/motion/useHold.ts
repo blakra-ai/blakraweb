@@ -1,5 +1,6 @@
 import { useEffect, type RefObject } from 'react'
-import { gsap, ScrollTrigger } from './gsap'
+import { gsap } from './gsap'
+import { onReflow } from './reflow'
 
 /**
  * The reader's progress through a held (sticky) section, 0 … 1, written to its --p every frame
@@ -28,11 +29,11 @@ export function useHold(ref: RefObject<HTMLElement | null>) {
     tick()
     gsap.ticker.add(tick)
     window.addEventListener('resize', measure)
-    ScrollTrigger.addEventListener('refresh', measure)
+    const offReflow = onReflow(measure)
     return () => {
       gsap.ticker.remove(tick)
       window.removeEventListener('resize', measure)
-      ScrollTrigger.removeEventListener('refresh', measure)
+      offReflow()
     }
   }, [ref])
 }

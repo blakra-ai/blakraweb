@@ -3,7 +3,8 @@ import { chakraColors, chakraOf, chapters, needs } from '../content/shared'
 import type { LayerId } from '../content/types'
 import { acts, actSpan, starAt } from '../features/experience/timeline'
 import { useI18n } from '../i18n'
-import { gsap, layouts, ScrollTrigger } from '../motion/gsap'
+import { gsap, layouts } from '../motion/gsap'
+import { onReflow, reflow } from '../motion/reflow'
 import { registerAnchor, useMotion } from '../motion/MotionProvider'
 import { getPulse, onPulse, type PulseChoice } from '../motion/pulse'
 import { useMotionSetup } from '../motion/useMotionSetup'
@@ -108,13 +109,13 @@ export function DayTrack() {
       // Held only while the screen holds the header and the tallest case (a short laptop screen,
       // a long translation or the reader's own text size may not): nothing is ever cut off.
       const decide = () => {
+        const wasList = root.dataset.flow === 'list'
         delete root.dataset.flow
         const fits = pin.scrollHeight <= pin.clientHeight + 1
         if (!fits) root.dataset.flow = 'list'
-        if (fits === heldRef.current) return
-        hold(fits)
-        // The section's height changed: everything measured below it moves.
-        ScrollTrigger.refresh()
+        if (fits !== heldRef.current) hold(fits)
+        // Held and flowing differ in height: when it switched, everything measured below it moves.
+        if (fits === wasList) reflow()
       }
       decide()
       let frame = 0
@@ -129,12 +130,12 @@ export function DayTrack() {
       const grow = new ResizeObserver(recheck)
       grow.observe(text)
       window.addEventListener('resize', recheck)
-      ScrollTrigger.addEventListener('refresh', measure)
+      const offReflow = onReflow(measure)
       return () => {
         cancelAnimationFrame(frame)
         grow.disconnect()
         window.removeEventListener('resize', recheck)
-        ScrollTrigger.removeEventListener('refresh', measure)
+        offReflow()
         delete root.dataset.flow
         if (heldRef.current) hold(false)
       }

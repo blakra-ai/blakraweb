@@ -3,7 +3,8 @@ import { chakraColors, chakraOf, chapters, layerOrder, layerTech, needTop } from
 import type { LayerId } from '../content/types'
 import { acts, actSpan, bloomAt } from '../features/experience/timeline'
 import { useI18n } from '../i18n'
-import { gsap, layouts, ScrollTrigger } from '../motion/gsap'
+import { gsap, layouts } from '../motion/gsap'
+import { onReflow } from '../motion/reflow'
 import { registerAnchor } from '../motion/MotionProvider'
 import { getPulse, onPulse, type PulseChoice } from '../motion/pulse'
 import { useMotionSetup } from '../motion/useMotionSetup'
@@ -84,11 +85,11 @@ export function Engine() {
       }
       tick()
       gsap.ticker.add(tick)
-      ScrollTrigger.addEventListener('refresh', measure)
+      const offReflow = onReflow(measure)
       window.addEventListener('resize', measure)
       return () => {
         gsap.ticker.remove(tick)
-        ScrollTrigger.removeEventListener('refresh', measure)
+        offReflow()
         window.removeEventListener('resize', measure)
         heldRef.current = false
         setHeld(false)
