@@ -1,24 +1,16 @@
 import type { CSSProperties } from 'react'
-import { inks, skies, type SkyId, type Tone } from './sky/palettes'
 
-export type { Tone }
+/** Ink for each surface: paper (light) and ink (dark). Contrast is tested in tests/contrast.test.ts. */
+export const inks = {
+  dark: { ink: '#eeece6', ink2: '#aeb1b8', line: 'rgba(238,236,230,0.16)', surface: 'rgba(238,236,230,0.045)', signal: '#ff6a2b' },
+  light: { ink: '#111317', ink2: '#494d56', line: 'rgba(17,19,23,0.14)', surface: 'rgba(255,255,255,0.5)', signal: '#b83c0b' },
+} as const
+
+export type Tone = keyof typeof inks
 
 type Vars = CSSProperties & Record<`--${string}`, string>
 
-/** Inline CSS variables for a section: its fallback sky and its tone tokens. */
-export function skyStyle(id: SkyId): Vars {
-  const s = skies[id]
-  return {
-    '--sky-top': s.top,
-    '--sky-bottom': s.bottom,
-    '--sky-glow-color': `${s.glow}${alphaHex(s.glowStrength * 1.6)}`,
-    '--sky-glow-x': `${s.glowPos[0] * 100}%`,
-    '--sky-glow-y': `${(1 - s.glowPos[1]) * 100}%`,
-    '--sky-glow-size': String(s.glowSize),
-    ...toneStyle(s.tone),
-  }
-}
-
+/** Inline CSS variables for a section's tone. */
 export function toneStyle(tone: Tone): Vars {
   const t = inks[tone]
   return {
@@ -28,8 +20,4 @@ export function toneStyle(tone: Tone): Vars {
     '--tone-surface': t.surface,
     '--tone-signal': t.signal,
   }
-}
-
-function alphaHex(a: number): string {
-  return Math.round(Math.min(1, Math.max(0, a)) * 255).toString(16).padStart(2, '0')
 }

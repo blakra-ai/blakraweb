@@ -1,7 +1,7 @@
 import { useFrame, useThree } from '@react-three/fiber'
 import { useMemo, useRef } from 'react'
 import { Color, InstancedBufferAttribute, Vector3, type InstancedMesh, type ShaderMaterial } from 'three'
-import { RoundedBoxGeometry } from 'three-stdlib'
+import { RoundedBoxGeometry } from 'three/addons/geometries/RoundedBoxGeometry.js'
 import { chakras } from '../tokens'
 import { film, LAYERS } from '../state'
 import { AXIS, DISK_TILT } from '../space'

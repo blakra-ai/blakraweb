@@ -1,22 +1,14 @@
-import { useRef } from 'react'
 import { company, products } from '../content/shared'
 import { useI18n } from '../i18n'
 import { Section } from '../components/Section'
-import { useReveals } from '../motion/useReveals'
-import { useStage } from '../motion/useStage'
-import { poses, type Pose } from '../motion/engine3d/stage'
 import { pathFor } from '../routes'
 import s from './Simple.module.css'
 
 export function Investors() {
   const { t, locale } = useI18n()
   const v = t.investors
-  const ref = useRef<HTMLElement>(null)
-  useReveals(ref)
-  // The products: the jet carrying them, the column beneath it.
-  useStage(ref, { pose: { ...(poses.jets as Pose), shift: [0.45, -0.04], column: 0.6 } }, 120)
   return (
-    <Section ref={ref} sky="night" time={[120, 120]} className={s.page} aria-labelledby="page-title">
+    <Section className={s.page} aria-labelledby="page-title">
       <div className={s.wrap}>
         <p className={s.eyebrow}>{v.eyebrow}</p>
         <h1 id="page-title" className={s.title}>
@@ -25,10 +17,10 @@ export function Investors() {
         <p className={s.lede}>{v.lede}</p>
 
         <section className={s.block} aria-labelledby="thesis">
-          <h2 id="thesis" className={s.blockTitle} data-reveal>
+          <h2 id="thesis" className={s.blockTitle}>
             {v.thesisTitle}
           </h2>
-          <ol className={s.thesis} data-reveal>
+          <ol className={s.thesis}>
             {v.thesis.map((line, i) => (
               <li key={line}>
                 <span>0{i + 1}</span>
@@ -39,10 +31,10 @@ export function Investors() {
         </section>
 
         <section className={s.block} aria-labelledby="products">
-          <h2 id="products" className={s.blockTitle} data-reveal>
+          <h2 id="products" className={s.blockTitle}>
             {v.productsTitle}
           </h2>
-          <table className={s.table} data-reveal>
+          <table className={s.table}>
             <tbody>
               {products.map((p) => (
                 <tr key={p.id}>
@@ -53,28 +45,28 @@ export function Investors() {
               ))}
             </tbody>
           </table>
-          <p className={s.deck} data-reveal>
+          <p className={s.deck}>
             {t.products.more}
           </p>
         </section>
 
         <section className={s.block} aria-labelledby="offer">
-          <h2 id="offer" className={s.blockTitle} data-reveal>
+          <h2 id="offer" className={s.blockTitle}>
             {v.askTitle}
           </h2>
-          <p className={s.ask} data-reveal>
+          <p className={s.ask}>
             {v.ask}
           </p>
         </section>
 
         <section className={s.block} aria-labelledby="nda">
-          <h2 id="nda" className={s.blockTitle} data-reveal>
+          <h2 id="nda" className={s.blockTitle}>
             {v.ndaTitle}
           </h2>
-          <p className={s.deck} data-reveal>
+          <p className={s.deck}>
             {v.deck}
           </p>
-          <div className={s.actions} data-reveal>
+          <div className={s.actions}>
             <a className={s.cta} href={`${pathFor('home', locale)}?intent=invest#contact`}>
               {v.cta}
             </a>
@@ -110,18 +102,15 @@ const tel = `tel:${company.phone.replace(/[^+\d]/g, '')}`
 export function Privacy() {
   const { t } = useI18n()
   const p = t.privacy
-  const ref = useRef<HTMLElement>(null)
-  useReveals(ref)
-  useStage(ref, { pose: { ...(poses.overview as Pose), fade: 0.45, shift: [0.6, 0] } }, 780)
   return (
-    <Section ref={ref} sky="ink" time={[780, 780]} className={s.page} aria-labelledby="page-title">
+    <Section className={s.page} aria-labelledby="page-title">
       <div className={s.wrap}>
         <p className={s.eyebrow}>{p.eyebrow}</p>
         <h1 id="page-title" className={s.title}>
           {p.title}
         </h1>
         <dl className={s.list}>
-          <div data-reveal>
+          <div>
             <dt>{p.whoTitle}</dt>
             <dd>
               {p.who}
@@ -130,7 +119,7 @@ export function Privacy() {
             </dd>
           </div>
           {p.sections.map((sec) => (
-            <div key={sec.heading} data-reveal>
+            <div key={sec.heading}>
               <dt>{sec.heading}</dt>
               <dd>{sec.text}</dd>
             </div>
@@ -148,24 +137,21 @@ export function Privacy() {
 export function Legal() {
   const { t } = useI18n()
   const l = t.legal
-  const ref = useRef<HTMLElement>(null)
-  useReveals(ref)
-  useStage(ref, { pose: { ...(poses.overview as Pose), fade: 0.45, shift: [0.6, 0] } }, 780)
   return (
-    <Section ref={ref} sky="ink" time={[780, 780]} className={s.page} aria-labelledby="page-title">
+    <Section className={s.page} aria-labelledby="page-title">
       <div className={s.wrap}>
         <p className={s.eyebrow}>{l.eyebrow}</p>
         <h1 id="page-title" className={s.title}>
           {l.title}
         </h1>
         <dl className={s.list}>
-          <div data-reveal>
+          <div>
             <dt>{l.providerTitle}</dt>
             <dd>
               <Address country={l.country} />
             </dd>
           </div>
-          <div data-reveal>
+          <div>
             <dt>{l.contactTitle}</dt>
             <dd>
               {l.emailLabel}: <a href={`mailto:${company.email}`}>{company.email}</a>
@@ -182,11 +168,8 @@ export function Legal() {
 export function NotFound() {
   const { t, locale } = useI18n()
   const n = t.notFound
-  const ref = useRef<HTMLElement>(null)
-  // A page that doesn't exist has fallen past the horizon.
-  useStage(ref, { pose: { ...(poses.horizon as Pose), dist: 6.2, shift: [0.32, 0] } }, 0)
   return (
-    <Section ref={ref} sky="night" time={[0, 0]} className={`${s.page} ${s.center}`} aria-labelledby="page-title">
+    <Section className={`${s.page} ${s.center}`} aria-labelledby="page-title">
       <div className={s.wrap}>
         <p className={s.eyebrow}>{n.eyebrow}</p>
         <h1 id="page-title" className={s.title}>

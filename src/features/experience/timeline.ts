@@ -81,13 +81,14 @@ const keys: { t: number; pos: V3; look: V3 }[] = [
   { t: 0.27, pos: [1, 2.3, 12.5], look: [-3.2, 0.2, 0] },
   { t: 0.31, pos: [5.4, 3.1, 9.2], look: [-1.6, 2.9, 0] },
   { t: 0.42, pos: [5.8, 3.9, 9.8], look: [-1.9, 3.9, 0] },
-  { t: 0.46, pos: [4.5, 7, 13.5], look: [-2.2, 8.6, 1.6] },
+  { t: 0.46, pos: [0.5, 7.4, 14], look: [-2.6, 8.6, 1.6] },
   ...ride,
-  { ...ride[ride.length - 1], t: beats.systems[1] },
+  // A breath on the last system, then the long move of the film: down the jet to look along the axis.
+  { ...ride[ride.length - 1], t: 0.648 },
   // Down the spin axis: straight over the look point (so screen right stays world right), the hole right of centre.
-  { t: 0.69, pos: [-3.1, 11.4, 1.4], look: [-3.1, 0, 0] },
-  { t: 0.72, pos: [-3, 10.6, 1.3], look: [-3, 0, 0] },
-  { t: 0.77, pos: [-0.8, 5.6, 17], look: [-4.2, 1.1, 0] },
+  { t: 0.695, pos: [-3.1, 11.4, 1.4], look: [-3.1, 0, 0] },
+  { t: 0.715, pos: [-3, 10.6, 1.3], look: [-3, 0, 0] },
+  { t: 0.775, pos: [-0.8, 5.6, 17], look: [-4.2, 1.1, 0] },
   { t: 0.83, pos: [0, 3, 12.5], look: [-2.8, 0.6, 0] },
   // The resolution: back to the opening's width, the whole system in frame above the end card.
   { t: 0.93, pos: [-0.6, 4.2, 19], look: [-2.4, 2.9, 0] },
@@ -95,8 +96,9 @@ const keys: { t: number; pos: V3; look: V3 }[] = [
 ]
 
 /**
- * The camera at t. Portrait screens keep the subject centred and above the words: no sideways
- * offset, the look point lowered, and a step back to fit the narrower view.
+ * The camera at t. Portrait screens keep the subject centred and above the words: a step back
+ * along the view to fit the narrower frame, a slide sideways (not a turn) to centre the subject,
+ * and the look point lowered along the camera's own up, so the subject rides high in the frame.
  */
 export function cameraAt(t: number, portrait: boolean, out: { pos: V3; look: V3 }) {
   let i = 0
@@ -109,15 +111,22 @@ export function cameraAt(t: number, portrait: boolean, out: { pos: V3; look: V3 
     out.look[j] = a.look[j] + (b.look[j] - a.look[j]) * k
   }
   if (portrait) {
-    out.look[0] = 0
-    const back = 1.32
-    const top = out.pos[1] > 10 && Math.abs(out.pos[2]) < 1
-    if (!top) {
-      out.pos[2] = out.pos[2] * back
-      out.look[1] -= 3.2
-    } else out.look[2] = 3.2
+    const { pos, look } = out
+    for (let j = 0; j < 3; j++) pos[j] = look[j] + (pos[j] - look[j]) * 1.32
+    pos[0] -= look[0]
+    look[0] = 0
+    // The camera's up: right = forward × world up, up = right × forward.
+    const f = norm([look[0] - pos[0], look[1] - pos[1], look[2] - pos[2]])
+    const r = norm([-f[2], 0, f[0]])
+    const u: V3 = [r[1] * f[2] - r[2] * f[1], r[2] * f[0] - r[0] * f[2], r[0] * f[1] - r[1] * f[0]]
+    for (let j = 0; j < 3; j++) look[j] -= u[j] * 3.2
   }
   return out
+}
+
+const norm = (v: V3): V3 => {
+  const l = Math.hypot(v[0], v[1], v[2]) || 1
+  return [v[0] / l, v[1] / l, v[2] / l]
 }
 
 /** When centre k (root 0 … crown 6) blooms in Act IV. */
@@ -128,11 +137,11 @@ export const centreY = (k: number) => 1.1 + k * 0.82
 export const jetBase = centreY(6) + 0.6
 
 /** Act VI: our product comes into focus inside the shadow, then its facts, one at a time. */
-export const productFocus = beats.product[0] + 0.024
-export const factAt = (k: number) => beats.product[0] + 0.032 + k * 0.009
+export const productFocus = beats.product[0] + 0.03
+export const factAt = (k: number) => beats.product[0] + 0.038 + k * 0.009
 
 /** Act VI: the five stations of how we work light in turn on one orbit; the last is the key. */
-export const stationAt = (k: number) => beats.orbit[0] + 0.01 + k * 0.011
+export const stationAt = (k: number) => beats.orbit[0] + 0.016 + k * 0.01
 
 /** Act VI: the three principals arrive on the figure-eight one at a time. */
 export const bodyAt = (k: number) => beats.people[0] + 0.004 + k * 0.01

@@ -1,41 +1,35 @@
 import { describe, expect, it } from 'vitest'
-import { contrast, hex, mix } from '../src/lib/color'
-import { blendSky, inks, skies, skyPeak, skyRGB, toneFor, type SkyId } from '../src/motion/sky/palettes'
-import { dayOrder } from '../src/content/shared'
+import { contrast, hex, mix, type RGB } from '../src/lib/color'
+import { inks } from '../src/motion/tone'
 
-const ids = Object.keys(skies) as SkyId[]
+// The page's surfaces (src/styles/global.css): paper, its darker shade, and ink.
+const paper = hex('#f2f0eb')
+const paper2 = hex('#ebe8e1')
+const ink = hex('#0b0b10')
+// Text over the film sits on a sheet of paper at 90% (--sheet in global.css, and the phone panels).
+// The film's darkest frame behind it is ink, so paper at 90% over ink is the worst case.
+const sheet = mix(ink, paper, 0.9)
 
-describe('sky palettes meet WCAG 2.2 AA with their ink (AC6)', () => {
-  for (const id of ids) {
-    const sky = skyRGB(id)
-    const ink = inks[skies[id].tone]
-    const surfaces = { top: sky.top, bottom: sky.bottom, middle: mix(sky.top, sky.bottom, 0.5), peak: skyPeak(sky) }
+const light: Record<string, RGB> = { paper, paper2, sheet }
 
-    it(`${id}: declared tone matches the computed ink switch`, () => {
-      expect(toneFor(sky)).toBe(skies[id].tone)
+describe('text on paper meets WCAG 2.2 AA', () => {
+  for (const [where, bg] of Object.entries(light)) {
+    it(`${where}: body and secondary ink >= 4.5:1, signal >= 3:1`, () => {
+      expect(contrast(hex(inks.light.ink), bg)).toBeGreaterThanOrEqual(4.5)
+      expect(contrast(hex('#0b0b10'), bg)).toBeGreaterThanOrEqual(4.5)
+      expect(contrast(hex(inks.light.ink2), bg)).toBeGreaterThanOrEqual(4.5)
+      expect(contrast(hex(inks.light.signal), bg)).toBeGreaterThanOrEqual(3)
     })
-
-    for (const [where, bg] of Object.entries(surfaces)) {
-      it(`${id} ${where}: body text >= 4.5:1, signal >= 3:1`, () => {
-        expect(contrast(hex(ink.ink), bg)).toBeGreaterThanOrEqual(4.5)
-        expect(contrast(hex(ink.ink2), bg)).toBeGreaterThanOrEqual(4.5)
-        expect(contrast(hex(ink.signal), bg)).toBeGreaterThanOrEqual(3)
-      })
-    }
   }
 })
 
-describe('blends inside hour interstitials keep large numerals >= 3:1 (AC6, O7)', () => {
-  const pairs = dayOrder.slice(1).map((to, i) => [dayOrder[i], to] as const)
-  for (const [from, to] of pairs) {
-    for (const t of [0.25, 0.5, 0.75]) {
-      it(`${from} -> ${to} at ${t * 100}%`, () => {
-        const blend = blendSky(skyRGB(from), skyRGB(to), t)
-        const ink = hex(inks[toneFor(blend)].ink)
-        for (const bg of [blend.top, blend.bottom, mix(blend.top, blend.bottom, 0.5)]) {
-          expect(contrast(ink, bg)).toBeGreaterThanOrEqual(3)
-        }
-      })
-    }
-  }
+describe('text on ink meets WCAG 2.2 AA', () => {
+  it('body, secondary and signal on ink', () => {
+    expect(contrast(hex(inks.dark.ink), ink)).toBeGreaterThanOrEqual(4.5)
+    expect(contrast(hex(inks.dark.ink2), ink)).toBeGreaterThanOrEqual(4.5)
+    expect(contrast(hex(inks.dark.signal), ink)).toBeGreaterThanOrEqual(3)
+  })
+  it('the call to action: paper on ink', () => {
+    expect(contrast(paper, ink)).toBeGreaterThanOrEqual(4.5)
+  })
 })

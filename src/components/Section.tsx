@@ -8,13 +8,10 @@ interface SectionProps extends HTMLAttributes<HTMLElement> {
   beat?: string
   /** Paper (the default) or ink. */
   surface?: 'paper' | 'ink'
-  /** Kept while sections move to the film; no longer read. */
-  sky?: string
-  time?: readonly [number, number]
 }
 
 /** A stretch of the page: its surface and tone, and the act of the film it plays. */
-export function Section({ as = 'section', beat, surface = 'paper', sky: _sky, time: _time, style, ...rest }: SectionProps) {
+export function Section({ as = 'section', beat, surface = 'paper', style, ...rest }: SectionProps) {
   // Every allowed tag is an HTMLElement; typing it as one tag keeps the ref simple.
   const Tag = as as 'section'
   const tone: Tone = surface === 'ink' ? 'dark' : 'light'

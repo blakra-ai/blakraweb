@@ -22,9 +22,11 @@
 .text::before {
   content: '';
   position: absolute;
-  inset: -2rem -2.5rem -2rem -40%;
+  inset: var(--sheet-inset);
   z-index: -1;
-  background: radial-gradient(closest-side, rgba(242, 240, 235, 0.93), rgba(242, 240, 235, 0.68) 62%, rgba(242, 240, 235, 0));
+  background: var(--sheet);
+  -webkit-mask-image: var(--sheet-mask);
+  mask-image: var(--sheet-mask);
   pointer-events: none;
 }
 @media (max-width: 899px) {
@@ -344,9 +346,11 @@
 .deliveredText::before {
   content: '';
   position: absolute;
-  inset: -2rem -2.5rem -2rem -40%;
+  inset: var(--sheet-inset);
   z-index: -1;
-  background: radial-gradient(closest-side, rgba(242, 240, 235, 0.93), rgba(242, 240, 235, 0.68) 62%, rgba(242, 240, 235, 0));
+  background: var(--sheet);
+  -webkit-mask-image: var(--sheet-mask);
+  mask-image: var(--sheet-mask);
   pointer-events: none;
 }
 .deliveredTitle {

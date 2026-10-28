@@ -1,4 +1,3 @@
-import type { SkyId } from '../motion/sky/palettes'
 import type { ChapterId, LayerId, NeedId, ProductId, StageId } from './types'
 
 /**
@@ -27,14 +26,8 @@ export const company = {
   social: [] as readonly { label: string; href: string }[],
 } as const
 
-export type SceneId = 'stock' | 'routes' | 'documents' | 'line' | 'queue'
-
 export interface ChapterFacts {
   id: ChapterId
-  /** Minutes after midnight. */
-  time: number
-  sky: SkyId
-  scene: SceneId
   /** Outcome values; their labels are translated in each locale. */
   outcomes: readonly string[]
   stack: readonly string[]
@@ -42,25 +35,14 @@ export interface ChapterFacts {
   layers: readonly LayerId[]
 }
 
-// The five systems of the day. Source for every number: src/content/FACTS.md.
+// The five systems, in the order they launch in the film. Source for every number: src/content/FACTS.md.
 export const chapters: readonly ChapterFacts[] = [
-  { id: 'h06', time: 360, sky: 'dawn', scene: 'stock', outcomes: ['40%', '3 h'], stack: ['React', 'Node.js', 'PostgreSQL', 'POS + QuickBooks'], layers: ['automation', 'data', 'apps'] },
-  { id: 'h09', time: 540, sky: 'morning', scene: 'routes', outcomes: ['20%'], stack: ['React', 'Mapbox', 'Node.js routing', 'React Native'], layers: ['automation', 'data', 'apps'] },
-  { id: 'h13', time: 780, sky: 'noon', scene: 'documents', outcomes: ['24/7'], stack: ['Python OCR', 'React', 'AWS S3', 'SendGrid'], layers: ['ai', 'data', 'apps'] },
-  { id: 'h17', time: 1020, sky: 'golden', scene: 'line', outcomes: ['Live'], stack: ['MQTT', 'TimescaleDB', 'React', 'WebSockets'], layers: ['data', 'apps'] },
-  { id: 'h22', time: 1320, sky: 'night', scene: 'queue', outcomes: ['65%'], stack: ['LLM', 'Order API', 'Context routing', 'Slack'], layers: ['ai', 'automation', 'data'] },
+  { id: 'h06', outcomes: ['40%', '3 h'], stack: ['React', 'Node.js', 'PostgreSQL', 'POS + QuickBooks'], layers: ['automation', 'data', 'apps'] },
+  { id: 'h09', outcomes: ['20%'], stack: ['React', 'Mapbox', 'Node.js routing', 'React Native'], layers: ['automation', 'data', 'apps'] },
+  { id: 'h13', outcomes: ['24/7'], stack: ['Python OCR', 'React', 'AWS S3', 'SendGrid'], layers: ['ai', 'data', 'apps'] },
+  { id: 'h17', outcomes: ['Live'], stack: ['MQTT', 'TimescaleDB', 'React', 'WebSockets'], layers: ['data', 'apps'] },
+  { id: 'h22', outcomes: ['65%'], stack: ['LLM', 'Order API', 'Context routing', 'Slack'], layers: ['ai', 'automation', 'data'] },
 ]
-
-/** Minutes for each stretch after the day. The night is when the engine builds products. */
-export const times = {
-  prologue: 358,
-  pulse: 359,
-  engine: 1439,
-  process: 1470,
-  products: 1560,
-  people: 1740,
-  tomorrow: 1800,
-} as const
 
 /** Top to bottom, the way the column is drawn: crown (AI) down to root (cloud and backend). */
 export const layerOrder: readonly LayerId[] = ['ai', 'growth', 'apps', 'design', 'automation', 'data', 'cloud']
@@ -135,14 +117,3 @@ export const people: readonly PersonFacts[] = [
   { id: 'habib', name: 'Habiburahman Karokhi', photo: '' },
 ]
 
-/** Sky order down the home page; interstitials blend between neighbours. */
-export const dayOrder: readonly SkyId[] = ['predawn', ...chapters.map((c) => c.sky), 'ink', 'night', 'predawn', 'dawn']
-
-/** The colour of each hour of the day (case-study cards and products). */
-export const hourAccents = {
-  dawn: '#ff8a4c',
-  morning: '#8fc4ff',
-  noon: '#f4efe4',
-  golden: '#ffb35c',
-  night: '#7d80ff',
-} as const

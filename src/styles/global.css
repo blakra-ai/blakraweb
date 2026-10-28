@@ -198,6 +198,17 @@ canvas {
   transform: none;
 }
 
+/*
+ * Text over the film sits on a sheet of paper: 90% under the words, fading out beyond them to
+ * the right and above and below, so every line keeps its contrast whatever the film shows behind
+ * it (tests/contrast.test.ts). Used as a text block's ::before, inset past it on three sides.
+ */
+:root {
+  --sheet: linear-gradient(90deg, rgba(242, 240, 235, 0.9) calc(100% - 8rem), rgba(242, 240, 235, 0));
+  --sheet-mask: linear-gradient(transparent, #000 3rem, #000 calc(100% - 3rem), transparent);
+  --sheet-inset: -3rem -8rem -3rem calc(-1 * var(--margin));
+}
+
 /* The film's world: one fixed canvas behind the content (src/features/experience). */
 .film-stage {
   position: fixed;

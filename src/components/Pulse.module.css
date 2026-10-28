@@ -34,9 +34,11 @@
 .ask::before {
   content: '';
   position: absolute;
-  inset: -1.5rem -2rem -1.5rem -40%;
+  inset: var(--sheet-inset);
   z-index: -1;
-  background: radial-gradient(closest-side, rgba(242, 240, 235, 0.9), rgba(242, 240, 235, 0.6) 60%, rgba(242, 240, 235, 0));
+  background: var(--sheet);
+  -webkit-mask-image: var(--sheet-mask);
+  mask-image: var(--sheet-mask);
   pointer-events: none;
 }
 .eyebrow {
@@ -195,6 +197,8 @@
   .ask::before {
     inset: -1.25rem -1rem;
     border-radius: 20px;
-    background: rgba(242, 240, 235, 0.88);
+    background: rgba(242, 240, 235, 0.9);
+    -webkit-mask-image: none;
+    mask-image: none;
   }
 }
