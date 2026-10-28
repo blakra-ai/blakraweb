@@ -14,6 +14,8 @@ export const film = {
   portrait: false,
   /** The visitor's need: the layers it takes, the case nearest to it, and when it was chosen. */
   need: null as null | { layers: readonly LayerId[]; proof: number; at: number },
+  /** The principal the visitor is reading about (pointer or focus), or -1. */
+  person: -1,
 }
 
 /** The seven layers, root to crown (the chakra order). */

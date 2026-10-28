@@ -89,8 +89,9 @@ const keys: { t: number; pos: V3; look: V3 }[] = [
   { t: 0.72, pos: [-3, 10.6, 1.3], look: [-3, 0, 0] },
   { t: 0.77, pos: [-0.8, 5.6, 17], look: [-4.2, 1.1, 0] },
   { t: 0.83, pos: [0, 3, 12.5], look: [-2.8, 0.6, 0] },
-  { t: 0.92, pos: [0, 0.9, 18.5], look: [-1.8, 1.9, 0] },
-  { t: 1, pos: [0, 0.9, 18.5], look: [-1.8, 1.9, 0] },
+  // The resolution: back to the opening's width, the whole system in frame above the end card.
+  { t: 0.93, pos: [-0.6, 4.2, 19], look: [-2.4, 2.9, 0] },
+  { t: 1, pos: [-0.6, 4.2, 19.4], look: [-2.4, 2.9, 0] },
 ]
 
 /**
@@ -132,3 +133,6 @@ export const factAt = (k: number) => beats.product[0] + 0.032 + k * 0.009
 
 /** Act VI: the five stations of how we work light in turn on one orbit; the last is the key. */
 export const stationAt = (k: number) => beats.orbit[0] + 0.01 + k * 0.011
+
+/** Act VI: the three principals arrive on the figure-eight one at a time. */
+export const bodyAt = (k: number) => beats.people[0] + 0.004 + k * 0.01

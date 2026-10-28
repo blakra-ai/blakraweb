@@ -10,7 +10,8 @@ export function Footer({ route }: { route: Route }) {
   const { t, locale } = useI18n()
   const { userOff, systemReduced, setUserOff } = useMotion()
   return (
-    <Section as="footer" className={s.footer}>
+    // On the home page the footer is the film's end card: a screen of its own over the complete system.
+    <Section as="footer" className={s.footer} data-end={route.id === 'home' ? '' : undefined}>
       <div className={s.top}>
         <p className={s.line}>{t.footer.line}</p>
         <a className={s.email} href={`mailto:${company.email}`}>

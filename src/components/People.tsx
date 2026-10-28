@@ -1,90 +1,61 @@
 import { useRef } from 'react'
-import { people, times, type PersonFacts } from '../content/shared'
+import { people } from '../content/shared'
+import { film } from '../features/experience/state'
+import { bodyAt } from '../features/experience/timeline'
 import { useI18n } from '../i18n'
-import { useReveals } from '../motion/useReveals'
-import { useStage } from '../motion/useStage'
-import { poses, type Pose } from '../motion/engine3d/stage'
-import { rand } from '../scenes/shared'
+import { useActSteps } from '../motion/useActSteps'
 import { Section } from './Section'
 import s from './People.module.css'
 
-/**
- * A drawn portrait until a photo is added: the person as a point of light on the closest
- * orbit around a dark core, each at their own place on the ring. Same language as the
- * stage, unique per person, and honest: it never pretends to be a face.
- */
-function Portrait({ person, index }: { person: PersonFacts; index: number }) {
-  if (person.photo) return <img className={s.photo} src={person.photo} alt="" width={480} height={600} loading="lazy" decoding="async" />
-  const seed = [...person.name].reduce((a, c) => a + c.charCodeAt(0), 0)
-  const angle = -0.6 + index * 2.1 + rand(seed, 3) * 0.5
-  const x = 200 + Math.cos(angle) * 128
-  const y = 250 + Math.sin(angle) * 34
-  // The trail runs behind the light along the orbit.
-  const trail = Array.from({ length: 24 }, (_, i) => {
-    const a = angle - (i + 1) * 0.07
-    return { x: 200 + Math.cos(a) * 128, y: 250 + Math.sin(a) * 34, o: (1 - i / 24) * 0.55 }
-  })
-  return (
-    <svg viewBox="0 0 400 500" className={s.portrait} aria-hidden="true" focusable="false">
-      <defs>
-        <radialGradient id={`glow-${person.id}`}>
-          <stop offset="0" stopColor="#fff4e4" stopOpacity="0.9" />
-          <stop offset="1" stopColor="#fff4e4" stopOpacity="0" />
-        </radialGradient>
-      </defs>
-      <rect width={400} height={500} className={s.pSky} />
-      <ellipse cx={200} cy={250} rx={128} ry={34} className={s.pOrbit} />
-      <circle cx={200} cy={250} r={62} className={s.pCore} />
-      <circle cx={200} cy={250} r={64.5} className={s.pRing} />
-      {trail.map((p, i) => (
-        <circle key={i} cx={p.x} cy={p.y} r={2.2 - i * 0.07} className={s.pTrail} style={{ opacity: p.o }} />
-      ))}
-      <circle cx={x} cy={y} r={26} fill={`url(#glow-${person.id})`} />
-      <circle cx={x} cy={y} r={4.2} className={s.pLight} />
-      <path d="M1 500V200a199 199 0 0 1 398 0v300" className={s.pFrame} />
-    </svg>
-  )
-}
+const moments = people.map((_, k) => bodyAt(k))
 
+/**
+ * Act VI of the film: the people. Three equal bodies arrive one at a time on the stable
+ * figure-eight, the three principals, and each one's card is printed here as its body arrives.
+ * Pointing at one brings its body forward in the picture (a decorative echo: nothing depends on it).
+ */
 export function People() {
   const { t } = useI18n()
   const p = t.people
   const ref = useRef<HTMLElement>(null)
-  useReveals(ref)
-  // The photon ring: three lights on the closest orbit, nothing between them and the core.
-  useStage(ref, { pose: poses.photon as Pose }, times.people)
+  const { passed } = useActSteps(ref, 'people', moments)
+  const meet = (i: number) => (film.person = i)
+  const leave = () => (film.person = -1)
+
   return (
-    <Section ref={ref} id="people" beat="people" sky="predawn" time={[times.people, times.people + 30]} className={s.people} aria-labelledby="people-title">
-      <header className={s.head}>
-        <p className={s.eyebrow} data-reveal>
-          {p.eyebrow}
-        </p>
-        <h2 id="people-title" className={s.title} data-reveal data-focus tabIndex={-1}>
-          {p.title}
-        </h2>
-        <p className={s.lede} data-reveal>
-          {p.lede}
-        </p>
-      </header>
-      <ul className={s.list}>
-        {people.map((person, i) => (
-          <li key={person.id} className={s.person} data-reveal>
-            <Portrait person={person} index={i} />
-            <div className={s.body}>
-              <h3 className={s.name}>
-                {person.name}
-                {person.known && <span className={s.known}> · {person.known}</span>}
-              </h3>
-              <p className={s.role}>{p.roles[i].role}</p>
-              <p className={s.owns}>{p.roles[i].owns}</p>
-              <p className={s.ask}>{p.roles[i].ask}</p>
-            </div>
-          </li>
-        ))}
-      </ul>
-      <p className={s.bench} data-reveal>
-        {p.bench}
-      </p>
+    <Section ref={ref} id="people" beat="people" className={s.people} aria-labelledby="people-title">
+      <div className={s.pin} data-pin>
+        <div className={s.text}>
+          <p className={s.eyebrow}>{p.eyebrow}</p>
+          <h2 id="people-title" className={s.title} data-focus tabIndex={-1}>
+            {p.title}
+          </h2>
+          <p className={s.lede}>{p.lede}</p>
+          <ul className={s.list}>
+            {people.map((person, i) => (
+              <li
+                key={person.id}
+                className={s.person}
+                data-state={passed === null || i < passed ? 'on' : 'next'}
+                onPointerEnter={() => meet(i)}
+                onPointerLeave={leave}
+              >
+                {person.photo ? <img className={s.photo} src={person.photo} alt="" width={96} height={96} loading="lazy" decoding="async" /> : <span className={s.body} aria-hidden="true" />}
+                <div className={s.card}>
+                  <h3 className={s.name}>
+                    {person.name}
+                    {person.known && <span className={s.known}> · {person.known}</span>}
+                  </h3>
+                  <p className={s.role}>{p.roles[i].role}</p>
+                  <p className={s.owns}>{p.roles[i].owns}</p>
+                  <p className={s.ask}>{p.roles[i].ask}</p>
+                </div>
+              </li>
+            ))}
+          </ul>
+          <p className={s.bench}>{p.bench}</p>
+        </div>
+      </div>
     </Section>
   )
 }

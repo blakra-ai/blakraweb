@@ -1,12 +1,9 @@
 import { useEffect, useRef, useState, type FormEvent } from 'react'
-import { company, times } from '../content/shared'
+import { company } from '../content/shared'
 import type { Intent } from '../content/types'
 import { locales, useI18n } from '../i18n'
 import { intents, limits, sendContact, validate, type ContactFields, type FieldErrors } from '../lib/contact'
 import { onPulse } from '../motion/pulse'
-import { useReveals } from '../motion/useReveals'
-import { useStage } from '../motion/useStage'
-import { poses, type Pose } from '../motion/engine3d/stage'
 import { Section } from './Section'
 import s from './Contact.module.css'
 
@@ -51,7 +48,12 @@ function Field({ name, label, error, textarea, maxLength, ...input }: FieldProps
   )
 }
 
-/** Tomorrow, 06:00: three doors, one short form that speaks to whoever walked through. */
+/**
+ * Act VII of the film, the resolution: the camera pulls back to the opening framing and the same
+ * space now holds a calm, complete system, the visitor's need waiting in front of it. Three
+ * doors, one short form that speaks to whoever walked through; the need chosen in Act III is
+ * already written in it.
+ */
 export function Contact() {
   const { t, locale } = useI18n()
   const c = t.contact
@@ -63,9 +65,6 @@ export function Contact() {
   const [status, setStatus] = useState<Status>('idle')
   const [errors, setErrors] = useState<FieldErrors>({})
   const door = c.doors[intent]
-  useReveals(ref)
-  // The event horizon: the camera at the edge of the shadow. Past this line, the problem is ours.
-  useStage(ref, { pose: poses.horizon as Pose }, times.tomorrow)
 
   useEffect(() => {
     // A link such as /?intent=invest#contact (from the investors page) opens the right door.
@@ -126,18 +125,18 @@ export function Contact() {
   const err = (field: keyof FieldErrors) => (errors[field] ? c.errors[errors[field]!] : undefined)
 
   return (
-    <Section ref={ref} id="contact" beat="contact" sky="dawn" time={[times.tomorrow, times.tomorrow + 1]} className={s.contact} aria-labelledby="contact-title">
+    <Section ref={ref} id="contact" beat="contact" className={s.contact} aria-labelledby="contact-title">
       <div className={s.intro}>
-        <p className={s.eyebrow} data-reveal>
+        <p className={s.eyebrow}>
           {c.eyebrow}
         </p>
-        <h2 id="contact-title" className={s.title} data-reveal data-focus tabIndex={-1}>
+        <h2 id="contact-title" className={s.title} data-focus tabIndex={-1}>
           {c.title}
         </h2>
-        <p className={s.lede} data-reveal>
+        <p className={s.lede}>
           {c.lede}
         </p>
-        <p className={s.direct} data-reveal>
+        <p className={s.direct}>
           {c.direct} {mail}
         </p>
       </div>
@@ -153,7 +152,7 @@ export function Contact() {
           </p>
         </div>
       ) : (
-        <form ref={formRef} className={s.form} method="post" noValidate onSubmit={onSubmit} aria-describedby="contact-privacy" data-reveal>
+        <form ref={formRef} className={s.form} method="post" noValidate onSubmit={onSubmit} aria-describedby="contact-privacy">
           <fieldset className={s.doors}>
             <legend className={s.label}>{c.doorsLabel}</legend>
             {intents.map((id) => (

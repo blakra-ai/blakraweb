@@ -13,9 +13,26 @@
 }
 
 .intro {
+  position: relative;
   display: grid;
   gap: 1.5rem;
   align-content: start;
+}
+/* On paper over the film; the form is a sheet of its own. */
+.intro::before {
+  content: '';
+  position: absolute;
+  inset: -2rem -2.5rem -2rem -40%;
+  z-index: -1;
+  background: radial-gradient(closest-side, rgba(242, 240, 235, 0.93), rgba(242, 240, 235, 0.68) 62%, rgba(242, 240, 235, 0));
+  pointer-events: none;
+}
+@media (max-width: 899px) {
+  .intro::before {
+    inset: -1.25rem -1rem;
+    border-radius: 20px;
+    background: rgba(242, 240, 235, 0.9);
+  }
 }
 .eyebrow {
   font-family: var(--font-mono);
@@ -23,8 +40,8 @@
   color: var(--ink-2);
 }
 .title {
-  font-size: var(--step-4);
-  font-weight: 500;
+  font-size: clamp(2.3rem, 1rem + 3.4vw, 4.6rem);
+  font-weight: 600;
   line-height: 0.98;
   letter-spacing: -0.045em;
   max-width: 13ch;
@@ -53,10 +70,10 @@
   display: grid;
   gap: 1.5rem;
   padding: clamp(1.25rem, 2.5vw, 2rem);
-  border-radius: 28px;
-  background: linear-gradient(165deg, rgba(255, 255, 255, 0.07), rgba(255, 255, 255, 0.02) 60%), rgba(6, 7, 10, 0.9);
-  border: 1px solid rgba(255, 255, 255, 0.09);
-  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.07);
+  border-radius: 24px;
+  background: rgba(242, 240, 235, 0.95);
+  border: 0.75px solid var(--hair);
+  box-shadow: 0 24px 60px -30px rgba(11, 11, 16, 0.25);
 }
 .field {
   display: grid;
@@ -70,9 +87,9 @@
   width: 100%;
   min-height: 3rem;
   padding: 0.75rem 0.9rem;
-  border: 1px solid rgba(255, 255, 255, 0.38);
+  border: 0.75px solid var(--hair);
   border-radius: 10px;
-  background: rgba(255, 255, 255, 0.03);
+  background: rgba(255, 255, 255, 0.6);
   font-size: var(--step-0);
   line-height: 1.4;
   transition: border-color 0.3s;
@@ -84,7 +101,7 @@
   font-size: var(--step--1);
 }
 .control:hover {
-  border-color: rgba(255, 255, 255, 0.55);
+  border-color: var(--ink-2);
 }
 .control:focus-visible {
   outline: 2px solid var(--signal);
@@ -138,7 +155,7 @@
   transition: background-color 0.3s, transform 0.3s var(--ease-out);
 }
 .submit:hover:not(:disabled) {
-  background: #ff8148;
+  background: #26262e;
 }
 .submit:active:not(:disabled) {
   transform: scale(0.98);
@@ -206,8 +223,8 @@
   border-color: var(--ink-2);
 }
 .door[data-checked] {
-  border-color: var(--signal);
-  background: var(--surface);
+  border-color: var(--ink-0);
+  background: rgba(255, 255, 255, 0.6);
 }
 .door::before {
   content: '';
@@ -221,8 +238,8 @@
   transition: border-color 0.3s, box-shadow 0.3s;
 }
 .door[data-checked]::before {
-  border-color: var(--signal);
-  box-shadow: inset 0 0 0 3px var(--page), inset 0 0 0 10px var(--signal);
+  border-color: var(--ink-0);
+  box-shadow: inset 0 0 0 3px var(--paper), inset 0 0 0 10px var(--ink-0);
 }
 .door:has(.radio:focus-visible) {
   outline: 2px solid var(--signal);
@@ -257,6 +274,6 @@
   font-style: italic;
   font-size: var(--step-0);
   color: var(--ink-2);
-  border-top: 1px solid rgba(255, 255, 255, 0.08);
+  border-top: 0.75px solid var(--hair);
   padding-top: 1rem;
 }

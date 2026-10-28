@@ -4,6 +4,12 @@
   padding: clamp(3rem, 6vw, 5rem) var(--margin) 2rem;
   border-top: 1px solid var(--line);
 }
+/* The end card: the last screen of the film holds the calm, complete system above the words. */
+:global(html.gl-live) .footer[data-end] {
+  min-height: 100svh;
+  align-content: end;
+  border-top: 0;
+}
 
 .top {
   display: flex;

@@ -9,7 +9,7 @@ import { Wordmark } from '../objects/Wordmark'
 import { blackHole, chakras } from '../tokens'
 import { film, LAYERS } from '../state'
 import { AXIS, DISK_TILT, fromDisk, onAxis } from '../space'
-import { beat, beats, bloomAt, cameraAt, centreY, damp, ease, jetBase, span, starAt, stars, stationAt } from '../timeline'
+import { beat, beats, bloomAt, bodyAt, cameraAt, centreY, damp, ease, jetBase, span, starAt, stars, stationAt } from '../timeline'
 import { pointer } from '../controllers/pointer'
 export const HOLE_R = 0.62
 
@@ -326,9 +326,9 @@ export function Orbit() {
       if (!d) return
       const a = (k / 5) * Math.PI * 2 + film.clock * 0.08
       fromDisk(Math.cos(a) * ORBIT_R, Math.sin(a) * ORBIT_R, 0, d.position)
-      // Grey until its term lights; then ink, with a swell as it does. Smaller once the system runs.
+      // Grey until its term lights; then ink, with a swell as it does. Smaller once its act is over.
       const x = span(T, stationAt(k), stationAt(k) + 0.007)
-      const s = (0.13 + 0.07 * (x > 0 ? 1 : 0) + 0.12 * Math.sin(x * Math.PI)) * (T > beats.running[0] + 0.03 ? 0.6 : 1)
+      const s = (0.13 + 0.07 * (x > 0 ? 1 : 0) + 0.12 * Math.sin(x * Math.PI)) * (T > beats.running[0] ? 0.35 : T > beats.orbit[1] ? 0.55 : 1)
       d.scale.setScalar(film.still ? s : damp(d.scale.x, s, 10, dt))
       mats.current[k]?.color.lerpColors(grey, ink, ease(x))
     })
@@ -350,31 +350,36 @@ export function Orbit() {
   )
 }
 
-/** Act VI: three equal bodies on the stable figure-eight: the three principals. */
+/**
+ * Act VI: three equal bodies on the stable figure-eight, the three principals, arriving one at a
+ * time. The one the visitor is reading about comes forward; the others give way.
+ */
 export function Bodies() {
   const g = useRef<Group>(null)
   const bodies = useRef<(Mesh | null)[]>([])
-  useFrame(() => {
+  useFrame((_, dt) => {
     const T = film.t
-    const show = ease(span(T, beats.people[0] - 0.01, beats.people[0] + 0.01)) * (1 - ease(span(T, beats.running[0], beats.running[0] + 0.02)))
-    if (g.current) {
-      g.current.visible = show > 0.001
-      g.current.scale.setScalar(Math.max(0.0001, show))
-    }
+    const leave = 1 - ease(span(T, beats.running[0], beats.running[0] + 0.02))
+    if (g.current) g.current.visible = T > bodyAt(0) - 0.008 && leave > 0.001
     bodies.current.forEach((b, i) => {
       if (!b) return
       // The figure-eight choreography, close to x = sin t, y = sin 2t / 2, three bodies a third apart.
-      const a = film.clock * 0.5 + (i * Math.PI * 2) / 3
-      b.position.set(Math.sin(a) * 3.4, Math.sin(2 * a) * 1.2, 0)
+      const a = film.clock * 0.45 + (i * Math.PI * 2) / 3
+      b.position.set(Math.sin(a) * 2.3, Math.sin(2 * a) * 0.95, Math.cos(a) * 0.4)
+      const arrive = ease(span(T, bodyAt(i) - 0.006, bodyAt(i) + 0.004))
+      const focus = film.person < 0 ? 1 : film.person === i ? 1.45 : 0.8
+      const s = Math.max(0.0001, arrive * leave * focus)
+      b.scale.setScalar(film.still ? s : damp(b.scale.x, s, 7, dt))
+      b.visible = b.scale.x > 0.002
     })
   })
   return (
-    <group ref={g} position={[1.2, 2.2, 4.5]}>
+    <group ref={g} position={[0, 0.5, 2.2]} visible={false}>
       {[0, 1, 2].map((i) => (
-        <mesh key={i} ref={(el) => {
+        <mesh key={i} scale={0.0001} ref={(el) => {
           bodies.current[i] = el
         }}>
-          <sphereGeometry args={[0.42, 48, 48]} />
+          <sphereGeometry args={[0.36, 48, 48]} />
           <meshPhysicalMaterial color="#0b0b10" roughness={0.12} clearcoat={1} />
         </mesh>
       ))}
@@ -415,7 +420,8 @@ export function Mote({ phone }: { phone: boolean }) {
       const [x, h, dz] = stars[k]
       onAxis(h, p).add(q.set(x, 0, dz)).add(q.set(0.8, 0.5, 0.4))
     } else {
-      p.set(phone ? -0.6 : -3.4, phone ? 2.6 : 1.2, 8.5)
+      // Act VII: waiting in front of the calm, complete system.
+      p.set(phone ? -0.2 : 0.4, phone ? 2.4 : 1, 8.5)
     }
     o.position.lerp(p, 1 - Math.exp(-dt * 4))
     o.scale.setScalar(0.16 + 0.03 * Math.sin(time * 5))
