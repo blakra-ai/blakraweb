@@ -46,7 +46,7 @@ export function Pulse() {
   )
 
   return (
-    <Section ref={ref} id="pulse" sky="predawn" time={[times.pulse, times.pulse]} className={s.pulse} aria-labelledby="pulse-title">
+    <Section ref={ref} id="pulse" beat="need" sky="predawn" time={[times.pulse, times.pulse]} className={s.pulse} aria-labelledby="pulse-title">
       <div className={s.copy}>
         <p className={s.eyebrow} data-reveal>
           {p.eyebrow}

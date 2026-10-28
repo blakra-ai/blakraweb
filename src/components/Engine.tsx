@@ -164,7 +164,7 @@ export function Engine() {
   const marked = choice && choice !== 'all' ? needTop(choice) : null
 
   return (
-    <Section ref={ref} id="engine" sky="ink" time={[times.engine, times.engine]} className={s.engine} aria-labelledby="engine-title">
+    <Section ref={ref} id="engine" beat="layers" sky="ink" time={[times.engine, times.engine]} className={s.engine} aria-labelledby="engine-title">
       <div className={s.pin} data-pin>
         <div className={s.text} data-pinned={pinned ? '' : undefined} data-crown={atCrown ? '' : undefined}>
           <p className={s.eyebrow}>{e.eyebrow}</p>

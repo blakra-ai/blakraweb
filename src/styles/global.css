@@ -43,11 +43,18 @@
   --ease-out: cubic-bezier(0.16, 1, 0.3, 1);
   --ease-in-out: cubic-bezier(0.65, 0, 0.35, 1);
 
-  --cta-bg: #ff6a2b;
-  --cta-ink: #111317;
-  --page: #050507;
+  /* The film's world: warm paper, ink, hairlines; the seven colours only ever mean a layer. */
+  --paper: #f2f0eb;
+  --paper-2: #ebe8e1;
+  --ink-0: #0b0b10;
+  --hair: rgba(11, 11, 16, 0.22);
+  --hair-2: rgba(11, 11, 16, 0.12);
+  --accent: #ff5a1f;
+  --cta-bg: #0b0b10;
+  --cta-ink: #f2f0eb;
+  --page: #f2f0eb;
 
-  color-scheme: dark;
+  color-scheme: light;
 }
 
 /* Tone tokens come from palettes.ts through inline --tone-* variables on each section.
@@ -96,8 +103,14 @@ body {
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   text-rendering: optimizeLegibility;
-  color: #eeece6;
+  color: var(--ink-0);
   overflow-x: clip;
+}
+/* Content sits above the film's world; the world sits above the paper. */
+main,
+footer {
+  position: relative;
+  z-index: 1;
 }
 
 h1,
@@ -152,7 +165,7 @@ canvas {
 }
 
 :focus-visible {
-  outline: 2px solid var(--signal, #ff6a2b);
+  outline: 2px solid var(--accent);
   outline-offset: 3px;
   border-radius: 4px;
 }
@@ -185,59 +198,57 @@ canvas {
   transform: none;
 }
 
-/* Film grain over everything when there is no live 3D world (which grains its own frame):
-   a blended full-screen layer over a moving canvas is re-composited every frame. */
-html.gl-live .grain {
-  display: none;
-}
-/* Film grain over everything: static, so it costs one paint. */
-.grain {
+/* The film's world: one fixed canvas behind the content (src/features/experience). */
+.film-stage {
   position: fixed;
   inset: 0;
-  z-index: 50;
-  pointer-events: none;
-  opacity: 0.07;
-  mix-blend-mode: overlay;
-  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='180' height='180'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 0.5 0 0 0 0 0.5 0 0 0 0 0.5 0 0 0 1.4 -0.2'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
-}
-
-/* The 3D engine renders behind everything; until it starts (or without WebGL) the page is night. */
-.stage-canvas {
-  position: fixed;
-  inset: 0;
-  z-index: -1;
-  width: 100vw;
-  height: 100lvh;
+  z-index: 0;
   pointer-events: none;
   opacity: 0;
   transition: opacity 1.2s var(--ease-out);
 }
-html.gl-live .stage-canvas {
+html.gl-live .film-stage {
   opacity: 1;
 }
-/* The canvas fades in over the still in the same 1.4s the still fades out. */
-.stage-canvas {
-  transition-duration: 1.4s;
-}
-/* Keeps copy legible over the disk and the mandalas: text lives left on wide screens, low on phones. */
-.stage-scrim {
-  position: fixed;
-  inset: 0;
-  z-index: -1;
-  pointer-events: none;
-  background: linear-gradient(90deg, rgba(5, 5, 7, 0.78) 0%, rgba(5, 5, 7, 0.5) 34%, rgba(5, 5, 7, 0) 60%);
-}
-@media (max-width: 899px) {
-  .stage-scrim {
-    background: linear-gradient(180deg, rgba(5, 5, 7, 0) 0%, rgba(5, 5, 7, 0.45) 38%, rgba(5, 5, 7, 0.82) 70%);
-  }
+.film-stage canvas {
+  display: block;
 }
 
-/* Glass: the surface every panel on the page is made of. */
-.glass {
-  background: linear-gradient(160deg, rgba(255, 255, 255, 0.075), rgba(255, 255, 255, 0.02) 60%), rgba(6, 7, 10, 0.86);
-  border: 1px solid rgba(255, 255, 255, 0.09);
-  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.08), 0 30px 80px -30px rgba(0, 0, 0, 0.6);
+/* The custom cursor (mouse, motion on): a dot on the pointer and a trailing ring. */
+html.custom-cursor,
+html.custom-cursor * {
+  cursor: none !important;
+}
+.cursor-dot,
+.cursor-ring {
+  position: fixed;
+  left: 0;
+  top: 0;
+  z-index: 200;
+  pointer-events: none;
+  border-radius: 50%;
+}
+html:not(.custom-cursor) .cursor-dot,
+html:not(.custom-cursor) .cursor-ring {
+  display: none;
+}
+/* Ink with a paper outline: legible on paper and on the black hole alike. (No blend mode: blending
+   against a canvas that changes every frame made the compositor redraw the whole page.) */
+.cursor-dot {
+  width: 8px;
+  height: 8px;
+  margin: -4px 0 0 -4px;
+  background: var(--ink-0);
+  box-shadow: 0 0 0 1.5px var(--paper);
+}
+.cursor-ring {
+  width: 38px;
+  height: 38px;
+  margin: -19px 0 0 -19px;
+  border: 1.25px solid var(--ink-0);
+  box-shadow:
+    0 0 0 1px rgba(242, 240, 235, 0.7),
+    inset 0 0 0 1px rgba(242, 240, 235, 0.7);
 }
 
 @view-transition {

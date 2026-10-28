@@ -1,17 +1,16 @@
 import { company } from '../content/shared'
 import { useI18n } from '../i18n'
 import { useMotion } from '../motion/MotionProvider'
-import type { SkyId } from '../motion/sky/palettes'
 import { pathFor, type Route } from '../routes'
 import { LanguageSwitch } from './LanguageSwitch'
 import { Section } from './Section'
 import s from './Footer.module.css'
 
-export function Footer({ route, sky, time }: { route: Route; sky: SkyId; time: number }) {
+export function Footer({ route }: { route: Route }) {
   const { t, locale } = useI18n()
   const { userOff, systemReduced, setUserOff } = useMotion()
   return (
-    <Section as="footer" sky={sky} time={[time, time]} className={s.footer}>
+    <Section as="footer" className={s.footer}>
       <div className={s.top}>
         <p className={s.line}>{t.footer.line}</p>
         <a className={s.email} href={`mailto:${company.email}`}>

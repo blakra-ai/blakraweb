@@ -126,7 +126,7 @@ export function Contact() {
   const err = (field: keyof FieldErrors) => (errors[field] ? c.errors[errors[field]!] : undefined)
 
   return (
-    <Section ref={ref} id="contact" sky="dawn" time={[times.tomorrow, times.tomorrow + 1]} className={s.contact} aria-labelledby="contact-title">
+    <Section ref={ref} id="contact" beat="contact" sky="dawn" time={[times.tomorrow, times.tomorrow + 1]} className={s.contact} aria-labelledby="contact-title">
       <div className={s.intro}>
         <p className={s.eyebrow} data-reveal>
           {c.eyebrow}

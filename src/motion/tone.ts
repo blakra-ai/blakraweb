@@ -1,6 +1,8 @@
 import type { CSSProperties } from 'react'
 import { inks, skies, type SkyId, type Tone } from './sky/palettes'
 
+export type { Tone }
+
 type Vars = CSSProperties & Record<`--${string}`, string>
 
 /** Inline CSS variables for a section: its fallback sky and its tone tokens. */

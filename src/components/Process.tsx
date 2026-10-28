@@ -19,7 +19,7 @@ export function Process() {
   useReveals(ref)
   useStage(ref, { pose: poses.infall as Pose }, times.process)
   return (
-    <Section ref={ref} id="approach" sky="ink" time={[times.process, times.process]} className={s.process} aria-labelledby="process-title">
+    <Section ref={ref} id="approach" beat="process" sky="ink" time={[times.process, times.process]} className={s.process} aria-labelledby="process-title">
       <header className={s.head}>
         <p className={s.eyebrow} data-reveal>
           {p.eyebrow}

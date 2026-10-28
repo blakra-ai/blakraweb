@@ -54,7 +54,7 @@ export function People() {
   // The photon ring: three lights on the closest orbit, nothing between them and the core.
   useStage(ref, { pose: poses.photon as Pose }, times.people)
   return (
-    <Section ref={ref} id="people" sky="predawn" time={[times.people, times.people + 30]} className={s.people} aria-labelledby="people-title">
+    <Section ref={ref} id="people" beat="people" sky="predawn" time={[times.people, times.people + 30]} className={s.people} aria-labelledby="people-title">
       <header className={s.head}>
         <p className={s.eyebrow} data-reveal>
           {p.eyebrow}

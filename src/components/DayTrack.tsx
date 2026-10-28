@@ -5,7 +5,7 @@ import { poses, setBoost, type Pose } from '../motion/engine3d/stage'
 import { gsap, layouts, ScrollTrigger } from '../motion/gsap'
 import { toneStyle } from '../motion/tone'
 import { stickyScrollTop, stickyTracker } from '../motion/sticky'
-import { registerAnchor, setClock, useMotion } from '../motion/MotionProvider'
+import { registerAnchor, useMotion } from '../motion/MotionProvider'
 import { useMotionSetup } from '../motion/useMotionSetup'
 import { useStage } from '../motion/useStage'
 import { Visual } from '../visuals/Visual'
@@ -44,7 +44,6 @@ export function DayTrack() {
     setActive(i)
     if (!inView.current) return
     setBoost(chapters[i].layers, 'day')
-    setClock(chapters[i].time)
   }, [])
 
   useEffect(() => {
@@ -228,7 +227,7 @@ export function DayTrack() {
 
   return (
     <>
-      <section ref={ref} id="day" className={s.day} data-tone="dark" style={toneStyle('dark')} aria-labelledby="day-title">
+      <section ref={ref} id="day" data-beat="proof" className={s.day} data-tone="dark" style={toneStyle('dark')} aria-labelledby="day-title">
         <div className={s.pin} data-pin>
           <header className={s.head}>
             <p className={s.eyebrow}>{t.day.eyebrow}</p>

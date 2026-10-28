@@ -1,0 +1,28 @@
+{
+  "run_status": "awaiting_user",
+  "tier": "T3",
+  "goal": "Upgrade blakra.us's presentation layer to an award-level immersive experience in a bright direction tied to the black hole and the seven chakras, keeping content, routes, SEO and the form backend; React Three Fiber + drei; full custom cursor; section by section with a commit after each.",
+  "phase": "animatic",
+  "updated": "2026-10-28",
+  "note": "Owner decisions 2026-10-28: bright direction (not the dark one), React Three Fiber + drei, continue on branch launch-fixes, fully custom cursor; then 'it should relate to the black hole and the chakras'. Prototype on the dev-only lab page (lab/index.html, src/lab/) with three heroes: A Chrome (inflated chrome BLAKRA, black hole with a chakra-colour disk behind, stickers), B Horizon (black hole swallowing the middle of the wordmark on paper white, chakra-colour disk tilting with the cursor), C Seven (seven glossy lotus chakras, traditional colours and petal counts, around a small black hole; the scroll lines them up on its axis). Waiting for the owner's pick before any production change. Known issue to fix in rollout: mobile LCP 3.0 s (hero lede fade delays its paint 1.2 s) against the brief's 2.5 s. Later on 2026-10-28: owner picked B for the hero and C's lotuses for Seven layers; then asked for a far more custom, cinematic, story-driven, innovative design, and then for real art direction ('direct it', a special personality and brand). Inventor + strategist produced the story 'Drawn in, built up, sent out' (spec.md); the treatment 'An Atlas of Gravity' (treatment.md) sets the personality: plates, live annotations, one axis, match cuts on circles. Style frames built in the lab (?v=atlas): Plate I (lensed wordmark, spaghettification, live labels, reticle), Plate III (spectra), Plate IV (lotus axis with labels). Waiting for the owner's approval of the art direction. The owner then interrupted the rollout: 'it must be much better; no clear goal or beauty; it needs to be creative, story-driven and cinematic, with correct, well-timed, smooth actions; the start and the end of the site must be a story's beginning and end'. Response: screenplay.md ('Gravity', one continuous shot, seven acts, beats keyed in t, each with an action and a reaction) and a full animatic in the lab (?v=film): scattered fragments → ignition shockwave → infall into a seven-colour disk → lensed BLAKRA → the visitor's need falls in → the seven centres bloom up the axis → charge → jet launch past five systems → pole-on ring (product) → orbit (terms) → three bodies (people) → the opening framing again with the whole system running and the visitor's need prefilled in the form. Film: scratchpad/lab/video/blakra-film.mp4. Waiting for the owner's verdict on the story and its timing before polishing scene by scene.",
+  "acceptance_criteria": [
+    {
+      "id": "B0",
+      "text": "Owner picks a hero direction",
+      "verified": true,
+      "evidence": "Owner, 2026-10-28: 'Go with B (black hole in the BLAKRA wordmark) for the hero, and use C's seven lotuses in the Seven layers section.'"
+    },
+    {
+      "id": "B1",
+      "text": "Owner approves the art direction (treatment + style frames) before the rollout",
+      "verified": false,
+      "evidence": ""
+    },
+    {
+      "id": "B2",
+      "text": "Owner approves the story and timing (animatic) before scene polish and rollout",
+      "verified": false,
+      "evidence": ""
+    }
+  ]
+}

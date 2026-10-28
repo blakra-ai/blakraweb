@@ -5,7 +5,7 @@ import { existsSync, readFileSync, statSync } from 'node:fs'
 import { join } from 'node:path'
 
 const prefixes = ['', '/de', '/fr', '/es']
-const pages = prefixes.flatMap((p) => [`${p}/`, `${p}/investors/`, `${p}/privacy/`])
+const pages = prefixes.flatMap((p) => [`${p}/`, `${p}/investors/`, `${p}/privacy/`, `${p}/legal/`])
 
 /**
  * Serve routes the way nginx does in production: known pages in dev render through

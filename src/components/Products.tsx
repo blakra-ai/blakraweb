@@ -32,7 +32,7 @@ export function Products() {
   }, [])
 
   return (
-    <Section ref={ref} id="products" sky="night" time={[times.products, times.products]} className={s.products} aria-labelledby="products-title">
+    <Section ref={ref} id="products" beat="product" sky="night" time={[times.products, times.products]} className={s.products} aria-labelledby="products-title">
       <header className={s.head}>
         <p className={s.eyebrow} data-reveal>
           {p.eyebrow}

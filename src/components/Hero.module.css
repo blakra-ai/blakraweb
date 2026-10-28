@@ -1,78 +1,96 @@
 .hero {
   position: relative;
+}
+.frame {
+  position: relative;
   display: grid;
   min-height: 100svh;
-  padding: calc(var(--header-h) + 2rem) var(--margin) clamp(3rem, 11vh, 7.5rem);
+  padding: calc(var(--header-h) + 2rem) var(--margin) clamp(2.5rem, 8vh, 5rem);
 }
 
-/* Without WebGL (or before it starts) a soft light stands in for the engine. */
-:global(html:not(.gl-live)) .hero::before {
-  content: '';
-  position: absolute;
-  inset: 0;
-  z-index: -1;
-  background: radial-gradient(40% 50% at 78% 45%, rgba(255, 138, 76, 0.16), transparent 70%);
-  pointer-events: none;
+/* Held while Acts I–II play: the frame stays, the words move with the scroll. */
+@media (min-width: 700px) and (min-height: 600px) {
+  :global(html.motion-on) .hero {
+    height: 260svh;
+  }
+  :global(html.motion-on) .frame {
+    position: sticky;
+    top: 0;
+    height: 100svh;
+  }
+  /* The words leave during the ignition (moved, never faded). */
+  :global(html.motion-on) .copy {
+    transform: translate3d(0, calc(max(0, var(--p, 0) - 0.3) * -2.6 * 100svh), 0);
+  }
+  /* The tagline rises into place as the disk forms, and holds. */
+  :global(html.motion-on) .tagline {
+    display: block;
+    transform: translate3d(0, calc((1 - min(1, max(0, var(--p, 0) - 0.42) * 7)) * 72svh), 0);
+  }
 }
 
 .copy {
+  position: relative;
+  z-index: 2;
   align-self: end;
   display: grid;
-  gap: clamp(1.25rem, 3vh, 2rem);
-  max-width: min(50rem, 58vw);
+  gap: clamp(1rem, 2.6vh, 1.6rem);
+  max-width: min(44rem, 52vw);
+  will-change: transform;
+}
+/* The words sit on paper: a soft haze over the world behind them (a panel on phones, where
+   the text crosses the whole picture as it scrolls). */
+.copy::before {
+  content: '';
+  position: absolute;
+  inset: -12% -8% -10% -30%;
+  z-index: -1;
+  background: radial-gradient(closest-side, rgba(242, 240, 235, 0.92), rgba(242, 240, 235, 0.7) 55%, rgba(242, 240, 235, 0));
+  pointer-events: none;
 }
 @media (max-width: 899px) {
-  .hero {
-    padding-top: 46svh;
+  .copy::before {
+    inset: -1.25rem -1rem;
+    border-radius: 20px;
+    background: rgba(242, 240, 235, 0.88);
+  }
+}
+@media (max-width: 899px) {
+  .frame {
+    padding-top: 52svh;
   }
   .copy {
     max-width: none;
   }
 }
-
 .eyebrow {
-  display: inline-flex;
-  align-items: center;
-  gap: 0.6rem;
-  font-size: var(--step--1);
+  font-family: var(--font-mono);
+  font-size: 0.72rem;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
   color: var(--ink-2);
 }
-.dot {
-  width: 7px;
-  height: 7px;
-  border-radius: 50%;
-  background: var(--cta-bg);
-  box-shadow: 0 0 0 4px rgba(255, 106, 43, 0.18);
-}
-
 .title {
-  font-size: clamp(2.6rem, 1rem + 5.4vw, 7.25rem);
-  font-weight: 500;
-  line-height: 0.95;
-  letter-spacing: -0.05em;
+  font-size: clamp(2.5rem, 1rem + 4vw, 5rem);
+  font-weight: 600;
+  line-height: 0.97;
+  letter-spacing: -0.045em;
 }
 .title em {
   font-family: var(--font-serif);
   font-style: italic;
   font-weight: 400;
-  letter-spacing: -0.025em;
+  letter-spacing: -0.02em;
 }
 .line {
-  display: inline-block;
+  display: inline;
 }
-@media (min-width: 700px) {
-  .line {
-    display: block;
-  }
-}
-
 .lede {
-  max-width: 44ch;
-  font-size: var(--step-1);
-  line-height: 1.5;
+  max-width: 38rem;
+  font-size: clamp(1rem, 0.94rem + 0.25vw, 1.14rem);
+  line-height: 1.55;
   color: var(--ink-2);
 }
-
 .actions {
   display: flex;
   flex-wrap: wrap;
@@ -82,51 +100,116 @@
 .primary {
   display: inline-flex;
   align-items: center;
-  gap: 0.75rem;
-  height: 3.25rem;
-  padding: 0 1.5rem;
+  min-height: 3rem;
+  padding: 0 1.4rem;
   border-radius: 999px;
-  background: var(--cta-bg);
-  color: var(--cta-ink);
+  background: var(--ink-0);
+  color: var(--paper);
   font-weight: 500;
-  transition: background-color 0.3s, transform 0.4s var(--ease-out);
+  transition: background-color 0.3s;
 }
 .primary:hover {
-  background: #ff8148;
-}
-.primary span,
-.secondary span {
-  transition: transform 0.4s var(--ease-out);
-}
-.primary:hover span {
-  transform: translateX(4px);
+  background: var(--accent);
+  color: var(--ink-0);
 }
 .secondary {
-  display: inline-flex;
-  align-items: center;
-  gap: 0.6rem;
-  height: 3.25rem;
   font-weight: 500;
+  border-bottom: 1px solid currentColor;
+  padding-bottom: 0.1rem;
 }
-.secondary:hover span {
-  transform: translateY(3px);
-}
-
-.also {
+.also,
+.facts {
   font-size: var(--step--1);
   color: var(--ink-2);
 }
 .also a {
   color: var(--ink);
   border-bottom: 1px solid var(--line);
-  transition: border-color 0.3s;
-}
-.also a:hover {
-  border-color: var(--cta-bg);
 }
 .facts {
   font-family: var(--font-mono);
-  font-size: 0.75rem;
-  letter-spacing: 0.02em;
-  color: var(--ink-2);
+  font-size: 0.72rem;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+
+.tagline {
+  display: none;
+  position: absolute;
+  left: var(--margin);
+  top: 34%;
+  z-index: 2;
+  font-size: clamp(2.6rem, 1rem + 5vw, 6.2rem);
+  line-height: 1;
+  max-width: 9ch;
+  will-change: transform;
+}
+.tagline em {
+  font-family: var(--font-serif);
+  font-style: italic;
+  letter-spacing: -0.02em;
+}
+
+/* Devices without the live world (no capable GPU) get the hero's composition drawn by the
+   page itself: the wordmark with the shadow and its disk. */
+.still {
+  display: none;
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
+}
+:global(html.gl-off) .still {
+  display: block;
+}
+.word {
+  position: absolute;
+  left: 72%;
+  top: 38%;
+  transform: translate(-50%, -50%);
+  font-weight: 800;
+  font-size: min(10.5vw, 24vh);
+  letter-spacing: -0.06em;
+  line-height: 0.8;
+  color: var(--ink-0);
+}
+.hole {
+  position: absolute;
+  left: 72%;
+  top: 38%;
+  width: min(7vw, 16vh);
+  aspect-ratio: 1;
+  border-radius: 50%;
+  transform: translate(-50%, -50%);
+  background: #000;
+  box-shadow:
+    0 0 0 2px #fff,
+    0 0 0 0.9vw rgba(255, 90, 31, 0.0);
+}
+.hole::before {
+  content: '';
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  width: 300%;
+  height: 38%;
+  border-radius: 50%;
+  transform: translate(-50%, -50%) rotate(-6deg);
+  background: conic-gradient(from 90deg, #e8352b, #f57a1f, #f7c21b, #2fb35a, #2a9fe0, #4248c2, #9a4fd0, #e8352b);
+  -webkit-mask: radial-gradient(closest-side, transparent 52%, #000 56%, #000 86%, transparent 100%);
+  mask: radial-gradient(closest-side, transparent 52%, #000 56%, #000 86%, transparent 100%);
+  z-index: -1;
+}
+@media (max-width: 899px) {
+  .word,
+  .hole {
+    left: 50%;
+    top: 26%;
+  }
+  .word {
+    font-size: 24vw;
+  }
+  .hole {
+    width: 18vw;
+  }
 }
