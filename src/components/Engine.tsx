@@ -69,10 +69,7 @@ export function Engine() {
       heldRef.current = true
       setHeld(true)
       const measure = () => {
-        const next = root.nextElementSibling as HTMLElement | null
-        const top = root.getBoundingClientRect().top + window.scrollY
-        const end = next ? next.getBoundingClientRect().top + window.scrollY : top + root.offsetHeight
-        geometry.current = { top, height: Math.max(1, end - top) }
+        geometry.current = { top: root.getBoundingClientRect().top + window.scrollY, height: Math.max(1, root.offsetHeight) }
       }
       measure()
       let step = -2

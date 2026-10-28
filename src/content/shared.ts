@@ -66,11 +66,11 @@ export const times = {
 export const layerOrder: readonly LayerId[] = ['ai', 'growth', 'apps', 'design', 'automation', 'data', 'cloud']
 
 /**
- * Chakra index (0 root … 6 crown) for each layer, and its colour: the temperature of the
- * accretion-disk band it rises from, red at the cool outer edge to blue-white at the hot core.
+ * Chakra index (0 root … 6 crown) for each layer, and its colour: the chakra's own, root red to
+ * crown violet, the same as its band in the film's disk and its lotus.
  */
 export const chakraOf: Record<LayerId, number> = { cloud: 0, data: 1, automation: 2, design: 3, apps: 4, growth: 5, ai: 6 }
-export const chakraColors = ['#ff3b1f', '#ff6b21', '#ff9e33', '#ffcc80', '#d6e3ff', '#9ebdff', '#8fa8ff'] as const
+export const chakraColors = ['#e8352b', '#f57a1f', '#f7c21b', '#2fb35a', '#2a9fe0', '#4248c2', '#9a4fd0'] as const
 
 export const layerTech: Record<LayerId, readonly string[]> = {
   ai: ['LLMs', 'Retrieval', 'OCR', 'Evaluation'],

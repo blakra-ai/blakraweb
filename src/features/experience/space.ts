@@ -1,7 +1,8 @@
 import { Vector3 } from 'three'
+import { DISK_TILT } from './timeline'
 
-/** The disk's tilt from the screen plane, and the spin axis it implies (the column, the jet). */
-export const DISK_TILT = -1.32
+export { DISK_TILT }
+/** The spin axis the disk's tilt implies (the column, the jet). */
 export const AXIS = new Vector3(0, -Math.sin(DISK_TILT), Math.cos(DISK_TILT)).normalize()
 
 const c = Math.cos(DISK_TILT)

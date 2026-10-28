@@ -11,12 +11,12 @@ import { film, LAYERS } from './state'
  */
 export function createDirector() {
   let tops: number[] = []
+  let heights: number[] = []
   let end = 1
   const measure = () => {
-    tops = acts.map(({ beat }) => {
-      const el = document.querySelector<HTMLElement>(`[data-beat="${beat}"]`)
-      return el ? el.getBoundingClientRect().top + window.scrollY : 0
-    })
+    const els = acts.map(({ beat }) => document.querySelector<HTMLElement>(`[data-beat="${beat}"]`))
+    tops = els.map((el) => (el ? el.getBoundingClientRect().top + window.scrollY : 0))
+    heights = els.map((el) => (el ? el.offsetHeight : 1))
     end = Math.max(1, document.documentElement.scrollHeight - window.innerHeight)
   }
   measure()
@@ -27,7 +27,8 @@ export function createDirector() {
     while (i < acts.length - 1 && y >= tops[i + 1]) i++
     const from = tops[i]
     const to = i < acts.length - 1 ? tops[i + 1] : end
-    const span = i < acts.length - 1 ? actSpan(to - from, window.innerHeight) : to - from
+    // An act plays over its own section; anything between it and the next act rests on its last frame.
+    const span = i < acts.length - 1 ? actSpan(heights[i], window.innerHeight) : to - from
     const p = Math.min(1, Math.max(0, (y - from) / Math.max(1, span)))
     return acts[i].from + p * (acts[i].to - acts[i].from)
   }
@@ -63,11 +64,8 @@ export function createDirector() {
   }
 }
 
-/** The case closest to a need: its named proof, or the one sharing most of its layers. */
+/** The system a need names as its proof (the one the page links to), or none (-1). */
 function proofFor(choice: NeedId | 'all') {
-  if (choice === 'all') return chapters.length - 1
-  const n = needs[choice]
-  if (n.proof) return chapters.findIndex((c) => c.id === n.proof)
-  const score = (i: number) => chapters[i].layers.filter((l) => n.layers.includes(l)).length
-  return chapters.reduce((best, _, i) => (score(i) > score(best) ? i : best), 0)
+  const proof = choice === 'all' ? null : needs[choice].proof
+  return proof ? chapters.findIndex((c) => c.id === proof) : -1
 }

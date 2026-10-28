@@ -47,6 +47,32 @@ export const ease = (x: number) => x * x * x * (x * (x * 6 - 15) + 10)
 export const damp = (from: number, to: number, lambda: number, dt: number) => from + (to - from) * (1 - Math.exp(-lambda * dt))
 
 type V3 = [number, number, number]
+
+/** The disk's tilt from the screen plane; the spin axis (the column, the jet) leans with it. */
+export const DISK_TILT = -1.32
+/** A point on the spin axis at height h. */
+const axisAt = (h: number): V3 => [0, -Math.sin(DISK_TILT) * h, Math.cos(DISK_TILT) * h]
+
+/** Where the five systems ignite along the jet: sideways offset, height on the axis, depth. */
+export const stars = [
+  [1.9, 11, 0.8],
+  [-1.7, 14, -0.6],
+  [2, 17, -1],
+  [-1.6, 20, 0.6],
+  [1.9, 23, 0.2],
+] as const
+/** When each of the five systems ignites. */
+export const starAt = (k: number) => beats.systems[0] + 0.02 + k * 0.036
+
+/**
+ * Riding the jet: the camera settles on each system as its star ignites, the jet held right of
+ * centre (the left is for its case) and each star beside it.
+ */
+const ride = stars.map(([, h, dz], k) => {
+  const [, y, z] = axisAt(h)
+  return { t: starAt(k), pos: [-2.2, y + 0.4, z + dz + 12.5] as V3, look: [-3.1, y + 0.7, z + dz] as V3 }
+})
+
 /** The camera's path: position and the point it looks at. The subject sits right of centre; the left is for the words. */
 const keys: { t: number; pos: V3; look: V3 }[] = [
   { t: 0, pos: [0, 0.6, 17], look: [-1.2, 0, 0] },
@@ -55,8 +81,9 @@ const keys: { t: number; pos: V3; look: V3 }[] = [
   { t: 0.27, pos: [1, 2.3, 12.5], look: [-3.2, 0.2, 0] },
   { t: 0.31, pos: [5.4, 3.1, 9.2], look: [-1.6, 2.9, 0] },
   { t: 0.42, pos: [5.8, 3.9, 9.8], look: [-1.9, 3.9, 0] },
-  { t: 0.46, pos: [5.5, 7, 12.5], look: [-1.6, 9, 0] },
-  { t: 0.65, pos: [5, 22, 13], look: [-1.8, 24, 0] },
+  { t: 0.46, pos: [4.5, 7, 13.5], look: [-2.2, 8.6, 1.6] },
+  ...ride,
+  { ...ride[ride.length - 1], t: beats.systems[1] },
   { t: 0.69, pos: [0.01, 12.5, 0.6], look: [-1.6, 0, 0] },
   { t: 0.72, pos: [0.01, 11.5, 0.6], look: [-1.6, 0, 0] },
   { t: 0.77, pos: [0, 4.5, 12], look: [-2.8, 0.3, 0] },
@@ -97,13 +124,3 @@ export const bloomAt = (k: number) => beats.build[0] + 0.03 + k * 0.018
 /** Heights of the seven centres on the spin axis, root to crown. */
 export const centreY = (k: number) => 1.1 + k * 0.82
 export const jetBase = centreY(6) + 0.6
-/** Where the five systems ignite along the jet: sideways offset, height on the axis, depth. */
-export const stars = [
-  [2.6, 11, 1],
-  [-2.8, 14, -0.6],
-  [2.2, 17, -1.2],
-  [-2.4, 20, 0.8],
-  [2.8, 23, 0.4],
-] as const
-/** When each of the five systems ignites. */
-export const starAt = (k: number) => beats.systems[0] + 0.02 + k * 0.036
