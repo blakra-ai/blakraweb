@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest'
-import { acts, actSpan, beats, bloomAt, bodyAt, cameraAt, factAt, productFocus, starAt, stationAt } from '../src/features/experience/timeline'
+import { acts, beats, bloomAt, bodyAt, cameraAt, factAt, productFocus, starAt, stationAt } from '../src/features/experience/timeline'
 
 const within = (t: number, [a, b]: readonly [number, number]) => t >= a && t <= b
 
@@ -11,16 +11,17 @@ describe('the film: one continuous story', () => {
     for (let i = 1; i < list.length; i++) expect(list[i][0]).toBeCloseTo(list[i - 1][1], 10)
   })
 
-  it('acts run in order and never overlap', () => {
-    for (let i = 1; i < acts.length; i++) expect(acts[i].from).toBeGreaterThanOrEqual(acts[i - 1].to)
-    expect(acts[0].from).toBe(0)
-    expect(acts[acts.length - 1].to).toBe(1)
+  it('acts run in order, from 0 to 1, each with a stretch of its own', () => {
+    for (const a of acts) expect(a.out).toBeGreaterThan(a.in)
+    for (let i = 1; i < acts.length; i++) expect(acts[i].in).toBeGreaterThanOrEqual(acts[i - 1].out)
+    expect(acts[0].in).toBe(0)
+    expect(acts[acts.length - 1].out).toBe(1)
   })
 
   it('every moment the page shows text for falls inside its own act', () => {
     const act = (beat: string) => {
       const a = acts.find((x) => x.beat === beat)!
-      return [a.from, a.to] as const
+      return [a.in, a.out] as const
     }
     for (let k = 0; k < 7; k++) expect(within(bloomAt(k), act('layers'))).toBe(true)
     for (let k = 0; k < 5; k++) expect(within(starAt(k), act('proof'))).toBe(true)
@@ -46,8 +47,19 @@ describe('the film: one continuous story', () => {
     }
   })
 
-  it('a held act plays over its hold; a short section over most of its height', () => {
-    expect(actSpan(2400, 900)).toBe(1500)
-    expect(actSpan(1000, 900)).toBe(600)
+  it('the camera moves on through its keys: it never stops while the story moves on, except where it holds', () => {
+    // Speed just before and just after each key: no key brings a moving camera to a halt.
+    const at = (t: number) => cameraAt(t, false, { pos: [0, 0, 0], look: [0, 0, 0] })
+    const speed = (t: number) => {
+      const a = at(t - 0.0005)
+      const b = at(t + 0.0005)
+      return Math.hypot(...a.pos.map((v, j) => b.pos[j] - v), ...a.look.map((v, j) => b.look[j] - v))
+    }
+    let stops = 0
+    for (let t = 0.1; t < 0.9; t += 0.002) {
+      const s = speed(t)
+      if (s < 1e-4 && speed(t - 0.01) > 0.01 && speed(t + 0.01) > 0.01) stops++
+    }
+    expect(stops).toBe(0)
   })
 })

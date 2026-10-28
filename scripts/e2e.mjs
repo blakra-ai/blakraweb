@@ -279,7 +279,8 @@ try {
     await page.waitForTimeout(3000)
     const layer = await page.evaluate(() => {
       const li = document.getElementById('layer-data')
-      return { active: li.hasAttribute('data-active'), focused: li.contains(document.activeElement), top: Math.round(li.getBoundingClientRect().top), vh: innerHeight }
+      // The row itself: held, the list item has no box of its own (its row and detail sit in the list's grid).
+      return { active: li.hasAttribute('data-active'), focused: li.contains(document.activeElement), top: Math.round(li.querySelector('button').getBoundingClientRect().top), vh: innerHeight }
     })
     check('F5', 'a link to the Data layer lights that layer in view', layer.active && layer.focused && layer.top > 0 && layer.top < layer.vh, JSON.stringify(layer))
     await own.close()

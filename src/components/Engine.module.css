@@ -117,9 +117,6 @@
   margin-top: 0.4rem;
   border-top: 0.75px solid var(--hair);
 }
-.layers li {
-  border-bottom: 0.75px solid var(--hair);
-}
 .layer {
   display: grid;
   grid-template-columns: 0.75rem 2rem 1fr;
@@ -129,6 +126,7 @@
   min-height: 2.6rem;
   padding: 0;
   border: 0;
+  border-bottom: 0.75px solid var(--hair);
   background: none;
   color: var(--ink-2);
   text-align: left;
@@ -181,22 +179,13 @@
   vertical-align: 0.15em;
 }
 
-/* The active row opens (grid rows, so the height eases without measuring). */
+/* Each layer's detail: under its row in the list (every one open). */
 .detail {
-  display: grid;
-  grid-template-rows: 0fr;
-  transition: grid-template-rows 0.55s var(--ease-out);
+  padding: 0.5rem 0 0 3.35rem;
+  border-bottom: 0.75px solid var(--hair);
 }
-.detail > * {
-  min-height: 0;
-  overflow: hidden;
-}
-.layers li[data-active] .detail,
-.text:not([data-held]) .detail {
-  grid-template-rows: 1fr;
-}
-.detail {
-  padding-left: 3.35rem;
+.detailName {
+  display: none;
 }
 .layerText {
   font-size: 0.92rem;
@@ -204,14 +193,61 @@
   color: var(--ink-2);
 }
 .meta {
-  padding-bottom: 0.7rem;
+  padding: 0.2rem 0 0.8rem;
   font-family: var(--font-mono);
   font-size: 0.68rem;
   line-height: 1.6;
   color: var(--ink-2);
 }
-.text:not([data-held]) .meta {
-  padding-bottom: 0.8rem;
+
+/*
+ * Held: the rows never move. The list is a grid; each row is one line of it, and every detail
+ * sits in one place under the seven rows (the place is as tall as the longest), so only the words
+ * in that place change, printed top to bottom as their centre blooms and wiped as the next one
+ * does. Nothing above them shifts and nothing fades.
+ */
+.text[data-held] .layers li {
+  display: contents;
+}
+.text[data-held] .layers li[data-active] .layerName {
+  font-weight: 650;
+}
+.text[data-held] .detail {
+  padding-top: 0.75rem;
+}
+.text[data-held] .detailName {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  margin-bottom: 0.3rem;
+  font-family: var(--font-mono);
+  font-size: 0.7rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+.text[data-held] .detailName .dot {
+  background: var(--chakra);
+}
+.text[data-held] .detail {
+  grid-row: 8;
+  grid-column: 1;
+  border-bottom: 0;
+  visibility: hidden;
+  clip-path: inset(0 0 100% 0);
+  transform: translate3d(0, 0.5rem, 0);
+  transition:
+    clip-path 0.3s cubic-bezier(0.5, 0, 0.75, 0),
+    transform 0.3s cubic-bezier(0.5, 0, 0.75, 0),
+    visibility 0s 0.3s;
+}
+.text[data-held] .layers li[data-active] .detail {
+  visibility: visible;
+  clip-path: inset(0);
+  transform: none;
+  transition:
+    clip-path 0.6s var(--ease-out) 0.3s,
+    transform 0.6s var(--ease-out) 0.3s,
+    visibility 0s 0.3s;
 }
 .symbol {
   margin-top: 0.4rem;
@@ -234,6 +270,6 @@
   .detail,
   .layer,
   .dot {
-    transition: none;
+    transition: none !important;
   }
 }

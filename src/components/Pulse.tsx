@@ -43,7 +43,7 @@ export function Pulse() {
 
   return (
     <Section ref={ref} id="pulse" beat="need" className={s.pulse} aria-labelledby="pulse-title">
-      <div className={s.frame}>
+      <div className={s.frame} data-pin>
       <div className={s.copy}>
         <p className={s.eyebrow}>{p.eyebrow}</p>
         <h2 id="pulse-title" className={s.title} data-focus tabIndex={-1}>

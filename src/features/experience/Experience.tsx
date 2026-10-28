@@ -1,5 +1,6 @@
 import { Preload } from '@react-three/drei'
-import { advance, Canvas } from '@react-three/fiber'
+import { advance, Canvas, useFrame } from '@react-three/fiber'
+import { Vector3 } from 'three'
 import { useEffect, useState } from 'react'
 import { createPortal } from 'react-dom'
 import { chapters } from '../../content/shared'
@@ -23,6 +24,16 @@ import { Fragments } from './world/Fragments'
 const parts = new URLSearchParams(location.search).get('parts')
 const profile: number[] | null = new URLSearchParams(location.search).has('profile') ? ((window as unknown as { __film: number[] }).__film = []) : null
 const has = (name: string) => !parts || parts.split(',').includes(name)
+// ?probe: every drawn frame's time, scroll offset, story position and camera, for motion analysis.
+const probe: number[][] | null = new URLSearchParams(location.search).has('probe') ? ((window as unknown as { __probe: number[][] }).__probe = []) : null
+function Probe() {
+  useFrame(({ camera }) => {
+    const d = camera.getWorldDirection(dir)
+    probe!.push([performance.now(), window.scrollY, film.raw, film.t, camera.position.x, camera.position.y, camera.position.z, d.x, d.y, d.z])
+  })
+  return null
+}
+const dir = new Vector3()
 
 export default function Experience() {
   const { enabled } = useMotion()
@@ -98,6 +109,7 @@ export default function Experience() {
         <directionalLight position={[4, 8, 8]} intensity={1.3} />
         <ambientLight intensity={0.5} />
         <CameraRig />
+        {probe && <Probe />}
         {has('fragments') && <Fragments count={phone ? 240 : 560} />}
         {has('hole') && <Hole phone={phone} />}
         {has('column') && <Column />}

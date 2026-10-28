@@ -19,7 +19,7 @@ export function Hero() {
 
   return (
     <Section ref={ref} id="top" beat="hero" className={s.hero} aria-labelledby="title">
-      <div className={s.frame}>
+      <div className={s.frame} data-pin>
         {/* Without WebGL: the wordmark and the shadow, drawn by the page itself. */}
         <div className={s.still} aria-hidden="true">
           <span className={s.word}>BLAKRA</span>

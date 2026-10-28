@@ -17,7 +17,7 @@ export function Process() {
   const { t } = useI18n()
   const p = t.process
   const ref = useRef<HTMLElement>(null)
-  const { passed } = useActSteps(ref, 'process', moments)
+  const { passed } = useActSteps(ref, moments)
   // The terms in the order the orbit brings them: the NDA first, ownership last.
   const terms = [...p.terms].reverse()
 

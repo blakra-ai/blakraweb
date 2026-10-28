@@ -19,24 +19,22 @@ export const beats = {
   running: [0.85, 1],
 } as const satisfies Record<string, readonly [number, number]>
 
-/** Page sections (data-beat) and the stretch of the story each one plays. */
-export const acts = [
-  { beat: 'hero', from: 0, to: beats.mark[1] },
-  { beat: 'need', from: beats.need[0], to: beats.need[1] },
-  { beat: 'layers', from: beats.build[0], to: beats.charge[1] },
-  { beat: 'proof', from: beats.launch[0], to: beats.systems[1] },
-  { beat: 'product', from: beats.product[0], to: beats.product[1] },
-  { beat: 'process', from: beats.orbit[0], to: beats.orbit[1] },
-  { beat: 'people', from: beats.people[0], to: beats.people[1] },
-  { beat: 'contact', from: beats.running[0], to: beats.running[1] },
-] as const
-
 /**
- * How much of a section's scroll its act plays over: the stretch it holds the screen (its
- * height less one screen), so a held act ends exactly as the hold does; a section that does not
- * hold plays over most of its height. The rest of the scroll rests on the act's last frame.
+ * Page sections (data-beat) and the stretch of the story each plays while it holds the screen
+ * (in … out). From one act's out to the next one's in, the film goes on playing while the page
+ * changes sections: the camera travels to the next subject as the next words arrive. So no
+ * stretch of scroll leaves the story still (src/features/experience/scrollMap.ts).
  */
-export const actSpan = (height: number, screen: number) => Math.max(height - screen, height * 0.6)
+export const acts = [
+  { beat: 'hero', in: 0, out: 0.15 },
+  { beat: 'need', in: 0.19, out: 0.27 },
+  { beat: 'layers', in: 0.295, out: 0.43 },
+  { beat: 'proof', in: 0.455, out: 0.648 },
+  { beat: 'product', in: 0.69, out: 0.722 },
+  { beat: 'process', in: 0.745, out: 0.792 },
+  { beat: 'people', in: 0.8, out: 0.835 },
+  { beat: 'contact', in: 0.85, out: 1 },
+] as const
 
 /** 0 … 1 across [a, b], clamped. */
 export const span = (t: number, a: number, b: number) => Math.min(1, Math.max(0, (t - a) / (b - a)))
@@ -96,19 +94,52 @@ const keys: { t: number; pos: V3; look: V3 }[] = [
 ]
 
 /**
+ * The camera's path through its keys as a monotone cubic per coordinate (Fritsch–Carlson): it
+ * moves on through each key without stopping, never overshoots one, and comes to rest only
+ * where the keys themselves hold still. Slopes are worked out once.
+ */
+const times = keys.map((k) => k.t)
+const slopes = (values: number[]) => {
+  const n = values.length
+  const d = values.slice(0, -1).map((v, i) => (values[i + 1] - v) / (times[i + 1] - times[i]))
+  const m = values.map((_, i) => (i === 0 ? d[0] : i === n - 1 ? d[n - 2] : d[i - 1] * d[i] <= 0 ? 0 : (d[i - 1] + d[i]) / 2))
+  for (let i = 0; i < n - 1; i++) {
+    if (d[i] === 0) {
+      m[i] = m[i + 1] = 0
+      continue
+    }
+    const a = m[i] / d[i]
+    const b = m[i + 1] / d[i]
+    const h = Math.hypot(a, b)
+    if (h > 3) {
+      m[i] = (3 * a * d[i]) / h
+      m[i + 1] = (3 * b * d[i]) / h
+    }
+  }
+  return m
+}
+const channels = [0, 1, 2].flatMap((j) => [keys.map((k) => k.pos[j]), keys.map((k) => k.look[j])])
+const tangents = channels.map(slopes)
+
+/**
  * The camera at t. Portrait screens keep the subject centred and above the words: a step back
  * along the view to fit the narrower frame, a slide sideways (not a turn) to centre the subject,
  * and the look point lowered along the camera's own up, so the subject rides high in the frame.
  */
 export function cameraAt(t: number, portrait: boolean, out: { pos: V3; look: V3 }) {
+  const x = Math.min(times[times.length - 1], Math.max(times[0], t))
   let i = 0
-  while (i < keys.length - 2 && t > keys[i + 1].t) i++
-  const a = keys[i]
-  const b = keys[i + 1]
-  const k = ease(span(t, a.t, b.t))
-  for (let j = 0; j < 3; j++) {
-    out.pos[j] = a.pos[j] + (b.pos[j] - a.pos[j]) * k
-    out.look[j] = a.look[j] + (b.look[j] - a.look[j]) * k
+  while (i < times.length - 2 && x > times[i + 1]) i++
+  const h = times[i + 1] - times[i]
+  const s = (x - times[i]) / h
+  const s2 = s * s
+  const s3 = s2 * s
+  for (let c = 0; c < 6; c++) {
+    const v = channels[c]
+    const m = tangents[c]
+    const value = (2 * s3 - 3 * s2 + 1) * v[i] + (s3 - 2 * s2 + s) * h * m[i] + (-2 * s3 + 3 * s2) * v[i + 1] + (s3 - s2) * h * m[i + 1]
+    if (c % 2 === 0) out.pos[c / 2] = value
+    else out.look[(c - 1) / 2] = value
   }
   if (portrait) {
     const { pos, look } = out

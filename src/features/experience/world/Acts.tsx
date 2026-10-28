@@ -13,19 +13,22 @@ import { beat, beats, bloomAt, bodyAt, cameraAt, centreY, damp, ease, jetBase, s
 import { pointer } from '../controllers/pointer'
 export const HOLE_R = 0.62
 
-/** The camera follows the director's path; the cursor adds a little parallax; the launch shakes it. */
+/** The camera follows the director's path; the cursor adds a little parallax; the launch pushes it back. */
 export function CameraRig() {
   const { camera } = useThree()
   const at = useMemo(() => ({ pos: [0, 0, 0] as [number, number, number], look: [0, 0, 0] as [number, number, number] }), [])
   const par = useRef({ x: 0, y: 0 })
   const look = useMemo(() => new Vector3(), [])
-  useFrame((state, dt) => {
+  const back = useMemo(() => new Vector3(), [])
+  useFrame((_, dt) => {
     cameraAt(film.t, film.portrait, at)
     par.current.x = damp(par.current.x, pointer.x, 2, dt)
     par.current.y = damp(par.current.y, pointer.y, 2, dt)
-    const shake = film.still ? 0 : Math.sin(span(film.t, beats.launch[0], beats.launch[0] + 0.02) * Math.PI) * 0.12
-    const tt = state.clock.elapsedTime
-    camera.position.set(at.pos[0] + par.current.x * 0.5 + Math.sin(tt * 41) * shake, at.pos[1] + par.current.y * 0.3 + Math.cos(tt * 37) * shake, at.pos[2])
+    // The launch: a recoil, not a shake. The camera is pushed back along its view as the jet
+    // fires and settles again, one smooth swell driven by the scroll (a jitter reads as a stutter).
+    const recoil = Math.sin(span(film.t, beats.launch[0] - 0.004, beats.launch[0] + 0.028) * Math.PI) ** 2 * 0.7
+    back.set(at.pos[0] - at.look[0], at.pos[1] - at.look[1], at.pos[2] - at.look[2]).normalize().multiplyScalar(recoil)
+    camera.position.set(at.pos[0] + par.current.x * 0.5 + back.x, at.pos[1] + par.current.y * 0.3 + back.y, at.pos[2] + back.z)
     look.set(at.look[0], at.look[1], at.look[2])
     camera.lookAt(look)
   })

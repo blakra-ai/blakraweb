@@ -1,10 +1,10 @@
-import { useCallback, useEffect, useRef, useState, type CSSProperties, type MouseEvent as ReactMouseEvent } from 'react'
+import { useEffect, useRef, useState, type CSSProperties, type MouseEvent as ReactMouseEvent } from 'react'
 import { chakraColors, chakraOf, chapters, layerOrder, layerTech, needTop } from '../content/shared'
 import type { LayerId } from '../content/types'
-import { acts, actSpan, bloomAt } from '../features/experience/timeline'
+import { scrollAt, storyAt } from '../features/experience/scrollMap'
+import { bloomAt } from '../features/experience/timeline'
 import { useI18n } from '../i18n'
 import { gsap, layouts } from '../motion/gsap'
-import { onReflow } from '../motion/reflow'
 import { registerAnchor } from '../motion/MotionProvider'
 import { getPulse, onPulse, type PulseChoice } from '../motion/pulse'
 import { useMotionSetup } from '../motion/useMotionSetup'
@@ -13,7 +13,6 @@ import s from './Engine.module.css'
 
 /** Root first: the list reads top to bottom in the order the centres bloom. */
 const byIndex = [...layerOrder].reverse()
-const act = acts.find((a) => a.beat === 'layers')!
 
 /**
  * Act IV of the film: seven layers, one team. The camera turns to watch the spin axis while
@@ -30,17 +29,10 @@ export function Engine() {
   const [held, setHeld] = useState(false)
   const [choice, setChoice] = useState<PulseChoice>(null)
   const heldRef = useRef(false)
-  const geometry = useRef({ top: 0, height: 1 })
 
   useEffect(() => {
     setChoice(getPulse().choice)
     return onPulse(setChoice)
-  }, [])
-
-  // The film's t at a scroll offset, as the director computes it for this act.
-  const tAt = useCallback((y: number) => {
-    const { top, height } = geometry.current
-    return act.from + Math.min(1, Math.max(0, (y - top) / actSpan(height, window.innerHeight))) * (act.to - act.from)
   }, [])
 
   // Links to a layer (#layer-data …): held, land at the moment its centre blooms.
@@ -51,11 +43,8 @@ export function Engine() {
       registerAnchor(`layer-${layer}`, () => {
         const row = el.querySelector<HTMLElement>(`#layer-${layer}`)
         const focus = row?.querySelector<HTMLElement>('button')
-        if (heldRef.current) {
-          const { top, height } = geometry.current
-          const p = (bloomAt(chakraOf[layer]) + 0.012 - act.from) / (act.to - act.from)
-          return { top: top + p * actSpan(height, window.innerHeight), focus }
-        }
+        const top = heldRef.current ? scrollAt(bloomAt(chakraOf[layer]) + 0.012) : null
+        if (top !== null) return { top, focus }
         setActive(layer)
         return row ? { top: row.getBoundingClientRect().top + window.scrollY - 120, focus } : null
       }),
@@ -64,18 +53,14 @@ export function Engine() {
   }, [])
 
   // Held (wide screens, motion on): the scroll blooms the centres; React state changes only at each step.
-  useMotionSetup(ref, (root) => {
+  useMotionSetup(ref, () => {
     const mm = gsap.matchMedia()
     mm.add(layouts.pinned, () => {
       heldRef.current = true
       setHeld(true)
-      const measure = () => {
-        geometry.current = { top: root.getBoundingClientRect().top + window.scrollY, height: Math.max(1, root.offsetHeight) }
-      }
-      measure()
       let step = -2
       const tick = () => {
-        const t = tAt(window.scrollY)
+        const t = storyAt(window.scrollY)
         let n = 0
         while (n < 7 && t >= bloomAt(n)) n++
         if (n === step) return
@@ -85,12 +70,8 @@ export function Engine() {
       }
       tick()
       gsap.ticker.add(tick)
-      const offReflow = onReflow(measure)
-      window.addEventListener('resize', measure)
       return () => {
         gsap.ticker.remove(tick)
-        offReflow()
-        window.removeEventListener('resize', measure)
         heldRef.current = false
         setHeld(false)
         setBloomed(7)
@@ -121,7 +102,7 @@ export function Engine() {
 
   return (
     <Section ref={ref} id="engine" beat="layers" className={s.engine} aria-labelledby="engine-title">
-      <div className={s.pin}>
+      <div className={s.pin} data-pin>
         <div className={s.text} data-held={held ? '' : undefined} data-crown={atCrown ? '' : undefined}>
           <p className={s.eyebrow}>{e.eyebrow}</p>
           <h2 id="engine-title" className={s.title} data-focus tabIndex={-1}>
@@ -160,6 +141,10 @@ export function Engine() {
                   </button>
                   <div id={`layer-${layer}-text`} className={s.detail}>
                     <div>
+                    {/* Held, the detail sits under the list: it names its layer (the row already does for assistive tech). */}
+                    <p className={s.detailName} aria-hidden="true">
+                      <span className={s.dot} />0{k + 1} · {e.layers[layer].name}
+                    </p>
                     <p className={s.layerText}>{e.layers[layer].text}</p>
                     <p className={s.meta}>
                       {layerTech[layer].join(' · ')}

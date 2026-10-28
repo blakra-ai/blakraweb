@@ -20,7 +20,7 @@ export function Products() {
   const { t, locale } = useI18n()
   const p = t.products
   const ref = useRef<HTMLElement>(null)
-  const { passed } = useActSteps(ref, 'product', moments)
+  const { passed } = useActSteps(ref, moments)
   // Held: a fact shows once the film has passed its moment. Otherwise every fact shows.
   const stateOf = (k: number) => (passed === null || k < passed ? 'on' : 'next')
   let k = 0

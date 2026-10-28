@@ -1,21 +1,19 @@
-import { useCallback, useEffect, useRef, useState, type CSSProperties, type MouseEvent } from 'react'
+import { useEffect, useRef, useState, type CSSProperties, type MouseEvent } from 'react'
 import { chakraColors, chakraOf, chapters, needs } from '../content/shared'
 import type { LayerId } from '../content/types'
-import { acts, actSpan, starAt } from '../features/experience/timeline'
+import { starAt } from '../features/experience/timeline'
 import { useI18n } from '../i18n'
-import { gsap, layouts } from '../motion/gsap'
-import { onReflow, reflow } from '../motion/reflow'
 import { registerAnchor, useMotion } from '../motion/MotionProvider'
 import { getPulse, onPulse, type PulseChoice } from '../motion/pulse'
-import { useMotionSetup } from '../motion/useMotionSetup'
+import { useActSteps } from '../motion/useActSteps'
 import { Section } from './Section'
 import s from './DayTrack.module.css'
 
 /** Case number on the card and the index: 01 … 05. */
 const caseNo = (i: number) => String(i + 1).padStart(2, '0')
-const act = acts.find((a) => a.beat === 'proof')!
 /** A system counts as launched from the moment its star begins to ignite in the film. */
 const litAt = (k: number) => starAt(k) - 0.008
+const moments = chapters.map((_, k) => litAt(k))
 
 /** A system's colour: the mean of its layers' colours, as its star is tinted in the film. */
 function tint(layers: readonly LayerId[]) {
@@ -39,22 +37,15 @@ export function DayTrack() {
   const { t } = useI18n()
   const { scrollToHash } = useMotion()
   const ref = useRef<HTMLElement>(null)
-  // How many systems have launched; all of them whenever the section is not held.
-  const [lit, setLit] = useState(chapters.length)
-  const [held, setHeld] = useState(false)
   const [choice, setChoice] = useState<PulseChoice>(null)
-  const heldRef = useRef(false)
-  const geometry = useRef({ top: 0, height: 1 })
+  // How many systems have launched while held; not held, all of them.
+  const { passed, scrollFor } = useActSteps(ref, moments)
+  const held = passed !== null
+  const lit = passed ?? chapters.length
 
   useEffect(() => {
     setChoice(getPulse().choice)
     return onPulse(setChoice)
-  }, [])
-
-  // The film's t at a scroll offset, as the director computes it for this act.
-  const tAt = useCallback((y: number) => {
-    const { top, height } = geometry.current
-    return act.from + Math.min(1, Math.max(0, (y - top) / actSpan(height, window.innerHeight))) * (act.to - act.from)
   }, [])
 
   // Links to a case (#h06 …): held, land just after its star ignites; in the list, the card itself.
@@ -65,82 +56,13 @@ export function DayTrack() {
       registerAnchor(c.id, () => {
         const card = el.querySelector<HTMLElement>(`#${c.id}`)
         const focus = card?.querySelector<HTMLElement>('[data-focus]')
-        if (heldRef.current) {
-          const { top, height } = geometry.current
-          const p = (litAt(k) + 0.012 - act.from) / (act.to - act.from)
-          return { top: top + p * actSpan(height, window.innerHeight), focus }
-        }
+        const top = scrollFor(litAt(k) + 0.012)
+        if (top !== null) return { top, focus }
         return card ? { top: card.getBoundingClientRect().top + window.scrollY - 96, focus } : null
       }),
     )
     return () => offs.forEach((off) => off())
-  }, [])
-
-  useMotionSetup(ref, (root) => {
-    const mm = gsap.matchMedia()
-    mm.add(layouts.pinned, () => {
-      const pin = root.querySelector<HTMLElement>('[data-pin]')!
-      const text = root.querySelector<HTMLElement>('[data-text]')!
-      const measure = () => {
-        geometry.current = { top: root.getBoundingClientRect().top + window.scrollY, height: Math.max(1, root.offsetHeight) }
-      }
-      let step = -1
-      const tick = () => {
-        const now = tAt(window.scrollY)
-        let n = 0
-        while (n < chapters.length && now >= litAt(n)) n++
-        if (n === step) return
-        step = n
-        setLit(n)
-      }
-      const hold = (on: boolean) => {
-        heldRef.current = on
-        setHeld(on)
-        if (on) {
-          measure()
-          step = -1
-          tick()
-          gsap.ticker.add(tick)
-        } else {
-          gsap.ticker.remove(tick)
-          setLit(chapters.length)
-        }
-      }
-      // Held only while the screen holds the header and the tallest case (a short laptop screen,
-      // a long translation or the reader's own text size may not): nothing is ever cut off.
-      const decide = () => {
-        const wasList = root.dataset.flow === 'list'
-        delete root.dataset.flow
-        const fits = pin.scrollHeight <= pin.clientHeight + 1
-        if (!fits) root.dataset.flow = 'list'
-        if (fits !== heldRef.current) hold(fits)
-        // Held and flowing differ in height: when it switched, everything measured below it moves.
-        if (fits === wasList) reflow()
-      }
-      decide()
-      let frame = 0
-      const recheck = () => {
-        if (frame) return
-        frame = requestAnimationFrame(() => {
-          frame = 0
-          decide()
-        })
-      }
-      // Text that grows later (web fonts, text spacing) re-checks; so does a resize.
-      const grow = new ResizeObserver(recheck)
-      grow.observe(text)
-      window.addEventListener('resize', recheck)
-      const offReflow = onReflow(measure)
-      return () => {
-        cancelAnimationFrame(frame)
-        grow.disconnect()
-        window.removeEventListener('resize', recheck)
-        offReflow()
-        delete root.dataset.flow
-        if (heldRef.current) hold(false)
-      }
-    })
-  })
+  }, [scrollFor])
 
   const go = (e: MouseEvent<HTMLAnchorElement>, k: number) => {
     e.preventDefault()

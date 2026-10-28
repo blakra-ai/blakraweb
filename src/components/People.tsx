@@ -18,7 +18,7 @@ export function People() {
   const { t } = useI18n()
   const p = t.people
   const ref = useRef<HTMLElement>(null)
-  const { passed } = useActSteps(ref, 'people', moments)
+  const { passed } = useActSteps(ref, moments)
   const meet = (i: number) => (film.person = i)
   const leave = () => (film.person = -1)
 
