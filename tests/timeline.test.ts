@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest'
-import { acts, beats, bloomAt, bodyAt, cameraAt, factAt, productFocus, starAt, stationAt } from '../src/features/experience/timeline'
+import { acts, beats, bloomAt, bodyAt, cameraAt, factAt, orbitAt, productFocus, starAt, stationAt } from '../src/features/experience/timeline'
 
 const within = (t: number, [a, b]: readonly [number, number]) => t >= a && t <= b
 
@@ -45,6 +45,17 @@ describe('the film: one continuous story', () => {
       // moves (down the jet to look along the axis, and back out to the orbit); a cut would be far more.
       expect(worst).toBeLessThan(0.5)
     }
+  })
+
+  it('the camera turns one way only, once round the system, ending where it began', () => {
+    let last = orbitAt(0).az
+    for (let i = 1; i <= 1000; i++) {
+      const az = orbitAt(i / 1000).az
+      expect(az).toBeGreaterThanOrEqual(last)
+      last = az
+    }
+    expect(orbitAt(0).az).toBe(0)
+    expect(orbitAt(1).az).toBe(360)
   })
 
   it('the camera moves on through its keys: it never stops while the story moves on, except where it holds', () => {

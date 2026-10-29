@@ -34,7 +34,7 @@ void main() {
   float band = smoothstep(inner, inner + 0.035, d) * (1.0 - smoothstep(inner + width * 0.6, inner + width, d));
   float flow = a * 2.0 - uTime * 0.5;
   float streak = 0.82 + 0.18 * sin(d * 34.0 + tnoise(vec2(flow * 3.0, d * 8.0)) * 6.0);
-  vec3 color = wheel(a / 6.28318 + 0.25 + uTime * 0.01) * streak;
+  vec3 color = wheel(a / 6.28318 + 0.25 - uTime * 0.01) * streak;
   color = mix(color, vec3(1.0), (1.0 - smoothstep(inner, inner + width * 0.35, d)) * 0.3);
   // The photon ring: one thin, hot line at the very edge of the shadow.
   float ring = exp(-pow((d - 1.018) / 0.012, 2.0));

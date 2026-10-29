@@ -28,8 +28,6 @@ export const blackHole = {
   diskOuter: 3.4,
   /** Close to edge-on, so the lensed far side rises over the shadow. */
   diskTilt: -1.2,
-  /** How far the cursor tilts the disk, in radians. */
-  cursorTilt: 0.16,
   /** Einstein radius of the lens on the wordmark, in horizon radii. */
   einstein: 1.7,
   /** Angular speed of the disk at the inner edge (radians per second); outer parts follow Kepler. */

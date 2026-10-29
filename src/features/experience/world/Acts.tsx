@@ -8,18 +8,25 @@ import { Lotus } from '../objects/Lotus'
 import { Wordmark } from '../objects/Wordmark'
 import { blackHole, chakras } from '../tokens'
 import { film, LAYERS } from '../state'
-import { AXIS, DISK_TILT, fromDisk, onAxis } from '../space'
-import { beat, beats, bloomAt, bodyAt, cameraAt, centreY, damp, ease, jetBase, span, starAt, stars, stationAt } from '../timeline'
+import { AXIS, DISK_TILT, fromDisk, kepler, onAxis } from '../space'
+import { beat, beats, bloomAt, bodyAt, cameraAt, cameraUp, centreY, damp, ease, jetBase, span, starAt, starPlace, stationAt } from '../timeline'
 import { pointer } from '../controllers/pointer'
 export const HOLE_R = 0.62
 
-/** The camera follows the director's path; the cursor adds a little parallax; the launch pushes it back. */
+/**
+ * The camera rides its orbit round the system (timeline.ts), upright on the spin axis. The
+ * cursor adds a little parallax in the camera's own plane (the only thing the cursor moves,
+ * besides the loose pieces of Act I); the launch pushes it back along its view.
+ */
 export function CameraRig() {
   const { camera } = useThree()
   const at = useMemo(() => ({ pos: [0, 0, 0] as [number, number, number], look: [0, 0, 0] as [number, number, number] }), [])
   const par = useRef({ x: 0, y: 0 })
   const look = useMemo(() => new Vector3(), [])
   const back = useMemo(() => new Vector3(), [])
+  const side = useMemo(() => new Vector3(), [])
+  const up = useMemo(() => new Vector3(), [])
+  const vert = useMemo(() => new Vector3(), [])
   useFrame((_, dt) => {
     cameraAt(film.t, film.portrait, at)
     par.current.x = damp(par.current.x, pointer.x, 2, dt)
@@ -27,8 +34,16 @@ export function CameraRig() {
     // The launch: a recoil, not a shake. The camera is pushed back along its view as the jet
     // fires and settles again, one smooth swell driven by the scroll (a jitter reads as a stutter).
     const recoil = Math.sin(span(film.t, beats.launch[0] - 0.004, beats.launch[0] + 0.028) * Math.PI) ** 2 * 0.7
-    back.set(at.pos[0] - at.look[0], at.pos[1] - at.look[1], at.pos[2] - at.look[2]).normalize().multiplyScalar(recoil)
-    camera.position.set(at.pos[0] + par.current.x * 0.5 + back.x, at.pos[1] + par.current.y * 0.3 + back.y, at.pos[2] + back.z)
+    back.set(at.pos[0] - at.look[0], at.pos[1] - at.look[1], at.pos[2] - at.look[2]).normalize()
+    up.set(cameraUp[0], cameraUp[1], cameraUp[2])
+    side.crossVectors(up, back).normalize()
+    vert.crossVectors(back, side)
+    camera.up.copy(up)
+    camera.position
+      .set(at.pos[0], at.pos[1], at.pos[2])
+      .addScaledVector(back, recoil)
+      .addScaledVector(side, par.current.x * 0.5)
+      .addScaledVector(vert, par.current.y * 0.3)
     look.set(at.look[0], at.look[1], at.look[2])
     camera.lookAt(look)
   })
@@ -46,7 +61,7 @@ export function Hole({ phone }: { phone: boolean }) {
   const hole = useRef(new Vector3())
   const radius = useRef(0.01)
   const uniforms = useMemo(() => ({ uR: { value: 0 }, uA: { value: 0 } }), [])
-  useFrame((_, dt) => {
+  useFrame(() => {
     const T = film.t
     const born = ease(span(T, beats.ignition[0], beats.ignition[0] + 0.018))
     const o = g.current
@@ -54,7 +69,6 @@ export function Hole({ phone }: { phone: boolean }) {
       const r = HOLE_R * born * (1 + 0.15 * Math.sin(born * Math.PI))
       o.scale.setScalar(Math.max(0.0001, r))
       o.visible = born > 0
-      o.rotation.x = damp(o.rotation.x, -pointer.y * blackHole.cursorTilt * 0.6, 3, dt)
       radius.current = o.scale.x
     }
     // The disk of light comes in as the pieces settle; it stays through the film.
@@ -123,7 +137,8 @@ export function Column() {
       o.scale.setScalar(damp(o.scale.x, Math.max(0.0001, s), 8, dt))
       // Not drawn until it blooms (and while the camera looks down the axis).
       o.visible = o.scale.x > 0.002
-      o.rotation.y += dt * (0.2 + k * 0.03)
+      // The column turns as one, slowly, in the disk's sense.
+      o.rotation.y += dt * 0.15
     })
     // The spark that charges the column, root to crown.
     const c = beat(T, beats.charge)
@@ -131,7 +146,7 @@ export function Column() {
       spark.current.visible = c > 0 && c < 1
       onAxis(centreY(0) + c * (centreY(6) - centreY(0) + 0.6), p)
       spark.current.position.copy(p)
-      spark.current.scale.setScalar(0.12 + 0.05 * Math.sin(film.clock * 20))
+      spark.current.scale.setScalar(0.12)
     }
   })
   // Each centre lies flat across the axis.
@@ -191,7 +206,7 @@ export function Jet() {
       // Full only while the jet is: they shrink away with its fade and stay off in the calm trace.
       const a = T < beats.running[0] ? u.uA.value : 0
       d.visible = lit > 0 && a > 0.02
-      d.scale.setScalar((0.32 + 0.05 * Math.sin(film.clock * 6 + i)) * a)
+      d.scale.setScalar(0.32 * a)
     })
   })
   const quat = useMemo(() => {
@@ -261,23 +276,25 @@ export function Jet() {
   )
 }
 
-/** Act V: five systems ignite along the jet, each in its layers' colours; the one nearest the visitor's need flares. */
+/**
+ * Act V: five systems ignite along the jet, each in its layers' colours, on a helix round it
+ * (each where the camera, turning, sees it right of the jet). Smaller than the hole: the systems
+ * are launched by it, not rivals to it. The one nearest the visitor's need flares.
+ */
 export function Stars({ layersOf }: { layersOf: (readonly LayerId[])[] }) {
   const refs = useRef<(Group | null)[]>([])
-  const places = useMemo(() => stars.map(([x, h, dz]) => onAxis(h, new Vector3()).add(new Vector3(x, 0, dz))), [])
+  const places = useMemo(() => [0, 1, 2, 3, 4].map((k) => new Vector3(...starPlace(k))), [])
   const tints = useMemo(() => layersOf.map((ls) => ls.reduce((c, l) => c.add(new Color(chakras[LAYERS.indexOf(l)].color)), new Color(0, 0, 0)).multiplyScalar(1 / ls.length)), [layersOf])
-  useFrame((state, dt) => {
+  useFrame((_, dt) => {
     const T = film.t
     refs.current.forEach((o, k) => {
       if (!o) return
       const tk = starAt(k) - 0.008
       const lit = ease(span(T, tk, tk + 0.014))
-      const near = film.need && film.need.proof === k ? 1.5 : 1
-      const s = lit * (1 + 0.2 * Math.sin(lit * Math.PI)) * near * (T > beats.product[0] ? 0.0001 : 1)
-      o.scale.setScalar(damp(o.scale.x, Math.max(0.0001, s), 7, dt))
+      const near = film.need && film.need.proof === k ? 1.35 : 1
+      const s = lit * (1 + 0.15 * Math.sin(lit * Math.PI)) * near * (T > beats.product[0] ? 0.0001 : 1)
+      o.scale.setScalar(film.still ? Math.max(0.0001, s) : damp(o.scale.x, Math.max(0.0001, s), 7, dt))
       o.visible = o.scale.x > 0.002
-      o.rotation.z += dt * 0.3
-      void state
     })
   })
   return (
@@ -287,17 +304,17 @@ export function Stars({ layersOf }: { layersOf: (readonly LayerId[])[] }) {
           refs.current[k] = el
         }} position={p} scale={0.0001}>
           <mesh>
-            <sphereGeometry args={[0.42, 48, 48]} />
+            <sphereGeometry args={[0.3, 48, 48]} />
             <meshBasicMaterial color={tints[k]} toneMapped={false} />
           </mesh>
           <Billboard>
             <mesh>
-              <ringGeometry args={[0.7, 0.74, 96]} />
-              <meshBasicMaterial color="#0b0b10" transparent opacity={0.5} />
+              <ringGeometry args={[0.48, 0.505, 96]} />
+              <meshBasicMaterial color="#0b0b10" transparent opacity={0.45} />
             </mesh>
             <mesh>
-              <ringGeometry args={[1.05, 1.07, 96]} />
-              <meshBasicMaterial color="#0b0b10" transparent opacity={0.25} />
+              <ringGeometry args={[0.72, 0.733, 96]} />
+              <meshBasicMaterial color="#0b0b10" transparent opacity={0.22} />
             </mesh>
           </Billboard>
         </group>
@@ -327,7 +344,7 @@ export function Orbit() {
     if (g.current) g.current.visible = T > beats.orbit[0] - 0.01 && T < beats.running[1]
     dots.current.forEach((d, k) => {
       if (!d) return
-      const a = (k / 5) * Math.PI * 2 + film.clock * 0.08
+      const a = (k / 5) * Math.PI * 2 + film.clock * kepler(ORBIT_R)
       fromDisk(Math.cos(a) * ORBIT_R, Math.sin(a) * ORBIT_R, 0, d.position)
       // Grey until its term lights; then ink, with a swell as it does. Smaller once its act is over.
       const x = span(T, stationAt(k), stationAt(k) + 0.007)
@@ -354,35 +371,37 @@ export function Orbit() {
 }
 
 /**
- * Act VI: three equal bodies on the stable figure-eight, the three principals, arriving one at a
- * time. The one the visitor is reading about comes forward; the others give way.
+ * Act VI: the three principals, three equal bodies sharing the process's orbit, a third of a turn
+ * apart (a configuration gravity keeps), moving with it. Each arrives on a spiral from outside,
+ * one at a time, and stays: the people who build the system run it. The one the visitor is
+ * reading about comes forward; the others give way.
  */
 export function Bodies() {
   const g = useRef<Group>(null)
   const bodies = useRef<(Mesh | null)[]>([])
   useFrame((_, dt) => {
     const T = film.t
-    const leave = 1 - ease(span(T, beats.running[0], beats.running[0] + 0.02))
-    if (g.current) g.current.visible = T > bodyAt(0) - 0.008 && leave > 0.001
+    if (g.current) g.current.visible = T > bodyAt(0) - 0.008
     bodies.current.forEach((b, i) => {
       if (!b) return
-      // The figure-eight choreography, close to x = sin t, y = sin 2t / 2, three bodies a third apart.
-      const a = film.clock * 0.45 + (i * Math.PI * 2) / 3
-      b.position.set(Math.sin(a) * 2.3, Math.sin(2 * a) * 0.95, Math.cos(a) * 0.4)
-      const arrive = ease(span(T, bodyAt(i) - 0.006, bodyAt(i) + 0.004))
-      const focus = film.person < 0 ? 1 : film.person === i ? 1.45 : 0.8
-      const s = Math.max(0.0001, arrive * leave * focus)
+      const arrive = ease(span(T, bodyAt(i) - 0.008, bodyAt(i) + 0.006))
+      // Falling in from outside, still turning forward: a spiral onto the orbit.
+      const r = ORBIT_R + 3 * (1 - arrive)
+      const a = film.clock * kepler(ORBIT_R) + Math.PI / 5 + (i * Math.PI * 2) / 3 - (1 - arrive) * 1.2
+      fromDisk(Math.cos(a) * r, Math.sin(a) * r, 0.25, b.position)
+      const focus = film.person < 0 ? 1 : film.person === i ? 1.4 : 0.85
+      const s = Math.max(0.0001, arrive * focus * (T > beats.running[0] ? 0.8 : 1))
       b.scale.setScalar(film.still ? s : damp(b.scale.x, s, 7, dt))
       b.visible = b.scale.x > 0.002
     })
   })
   return (
-    <group ref={g} position={[0, 0.5, 2.2]} visible={false}>
+    <group ref={g} visible={false}>
       {[0, 1, 2].map((i) => (
         <mesh key={i} scale={0.0001} ref={(el) => {
           bodies.current[i] = el
         }}>
-          <sphereGeometry args={[0.36, 48, 48]} />
+          <sphereGeometry args={[0.34, 48, 48]} />
           <meshPhysicalMaterial color="#0b0b10" roughness={0.12} clearcoat={1} />
         </mesh>
       ))}
@@ -391,43 +410,50 @@ export function Bodies() {
 }
 
 /**
- * The visitor's need, the film's protagonist: pulled into the disk when chosen, carried up to
- * its highest layer, out along the jet to the system that matches it, and waiting at the end.
+ * The visitor's need, the film's protagonist, moving by the film's physics. Chosen, it falls into
+ * the disk on a spiral and orbits in its top layer's band; in Act IV it rises up the axis on a
+ * helix to that layer's centre and circles it; in Act V it rides out along the jet to the system
+ * that matches it; it rests while the camera looks inside the system, and at the end waits in
+ * front of the whole system, running.
  */
 export function Mote({ phone }: { phone: boolean }) {
   const m = useRef<Mesh>(null)
   const p = useMemo(() => new Vector3(), [])
   const q = useMemo(() => new Vector3(), [])
+  const star = useMemo(() => [0, 1, 2, 3, 4].map((k) => new Vector3(...starPlace(k))), [])
   useFrame((_, dt) => {
     const o = m.current
     if (!o) return
     const need = film.need
     const T = film.t
     const time = film.clock
-    o.visible = Boolean(need) || T > beats.running[0]
-    if (!o.visible) return
     const top = need ? Math.max(...need.layers.map((l) => LAYERS.indexOf(l))) : 6
-    if (T < beats.build[0] + 0.02) {
-      // Falling in after the choice, then orbiting at its top layer's band.
-      const f = need ? ease(Math.min(1, (time - need.at) / 1.6)) : 1
-      const r = 5.4 + (1.45 + ((top + 0.5) / 7) * 2.75 - 5.4) * f
-      const a = time * 0.6 + f * 6
-      fromDisk(Math.cos(a) * r, Math.sin(a) * r, (1 - f) * 0.8, p)
-    } else if (T < beats.launch[0]) {
-      onAxis(centreY(top), p).add(q.set(0.9, 0, 0))
-    } else if (T < beats.product[0]) {
-      // Beside the system its need names; with none named, beside the latest star to ignite.
-      let lit = 0
-      while (lit < stars.length - 1 && T >= starAt(lit + 1)) lit++
-      const k = need && need.proof >= 0 ? need.proof : lit
-      const [x, h, dz] = stars[k]
-      onAxis(h, p).add(q.set(x, 0, dz)).add(q.set(0.8, 0.5, 0.4))
+    const band = 1.45 + ((top + 0.5) / 7) * 2.75
+    // Seen while it has a story to tell: from the choice to the systems, and at the end.
+    const end = ease(span(T, beats.running[0] + 0.01, beats.running[0] + 0.04))
+    const shown = need ? 1 - ease(span(T, beats.product[0] - 0.01, beats.product[0] + 0.004)) : 0
+    const size = Math.max(shown, end)
+    o.visible = size > 0.002
+    if (!o.visible) return
+    if (end > 0 && T > beats.running[0]) {
+      // Settling in front of the system, from a little above.
+      p.set(phone ? -0.2 : 0.4, (phone ? 2.4 : 1) + 1.2 * (1 - end), 8.5)
     } else {
-      // Act VII: waiting in front of the calm, complete system.
-      p.set(phone ? -0.2 : 0.4, phone ? 2.4 : 1, 8.5)
+      // Its orbit in the band, entered on a spiral after the choice (forward, always).
+      const f = need ? ease(Math.min(1, (time - need.at) / 1.8)) : 1
+      const a = time * kepler(band) - (1 - f) * 3
+      const r = band + (5.4 - band) * (1 - f)
+      // Act IV: a helix up the axis to its centre, turning faster as it closes in.
+      const rise = ease(span(T, bloomAt(0), bloomAt(top) + 0.012))
+      const rr = r * (1 - rise) + 0.9 * rise
+      fromDisk(Math.cos(a + rise * 4) * rr, Math.sin(a + rise * 4) * rr, (centreY(top) + 0.2) * rise, p)
+      // Act V: out along the jet to its system (or the last one, if its need names none).
+      const k = need && need.proof >= 0 ? need.proof : 4
+      const ride = ease(span(T, beats.launch[0], starAt(k)))
+      if (ride > 0) p.lerp(q.copy(star[k]).addScaledVector(AXIS, 0.45), ride)
     }
-    o.position.lerp(p, 1 - Math.exp(-dt * 4))
-    o.scale.setScalar(0.16 + 0.03 * Math.sin(time * 5))
+    o.position.copy(film.still ? p : o.position.lerp(p, 1 - Math.exp(-dt * 8)))
+    o.scale.setScalar(0.14 * size)
   })
   return (
     <mesh ref={m}>

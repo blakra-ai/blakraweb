@@ -29,7 +29,8 @@ void main() {
   float a = atan(vPos.y, vPos.x);
   float x = clamp((r - uInner) / (uOuter - uInner), 0.0, 1.0);
   float omega = uSpin * pow(uInner / r, 1.5);
-  float flow = a + uTime * omega;
+  // The streaks travel in the disk's sense (toward larger angle), as every orbiting piece does.
+  float flow = a - uTime * omega;
   // Turbulence stretched along the orbit: long streaks, not blobs.
   vec2 q = vec2(cos(flow), sin(flow)) * r;
   float n = tnoise(vec2(flow * 5.0, r * 7.0)) * 0.62 + tnoise(vec2(flow * 13.0, r * 21.0) + q) * 0.38;

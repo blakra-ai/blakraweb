@@ -10,8 +10,9 @@ import s from './People.module.css'
 const moments = people.map((_, k) => bodyAt(k))
 
 /**
- * Act VI of the film: the people. Three equal bodies arrive one at a time on the stable
- * figure-eight, the three principals, and each one's card is printed here as its body arrives.
+ * Act VI of the film: the people. Three equal bodies, the three principals, arrive one at a time
+ * on a spiral onto the process's orbit and share it, a third of a turn apart; each one's card is
+ * printed here as its body arrives.
  * Pointing at one brings its body forward in the picture (a decorative echo: nothing depends on it).
  */
 export function People() {
