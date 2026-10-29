@@ -59,9 +59,9 @@ const EY: V3 = [0, C, S]
 const AXIS_V: V3 = [0, -S, C]
 const DEG = Math.PI / 180
 
-/** When each of the five systems ignites, and how high on the jet. */
+/** When each of the five systems ignites, and how high on the jet (all within the launch's wide shot). */
 export const starAt = (k: number) => beats.systems[0] + 0.02 + k * 0.036
-const starHeight = (k: number) => 11 + k * 3
+const starHeight = (k: number) => 7.2 + k * 1.0
 
 /**
  * The camera is a satellite of the system: it makes exactly one turn around the spin axis over
@@ -71,27 +71,32 @@ const starHeight = (k: number) => 11 + k * 3
  * sits (a share of the distance; the left is for the words). Past the opening (where the
  * lensed wordmark faces the viewer) the turn is even: about 21° a screen of scroll on a desktop,
  * so its speed never changes for no reason.
+ *
+ * The hole is the anchor: it stays in one band of the screen (right of centre, never cut off)
+ * at a size that changes only by deliberate moves: in to the disk, back for the column, wide for
+ * the launch (the jet and its five systems rise above the system, which stays in view), in to
+ * look down on the ring, back out for the orbit and the end.
  */
 type OrbitKey = { t: number; az: number; el: number; dist: number; h: number; k: number }
-const ride: OrbitKey[] = [0, 1, 2, 3, 4].map((k) => ({ t: starAt(k), az: 95 + 14.2 * k, el: 12, dist: 12.6, h: starHeight(k) + 0.3, k: 0.2 }))
+const ride: OrbitKey[] = [0, 1, 2, 3, 4].map((k) => ({ t: starAt(k), az: 95 + 14.2 * k, el: 14, dist: 25, h: 4.6, k: 0.2 }))
 const keys: OrbitKey[] = [
-  // I: wide and nearly still; II: in and down onto the disk as it forms; III: on its edge.
+  // I: wide and nearly still; II: in onto the disk as it forms; III: on its edge.
   { t: 0, az: 0, el: 16, dist: 17.1, h: 0, k: 0.07 },
   { t: 0.07, az: 2, el: 16, dist: 17, h: 0, k: 0.07 },
-  { t: 0.15, az: 6, el: 24, dist: 13.6, h: 0.1, k: 0.22 },
-  { t: 0.27, az: 13, el: 24, dist: 13, h: 0.2, k: 0.24 },
-  // IV: round to the side and up, to watch the centres rise along the axis.
-  { t: 0.31, az: 38, el: 13, dist: 11.6, h: 3, k: 0.15 },
-  { t: 0.42, az: 62, el: 12, dist: 12.4, h: 3.9, k: 0.16 },
-  // V: up the jet with the launch, past the five systems, still turning.
-  { t: 0.46, az: 87, el: 12, dist: 13.6, h: 8.8, k: 0.19 },
+  { t: 0.15, az: 6, el: 22, dist: 15, h: 0.3, k: 0.2 },
+  { t: 0.27, az: 13, el: 22, dist: 14.5, h: 0.4, k: 0.22 },
+  // IV: round to the side and a step back: the whole column and the hole beneath it in frame.
+  { t: 0.31, az: 38, el: 16, dist: 17, h: 2.2, k: 0.2 },
+  { t: 0.42, az: 62, el: 15, dist: 17.5, h: 2.4, k: 0.2 },
+  // V: wide for the launch; held while the five systems ignite up the jet (only the turn goes on).
+  { t: 0.46, az: 87, el: 14, dist: 22, h: 4.2, k: 0.2 },
   ...ride,
-  { t: 0.648, az: 162, el: 12, dist: 12.6, h: 23.3, k: 0.2 },
-  // VI: over the top, to look down the axis at the ring of light; then out to the orbit, the people.
-  { t: 0.695, az: 198, el: 82, dist: 11.4, h: 0, k: 0.22 },
-  { t: 0.715, az: 220, el: 82, dist: 10.7, h: 0, k: 0.22 },
-  { t: 0.775, az: 267, el: 28, dist: 17.9, h: 1.1, k: 0.23 },
-  { t: 0.83, az: 314, el: 24, dist: 13, h: 0.6, k: 0.21 },
+  { t: 0.648, az: 162, el: 14, dist: 25, h: 4.6, k: 0.2 },
+  // VI: up and in, to look down on the ring of light; then back out to the orbit, the people.
+  { t: 0.695, az: 198, el: 58, dist: 13, h: 0, k: 0.22 },
+  { t: 0.715, az: 220, el: 60, dist: 12.5, h: 0, k: 0.22 },
+  { t: 0.775, az: 267, el: 26, dist: 18, h: 1, k: 0.22 },
+  { t: 0.83, az: 314, el: 22, dist: 17, h: 1, k: 0.2 },
   // VII: the turn completes on the opening's side, wide, the whole system above the end card.
   { t: 0.93, az: 350, el: 18, dist: 19.1, h: 3, k: 0.125 },
   { t: 1, az: 360, el: 18, dist: 19.5, h: 3, k: 0.125 },
@@ -144,11 +149,12 @@ const inFrame = (x: number, y: number, z: number): V3 => [0, 1, 2].map((j) => EX
 const cross = (a: V3, b: V3): V3 => [a[1] * b[2] - a[2] * b[1], a[2] * b[0] - a[0] * b[2], a[0] * b[1] - a[1] * b[0]]
 
 /**
- * Where each system ignites: beside the jet, on the side the camera sees as right when it
- * arrives there (a helix round the jet, turning as the camera does), 1.7 from the axis.
+ * Where each system ignites: beside the jet, 1.7 from the axis, on alternate sides as the
+ * camera sees them when it arrives (right, left, right…), so the five stand apart like beads
+ * up the jet and turn with it as the camera goes on round.
  */
 export const starPlace = (k: number): V3 => {
-  const a = orbitAt(starAt(k)).az * DEG
+  const a = (orbitAt(starAt(k)).az + (k % 2) * 180) * DEG
   return inFrame(Math.cos(a) * 1.7, Math.sin(a) * 1.7, starHeight(k))
 }
 

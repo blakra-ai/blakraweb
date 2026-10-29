@@ -106,7 +106,7 @@ export function Hole({ phone }: { phone: boolean }) {
               void main(){ float d = length(vUv - 0.5) * 48.0; float x = d - uR;
                 float dark = exp(-pow(x / 0.32, 2.0)); float light = exp(-pow((x + 0.9) / 0.9, 2.0));
                 vec3 c = mix(vec3(1.0), vec3(0.04), dark / max(dark + light, 1e-3));
-                gl_FragColor = vec4(c, max(dark * 0.7, light * 0.5) * uA); }`}
+                gl_FragColor = vec4(c, max(dark * 0.35, light * 0.3) * uA); }`}
           />
         </mesh>
       </Billboard>
@@ -304,16 +304,16 @@ export function Stars({ layersOf }: { layersOf: (readonly LayerId[])[] }) {
           refs.current[k] = el
         }} position={p} scale={0.0001}>
           <mesh>
-            <sphereGeometry args={[0.3, 48, 48]} />
+            <sphereGeometry args={[0.4, 48, 48]} />
             <meshBasicMaterial color={tints[k]} toneMapped={false} />
           </mesh>
           <Billboard>
             <mesh>
-              <ringGeometry args={[0.48, 0.505, 96]} />
+              <ringGeometry args={[0.62, 0.65, 96]} />
               <meshBasicMaterial color="#0b0b10" transparent opacity={0.45} />
             </mesh>
             <mesh>
-              <ringGeometry args={[0.72, 0.733, 96]} />
+              <ringGeometry args={[0.9, 0.915, 96]} />
               <meshBasicMaterial color="#0b0b10" transparent opacity={0.22} />
             </mesh>
           </Billboard>
