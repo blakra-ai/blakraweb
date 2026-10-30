@@ -2,7 +2,7 @@
 /*
  * Adopt a delivered model as the Navigator.
  *
- *   node scripts/navigator-adopt.mjs <model.glb> [names.json] [--augment] [--eyes x,y,z,r] [--optimize] [--dry]
+ *   node scripts/navigator-adopt.mjs <model.glb> [names.json] [--augment] [--eyes x,y,z,r] [--head y] [--optimize] [--dry]
  *
  * --augment: for a single-mesh auto-rigged model (Meshy, Tripo, Mixamo), injects what the site
  * needs and the tool cannot give: Eye_L/R spheres and Lid_L/R shells under Head, a Jaw node with
@@ -135,6 +135,59 @@ const mat = (name, color, extra = {}) => {
 const hex = (h) => [1, 3, 5].map((i) => parseInt(h.slice(i, i + 2), 16) / 255)
 
 if (flags.has('--augment')) {
+  // No skeleton (a sculpted bust from Rodin/Meshy): build a plain one down the mesh's axis, so the
+  // head can turn and the parts have bones to follow. --head <y> places the Head bone (metres);
+  // otherwise it sits one head-length below the top, where a bust's head is about a third of its height.
+  if (!byName('Head')) {
+    let top = -Infinity, bottom = Infinity, cx = 0, cz = 0, n = 0
+    for (const node of root.listNodes()) {
+      const mesh = node.getMesh()
+      if (!mesh) continue
+      const m = node.getWorldMatrix()
+      for (const prim of mesh.listPrimitives()) {
+        const p = prim.getAttribute('POSITION')
+        if (!p) continue
+        const v = []
+        for (let i = 0; i < p.getCount(); i++) {
+          const w = xform(m, p.getElement(i, v))
+          if (w[1] > top) top = w[1]
+          if (w[1] < bottom) bottom = w[1]
+          cx += w[0]; cz += w[2]; n++
+        }
+      }
+    }
+    cx /= n || 1; cz /= n || 1
+    const h = top - bottom
+    const headY = flags.has('--head') ? Number(args[args.indexOf('--head') + 1]) : top - (h > 1.2 ? 0.235 : 0.34 * h)
+    const chain = ['Hips', 'Spine', 'Spine1', 'Spine2', 'Neck', 'Head']
+    const ys = h > 1.2
+      ? [bottom + 0.53 * h, bottom + 0.6 * h, bottom + 0.68 * h, bottom + 0.77 * h, headY - 0.07, headY]
+      : [bottom, bottom + 0.15 * (headY - bottom), bottom + 0.4 * (headY - bottom), bottom + 0.7 * (headY - bottom), headY - 0.25 * (headY - bottom), headY]
+    const scene = root.listScenes()[0] ?? doc.createScene()
+    let parent = null
+    chain.forEach((name, i) => {
+      const node = doc.createNode(name).setTranslation([i === 0 ? cx : 0, i === 0 ? ys[0] : ys[i] - ys[i - 1], i === 0 ? cz : 0])
+      if (parent) parent.addChild(node)
+      else scene.addChild(node)
+      parent = node
+    })
+    // Every mesh follows the Head when the figure turns: parent the mesh nodes to it (a bust is all head).
+    const headNode = byName('Head')
+    const inv = mat4Invert(headNode.getWorldMatrix())
+    for (const node of root.listNodes()) {
+      if (!node.getMesh() || chain.includes(node.getName())) continue
+      const w = node.getWorldMatrix()
+      // local = inv(headWorld) × nodeWorld, applied as a matrix on the node.
+      const l = new Array(16).fill(0)
+      for (let r = 0; r < 4; r++) for (let c = 0; c < 4; c++) for (let k = 0; k < 4; k++) l[c * 4 + r] += inv[k * 4 + r] * w[c * 4 + k]
+      const oldParent = node.listParents().find((x) => x.propertyType === 'Node' || x.propertyType === 'Scene')
+      if (oldParent?.propertyType === 'Scene') oldParent.removeChild(node)
+      else oldParent?.removeChild?.(node)
+      node.setMatrix(l)
+      headNode.addChild(node)
+    }
+    console.log(`augment: no skeleton; built Hips…Head down the axis (mesh ${bottom.toFixed(2)}…${top.toFixed(2)} m, Head bone at y=${headY.toFixed(3)}); meshes parented to Head`)
+  }
   const head = byName('Head'), neck = byName('Neck'), hips = byName('Hips'), spine = byName('Spine'), spine1 = byName('Spine1'), spine2 = byName('Spine2')
   if (!head || !hips) {
     console.error('--augment needs Head and Hips bones (after renames). Found: ' + [...root.listNodes().map((n) => n.getName())].filter((n) => /head|hips|spine|neck/i.test(n)).join(', '))

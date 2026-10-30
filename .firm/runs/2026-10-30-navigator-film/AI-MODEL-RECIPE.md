@@ -55,3 +55,11 @@ npx vitest run tests/navigator-contract.test.ts
   single mesh, so lips stay closed; blink works (lids are separate shells).
 - **Ear flicks**: no `Ear_*` bones, so ears stay still (the tip glow is on the crown light).
 - **Inner set (X-ray)**: the lens shows an injected inner skull and spine, not the tool's model.
+
+## 7. Rodin / Tripo busts (2026-10-31)
+A head-and-shoulders bust is fine, even better for the site (hero, badge and most beats show
+the head). Rodin exports are not rigged: `--augment` builds a plain Hips…Head skeleton down the
+mesh's axis and parents the mesh to Head, so the head still turns and blinks. `--head <y>` moves
+the Head bone if the auto estimate (one head-length below the top) lands wrong. Tripo: use
+HD-Modell, 60–120k faces, Multi-Views, Textur 2K, Exportieren → GLB. Both need the paid tier for
+a textured GLB.
