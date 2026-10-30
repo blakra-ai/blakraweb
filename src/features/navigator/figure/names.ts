@@ -3,7 +3,8 @@
  * the browser loader share one definition.
  */
 export const CONTRACT = {
-  meshes: { required: ['Face', 'Eye_L', 'Eye_R', 'Hair', 'Collar', 'Torso'], optional: ['Arm_L', 'Arm_R', 'Leg_L', 'Leg_R', 'Lid_L', 'Lid_R'] },
+  // Face may be the whole body (a single-mesh model): the loader only needs it for the head's box.
+  meshes: { required: ['Face', 'Eye_L', 'Eye_R'], optional: ['Hair', 'Collar', 'Torso', 'Arm_L', 'Arm_R', 'Leg_L', 'Leg_R', 'Lid_L', 'Lid_R'] },
   inner: /^Inner_/, // at least one; lens 'inside'
   systems: ['Sys_01', 'Sys_02', 'Sys_03', 'Sys_04', 'Sys_05', 'Sys_06', 'Sys_07'], // all; emissive material
   bones: { required: ['Hips', 'Spine', 'Spine1', 'Spine2', 'Neck', 'Head'], optional: ['Jaw', 'Mouth', 'Ear_L', 'Ear_R'] },
