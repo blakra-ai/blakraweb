@@ -1,0 +1,113 @@
+{
+  "run": "2026-10-30-navigator-film",
+  "tier": "T3",
+  "run_status": "done",
+  "goal": "Replace the procedural Navigator with a GLB elf-android with living systems (gaze, blink, hole eyes, ears, hair, speech from the mouth, breath) and a nine-beat scroll performance; placeholder GLB until the commissioned model arrives.",
+  "decisions": [
+    "2026-10-30 owner: production = rigged GLB, not procedural, not stills",
+    "2026-10-30 owner: the black hole lives in her eyes; the dive enters an eye",
+    "2026-10-30 owner: style frame approved; details: hair, eyes, ears, typed speech from the mouth, scroll story",
+    "2026-10-30 lead: model route = commission (default; owner did not choose); placeholder GLB proves the pipeline"
+  ],
+  "artifacts": [
+    "character-brief.md",
+    "asset-candidates.md",
+    "screenplay-v2.md",
+    "styleframe/hero.html",
+    "blueprint.md"
+  ],
+  "criteria": [
+    {
+      "id": 1,
+      "text": "Eyes follow the cursor and blink; disks turn in them",
+      "verified": true,
+      "evidence": "WP3/WP4 headless probes: nav.perf eyes/head follow the cursor (brow callout x 866→914; dock yaw +24→−24); blink state machine unit-tested (70/120 ms); eye shader disk in both canvases (review4/desktop-gl-00-hero.jpg)."
+    },
+    {
+      "id": 2,
+      "text": "Ears flick on a new line and glow while typing",
+      "verified": true,
+      "evidence": "living.test: ear spring one overshoot, 6° prick on spokeAt; WP4 probe: ears.glow 0.7 while typing."
+    },
+    {
+      "id": 3,
+      "text": "Hair swings on turns and lifts on scroll",
+      "verified": true,
+      "evidence": "WP6 sweep frames wp6/a-sweep-{0,1,2}.png (strands trail the turn), b-scroll-fast (scrollV 4.03); hair.test 8×5×1000 steps 82 ms; per-frame 0.58–1.8 ms in headless at 16–34 fps (budget 0.3 ms unverified at 60 fps on the owner's GPU)."
+    },
+    {
+      "id": 4,
+      "text": "Speech card tail points at the mouth; lips move while typing",
+      "verified": true,
+      "evidence": "WP4 probe: card anchored, tail aims at mouth (983,405); jaw 0.12→0.94 with typed count; contact card under 'Prefer email?' clear of headline/paragraphs/form (wp6/h-contact-*.png)."
+    },
+    {
+      "id": 5,
+      "text": "Nine beats: places, glides, reactions, no jump",
+      "verified": true,
+      "evidence": "Lead scroll-scrub probe (scrub.mjs): 428 rows at 0.05-screen steps both directions, 0 jumps after the dock hand-off fix (World.tsx HANDOFF 0.94 symmetric); review4/* frames per beat."
+    },
+    {
+      "id": 6,
+      "text": "npm test, typecheck, build pass; first paint unchanged",
+      "verified": true,
+      "evidence": "vitest 83/83; tsc clean; build 16 pages; e2e 127/127 (e2e2.log). First paint: still face in Hero before gl-live (review4/desktop-still-00-hero.jpg)."
+    }
+  ],
+  "agents": [
+    "firm:researcher (models, pipeline)",
+    "firm:architect (blueprint)",
+    "firm:engineer WP1",
+    "firm:engineer WP2",
+    "firm:engineer WP3",
+    "firm:engineer WP4",
+    "firm:engineer WP5",
+    "firm:ux-designer (holistic review)",
+    "firm:code-reviewer",
+    "firm:engineer WP6 (resumed ×2)",
+    "firm:engineer WP7 (resumed)"
+  ],
+  "findings": [
+    {
+      "id": "P0-1",
+      "text": "Ink sections have no CSS background: dark surface is painted only by the canvas (LensPaper). With gl-off or before gl-live the text is light-on-paper, invisible. Evidence: review/desktop-still-01-manifesto.jpg. Fix: html:not(.gl-live) [data-surface=ink] { background: #0b0b10 } (after WP4 lands, global.css).",
+      "status": "fixed"
+    },
+    {
+      "id": "P1-1",
+      "text": "Systems beat: figure covers the layer list (review/desktop-gl-04-systems-mid.jpg). Sent to WP5.",
+      "status": "fixed"
+    },
+    {
+      "id": "P1-2",
+      "text": "Hero: Founded card over the figure's legs; speech card over an ear; dock badge sits between EN and the CTA in the header (review/desktop-gl-00-hero.jpg, -01-manifesto.jpg).",
+      "status": "fixed"
+    },
+    {
+      "id": "P2-2",
+      "text": "Contact beat: the glide from the header slot to the lower-left pose crosses the paragraph and the form's edge mid-glide (review4/desktop-gl-09-contact.jpg at the beat's top). Follow-up: arc the glide path or enter from the left edge.",
+      "status": "open"
+    },
+    {
+      "id": "P2-3",
+      "text": "Systems beat: callout labels (06, 05) sit over her body and read poorly on the white placeholder; speech card overlaps the list's right half at the beat's middle. Follow-up with the real model's darker plating or label offsets.",
+      "status": "open"
+    },
+    {
+      "id": "P2-4",
+      "text": "Hair budget on the owner's Intel UHD at 60 fps unmeasured; ?profile prints it; auto-drop to 6 chains exists; shader-sway fallback designed (blueprint §7).",
+      "status": "open"
+    },
+    {
+      "id": "P2-5",
+      "text": "Spec gaps vs screenplay-v2 (reviewer): the orange thread (patch stitching, crew figure-eight, rise on Send), the end card, lens over the capsule, checklist ticks lighting an ear, badge tilt. Deferred to a follow-up package.",
+      "status": "open"
+    },
+    {
+      "id": "P2-1",
+      "text": "desktop-gl run logs one 404 console message with no URL captured by the response listener; present before this run.",
+      "status": "open"
+    }
+  ],
+  "note": "Placeholder GLB stands in for the commissioned model (owner must source it: character-brief.md, asset-candidates.md). Nothing committed."
+}

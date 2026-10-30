@@ -10,14 +10,10 @@
   max-width: 44rem;
 }
 .eyebrow {
-  font-family: var(--font-mono);
-  font-size: 0.74rem;
-  letter-spacing: 0.16em;
-  text-transform: uppercase;
-  color: var(--ink-2);
+  composes: label from global;
 }
 .title {
-  font-size: clamp(2.2rem, 1rem + 3.4vw, 4.6rem);
+  font-size: var(--h2);
   font-weight: 800;
   line-height: 0.95;
   letter-spacing: -0.045em;
@@ -25,7 +21,7 @@
   outline: none;
 }
 .lede {
-  font-size: 1.05rem;
+  font-size: var(--step-0);
   line-height: 1.5;
   color: var(--ink-2);
   max-width: 40rem;
@@ -48,6 +44,15 @@
   transform: none;
   clip-path: none;
 }
+@media (prefers-reduced-motion: reduce) {
+  .wall li {
+    transform: none;
+    clip-path: none;
+  }
+  .patch {
+    transition: none;
+  }
+}
 .pick {
   position: relative;
   display: grid;
@@ -62,7 +67,7 @@
 .pick:focus-visible {
   outline: 2px solid var(--accent);
   outline-offset: 4px;
-  border-radius: 12px;
+  border-radius: var(--r-card);
 }
 .patch {
   transition: transform 0.5s var(--ease-out);
@@ -78,12 +83,12 @@
   top: -0.4rem;
   right: 0.2rem;
   padding: 0.15rem 0.55rem;
-  border-radius: 999px;
+  border-radius: var(--r-pill);
   background: var(--accent);
-  color: #0b0b10;
+  color: var(--ink-0);
   font-family: var(--font-mono);
-  font-size: 0.6rem;
-  letter-spacing: 0.1em;
+  font-size: var(--label-size);
+  letter-spacing: var(--label-track);
   text-transform: uppercase;
 }
 
@@ -96,18 +101,14 @@
   gap: 0.9rem;
   max-width: 48rem;
   padding: 1.75rem 0 0;
-  border-top: 0.75px solid var(--hair);
+  border-top: var(--hairline);
   outline: none;
 }
 .no {
-  display: flex;
+  composes: label from global;
   flex-wrap: wrap;
-  align-items: center;
   gap: 0.3rem 0.7rem;
-  font-family: var(--font-mono);
-  font-size: 0.72rem;
-  letter-spacing: 0.1em;
-  text-transform: uppercase;
+  color: var(--ink-0);
 }
 .no em {
   font-style: normal;
@@ -119,10 +120,9 @@
   text-transform: none;
 }
 .moment {
-  font-family: var(--font-serif);
-  font-style: italic;
-  font-weight: 400;
-  font-size: clamp(1.4rem, 1rem + 1vw, 2rem);
+  font-weight: 500;
+  font-size: var(--step-1);
+  letter-spacing: -0.015em;
   line-height: 1.18;
 }
 .story {
@@ -131,14 +131,19 @@
   gap: 1.2rem;
 }
 .story dt {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
   font-family: var(--font-mono);
-  font-size: 0.68rem;
-  letter-spacing: 0.1em;
+  font-size: var(--label-size);
+  font-weight: 400;
+  letter-spacing: var(--label-track);
   text-transform: uppercase;
+  color: var(--ink-2);
   margin-bottom: 0.3rem;
 }
 .story dd {
-  font-size: 0.95rem;
+  font-size: var(--step--1);
   line-height: 1.5;
   color: var(--ink-2);
 }
@@ -153,13 +158,13 @@
   gap: 0.45rem;
 }
 .outcomes strong {
-  font-size: 2rem;
+  font-size: var(--step-2);
   font-weight: 700;
   letter-spacing: -0.04em;
   line-height: 1;
 }
 .outcomes span {
-  font-size: 0.9rem;
+  font-size: var(--step--1);
   color: var(--ink-2);
 }
 .layers {
@@ -168,13 +173,13 @@
   align-items: center;
   gap: 0.35rem 0.8rem;
   padding-top: 0.7rem;
-  border-top: 0.75px solid var(--hair);
+  border-top: var(--hairline);
   font-family: var(--font-mono);
-  font-size: 0.68rem;
+  font-size: var(--label-size);
   line-height: 1.6;
 }
 .layersLabel {
-  letter-spacing: 0.1em;
+  letter-spacing: var(--label-track);
   text-transform: uppercase;
   color: var(--ink-2);
 }
@@ -209,14 +214,12 @@
   max-width: 48rem;
 }
 .deliveredTitle {
-  font-family: var(--font-serif);
-  font-style: italic;
-  font-weight: 400;
-  font-size: 1.6rem;
+  font-weight: 500;
+  font-size: var(--step-1);
   line-height: 1.2;
 }
 .deliveredNote {
-  font-size: 0.93rem;
+  font-size: var(--step--1);
   line-height: 1.5;
   color: var(--ink-2);
 }
@@ -226,13 +229,13 @@
   gap: 0.55rem 1.4rem;
   margin-top: 0.4rem;
   padding-top: 0.9rem;
-  border-top: 0.75px solid var(--hair);
+  border-top: var(--hairline);
 }
 .deliveredList li {
   display: inline-flex;
   align-items: center;
   gap: 0.5rem;
-  font-size: 0.95rem;
+  font-size: var(--step--1);
 }
 .deliveredList li::before {
   content: '';

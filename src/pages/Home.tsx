@@ -17,7 +17,7 @@ import { Contact } from '../components/Contact'
 export function Home() {
   // Each station is its own Suspense boundary: the HTML is identical, but React hydrates
   // the page one station at a time and lets the browser breathe in between.
-  const stations = [Hero, Manifesto, Pulse, Engine, DayTrack, Products, Process, People, Contact]
+  const stations = [Hero, Manifesto, Pulse, Engine, DayTrack, Process, Products, People, Contact]
   return (
     <>
       {stations.map((Station) => (

@@ -37,7 +37,7 @@ export function Products() {
           const copy = p.items[prod.id]
           const top = prod.layers.map((l) => chakraOf[l]).sort((a, b) => b - a)[0] ?? 6
           return (
-            <li key={prod.id} className={s.capsule} data-draft={import.meta.env.DEV && prod.draft ? '' : undefined} style={{ '--chakra': chakraColors[top] } as CSSProperties}>
+            <li key={prod.id} className={s.capsule} data-capsule="" data-draft={import.meta.env.DEV && prod.draft ? '' : undefined} style={{ '--chakra': chakraColors[top] } as CSSProperties}>
               {/* The capsule's window: the product's highest layer, its yantra, behind glass. */}
               <div className={s.window} aria-hidden="true">
                 <svg viewBox="-1.1 -1.1 2.2 2.2" className={s.yantra}>

@@ -39,7 +39,16 @@
   --margin: max(clamp(1.25rem, 0.4rem + 4.2vw, 5rem), env(safe-area-inset-left, 0px), env(safe-area-inset-right, 0px));
   --gutter: clamp(1rem, 0.6rem + 1.6vw, 2rem);
   --header-h: 4.5rem;
-  --radius: 14px;
+  /* The one system (design review 2026-10-30): three radii, one hairline, one label, one H2. */
+  --r-pill: 999px;
+  --r-card: 14px;
+  --r-tag: 4px;
+  --radius: var(--r-card);
+  --hairline: 1px solid color-mix(in srgb, currentColor 22%, transparent);
+  --label-size: 0.72rem;
+  --label-track: 0.14em;
+  --h2: clamp(2.2rem, 1rem + 3.4vw, 4.6rem);
+  --h2-short: clamp(1.8rem, 0.9rem + 2.2vw, 3rem);
   --ease-out: cubic-bezier(0.16, 1, 0.3, 1);
   --ease-in-out: cubic-bezier(0.65, 0, 0.35, 1);
 
@@ -66,6 +75,44 @@
   --surface: var(--tone-surface);
   --signal: var(--tone-signal);
   color: var(--ink);
+}
+/* Ink is CSS first: the section is dark with no GPU; live, the canvas paints the same ink with the
+   field's contours through it, so the section lets it show. Paper sections stay transparent. */
+[data-surface='ink'] {
+  background: var(--ink-0);
+}
+html.gl-live [data-surface='ink'] {
+  background: transparent;
+}
+
+/* One label: mono, one size, one tracking, capitals; the orange dot only on a live item. */
+.label {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-family: var(--font-mono);
+  font-size: var(--label-size);
+  font-weight: 400;
+  letter-spacing: var(--label-track);
+  text-transform: uppercase;
+  color: var(--ink-2);
+}
+.label[data-live]::before {
+  content: '';
+  flex: none;
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: var(--accent);
+}
+/* Section heads: one clamp; the hero and the manifesto keep their display sizes. */
+.h2 {
+  font-size: var(--h2);
+  font-weight: 800;
+  line-height: 0.95;
+  letter-spacing: -0.045em;
+  text-transform: uppercase;
+  outline: none;
 }
 
 
@@ -167,7 +214,7 @@ canvas {
 :focus-visible {
   outline: 2px solid var(--accent);
   outline-offset: 3px;
-  border-radius: 4px;
+  border-radius: var(--r-tag);
 }
 
 .sr-only {
@@ -188,7 +235,7 @@ canvas {
   left: 0.75rem;
   z-index: 100;
   padding: 0.75rem 1rem;
-  border-radius: 999px;
+  border-radius: var(--r-pill);
   background: var(--cta-bg);
   color: var(--cta-ink);
   font-weight: 500;
@@ -242,6 +289,23 @@ html.gl-live .nav-stage {
 }
 .nav-dock[data-on='true'] {
   visibility: visible;
+}
+/* Phones: the slot is 24 px, the companion an orange dot; the card carries her voice. */
+@media (max-width: 767px) {
+  .nav-dock canvas {
+    display: none;
+  }
+  .nav-dock::after {
+    content: '';
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    width: 24px;
+    height: 24px;
+    margin: -12px 0 0 -12px;
+    border-radius: 50%;
+    background: var(--accent);
+  }
 }
 .nav-callouts {
   position: absolute;
@@ -333,40 +397,82 @@ html.gl-live .nav-stage {
   right: 3.7rem;
 }
 
-/* The Navigator types: a transmission card under his dock; a line is wiped out, then the next is typed in. */
+/* The Navigator types: a speech card. Anchored to her mouth (--cx/--cy from Transmission) with a tail
+   (::before, rotated by --tail on the edge data-edge) when a figure shows; else fixed under the header.
+   A line is wiped out, the next is typed in; said, the card rests then wipes (not under the cursor). */
 .nav-type {
+  --tail-reach: 28px;
   position: fixed;
   top: calc(var(--header-h) + 0.75rem);
   right: var(--margin);
   z-index: 39;
   width: min(22rem, calc(100vw - 2 * var(--margin)));
   padding: 0.7rem 0.9rem 0.8rem;
-  border-radius: 14px;
+  border-radius: var(--r-card);
   background: var(--paper);
   color: var(--ink-0);
   box-shadow: 0 18px 40px -24px rgba(11, 11, 16, 0.45), inset 0 0 0 0.75px rgba(11, 11, 16, 0.22);
-  pointer-events: none;
-  clip-path: inset(0 0 0 0 round 14px);
+  pointer-events: auto;
+  clip-path: inset(calc(-1 * var(--tail-reach)) round 14px);
   transition: clip-path 0.5s var(--ease-out);
 }
+.nav-type[data-anchored='true'] {
+  top: 0;
+  left: 0;
+  right: auto;
+  bottom: auto;
+  transform: translate(var(--cx), var(--cy));
+  will-change: transform;
+}
+.nav-type[data-anchored='true']::before {
+  content: '';
+  position: absolute;
+  z-index: -1;
+  width: 22px;
+  height: 16px;
+  background: var(--paper);
+  clip-path: polygon(0 0, 100% 50%, 0 100%);
+  transform: translate(-25%, -50%) rotate(var(--tail, 0deg));
+  transform-origin: 25% 50%;
+}
+.nav-type[data-edge='left']::before {
+  left: 0;
+  top: 50%;
+}
+.nav-type[data-edge='right']::before {
+  left: 100%;
+  top: 50%;
+}
+.nav-type[data-edge='top']::before {
+  left: 50%;
+  top: 0;
+}
+.nav-type[data-edge='bottom']::before {
+  left: 50%;
+  top: 100%;
+}
 .nav-type[data-phase='out'] {
-  clip-path: inset(0 0 100% 0 round 14px);
+  clip-path: inset(calc(-1 * var(--tail-reach)) calc(-1 * var(--tail-reach)) 100% round 14px);
   transition: clip-path 0.26s cubic-bezier(0.5, 0, 0.75, 0);
+}
+.nav-type[data-phase='rest']:not(:hover) {
+  clip-path: inset(50% calc(-1 * var(--tail-reach)) 50% round 14px);
+  transition: clip-path 0.6s cubic-bezier(0.5, 0, 0.75, 0);
 }
 .nav-type-head {
   display: flex;
   align-items: center;
   gap: 0.5rem;
   font-family: var(--font-mono);
-  font-size: 0.66rem;
-  letter-spacing: 0.14em;
+  font-size: var(--label-size);
+  letter-spacing: var(--label-track);
   text-transform: uppercase;
   color: var(--ink-2);
   margin-bottom: 0.35rem;
 }
 .nav-type-dot {
-  width: 0.5rem;
-  height: 0.5rem;
+  width: 6px;
+  height: 6px;
   border-radius: 50%;
   background: var(--accent);
 }
@@ -375,7 +481,7 @@ html.gl-live .nav-stage {
   line-height: 1.45;
   min-height: 2.9em;
 }
-/* The caret: a block in the accent, while he types. */
+/* The caret: a block in the accent, while she types. */
 .nav-type[data-typing='true'] .nav-type-typed::after {
   content: '';
   display: inline-block;
@@ -388,8 +494,23 @@ html.gl-live .nav-stage {
 html:not(.gl-live) .nav-type {
   display: none;
 }
+.nav-type[data-hidden='true'] {
+  visibility: hidden;
+}
+@media (max-width: 767px) {
+  .nav-type[data-anchored='true'] {
+    width: calc(100vw - 2 * var(--margin));
+  }
+  /* Two lines at most under the header: the full line stays in the sr-only copy. */
+  .nav-type[data-anchored='true'] .nav-type-line {
+    display: -webkit-box;
+    -webkit-box-orient: vertical;
+    -webkit-line-clamp: 2;
+    overflow: hidden;
+  }
+}
 @media (max-width: 699px) {
-  .nav-type {
+  .nav-type:not([data-anchored='true']) {
     top: auto;
     bottom: 1rem;
     left: var(--margin);

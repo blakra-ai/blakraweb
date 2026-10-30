@@ -5,7 +5,7 @@
   align-items: center;
   min-height: 100svh;
   padding: clamp(5rem, 12vh, 8rem) var(--margin);
-  color: #eeece6;
+  color: var(--ink);
 }
 @media (min-width: 1000px) {
   .process {
@@ -18,14 +18,10 @@
   max-width: 40rem;
 }
 .eyebrow {
-  font-family: var(--font-mono);
-  font-size: 0.74rem;
-  letter-spacing: 0.16em;
-  text-transform: uppercase;
-  color: rgba(238, 236, 230, 0.7);
+  composes: label from global;
 }
 .title {
-  font-size: clamp(2.2rem, 1rem + 3.4vw, 4.6rem);
+  font-size: var(--h2);
   font-weight: 800;
   line-height: 0.95;
   letter-spacing: -0.045em;
@@ -33,39 +29,42 @@
   outline: none;
 }
 .lede {
-  font-size: 1.05rem;
+  font-size: var(--step-0);
   line-height: 1.5;
-  color: rgba(238, 236, 230, 0.78);
+  color: var(--ink-2);
 }
 .steps {
   display: grid;
   margin-top: 0.4rem;
-  border-top: 0.75px solid rgba(238, 236, 230, 0.22);
+  border-top: var(--hairline);
 }
 .steps li {
   display: grid;
   grid-template-columns: 2.2rem 1fr;
   gap: 0.15rem 0.6rem;
   padding: 0.7rem 0;
-  border-bottom: 0.75px solid rgba(238, 236, 230, 0.22);
+  border-bottom: var(--hairline);
   --open: clamp(0, (var(--p, 0) - 0.3 - var(--i) * 0.12) / 0.18, 1);
   clip-path: inset(0 calc((1 - var(--open)) * 100%) 0 0);
 }
 .index {
   grid-row: span 2;
+  justify-self: start;
+  align-self: start;
   font-family: var(--font-mono);
-  font-size: 0.72rem;
+  font-size: var(--label-size);
   padding-top: 0.25rem;
-  color: var(--accent);
+  color: var(--ink-2);
+  box-shadow: inset 0 -2px var(--accent);
 }
 .name {
-  font-size: 1.05rem;
+  font-size: var(--step-0);
   font-weight: 600;
 }
 .stepText {
-  font-size: 0.92rem;
+  font-size: var(--step--1);
   line-height: 1.5;
-  color: rgba(238, 236, 230, 0.75);
+  color: var(--ink-2);
 }
 .foot {
   display: grid;
@@ -73,14 +72,13 @@
   margin-top: 0.4rem;
 }
 .shapes {
-  font-family: var(--font-serif);
-  font-style: italic;
-  font-size: 1.1rem;
+  font-size: var(--step-0);
+  font-weight: 500;
   line-height: 1.35;
 }
 .notFit {
-  font-size: 0.86rem;
-  color: rgba(238, 236, 230, 0.6);
+  font-size: var(--step--1);
+  color: var(--ink-2);
 }
 
 /* The checklist: a wrist card, paper on ink, its items ticked by the scroll. */
@@ -88,23 +86,20 @@
   justify-self: center;
   width: min(100%, 26rem);
   padding: 1.25rem 1.4rem 1.5rem;
-  border-radius: 18px;
+  border-radius: var(--r-card);
   background: var(--paper);
   color: var(--ink-0);
-  box-shadow: 0 30px 60px -30px rgba(0, 0, 0, 0.6), inset 0 0 0 0.75px rgba(11, 11, 16, 0.2);
+  box-shadow: 0 30px 60px -30px rgba(0, 0, 0, 0.6), inset 0 0 0 1px rgba(11, 11, 16, 0.22);
   --open: clamp(0, (var(--p, 0) - 0.25) / 0.2, 1);
   transform: translate3d(0, calc((1 - var(--open)) * 3rem), 0) rotate(calc((1 - var(--open)) * -2deg));
 }
 .cardHead {
-  display: flex;
+  composes: label from global;
   justify-content: space-between;
   padding-bottom: 0.8rem;
   margin-bottom: 0.4rem;
   border-bottom: 2px solid var(--ink-0);
-  font-family: var(--font-mono);
-  font-size: 0.68rem;
-  letter-spacing: 0.14em;
-  text-transform: uppercase;
+  color: var(--ink-0);
 }
 .terms {
   display: grid;
@@ -115,8 +110,8 @@
   gap: 0.8rem;
   align-items: start;
   padding: 0.75rem 0;
-  border-bottom: 0.75px solid var(--hair);
-  font-size: 0.98rem;
+  border-bottom: var(--hairline);
+  font-size: var(--step-0);
   line-height: 1.4;
   --tick: clamp(0, (var(--p, 0) - 0.45 - var(--i) * 0.09) / 0.1, 1);
 }
@@ -130,7 +125,7 @@
   width: 1.4rem;
   height: 1.4rem;
   border: 1.5px solid var(--ink-0);
-  border-radius: 4px;
+  border-radius: var(--r-tag);
   margin-top: 0.05rem;
 }
 .box svg {

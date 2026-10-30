@@ -77,6 +77,9 @@ export function Header({ route }: { route: Route }) {
         <nav className={s.nav} aria-label="Primary">
           <ul>{links}</ul>
         </nav>
+        {/* Where the Navigator docks once the hero has scrolled out (the world reads this box): between
+            the words and the controls, never behind the call to action; a 24 px dot on phones. */}
+        {home && <span className={s.dock} data-dock aria-hidden="true" />}
         {!systemReduced && (
           <button type="button" className={s.motion} aria-pressed={userOff} aria-label={t.ui.pauseMotion} title={t.ui.pauseMotion} onClick={() => setUserOff(!userOff)}>
             <svg viewBox="0 0 16 16" aria-hidden="true">
@@ -89,8 +92,6 @@ export function Header({ route }: { route: Route }) {
         <div className={s.lang}>
           <LanguageSwitch route={route} variant="header" />
         </div>
-        {/* Where the Navigator docks once the hero has scrolled out (the world reads this box). */}
-        {home && <span className={s.dock} data-dock aria-hidden="true" />}
         <a href={`${homePath}#contact`} className={s.cta}>
           {t.ui.cta}
         </a>

@@ -8,8 +8,6 @@
 .badge {
   width: var(--size);
   height: var(--size);
-  /* The embroidered edge: a shadow under the badge, as a patch lifts from cloth. */
-  filter: drop-shadow(0 6px 12px rgba(11, 11, 16, 0.14));
 }
 .field {
   fill: #ebe8e1;
@@ -29,7 +27,7 @@
 }
 .ring path {
   fill: none;
-  stroke-width: 0.12;
+  stroke-width: 0.09;
   stroke-linecap: butt;
 }
 .stitch {
@@ -39,15 +37,15 @@
   stroke-dasharray: 0.045 0.03;
 }
 .motto {
-  font-family: var(--font-mono);
-  font-size: 0.68rem;
-  letter-spacing: 0.1em;
-  text-transform: uppercase;
-  text-align: center;
+  composes: label from global;
+  justify-content: center;
+  white-space: nowrap;
+  color: var(--ink-0);
 }
-/* Marked (nearest to the reader's mission): a second, accent stitch round the badge. */
+/* Marked (nearest to the reader's mission): the accent stitch round the badge, and a round glow. */
 .patch[data-highlight] .badge {
-  filter: drop-shadow(0 8px 16px rgba(255, 90, 31, 0.28));
+  border-radius: 50%;
+  box-shadow: 0 0 0 6px rgba(255, 90, 31, 0.14);
 }
 .patch[data-highlight] .stitch {
   stroke: var(--accent);

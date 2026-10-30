@@ -41,7 +41,7 @@ export const fr: Dict = {
     cue: 'De quoi avez-vous besoin ?',
     also: 'Autres façons de collaborer :',
     facts: 'Fondée en 2024 · 100 % à distance · Réponse sous 24 heures',
-    hint: 'Passez le curseur sur le Navigateur : voyez de quoi il est fait.',
+    hint: 'Passez le curseur sur la Navigatrice : voyez de quoi elle est faite.',
   },
 
   pulse: {
@@ -286,20 +286,21 @@ export const fr: Dict = {
   },
 
   navigator: {
-    name: 'Navigateur',
+    name: 'Navigatrice',
     lines: {
-      hero: 'Je suis le Navigateur. Passez le curseur sur moi et voyez de quoi je suis fait.',
-      manifesto: 'Un contrat, un équipage. Chaque passage de relais évité est une panne que vous ne chercherez jamais.',
+      hero: 'Je suis la Navigatrice. Cette descente, je l\'ai déjà faite. Regardez-moi dans les yeux et voyez ce que je vois.',
+      manifesto: 'Un contrat, un équipage. Chaque passage de relais que vous vous épargnez est une panne que vous ne chercherez jamais.',
       mission: 'Que construisons-nous ? Choisissez, et j\'allume les systèmes qu\'il faut.',
-      systems: 'Mes sept systèmes, du module de survie à l\'antenne. Chacun repose sur celui du dessous.',
+      systems: 'Mes sept systèmes, de la racine à la couronne. Chacun repose sur celui du dessous.',
       proof: 'Cinq missions accomplies. La plus proche de la vôtre porte la couture orange.',
       checklist: 'Avant le vol : la checklist. Le dernier point est celui qui compte.',
       payload: 'Notre propre charge utile : une IA qui lit la peau. Scellée, montrée sous NDA.',
       crew: 'L\'équipage que vous rencontrez est celui qui construit. Trois personnes, aucun relais.',
-      contact: 'Votre signal de réponse. Votre mission y est déjà écrite. Envoyez, et un ingénieur répond sous 24 heures.',
+      contact: 'Votre mission y est déjà écrite. Envoyez, et un ingénieur qui la construirait répond sous 24 heures.',
     },
-    mission: '{tag} : il faut {n} de mes sept systèmes. Regardez-les s\'allumer.',
+    mission: '{tag} : {n} de mes sept systèmes. Regardez-les s\'allumer.',
     missionAll: 'Les sept systèmes, depuis la base. Regardez-les s\'allumer.',
+    lookCloser: 'Regardez de plus près.',
   },
   footer: { line: 'Du logiciel qui a de la gravité.', investors: 'Financeurs et acquéreurs', privacy: 'Confidentialité', legal: 'Mentions légales', join: 'Ingénieurs et designers souhaitant rejoindre un projet :' },
 

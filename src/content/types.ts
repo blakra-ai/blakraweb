@@ -216,6 +216,8 @@ export interface Dict {
     lines: Record<'hero' | 'manifesto' | 'mission' | 'systems' | 'proof' | 'checklist' | 'payload' | 'crew' | 'contact', string>
     mission: string
     missionAll: string
+    /** On the card while the cursor rests on her eyes. */
+    lookCloser: string
   }
   footer: {
     line: string

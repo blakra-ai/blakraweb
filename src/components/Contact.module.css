@@ -4,7 +4,7 @@
   min-height: 100svh;
   align-content: center;
   padding: calc(var(--header-h) + 2rem) var(--margin) clamp(3rem, 6vw, 4.5rem);
-  color: #eeece6;
+  color: var(--ink);
 }
 @media (min-width: 1000px) {
   .contact {
@@ -21,14 +21,10 @@
 }
 /* On ink: the words in the ink's light; the form is the transmission panel, a sheet of paper. */
 .eyebrow {
-  font-family: var(--font-mono);
-  font-size: 0.74rem;
-  letter-spacing: 0.16em;
-  text-transform: uppercase;
-  color: rgba(238, 236, 230, 0.7);
+  composes: label from global;
 }
 .title {
-  font-size: clamp(2.3rem, 1rem + 3.4vw, 4.6rem);
+  font-size: var(--h2);
   font-weight: 800;
   line-height: 0.95;
   letter-spacing: -0.045em;
@@ -40,18 +36,18 @@
   max-width: 44ch;
   font-size: var(--step-1);
   line-height: 1.45;
-  color: rgba(238, 236, 230, 0.78);
+  color: var(--ink-2);
 }
 .direct {
-  color: rgba(238, 236, 230, 0.7);
+  color: var(--ink-2);
 }
 .mail {
-  color: #eeece6;
-  border-bottom: 1px solid rgba(238, 236, 230, 0.35);
+  color: var(--ink);
+  border-bottom: var(--hairline);
   transition: border-color 0.3s;
 }
 .mail:hover {
-  border-color: #eeece6;
+  border-color: var(--ink);
 }
 
 .form {
@@ -59,10 +55,13 @@
   display: grid;
   gap: 1.5rem;
   padding: clamp(1.25rem, 2.5vw, 2rem);
-  border-radius: 24px;
+  border-radius: var(--r-card);
   background: var(--paper);
+  --ink: #111317;
+  --ink-2: #494d56;
+  --line: var(--hair);
   color: var(--ink-0);
-  border: 0.75px solid var(--hair);
+  border: var(--hairline);
   box-shadow: 0 40px 80px -40px rgba(0, 0, 0, 0.7);
 }
 .field {
@@ -77,8 +76,8 @@
   width: 100%;
   min-height: 3rem;
   padding: 0.75rem 0.9rem;
-  border: 0.75px solid var(--hair);
-  border-radius: 10px;
+  border: var(--hairline);
+  border-radius: var(--r-tag);
   background: rgba(255, 255, 255, 0.6);
   font-size: var(--step-0);
   line-height: 1.4;
@@ -137,7 +136,7 @@
   height: 3.25rem;
   padding: 0 1.6rem;
   border: 0;
-  border-radius: 999px;
+  border-radius: var(--r-pill);
   background: var(--cta-bg);
   color: var(--cta-ink);
   font-weight: 500;
@@ -166,7 +165,7 @@
 }
 .privacy a {
   color: var(--ink);
-  border-bottom: 1px solid var(--line);
+  border-bottom: var(--hairline);
 }
 .failure:empty {
   display: none;
@@ -180,8 +179,10 @@
 .done {
   align-self: center;
   padding: 2rem;
-  border-radius: 24px;
+  border-radius: var(--r-card);
   background: var(--paper);
+  --ink: #111317;
+  --ink-2: #494d56;
   color: var(--ink-0);
   border-left: 3px solid var(--accent);
   font-size: var(--step-1);
@@ -206,8 +207,8 @@
   display: grid;
   gap: 0.2rem;
   padding: 0.9rem 1rem 0.9rem 2.75rem;
-  border: 1px solid var(--line);
-  border-radius: var(--radius);
+  border: var(--hairline);
+  border-radius: var(--r-card);
   cursor: pointer;
   transition: border-color 0.3s, background-color 0.3s;
 }
@@ -262,10 +263,8 @@
 
 /* The event horizon, written under the form. */
 .horizon {
-  font-family: var(--font-serif);
-  font-style: italic;
-  font-size: var(--step-0);
+  font-size: var(--step--1);
   color: var(--ink-2);
-  border-top: 0.75px solid var(--hair);
+  border-top: var(--hairline);
   padding-top: 1rem;
 }

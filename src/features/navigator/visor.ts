@@ -5,29 +5,18 @@ import { lensGlsl } from './lens'
  * a black hole behind the viewer. The reflected ray is lensed as by a point mass (the shadow, the
  * Einstein ring, the starfield bent round it), and the accretion disk, in the seven chakra
  * colours, crosses in front of the shadow while its far side is lensed up over the top.
+ *
+ * The same hole lives in the Navigator's eyes (`eyeFragment`): iris = the disk, pupil = the shadow
+ * with its photon ring. Both shaders share `holeGlsl`.
  */
-export const visorVertex = /* glsl */ `
-varying vec3 vN;
-varying vec3 vW;
-varying vec2 vUv;
-void main() {
-  vUv = uv;
-  vec4 w = modelMatrix * vec4(position, 1.0);
-  vW = w.xyz;
-  vN = normalize(mat3(modelMatrix) * normal);
-  gl_Position = projectionMatrix * viewMatrix * w;
-}
-`
 
-export const visorFragment = /* glsl */ `
-uniform vec3 uLens;
-uniform float uTime;
-uniform vec3 uHole;
-uniform float uShow;
-varying vec3 vN;
-varying vec3 vW;
-varying vec2 vUv;
-
+/**
+ * The hole, as GLSL: `holeColour(th, p, H, e1, e2, band, bright)` gives the light seen at angle
+ * `th` from the hole's axis `H`, in the direction `p` (angular offset in the e1/e2 plane, |p| = th).
+ * `band` (−1 … 6) flares one of the seven colour bands; `bright` (0 … 1) adds up to 20 %.
+ * Needs `uniform float uTime` in the including shader.
+ */
+export const holeGlsl = /* glsl */ `
 float hash(vec3 p) { return fract(sin(dot(p, vec3(127.1, 311.7, 74.7))) * 43758.5453); }
 
 // Stars on the sky sphere: one chance per cell, sharp and few.
@@ -57,6 +46,71 @@ vec3 spectrum(float t) {
   return mix(k[i], k[j], fract(t));
 }
 
+// 1 where the colour at phase t belongs to band b (0 … 6); 0 elsewhere.
+float bandMask(float t, int b) {
+  if (b < 0) return 0.0;
+  return int(floor(fract(t) * 7.0)) == b ? 1.0 : 0.0;
+}
+
+vec3 holeColour(float th, vec2 p, vec3 H, vec3 e1, vec3 e2, int band, float bright) {
+  float rs = 0.34;              // the shadow's angular radius
+  float einstein = rs * 1.32;   // where the ring of light sits
+  vec3 col = vec3(0.0);
+  float sl = length(p);
+  vec2 u = sl > 1e-5 ? p / sl : vec2(1.0, 0.0);
+
+  // The sky, bent: a point-mass lens maps the seen angle th to the source angle beta.
+  float beta = th - einstein * einstein / max(th, 1e-3);
+  vec3 dir = normalize(H * cos(beta) + (e1 * u.x + e2 * u.y) * sin(beta));
+  col += stars(dir) * smoothstep(rs, rs * 1.2, th);
+  // The thin photon ring, brightest just outside the shadow.
+  col += vec3(1.0, 0.93, 0.85) * exp(-pow((th - rs * 1.06) / (rs * 0.035), 2.0)) * 0.9;
+
+  // The disk: a ring in a tilted plane round the hole, turning in its own sense (the colours travel).
+  float ang = atan(p.y, p.x);
+  vec2 dp = vec2(p.x, p.y / 0.22);
+  float dr = length(dp);
+  float disk = smoothstep(rs * 1.45, rs * 1.75, dr) * (1.0 - smoothstep(rs * 3.0, rs * 3.9, dr));
+  float front = step(p.y, 0.0) + step(rs * 1.02, th) * (1.0 - step(p.y, 0.0));
+  float dang = atan(dp.y, dp.x);
+  float streak = 0.75 + 0.25 * sin(dr * 60.0 - uTime * 1.2 + sin(dang * 3.0) * 2.0);
+  float doppler = 0.7 + 0.5 * cos(dang);
+  float dt = dang / 6.2832 - uTime * 0.02;
+  float flare = 1.0 + 0.8 * bandMask(dt, band);
+  col += spectrum(dt) * disk * front * streak * doppler * 1.25 * flare;
+  // The far side of the disk, lensed up over the shadow (and a fainter image under it).
+  float halo = exp(-pow((th - rs * 1.32) / (rs * 0.16), 2.0));
+  float ht = ang / 6.2832 + 0.25 - uTime * 0.02;
+  col += spectrum(ht) * halo * (0.55 + 0.45 * smoothstep(-0.2, 0.6, p.y / max(th, 1e-3))) * 0.9 * (1.0 + 0.8 * bandMask(ht, band));
+
+  // The shadow itself: true black.
+  col *= smoothstep(rs * 0.97, rs * 1.0, th);
+  return col * (1.0 + 0.2 * clamp(bright, 0.0, 1.0));
+}
+`
+
+export const visorVertex = /* glsl */ `
+varying vec3 vN;
+varying vec3 vW;
+varying vec2 vUv;
+void main() {
+  vUv = uv;
+  vec4 w = modelMatrix * vec4(position, 1.0);
+  vW = w.xyz;
+  vN = normalize(mat3(modelMatrix) * normal);
+  gl_Position = projectionMatrix * viewMatrix * w;
+}
+`
+
+export const visorFragment = /* glsl */ `
+uniform vec3 uLens;
+uniform float uTime;
+uniform vec3 uHole;
+uniform float uShow;
+varying vec3 vN;
+varying vec3 vW;
+varying vec2 vUv;
+${holeGlsl}
 void main() {
   ${lensGlsl('outside')}
   // The visor's outline: a rounded rectangle on the dome.
@@ -74,34 +128,7 @@ void main() {
   vec3 side = r - H * cos(th);
   float sl = length(side);
   vec2 p = sl > 1e-5 ? vec2(dot(side, e1), dot(side, e2)) / sl * th : vec2(0.0);
-
-  float rs = 0.34;              // the shadow's angular radius
-  float einstein = rs * 1.32;   // where the ring of light sits
-  vec3 col = vec3(0.0);
-
-  // The sky, bent: a point-mass lens maps the seen angle th to the source angle beta.
-  float beta = th - einstein * einstein / max(th, 1e-3);
-  vec3 dir = normalize(H * cos(beta) + (sl > 1e-5 ? side / sl : e1) * sin(beta));
-  col += stars(dir) * smoothstep(rs, rs * 1.2, th);
-  // The thin photon ring, brightest just outside the shadow.
-  col += vec3(1.0, 0.93, 0.85) * exp(-pow((th - rs * 1.06) / (rs * 0.035), 2.0)) * 0.9;
-
-  // The disk: a ring in a tilted plane round the hole, turning in its own sense (the colours travel).
-  float ang = atan(p.y, p.x);
-  vec2 dp = vec2(p.x, p.y / 0.22);
-  float dr = length(dp);
-  float disk = smoothstep(rs * 1.45, rs * 1.75, dr) * (1.0 - smoothstep(rs * 3.0, rs * 3.9, dr));
-  float front = step(p.y, 0.0) + step(rs * 1.02, th) * (1.0 - step(p.y, 0.0));
-  float dang = atan(dp.y, dp.x);
-  float streak = 0.75 + 0.25 * sin(dr * 60.0 - uTime * 1.2 + sin(dang * 3.0) * 2.0);
-  float doppler = 0.7 + 0.5 * cos(dang);
-  col += spectrum(dang / 6.2832 - uTime * 0.02) * disk * front * streak * doppler * 1.25;
-  // The far side of the disk, lensed up over the shadow (and a fainter image under it).
-  float halo = exp(-pow((th - rs * 1.32) / (rs * 0.16), 2.0));
-  col += spectrum(ang / 6.2832 + 0.25 - uTime * 0.02) * halo * (0.55 + 0.45 * smoothstep(-0.2, 0.6, p.y / max(th, 1e-3))) * 0.9;
-
-  // The shadow itself: true black.
-  col *= smoothstep(rs * 0.97, rs * 1.0, th);
+  vec3 col = holeColour(th, p, H, e1, e2, -1, 0.0);
 
   // The visor: dark glass with a gold coating that shows at grazing angles, and one studio highlight.
   float fres = pow(1.0 - max(dot(n, v), 0.0), 3.0);
@@ -109,6 +136,70 @@ void main() {
   vec3 L = normalize(vec3(0.5, 0.8, 0.6));
   float spec = pow(max(dot(reflect(-L, n), v), 0.0), 140.0) * 1.2 + pow(max(dot(reflect(-L, n), v), 0.0), 18.0) * 0.08;
   vec3 c = glass + col * 0.95 * uShow + spec;
+  gl_FragColor = vec4(c, 1.0);
+  #include <colorspace_fragment>
+}
+`
+
+/**
+ * The eye: a sphere whose pupil axis is local +Z. The hole is drawn in the eye's own frame (not
+ * as a reflection), centred on the pupil, its disk tilted 12° about X, so it turns with the eye.
+ * Uniforms: uLens (the X-ray test, as the visor), uTime, uShow (0 … 1, the hole's light),
+ * uBright (0 … 1, +20 % while she types or the cursor is on her face), uBand (int, −1 … 6: that
+ * band flares).
+ */
+export const eyeVertex = /* glsl */ `
+varying vec3 vN;
+varying vec3 vW;
+varying vec3 vP;
+void main() {
+  vP = normalize(position);
+  vec4 w = modelMatrix * vec4(position, 1.0);
+  vW = w.xyz;
+  vN = normalize(mat3(modelMatrix) * normal);
+  gl_Position = projectionMatrix * viewMatrix * w;
+}
+`
+
+export const eyeFragment = /* glsl */ `
+uniform vec3 uLens;
+uniform float uTime;
+uniform float uShow;
+uniform float uBright;
+uniform int uBand;
+varying vec3 vN;
+varying vec3 vW;
+varying vec3 vP;
+${holeGlsl}
+void main() {
+  ${lensGlsl('outside')}
+  vec3 d = normalize(vP);
+  // The pupil's axis, with the disk's plane tilted 12 degrees about X.
+  float tilt = 0.2094;
+  vec3 H = vec3(0.0, -sin(tilt), cos(tilt));
+  vec3 e1 = vec3(1.0, 0.0, 0.0);
+  vec3 e2 = cross(H, e1);
+  float a = acos(clamp(dot(d, H), -1.0, 1.0));
+  // The iris spans about 35 degrees of the sphere: the hole's angles are scaled onto it.
+  float th = a * 2.2;
+  vec3 side = d - H * cos(a);
+  float sl = length(side);
+  vec2 p = sl > 1e-5 ? vec2(dot(side, e1), dot(side, e2)) / sl * th : vec2(0.0);
+  vec3 col = holeColour(th, p, H, e1, e2, uBand, uBright);
+  float iris = 1.0 - smoothstep(1.36, 1.42, th);
+  col *= iris;
+
+  // A thin gold limb ring where the iris meets the dark glass of the eye.
+  float limb = exp(-pow((th - 1.40) / 0.05, 2.0));
+  vec3 gold = vec3(1.0, 0.76, 0.36) * limb * 0.9;
+
+  vec3 n = normalize(vN);
+  vec3 v = normalize(cameraPosition - vW);
+  float fres = pow(1.0 - max(dot(n, v), 0.0), 3.0);
+  vec3 glass = vec3(0.012, 0.012, 0.018) + vec3(1.0, 0.72, 0.36) * fres * 0.35;
+  vec3 L = normalize(vec3(0.5, 0.8, 0.6));
+  float spec = pow(max(dot(reflect(-L, n), v), 0.0), 140.0) * 1.2;
+  vec3 c = glass + (col * 0.95 + gold) * uShow + spec;
   gl_FragColor = vec4(c, 1.0);
   #include <colorspace_fragment>
 }

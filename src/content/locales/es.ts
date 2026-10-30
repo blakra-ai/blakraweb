@@ -41,7 +41,7 @@ export const es: Dict = {
     cue: '¿Qué necesita construir?',
     also: 'Otras formas de trabajar con nosotros:',
     facts: 'Fundada en 2024 · Totalmente remota · Respuesta en 24 horas',
-    hint: 'Mueva el cursor sobre el Navegante: vea de qué está hecho.',
+    hint: 'Mueva el cursor sobre la Navegante: vea de qué está hecha.',
   },
 
   pulse: {
@@ -288,18 +288,19 @@ export const es: Dict = {
   navigator: {
     name: 'Navegante',
     lines: {
-      hero: 'Soy el Navegante. Mueva el cursor sobre mí y vea de qué estoy hecho.',
-      manifesto: 'Un contrato, una tripulación. Cada traspaso que evita es un fallo que nunca tendrá que buscar.',
-      mission: '¿Qué construimos? Elija uno y encenderé los sistemas que necesita.',
-      systems: 'Mis siete sistemas, del soporte vital a la antena. Cada uno descansa sobre el de abajo.',
+      hero: 'Soy la Navegante. Este descenso ya lo he volado. Míreme a los ojos y vea lo que yo veo.',
+      manifesto: 'Un contrato, una tripulación. Cada traspaso que se ahorra es un fallo que nunca tendrá que buscar.',
+      mission: '¿Qué construimos? Elija, y encenderé los sistemas que necesita.',
+      systems: 'Mis siete sistemas, de la raíz a la corona. Cada uno descansa sobre el de abajo.',
       proof: 'Cinco misiones voladas. La más cercana a la suya lleva la costura naranja.',
       checklist: 'Antes de volar: la lista de comprobación. El último punto es el que importa.',
       payload: 'Nuestra propia carga útil: una IA que lee la piel. Sellada, y se muestra bajo NDA.',
       crew: 'La tripulación que conoce es la que construye. Tres personas, sin traspasos.',
-      contact: 'Su señal de respuesta. Su misión ya está escrita. Envíela y un ingeniero responde en 24 horas.',
+      contact: 'Su misión ya está escrita. Envíela, y un ingeniero que la construiría responde en 24 horas.',
     },
-    mission: '{tag}: necesita {n} de mis siete sistemas. Véalos encenderse.',
+    mission: '{tag}: {n} de mis siete sistemas. Véalos encenderse.',
     missionAll: 'Los siete sistemas, desde la base. Véalos encenderse.',
+    lookCloser: 'Mire más de cerca.',
   },
   footer: { line: 'Software con gravedad.', investors: 'Patrocinio y compra', privacy: 'Privacidad', legal: 'Aviso legal', join: 'Ingenieros y diseñadores que quieran sumarse a un proyecto:' },
 

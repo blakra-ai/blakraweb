@@ -4,3 +4,10 @@ dist-ssr/
 .env.local
 *.log
 e2e-shots/
+
+# Review frames stay on disk, not in history (the final set, review4, is kept)
+.firm/runs/*/review
+.firm/runs/*/review2
+.firm/runs/*/review3
+.firm/runs/*/wp6
+.firm/runs/*/wp7

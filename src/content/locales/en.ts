@@ -44,7 +44,7 @@ export const en: Dict = {
     cue: 'What do you need built?',
     also: 'Other ways to work with us:',
     facts: 'Founded 2024 · Fully remote · Reply within 24 hours',
-    hint: 'Move the cursor over the Navigator: see what he is made of.',
+    hint: 'Move the cursor over the Navigator: see what she is made of.',
   },
 
   pulse: {
@@ -291,18 +291,19 @@ export const en: Dict = {
   navigator: {
     name: 'Navigator',
     lines: {
-      hero: 'I\'m the Navigator. Move your cursor over me and see what I\'m made of.',
-      manifesto: 'One contract, one crew. Every hand-off you avoid is a failure you never debug.',
-      mission: 'What are we building? Pick one, and I\'ll light the systems it takes.',
-      systems: 'My seven systems, from the life-support pack to the antenna. Each one rests on the one beneath it.',
+      hero: 'I\'m the Navigator. I\'ve flown this descent before. Look into my eyes and see what I see.',
+      manifesto: 'One contract, one crew. Every hand-off you skip is a failure you never debug.',
+      mission: 'What are we building? Choose, and I\'ll light the systems it takes.',
+      systems: 'My seven systems, root to crown. Each one rests on the one beneath it.',
       proof: 'Five missions flown. The one nearest yours wears the orange stitch.',
       checklist: 'Before we fly: the checklist. The last item is the one that matters.',
       payload: 'Our own payload: an AI that reads skin. Sealed, and shown under NDA.',
       crew: 'The crew you meet is the crew that builds. Three of us, no hand-offs.',
-      contact: 'Your reply signal. Your mission is already written in. Send it, and an engineer answers within 24 hours.',
+      contact: 'Your mission is written in. Send it, and an engineer who would build it answers within 24 hours.',
     },
-    mission: '{tag}: that takes {n} of my seven systems. Watch them light up.',
+    mission: '{tag}: {n} of my seven systems. Watch them light.',
     missionAll: 'All seven systems, from the ground up. Watch them light up.',
+    lookCloser: 'Look closer.',
   },
   footer: { line: 'Software with gravity.', investors: 'Sponsors and buyers', privacy: 'Privacy', legal: 'Legal notice', join: 'Engineers and designers who want to join a project:' },
 

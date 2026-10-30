@@ -1,4 +1,6 @@
 import type { LayerId, NeedId } from '../../content/types'
+import { createPerf, type Perf } from './living'
+import type { Look } from './poses'
 
 /** The seven layers, root to crown (the chakra order); index = subsystem = chakra. */
 export const LAYERS: readonly LayerId[] = ['cloud', 'data', 'automation', 'design', 'apps', 'growth', 'ai']
@@ -34,4 +36,47 @@ export const nav = {
   dock: { x: 0, y: 0, w: 56, h: 56 },
   /** The sections drawn on ink, as screen bands [top, bottom] in CSS pixels, for the field. */
   inkBands: [] as [number, number][],
+  /** Her performance this frame (living.ts), which both figures (world, dock) apply. */
+  perf: createPerf() as Perf,
+  /** Where her eyes and mouth are on screen (CSS px), her head's height in px, and whether a figure shows. */
+  anchor: { eyes: { x: 0, y: 0 }, mouth: { x: 0, y: 0 }, headPx: 0, on: false },
+  /** The line she is speaking: its text, how much is typed, and when it began (clock). */
+  line: { text: '', typed: 0, from: 0 },
+  /** Screens scrolled since the current beat's top, and the beat before it (for the glide). */
+  enter: 0,
+  prevBeat: 'hero' as Beat,
+  /**
+   * What the cursor rests on: a layer (0 … 6), a mission patch (0 … 4) and the layers that
+   * mission used (indices, lit on her while hovered, from `at`), the product capsule, a crew badge, one of her eyes.
+   */
+  hover: {
+    layer: null as number | null,
+    patch: null as number | null,
+    patchLayers: null as number[] | null,
+    at: 0,
+    capsule: false,
+    crew: null as number | null,
+    eye: false,
+  },
+  /** What the pose has her watch this beat, and where that is on screen (CSS px), or null for the visitor. */
+  look: 'visitor' as Look,
+  lookAt: null as null | { x: number; y: number },
+  /** The pose's body turn this frame (degrees, damped), added to her living body yaw. */
+  poseYaw: 0,
+  /** The cursor in CSS px, and whether a mouse is on the page. */
+  pointer: { x: -9999, y: -9999, on: false },
+  /** The scroll's speed, smoothed, in screens per second (positive = down), clamped to ±6: the wind in her hair. */
+  scrollV: 0,
+  /** Boxes the speech card keeps clear of in the contact beat, in page coordinates (measured on reflow by the director): the form, the section's text blocks, and the left column's last paragraph. */
+  contact: { form: null as Box | null, text: [] as Box[], lastPara: null as Box | null },
 }
+
+export interface Box {
+  x: number
+  y: number
+  w: number
+  h: number
+}
+
+// Dev only: the headless motion probe reads nav (anchor, beat, enter, atDock) while scrubbing.
+if (import.meta.env.DEV) (globalThis as Record<string, unknown>).__nav = nav

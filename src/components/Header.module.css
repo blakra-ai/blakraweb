@@ -15,7 +15,7 @@
   padding: 0 calc(var(--margin) + var(--actions-w) + 0.75rem) 0 var(--margin);
   color: var(--ink-0);
   background: var(--paper);
-  border-bottom: 0.75px solid var(--hair-2);
+  border-bottom: var(--hairline);
   pointer-events: none;
 }
 .bar a,
@@ -36,7 +36,7 @@
 }
 .word {
   font-weight: 600;
-  font-size: 0.95rem;
+  font-size: var(--step--1);
   letter-spacing: 0.22em;
   margin-right: -0.22em;
 }
@@ -79,8 +79,8 @@
   place-items: center;
   width: 2.5rem;
   height: 2.5rem;
-  border: 0.75px solid var(--hair);
-  border-radius: 999px;
+  border: var(--hairline);
+  border-radius: var(--r-pill);
   background: transparent;
   color: inherit;
   cursor: pointer;
@@ -103,12 +103,23 @@
   align-items: center;
   gap: 0.5rem;
 }
-/* The Navigator's dock: an empty slot the world fills once the hero has scrolled out. */
+/* The Navigator's dock: an empty slot in the bar the world fills once the hero has scrolled out.
+   It sits at the right end of the words, before the controls; on phones it is a 24 px dot. */
 .dock {
   display: block;
   width: 2.5rem;
   height: 2.5rem;
+  margin-left: auto;
   flex: none;
+}
+.dock + .motion {
+  margin-left: 0;
+}
+@media (max-width: 767px) {
+  .dock {
+    width: 24px;
+    height: 24px;
+  }
 }
 .cta {
   display: inline-flex;
@@ -116,7 +127,7 @@
   align-items: center;
   height: 2.5rem;
   padding: 0 1.1rem;
-  border-radius: 999px;
+  border-radius: var(--r-pill);
   background: var(--cta-bg);
   color: var(--cta-ink);
   font-size: var(--step--1);
@@ -141,8 +152,8 @@
   place-items: center;
   width: 2.5rem;
   height: 2.5rem;
-  border: 0.75px solid var(--hair);
-  border-radius: 999px;
+  border: var(--hairline);
+  border-radius: var(--r-pill);
   cursor: pointer;
   list-style: none;
   transition: border-color 0.3s;
@@ -159,7 +170,7 @@
   display: block;
   width: 14px;
   height: 1.6px;
-  border-radius: 1px;
+  border-radius: var(--r-tag);
   background: currentColor;
   transition: transform 0.35s var(--ease-out);
 }
@@ -188,7 +199,7 @@
   overflow-y: auto;
   padding: 0.25rem var(--margin) 1.25rem;
   background: var(--paper);
-  border-bottom: 0.75px solid var(--hair);
+  border-bottom: var(--hairline);
   box-shadow: 0 24px 48px rgba(11, 11, 16, 0.12);
 }
 .sheetLinks a {
@@ -197,7 +208,7 @@
   min-height: 3.25rem;
   font-size: var(--step-1);
   letter-spacing: -0.01em;
-  border-bottom: 0.75px solid var(--hair-2);
+  border-bottom: var(--hairline);
 }
 .sheetLinks a[aria-current] {
   text-decoration: underline;
@@ -216,7 +227,7 @@
   padding: 0;
   border: 0;
   background: none;
-  color: rgba(238, 236, 230, 0.7);
+  color: var(--ink-2);
   font: inherit;
   font-size: var(--step--1);
   cursor: pointer;
@@ -247,8 +258,12 @@
 
 /* Phones: the languages and the motion switch move into the menu. */
 @media (max-width: 599px) {
+  /* The call to action and the menu button: the dock's dot must not reach the wordmark. */
   .header {
-    --actions-w: 13rem;
+    --actions-w: 11rem;
+  }
+  .brand {
+    flex: none;
   }
   .motion,
   .lang {

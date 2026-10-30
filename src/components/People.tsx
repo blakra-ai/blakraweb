@@ -31,7 +31,7 @@ export function People() {
       </div>
       <ul className={s.fan}>
         {people.map((person, i) => (
-          <li key={person.id} className={s.badge} style={{ '--i': i } as CSSProperties}>
+          <li key={person.id} className={s.badge} data-crew={i} style={{ '--i': i } as CSSProperties}>
             <div className={s.window} aria-hidden="true">
               {person.photo ? (
                 <img className={s.photo} src={person.photo} alt="" width={480} height={600} loading="lazy" decoding="async" />

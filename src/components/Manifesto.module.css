@@ -2,17 +2,12 @@
   position: relative;
   display: grid;
   gap: clamp(1.5rem, 4vh, 3rem);
-  min-height: 100svh;
   align-content: center;
-  padding: clamp(5rem, 12vh, 8rem) var(--margin);
-  color: #eeece6;
+  padding: clamp(4rem, 9vh, 6rem) var(--margin);
+  color: var(--ink);
 }
 .eyebrow {
-  font-family: var(--font-mono);
-  font-size: 0.74rem;
-  letter-spacing: 0.16em;
-  text-transform: uppercase;
-  color: rgba(238, 236, 230, 0.7);
+  composes: label from global;
 }
 .title {
   position: relative;
@@ -53,7 +48,7 @@
   vector-effect: non-scaling-stroke;
 }
 .statement {
-  font-size: clamp(1.25rem, 0.9rem + 1.2vw, 1.9rem);
+  font-size: var(--step-1);
   font-weight: 500;
   letter-spacing: -0.02em;
   max-width: 28ch;
@@ -70,10 +65,10 @@
   grid-template-columns: 2.2rem 1fr;
   gap: 0.6rem;
   padding: 0.7rem 0;
-  border-top: 0.75px solid rgba(238, 236, 230, 0.2);
-  font-size: 1.05rem;
+  border-top: var(--hairline);
+  font-size: var(--step-0);
   line-height: 1.5;
-  color: rgba(238, 236, 230, 0.86);
+  color: var(--ink-2);
   /* Starts wiped away; opens over a sixth of the reveal, staggered by its index. */
   --open: clamp(0, (var(--p, 0) - 0.45 - var(--i) * 0.14) / 0.16, 1);
   clip-path: inset(0 calc((1 - var(--open)) * 100%) 0 0);
@@ -82,10 +77,13 @@
   counter-increment: l;
   content: '0' counter(l);
   font-family: var(--font-mono);
-  font-size: 0.72rem;
-  letter-spacing: 0.1em;
+  font-size: var(--label-size);
+  letter-spacing: var(--label-track);
   padding-top: 0.3rem;
-  color: var(--accent);
+  justify-self: start;
+  align-self: start;
+  color: var(--ink-2);
+  box-shadow: inset 0 -2px var(--accent);
 }
 :global(html.motion-off) .lines li,
 :global(html.gl-off) .lines li {
@@ -101,10 +99,5 @@
   }
   .trail path {
     stroke-dashoffset: 0;
-  }
-}
-@media (max-width: 899px) {
-  .manifesto {
-    min-height: 0;
   }
 }

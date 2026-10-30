@@ -143,54 +143,79 @@
   display: none;
 }
 
-/* The drawn still, for devices without the world: where the helmet stands. */
+/* The drawn still: her face, framed as the world frames her so the GLB takes over in place. The
+   head spans 120 of the 230 units (30svh), the eyes sit at (100, 90) → (70vw, 36svh). */
 .still {
+  --gold: #c9a24a;
   display: none;
   position: absolute;
-  right: 12vw;
-  top: 50%;
-  width: min(34vw, 46svh);
-  transform: translateY(-54%);
+  left: calc(70vw - 25svh);
+  top: calc(36svh - 22.5svh);
+  width: 50svh;
+  pointer-events: none;
 }
 :global(html.gl-off) .still {
   display: block;
 }
-.stillHelmet {
+.stillFace {
   width: 100%;
   height: auto;
 }
-.stillShell {
-  fill: #f3f1ec;
-  stroke: rgba(11, 11, 16, 0.3);
-  stroke-width: 1.2;
+.stillHead {
+  fill: var(--paper);
+  stroke: var(--ink-0);
+  stroke-width: 1.4;
+}
+.stillEar {
+  fill: var(--paper);
+  stroke: var(--ink-0);
+  stroke-width: 1.4;
+  stroke-linejoin: round;
 }
 .stillCollar {
-  fill: #d6d3cc;
-  stroke: rgba(11, 11, 16, 0.4);
-  stroke-width: 1.2;
-}
-.stillVisor {
-  fill: #0b0b10;
-  stroke: var(--accent);
-  stroke-width: 4;
-}
-.stillHole {
-  fill: #000;
-  stroke: #fff;
-  stroke-width: 1.5;
-}
-.stillDisk {
   fill: none;
-  stroke: url(#none);
-  stroke: var(--accent);
-  stroke-width: 3;
-  opacity: 0.85;
+  stroke: var(--ink-0);
+  stroke-width: 1.6;
 }
-.stillMark {
+.stillLine {
   fill: none;
-  stroke: var(--accent);
-  stroke-width: 3;
+  stroke: var(--ink-0);
+  stroke-width: 1.1;
   stroke-linecap: round;
+  opacity: 0.7;
+}
+.stillWhite {
+  fill: var(--paper);
+  stroke: var(--ink-0);
+  stroke-width: 1;
+}
+.stillLimb {
+  fill: var(--ink-0);
+  stroke: var(--gold);
+  stroke-width: 0.6;
+}
+.stillBand {
+  fill: var(--ink-0);
+}
+.stillBandLight {
+  fill: var(--ink-2);
+}
+.stillPupil {
+  fill: #000;
+}
+.stillGlint {
+  fill: var(--paper);
+}
+
+/* Reduced motion: no reveals or hover moves; the still stays until the world (its still frame) is live. */
+@media (prefers-reduced-motion: reduce) {
+  .primary,
+  .secondary {
+    transition: none;
+  }
+  :global(html:not(.gl-live)) .still {
+    display: block;
+  }
 }
 
 @media (max-width: 899px) {
@@ -218,10 +243,10 @@
     max-width: none;
     text-align: left;
   }
+  /* Phones: head 24svh, centred at (50vw, 30svh), as the world's portrait pose. */
   .still {
-    right: 50%;
-    top: calc(var(--header-h) + 6svh);
-    width: min(60vw, 34svh);
-    transform: translateX(50%);
+    left: calc(50vw - 20svh);
+    top: calc(30svh - 18svh);
+    width: 40svh;
   }
 }

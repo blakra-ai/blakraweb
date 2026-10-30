@@ -90,7 +90,7 @@ export function Engine() {
               const k = chakraOf[layer]
               const used = usedAt(layer)
               return (
-                <li key={layer} id={`layer-${layer}`} tabIndex={-1} className={s.layer} data-dim={takes(layer) ? undefined : ''} data-current={current === i ? '' : undefined} style={{ '--chakra': chakraColors[k], '--i': i } as CSSProperties}>
+                <li key={layer} id={`layer-${layer}`} tabIndex={-1} className={s.layer} data-layer={k} data-dim={takes(layer) ? undefined : ''} data-current={current === i ? '' : undefined} style={{ '--chakra': chakraColors[k], '--i': i } as CSSProperties}>
                   <span className={s.index} aria-hidden="true">
                     0{k + 1}
                   </span>
