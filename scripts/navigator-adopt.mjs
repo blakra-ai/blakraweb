@@ -17,7 +17,7 @@
  * src/assets/navigator/navigator.glb. The contract test (tests/navigator-contract.test.ts) then
  * guards the file. With --dry nothing is written: you get the report and a names.json skeleton.
  */
-import { readFileSync, writeFileSync } from 'node:fs'
+import { existsSync, readFileSync, writeFileSync } from 'node:fs'
 import { NodeIO } from '@gltf-transform/core'
 import { ALL_EXTENSIONS } from '@gltf-transform/extensions'
 import { dedup, prune, weld, meshopt } from '@gltf-transform/functions'
@@ -33,6 +33,10 @@ if (!input) {
   process.exit(2)
 }
 const OUT = 'src/assets/navigator/navigator.glb'
+if (!existsSync(input)) {
+  console.error(`No file at "${input}". Export the model from the AI tool as GLB first, then pass its real path, e.g.\n  node scripts/navigator-adopt.mjs ~/Downloads/model.glb --augment --dry`)
+  process.exit(2)
+}
 
 await MeshoptEncoder.ready
 const io = new NodeIO().registerExtensions(ALL_EXTENSIONS).registerDependencies({ 'meshopt.encoder': MeshoptEncoder })
