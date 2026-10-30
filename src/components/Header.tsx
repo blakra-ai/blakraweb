@@ -89,6 +89,8 @@ export function Header({ route }: { route: Route }) {
         <div className={s.lang}>
           <LanguageSwitch route={route} variant="header" />
         </div>
+        {/* Where the Navigator docks once the hero has scrolled out (the world reads this box). */}
+        {home && <span className={s.dock} data-dock aria-hidden="true" />}
         <a href={`${homePath}#contact`} className={s.cta}>
           {t.ui.cta}
         </a>

@@ -111,6 +111,8 @@ export interface Dict {
     also: string
     /** Confirmed facts under the actions, separated by " · ". */
     facts: string
+    /** The hero's invitation to move the cursor over the Navigator (mouse only; decorative). */
+    hint: string
   }
   /** Why one team, and the one-tap question that tailors the page to the visitor. */
   pulse: {
@@ -204,6 +206,16 @@ export interface Dict {
     noScript: string
     direct: string
     errors: { org: string; email: string; emailFormat: string; msg: string; msgLong: string }
+  }
+  /**
+   * The Navigator's voice: what he says to the reader in each section (data-beat), as a short
+   * transmission, in the first person. `mission` takes {tag} and {n} once a mission is chosen.
+   */
+  navigator: {
+    name: string
+    lines: Record<'hero' | 'manifesto' | 'mission' | 'systems' | 'proof' | 'checklist' | 'payload' | 'crew' | 'contact', string>
+    mission: string
+    missionAll: string
   }
   footer: {
     line: string

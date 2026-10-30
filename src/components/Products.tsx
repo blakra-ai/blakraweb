@@ -1,71 +1,79 @@
 import { useRef, type CSSProperties } from 'react'
 import { chakraColors, chakraOf, products } from '../content/shared'
-import { factAt } from '../features/experience/timeline'
+import { yantraPath } from '../features/navigator/yantra'
 import { useI18n } from '../i18n'
-import { useActSteps } from '../motion/useActSteps'
+import { useReveal } from '../motion/useReveal'
 import { pathFor } from '../routes'
 import { Section } from './Section'
 import s from './Products.module.css'
 
-/** Each product's facts in the order they come into focus, numbered across the products. */
-const facts = products.map((prod) => [...(prod.platforms.length > 0 ? ['platforms' as const] : []), 'layers' as const, 'offer' as const])
-const moments = facts.flat().map((_, k) => factAt(k))
-
 /**
- * Act VI of the film: inside the system. The jet fades and the camera looks down the spin axis:
- * the disk is a ring of light around the shadow, and in the shadow our product comes into focus,
- * drawn in light. Its facts come into focus here one at a time, as the picture settles.
+ * The payload: our own product, in a sealed capsule with its spec plate. Riveted, labelled the
+ * way a flight article is: name, stage, platforms, the layers it runs on, what is on offer.
+ * "Demo under NDA" is the seal.
  */
 export function Products() {
   const { t, locale } = useI18n()
   const p = t.products
   const ref = useRef<HTMLElement>(null)
-  const { passed } = useActSteps(ref, moments)
-  // Held: a fact shows once the film has passed its moment. Otherwise every fact shows.
-  const stateOf = (k: number) => (passed === null || k < passed ? 'on' : 'next')
-  let k = 0
+  useReveal(ref)
 
   return (
-    <Section ref={ref} id="products" beat="product" className={s.products} aria-labelledby="products-title">
-      <div className={s.pin} data-pin>
-        <div className={s.text}>
-          <p className={s.eyebrow}>{p.eyebrow}</p>
-          <h2 id="products-title" className={s.title} data-focus tabIndex={-1}>
-            {p.title}
-          </h2>
-          <p className={s.lede}>{p.lede}</p>
+    <Section ref={ref} id="products" beat="payload" className={s.products} aria-labelledby="products-title">
+      <div className={s.text}>
+        <p className={s.eyebrow}>{p.eyebrow}</p>
+        <h2 id="products-title" className={s.title} data-focus tabIndex={-1}>
+          {p.title}
+        </h2>
+        <p className={s.lede}>{p.lede}</p>
+        <p className={s.more}>{p.more}</p>
+        <a className={s.investors} href={pathFor('investors', locale)}>
+          {p.investorsLink}&nbsp;<span aria-hidden="true">→</span>
+        </a>
+      </div>
 
-          {products.map((prod, i) => {
-            const copy = p.items[prod.id]
-            return (
-              <article key={prod.id} className={s.product} data-draft={import.meta.env.DEV && prod.draft ? '' : undefined} aria-labelledby={`product-${prod.id}`}>
+      <ul className={s.bay}>
+        {products.map((prod) => {
+          const copy = p.items[prod.id]
+          const top = prod.layers.map((l) => chakraOf[l]).sort((a, b) => b - a)[0] ?? 6
+          return (
+            <li key={prod.id} className={s.capsule} data-draft={import.meta.env.DEV && prod.draft ? '' : undefined} style={{ '--chakra': chakraColors[top] } as CSSProperties}>
+              {/* The capsule's window: the product's highest layer, its yantra, behind glass. */}
+              <div className={s.window} aria-hidden="true">
+                <svg viewBox="-1.1 -1.1 2.2 2.2" className={s.yantra}>
+                  <path d={yantraPath(top)} />
+                  <circle r="0.075" />
+                </svg>
+                <span className={s.glass} />
+              </div>
+              <div className={s.plate}>
                 <p className={s.stage} data-stage={prod.stage}>
                   {p.stage[prod.stage]}
                 </p>
-                <h3 id={`product-${prod.id}`} className={s.name}>
-                  {prod.name}
-                </h3>
+                <h3 className={s.name}>{prod.name}</h3>
                 <p className={s.line}>{copy.line}</p>
                 <p className={s.detail}>{copy.detail}</p>
                 <dl className={s.facts}>
-                  {facts[i].map((fact) => {
-                    const state = stateOf(k++)
-                    return (
-                      <div key={fact} className={s.fact} data-state={state}>
-                        <dt>{fact === 'platforms' ? p.platforms : fact === 'layers' ? t.ui.usesEngine : p.offer}</dt>
-                        <dd>
-                          {fact === 'platforms' && prod.platforms.join(' · ')}
-                          {fact === 'layers' &&
-                            prod.layers.map((l) => (
-                              <a key={l} href={`#layer-${l}`} style={{ '--chakra': chakraColors[chakraOf[l]] } as CSSProperties}>
-                                {t.engine.layers[l].name}
-                              </a>
-                            ))}
-                          {fact === 'offer' && copy.offer}
-                        </dd>
-                      </div>
-                    )
-                  })}
+                  {prod.platforms.length > 0 && (
+                    <div>
+                      <dt>{p.platforms}</dt>
+                      <dd>{prod.platforms.join(' · ')}</dd>
+                    </div>
+                  )}
+                  <div>
+                    <dt>{t.ui.usesEngine}</dt>
+                    <dd className={s.layers}>
+                      {prod.layers.map((l) => (
+                        <a key={l} href={`#layer-${l}`} style={{ '--chakra': chakraColors[chakraOf[l]] } as CSSProperties}>
+                          {t.engine.layers[l].name}
+                        </a>
+                      ))}
+                    </dd>
+                  </div>
+                  <div>
+                    <dt>{p.offer}</dt>
+                    <dd>{copy.offer}</dd>
+                  </div>
                 </dl>
                 {prod.href && (
                   <a className={s.open} href={prod.href} rel="noopener" target="_blank">
@@ -73,18 +81,12 @@ export function Products() {
                     <span className="sr-only"> ({t.ui.newTab})</span> →
                   </a>
                 )}
-              </article>
-            )
-          })}
-
-          <div className={s.more}>
-            <p>{p.more}</p>
-            <a className={s.investors} href={pathFor('investors', locale)}>
-              {p.investorsLink}&nbsp;<span aria-hidden="true">→</span>
-            </a>
-          </div>
-        </div>
-      </div>
+              </div>
+              <span className={s.rivets} aria-hidden="true" />
+            </li>
+          )
+        })}
+      </ul>
     </Section>
   )
 }

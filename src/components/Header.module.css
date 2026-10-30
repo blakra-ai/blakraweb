@@ -103,6 +103,13 @@
   align-items: center;
   gap: 0.5rem;
 }
+/* The Navigator's dock: an empty slot the world fills once the hero has scrolled out. */
+.dock {
+  display: block;
+  width: 2.5rem;
+  height: 2.5rem;
+  flex: none;
+}
 .cta {
   display: inline-flex;
   justify-content: center;

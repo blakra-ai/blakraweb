@@ -4,6 +4,7 @@
   min-height: 100svh;
   align-content: center;
   padding: calc(var(--header-h) + 2rem) var(--margin) clamp(3rem, 6vw, 4.5rem);
+  color: #eeece6;
 }
 @media (min-width: 1000px) {
   .contact {
@@ -18,36 +19,20 @@
   gap: 1.5rem;
   align-content: start;
 }
-/* On paper over the film; the form is a sheet of its own. */
-.intro::before {
-  content: '';
-  position: absolute;
-  inset: var(--sheet-inset);
-  z-index: -1;
-  background: var(--sheet);
-  -webkit-mask-image: var(--sheet-mask);
-  mask-image: var(--sheet-mask);
-  pointer-events: none;
-}
-@media (max-width: 899px) {
-  .intro::before {
-    inset: -1.25rem -1rem;
-    border-radius: 20px;
-    background: rgba(242, 240, 235, 0.9);
-    -webkit-mask-image: none;
-    mask-image: none;
-  }
-}
+/* On ink: the words in the ink's light; the form is the transmission panel, a sheet of paper. */
 .eyebrow {
   font-family: var(--font-mono);
-  font-size: var(--step--1);
-  color: var(--ink-2);
+  font-size: 0.74rem;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: rgba(238, 236, 230, 0.7);
 }
 .title {
   font-size: clamp(2.3rem, 1rem + 3.4vw, 4.6rem);
-  font-weight: 600;
-  line-height: 0.98;
+  font-weight: 800;
+  line-height: 0.95;
   letter-spacing: -0.045em;
+  text-transform: uppercase;
   max-width: 13ch;
   outline: none;
 }
@@ -55,18 +40,18 @@
   max-width: 44ch;
   font-size: var(--step-1);
   line-height: 1.45;
-  color: var(--ink-2);
+  color: rgba(238, 236, 230, 0.78);
 }
 .direct {
-  color: var(--ink-2);
+  color: rgba(238, 236, 230, 0.7);
 }
 .mail {
-  color: var(--ink);
-  border-bottom: 1px solid var(--line);
+  color: #eeece6;
+  border-bottom: 1px solid rgba(238, 236, 230, 0.35);
   transition: border-color 0.3s;
 }
 .mail:hover {
-  border-color: var(--ink);
+  border-color: #eeece6;
 }
 
 .form {
@@ -75,9 +60,10 @@
   gap: 1.5rem;
   padding: clamp(1.25rem, 2.5vw, 2rem);
   border-radius: 24px;
-  background: rgba(242, 240, 235, 0.95);
+  background: var(--paper);
+  color: var(--ink-0);
   border: 0.75px solid var(--hair);
-  box-shadow: 0 24px 60px -30px rgba(11, 11, 16, 0.25);
+  box-shadow: 0 40px 80px -40px rgba(0, 0, 0, 0.7);
 }
 .field {
   display: grid;
@@ -194,8 +180,10 @@
 .done {
   align-self: center;
   padding: 2rem;
-  border-left: 3px solid var(--signal);
-  background: var(--surface);
+  border-radius: 24px;
+  background: var(--paper);
+  color: var(--ink-0);
+  border-left: 3px solid var(--accent);
   font-size: var(--step-1);
   outline: none;
 }

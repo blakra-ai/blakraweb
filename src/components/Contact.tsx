@@ -3,6 +3,7 @@ import { company } from '../content/shared'
 import type { Intent } from '../content/types'
 import { locales, useI18n } from '../i18n'
 import { intents, limits, sendContact, validate, type ContactFields, type FieldErrors } from '../lib/contact'
+import { nav } from '../features/navigator/state'
 import { onPulse } from '../motion/pulse'
 import { Section } from './Section'
 import s from './Contact.module.css'
@@ -115,6 +116,8 @@ export function Contact() {
       lang: locales[locale].lang,
     })
     setStatus(result === 'failed' ? 'failed' : 'sent')
+    // The reply signal goes out: the Navigator answers it.
+    if (result !== 'failed') nav.transmitAt = nav.clock
   }
 
   const mail = (
@@ -125,7 +128,7 @@ export function Contact() {
   const err = (field: keyof FieldErrors) => (errors[field] ? c.errors[errors[field]!] : undefined)
 
   return (
-    <Section ref={ref} id="contact" beat="contact" className={s.contact} aria-labelledby="contact-title">
+    <Section ref={ref} id="contact" beat="contact" surface="ink" className={s.contact} aria-labelledby="contact-title">
       <div className={s.intro}>
         <p className={s.eyebrow}>
           {c.eyebrow}

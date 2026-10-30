@@ -1,0 +1,110 @@
+.manifesto {
+  position: relative;
+  display: grid;
+  gap: clamp(1.5rem, 4vh, 3rem);
+  min-height: 100svh;
+  align-content: center;
+  padding: clamp(5rem, 12vh, 8rem) var(--margin);
+  color: #eeece6;
+}
+.eyebrow {
+  font-family: var(--font-mono);
+  font-size: 0.74rem;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: rgba(238, 236, 230, 0.7);
+}
+.title {
+  position: relative;
+  display: grid;
+  line-height: 0.86;
+  letter-spacing: -0.055em;
+  max-width: 14ch;
+}
+.title span {
+  font-size: clamp(3rem, 1rem + 8vw, 11rem);
+  font-weight: 800;
+  text-transform: uppercase;
+}
+.title em {
+  font-family: var(--font-serif);
+  font-style: italic;
+  font-weight: 400;
+  font-size: clamp(2.8rem, 1rem + 7.2vw, 10rem);
+  letter-spacing: -0.035em;
+  color: var(--accent);
+}
+/* The trail is drawn as --p (useReveal) runs 0 → 1: one stroke, no fade. */
+.trail {
+  position: absolute;
+  inset: -12% -6% -14% -4%;
+  width: 110%;
+  height: 126%;
+  pointer-events: none;
+  overflow: visible;
+}
+.trail path {
+  fill: none;
+  stroke: var(--accent);
+  stroke-width: 3;
+  stroke-linecap: round;
+  stroke-dasharray: 1;
+  stroke-dashoffset: calc(1 - var(--p, 0));
+  vector-effect: non-scaling-stroke;
+}
+.statement {
+  font-size: clamp(1.25rem, 0.9rem + 1.2vw, 1.9rem);
+  font-weight: 500;
+  letter-spacing: -0.02em;
+  max-width: 28ch;
+}
+/* The three lines wipe in, one after another, as the scroll brings them. */
+.lines {
+  display: grid;
+  gap: 0.6rem;
+  max-width: 46rem;
+  counter-reset: l;
+}
+.lines li {
+  display: grid;
+  grid-template-columns: 2.2rem 1fr;
+  gap: 0.6rem;
+  padding: 0.7rem 0;
+  border-top: 0.75px solid rgba(238, 236, 230, 0.2);
+  font-size: 1.05rem;
+  line-height: 1.5;
+  color: rgba(238, 236, 230, 0.86);
+  /* Starts wiped away; opens over a sixth of the reveal, staggered by its index. */
+  --open: clamp(0, (var(--p, 0) - 0.45 - var(--i) * 0.14) / 0.16, 1);
+  clip-path: inset(0 calc((1 - var(--open)) * 100%) 0 0);
+}
+.lines li::before {
+  counter-increment: l;
+  content: '0' counter(l);
+  font-family: var(--font-mono);
+  font-size: 0.72rem;
+  letter-spacing: 0.1em;
+  padding-top: 0.3rem;
+  color: var(--accent);
+}
+:global(html.motion-off) .lines li,
+:global(html.gl-off) .lines li {
+  clip-path: none;
+}
+:global(html.motion-off) .trail path,
+:global(html.gl-off) .trail path {
+  stroke-dashoffset: 0;
+}
+@media (prefers-reduced-motion: reduce) {
+  .lines li {
+    clip-path: none;
+  }
+  .trail path {
+    stroke-dashoffset: 0;
+  }
+}
+@media (max-width: 899px) {
+  .manifesto {
+    min-height: 0;
+  }
+}

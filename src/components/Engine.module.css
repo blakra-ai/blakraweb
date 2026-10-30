@@ -1,5 +1,6 @@
 .engine {
   position: relative;
+  color: #eeece6;
 }
 .pin {
   display: grid;
@@ -7,10 +8,10 @@
   min-height: 100svh;
   padding: calc(var(--header-h) + 1.5rem) var(--margin) 2rem;
 }
-/* Held while the centres bloom up the axis, one step per layer, then the charge. */
+/* Held while the Navigator opens into his parts: the exploded view plays over 160 svh of scroll. */
 @media (min-width: 900px) and (min-height: 700px) {
   :global(html.motion-on) .engine {
-    height: 240svh;
+    height: 260svh;
   }
   :global(html.motion-on) .pin {
     position: sticky;
@@ -20,256 +21,170 @@
 }
 @media (max-width: 899px) {
   .pin {
-    padding-top: 50svh;
+    padding-top: 58svh;
   }
 }
 
-/* The words on the left, on paper; the column of centres owns the right. */
+/* The words on the left; the exploded helmet owns the right. */
 .text {
-  position: relative;
   display: grid;
-  gap: 0.8rem;
-  max-width: min(36rem, 44vw);
-}
-.text::before {
-  content: '';
-  position: absolute;
-  inset: var(--sheet-inset);
-  z-index: -1;
-  background: var(--sheet);
-  -webkit-mask-image: var(--sheet-mask);
-  mask-image: var(--sheet-mask);
-  pointer-events: none;
+  gap: 0.9rem;
+  max-width: min(36rem, 42vw);
 }
 @media (max-width: 899px) {
   .text {
     max-width: none;
   }
-  .text::before {
-    inset: -1.25rem -1rem;
-    border-radius: 20px;
-    background: rgba(242, 240, 235, 0.9);
-    -webkit-mask-image: none;
-    mask-image: none;
-  }
 }
 .eyebrow {
   font-family: var(--font-mono);
-  font-size: 0.72rem;
-  letter-spacing: 0.14em;
+  font-size: 0.74rem;
+  letter-spacing: 0.16em;
   text-transform: uppercase;
-  color: var(--ink-2);
+  color: rgba(238, 236, 230, 0.7);
 }
 .title {
-  font-size: clamp(2rem, 1rem + 2.4vw, 3.3rem);
-  font-weight: 600;
-  line-height: 1;
+  font-size: clamp(2.2rem, 1rem + 3vw, 4rem);
+  font-weight: 800;
+  line-height: 0.95;
   letter-spacing: -0.045em;
+  text-transform: uppercase;
   outline: none;
 }
-
-/*
- * The lede, and why AI sits on top. Held: one place, two texts; the crown line takes the
- * lede's place when the crown blooms. Otherwise (and without JavaScript) both, one after the other.
- */
-.swap {
-  display: grid;
-  gap: 0.8rem;
-}
 .lede {
-  color: var(--ink-2);
+  color: rgba(238, 236, 230, 0.78);
   line-height: 1.55;
 }
-.crown {
-  display: grid;
-  gap: 0.4rem;
-}
-.text[data-held] .lede,
-.text[data-held] .crown {
-  grid-area: 1 / 1;
-}
-.text[data-held] .crown,
-.text[data-held][data-crown] .lede {
-  visibility: hidden;
-}
-.text[data-held][data-crown] .crown {
-  visibility: visible;
-}
-.crownTitle {
-  font-family: var(--font-serif);
-  font-style: italic;
-  font-size: 1.25rem;
-  line-height: 1.25;
-}
-.crownText {
-  font-size: 0.95rem;
-  line-height: 1.5;
-  color: var(--ink-2);
-}
-.source {
-  font-family: var(--font-mono);
-  font-size: 0.7rem;
-  white-space: nowrap;
-}
 
+/* Seven rows, crown to root; each appears as the exploded view reaches its part (--p, useHold). */
 .layers {
   display: grid;
   margin-top: 0.4rem;
-  border-top: 0.75px solid var(--hair);
+  border-top: 0.75px solid rgba(238, 236, 230, 0.22);
 }
 .layer {
   display: grid;
-  grid-template-columns: 0.75rem 2rem 1fr;
-  align-items: center;
-  gap: 0.6rem;
-  width: 100%;
-  min-height: 2.6rem;
-  padding: 0;
-  border: 0;
-  border-bottom: 0.75px solid var(--hair);
-  background: none;
-  color: var(--ink-2);
-  text-align: left;
-  cursor: pointer;
-  transition: color 0.4s var(--ease-out);
+  grid-template-columns: 2.2rem 1fr;
+  gap: 0.2rem 0.6rem;
+  padding: 0.55rem 0;
+  border-bottom: 0.75px solid rgba(238, 236, 230, 0.22);
+  outline: none;
+  --open: clamp(0, (var(--p, 1) - 0.08 - var(--i) * 0.11) / 0.12, 1);
+  clip-path: inset(0 calc((1 - var(--open)) * 100%) 0 0);
+}
+:global(html.motion-off) .layer,
+:global(html.gl-off) .layer {
+  clip-path: none;
+}
+@media (max-width: 899px), (max-height: 699px) {
+  .layer {
+    clip-path: none;
+  }
 }
 .layer:focus-visible {
   outline: 2px solid var(--accent);
   outline-offset: 2px;
 }
-.dot {
-  width: 0.62rem;
-  height: 0.62rem;
-  border-radius: 50%;
-  border: 1px solid var(--chakra);
-  transition:
-    background-color 0.4s,
-    transform 0.5s var(--ease-out);
-}
 .index {
   font-family: var(--font-mono);
   font-size: 0.72rem;
+  padding-top: 0.2rem;
+  color: var(--chakra);
 }
-.layerName {
-  font-size: 1rem;
-  font-weight: 500;
+.body {
+  display: grid;
+  gap: 0.2rem;
 }
-/* A centre that has bloomed: its row in full ink, its dot filled. Not yet: secondary ink. */
-.layers li[data-bloomed] .layer,
-.text:not([data-held]) .layer {
-  color: var(--ink-0);
+.name {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: 0.3rem 0.7rem;
+  font-size: 1.02rem;
+  font-weight: 600;
 }
-.layers li[data-bloomed] .dot,
-.text:not([data-held]) .dot {
-  background: var(--chakra);
-}
-.layers li[data-active] .dot {
-  transform: scale(1.35);
+.part {
+  font-family: var(--font-mono);
+  font-size: 0.66rem;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: rgba(238, 236, 230, 0.6);
 }
 .focus {
-  margin-left: 0.6rem;
   padding: 0.1rem 0.5rem;
   border-radius: 999px;
-  background: var(--ink-0);
-  color: var(--paper);
+  background: var(--accent);
+  color: #0b0b10;
   font-family: var(--font-mono);
   font-size: 0.62rem;
   letter-spacing: 0.1em;
   text-transform: uppercase;
-  vertical-align: 0.15em;
-}
-
-/* Each layer's detail: under its row in the list (every one open). */
-.detail {
-  padding: 0.5rem 0 0 3.35rem;
-  border-bottom: 0.75px solid var(--hair);
-}
-.detailName {
-  display: none;
 }
 .layerText {
-  font-size: 0.92rem;
+  font-size: 0.9rem;
   line-height: 1.5;
-  color: var(--ink-2);
+  color: rgba(238, 236, 230, 0.78);
 }
 .meta {
-  padding: 0.2rem 0 0.8rem;
   font-family: var(--font-mono);
-  font-size: 0.68rem;
+  font-size: 0.66rem;
   line-height: 1.6;
-  color: var(--ink-2);
+  color: rgba(238, 236, 230, 0.55);
 }
-
 /*
- * Held: the rows never move. The list is a grid; each row is one line of it, and every detail
- * sits in one place under the seven rows (the place is as tall as the longest), so only the words
- * in that place change, printed top to bottom as their centre blooms and wiped as the next one
- * does. Nothing above them shifts and nothing fades.
+ * Held: the rows are one line each, so seven fit any screen, and only the row the scroll has
+ * reached shows its words (its text and its stack), in place. Flowing: every row carries them.
  */
-.text[data-held] .layers li {
-  display: contents;
+.text[data-held] .layer:not([data-current]) .layerText,
+.text[data-held] .layer:not([data-current]) .meta {
+  display: none;
 }
-.text[data-held] .layers li[data-active] .layerName {
-  font-weight: 650;
+.text[data-held] .layer {
+  padding: 0.45rem 0;
 }
-.text[data-held] .detail {
-  padding-top: 0.75rem;
+.text[data-held] .layer[data-current] .name {
+  color: #ffffff;
 }
-.text[data-held] .detailName {
-  display: flex;
-  align-items: center;
-  gap: 0.5rem;
-  margin-bottom: 0.3rem;
+/* A layer the chosen mission does not take waits in half light. */
+.layer[data-dim] {
+  color: rgba(238, 236, 230, 0.45);
+}
+.layer[data-dim] .layerText,
+.layer[data-dim] .meta,
+.layer[data-dim] .index {
+  color: rgba(238, 236, 230, 0.35);
+}
+.crown {
+  margin-top: 0.6rem;
+  font-size: 0.88rem;
+  line-height: 1.5;
+  color: rgba(238, 236, 230, 0.7);
+  --open: clamp(0, (var(--p, 1) - 0.88) / 0.12, 1);
+  clip-path: inset(0 calc((1 - var(--open)) * 100%) 0 0);
+}
+:global(html.motion-off) .crown,
+:global(html.gl-off) .crown {
+  clip-path: none;
+}
+@media (max-width: 899px), (max-height: 699px) {
+  .crown {
+    clip-path: none;
+  }
+}
+.crown em {
+  font-family: var(--font-serif);
+  font-style: italic;
+  font-size: 1.05rem;
+  color: #eeece6;
+}
+.source {
   font-family: var(--font-mono);
-  font-size: 0.7rem;
-  letter-spacing: 0.08em;
-  text-transform: uppercase;
+  font-size: 0.66rem;
+  white-space: nowrap;
 }
-.text[data-held] .detailName .dot {
-  background: var(--chakra);
-}
-.text[data-held] .detail {
-  grid-row: 8;
-  grid-column: 1;
-  border-bottom: 0;
-  visibility: hidden;
-  clip-path: inset(0 0 100% 0);
-  transform: translate3d(0, 0.5rem, 0);
-  transition:
-    clip-path 0.3s cubic-bezier(0.5, 0, 0.75, 0),
-    transform 0.3s cubic-bezier(0.5, 0, 0.75, 0),
-    visibility 0s 0.3s;
-}
-.text[data-held] .layers li[data-active] .detail {
-  visibility: visible;
-  clip-path: inset(0);
-  transform: none;
-  transition:
-    clip-path 0.6s var(--ease-out) 0.3s,
-    transform 0.6s var(--ease-out) 0.3s,
-    visibility 0s 0.3s;
-}
-.symbol {
-  margin-top: 0.4rem;
-  font-family: var(--font-mono);
-  font-size: 0.68rem;
-  line-height: 1.6;
-  color: var(--ink-2);
-  max-width: 34rem;
-}
-/* Short screens: the symbol line gives its room to the active layer's detail. */
+/* Short screens: a smaller title. */
 @media (min-width: 900px) and (max-height: 860px) {
-  .symbol {
-    display: none;
-  }
   .title {
-    font-size: clamp(1.8rem, 0.9rem + 2vw, 2.7rem);
-  }
-}
-@media (prefers-reduced-motion: reduce) {
-  .detail,
-  .layer,
-  .dot {
-    transition: none !important;
+    font-size: clamp(1.8rem, 0.9rem + 2.2vw, 3rem);
   }
 }

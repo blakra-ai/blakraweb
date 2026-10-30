@@ -41,6 +41,7 @@ export const de: Dict = {
     cue: 'Was sollen wir für Sie bauen?',
     also: 'Andere Formen der Zusammenarbeit:',
     facts: 'Gegründet 2024 · Komplett remote · Antwort binnen 24 Stunden',
+    hint: 'Bewegen Sie den Cursor über den Navigator: sehen Sie, woraus er besteht.',
   },
 
   pulse: {
@@ -284,6 +285,22 @@ export const de: Dict = {
     },
   },
 
+  navigator: {
+    name: 'Navigator',
+    lines: {
+      hero: 'Ich bin der Navigator. Fahren Sie mit dem Cursor über mich und sehen Sie, woraus ich bestehe.',
+      manifesto: 'Ein Vertrag, eine Crew. Jede Übergabe, die Sie vermeiden, ist ein Fehler, den Sie nie suchen müssen.',
+      mission: 'Was bauen wir? Wählen Sie eins, und ich lasse die Systeme leuchten, die es braucht.',
+      systems: 'Meine sieben Systeme, vom Lebenserhaltungspack bis zur Antenne. Jedes ruht auf dem darunter.',
+      proof: 'Fünf geflogene Missionen. Die Ihrer am nächsten trägt die orange Naht.',
+      checklist: 'Vor dem Start: die Checkliste. Der letzte Punkt ist der, der zählt.',
+      payload: 'Unsere eigene Nutzlast: eine KI, die Haut liest. Versiegelt, und unter NDA zu sehen.',
+      crew: 'Die Crew, die Sie treffen, ist die Crew, die baut. Drei von uns, keine Übergaben.',
+      contact: 'Ihr Antwortsignal. Ihre Mission steht schon drin. Senden Sie, und ein Engineer antwortet binnen 24 Stunden.',
+    },
+    mission: '{tag}: das braucht {n} meiner sieben Systeme. Sehen Sie, wie sie aufleuchten.',
+    missionAll: 'Alle sieben Systeme, von Grund auf. Sehen Sie, wie sie aufleuchten.',
+  },
   footer: { line: 'Software mit Anziehungskraft.', investors: 'Sponsoren und Käufer', privacy: 'Datenschutz', legal: 'Impressum', join: 'Engineers und Designer, die bei Projekten mitwirken möchten:' },
 
   investors: {

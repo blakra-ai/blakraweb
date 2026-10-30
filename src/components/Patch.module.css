@@ -1,0 +1,55 @@
+.patch {
+  position: relative;
+  display: inline-grid;
+  justify-items: center;
+  gap: 0.6rem;
+  width: var(--size);
+}
+.badge {
+  width: var(--size);
+  height: var(--size);
+  /* The embroidered edge: a shadow under the badge, as a patch lifts from cloth. */
+  filter: drop-shadow(0 6px 12px rgba(11, 11, 16, 0.14));
+}
+.field {
+  fill: #ebe8e1;
+}
+.guilloche path {
+  fill: none;
+  stroke: rgba(11, 11, 16, 0.22);
+  stroke-width: 0.012;
+}
+.yantra path {
+  fill: none;
+  stroke: var(--chakra);
+  stroke-width: 0.03;
+}
+.yantra circle {
+  fill: #0b0b10;
+}
+.ring path {
+  fill: none;
+  stroke-width: 0.12;
+  stroke-linecap: butt;
+}
+.stitch {
+  fill: none;
+  stroke: #0b0b10;
+  stroke-width: 0.03;
+  stroke-dasharray: 0.045 0.03;
+}
+.motto {
+  font-family: var(--font-mono);
+  font-size: 0.68rem;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  text-align: center;
+}
+/* Marked (nearest to the reader's mission): a second, accent stitch round the badge. */
+.patch[data-highlight] .badge {
+  filter: drop-shadow(0 8px 16px rgba(255, 90, 31, 0.28));
+}
+.patch[data-highlight] .stitch {
+  stroke: var(--accent);
+  stroke-width: 0.045;
+}

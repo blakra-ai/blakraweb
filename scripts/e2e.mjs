@@ -270,19 +270,19 @@ try {
     await page.evaluate(() => document.querySelector('#pulse [aria-live] a[href="#h17"]').click())
     await page.waitForTimeout(3000)
     const card = await page.evaluate(() => {
-      const el = document.getElementById('h17')
-      const r = el.getBoundingClientRect()
-      return { top: Math.round(r.top), bottom: Math.round(r.bottom), vh: innerHeight, state: el.dataset.state, focused: el.contains(document.activeElement) }
+      const panel = document.getElementById('day-case')
+      const r = panel.getBoundingClientRect()
+      return { top: Math.round(r.top), vh: innerHeight, selected: document.getElementById('h17-tab')?.getAttribute('aria-selected'), focused: panel.contains(document.activeElement) || panel === document.activeElement }
     })
-    check('F1', 'a link to a case lands when its star lights: the case shown, in view and focused', card.top >= 0 && card.bottom <= card.vh && card.state === 'on' && card.focused, JSON.stringify(card))
-    await page.evaluate(() => document.querySelector('#h06 a[href="#layer-data"]').click())
+    check('F1', 'a link to a case opens its patch and lands on the case, focused', card.top >= 0 && card.top < card.vh && card.selected === 'true' && card.focused, JSON.stringify(card))
+    await page.evaluate(() => document.querySelector('#day-case a[href="#layer-data"]').click())
     await page.waitForTimeout(3000)
     const layer = await page.evaluate(() => {
       const li = document.getElementById('layer-data')
-      // The row itself: held, the list item has no box of its own (its row and detail sit in the list's grid).
-      return { active: li.hasAttribute('data-active'), focused: li.contains(document.activeElement), top: Math.round(li.querySelector('button').getBoundingClientRect().top), vh: innerHeight }
+      const r = li.getBoundingClientRect()
+      return { focused: li === document.activeElement || li.contains(document.activeElement), top: Math.round(r.top), bottom: Math.round(r.bottom), vh: innerHeight, shown: getComputedStyle(li).clipPath === 'none' || !/100%/.test(getComputedStyle(li).clipPath) }
     })
-    check('F5', 'a link to the Data layer lights that layer in view', layer.active && layer.focused && layer.top > 0 && layer.top < layer.vh, JSON.stringify(layer))
+    check('F5', 'a link to the Data layer lands on that row, shown, in view and focused', layer.focused && layer.top >= 0 && layer.bottom <= layer.vh && layer.shown, JSON.stringify(layer))
     await own.close()
   }
 
@@ -324,20 +324,17 @@ try {
       window.scrollTo({ top: top + (el.offsetHeight - innerHeight) * 0.6, behavior: 'instant' })
       await new Promise((r) => setTimeout(r, 600))
       const h = document.getElementById('engine-title').getBoundingClientRect()
-      return { held: h.top >= 0 && h.bottom < innerHeight, active: document.querySelector('#engine li[data-active]')?.id ?? '' }
+      return { held: h.top >= 0 && h.bottom < innerHeight, p: Number(el.style.getPropertyValue('--p')) }
     })
-    check('S1', 'the engine holds the screen and the scroll climbs its layers', engine.held && engine.active.startsWith('layer-'), JSON.stringify(engine))
-    // The proof act holds too: one case at a time, the one whose star has lit.
+    check('S1', 'the systems hold the screen and the scroll opens them', engine.held && engine.p > 0.3 && engine.p < 0.9, JSON.stringify(engine))
+    // The proof: five patches, one open case.
     const proof = await page.evaluate(async () => {
       const el = document.getElementById('day')
-      const top = el.getBoundingClientRect().top + scrollY
-      window.scrollTo({ top: top + (el.offsetHeight - innerHeight) * 0.5, behavior: 'instant' })
+      window.scrollTo({ top: el.getBoundingClientRect().top + scrollY, behavior: 'instant' })
       await new Promise((r) => setTimeout(r, 1400))
-      const on = [...el.querySelectorAll('li[id^="h"][data-state="on"]')]
-      const r = on[0]?.getBoundingClientRect()
-      return { shown: on.map((c) => c.id), inView: Boolean(r && r.top >= 0 && r.bottom <= innerHeight) }
+      return { tabs: el.querySelectorAll('[role="tab"]').length, selected: el.querySelectorAll('[role="tab"][aria-selected="true"]').length, panel: !!document.getElementById('day-case') }
     })
-    check('S1', 'the proof act holds the screen and shows one case at a time', proof.shown.length === 1 && proof.inView, JSON.stringify(proof))
+    check('S1', 'the proof shows five patches and one open case', proof.tabs === 5 && proof.selected === 1 && proof.panel, JSON.stringify(proof))
     await own.close()
   }
 

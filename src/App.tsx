@@ -7,12 +7,12 @@ import { MotionProvider } from './motion/MotionProvider'
 import { Header } from './components/Header'
 import { Footer } from './components/Footer'
 import { Cursor } from './features/experience/cursor/Cursor'
-import { FilmStage } from './features/experience/FilmStage'
+import { NavigatorStage } from './features/navigator/NavigatorStage'
 import { Home } from './pages/Home'
 import { Investors, Legal, NotFound, Privacy } from './pages/Simple'
 
 const pages: Record<PageId, { Page: () => JSX.Element; film?: boolean }> = {
-  // The home page is the film; the other pages are its paper.
+  // The home page has the Navigator's world behind it; the other pages are plain paper.
   home: { Page: Home, film: true },
   investors: { Page: Investors },
   privacy: { Page: Privacy },
@@ -33,7 +33,7 @@ export function App({ route, dict }: { route: Route; dict: Dict }) {
           <Page />
         </main>
         <Footer route={route} />
-        {film && <FilmStage />}
+        {film && <NavigatorStage />}
         <Cursor />
       </MotionProvider>
     </I18nProvider>
