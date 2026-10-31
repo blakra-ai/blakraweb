@@ -2,7 +2,10 @@
 /*
  * Adopt a delivered model as the Navigator.
  *
- *   node scripts/navigator-adopt.mjs <model.glb> [names.json] [--augment] [--eyes x,y,z,r] [--head y] [--optimize] [--dry]
+ *   node scripts/navigator-adopt.mjs <model.glb> [names.json] [--augment] [--eyes x,y,z,r] [--head y] [--simplify ratio] [--optimize] [--dry]
+ *
+ * --simplify 0.2 keeps 20% of the triangles (meshoptimizer, error-bounded), applied to the model's
+ * own meshes before the injected parts; use it to bring a 500k-triangle sculpt under the 150k budget.
  *
  * --augment: for a single-mesh auto-rigged model (Meshy, Tripo, Mixamo), injects what the site
  * needs and the tool cannot give: Eye_L/R spheres and Lid_L/R shells under Head, a Jaw node with
@@ -20,14 +23,17 @@
 import { existsSync, readFileSync, writeFileSync } from 'node:fs'
 import { NodeIO } from '@gltf-transform/core'
 import { ALL_EXTENSIONS } from '@gltf-transform/extensions'
-import { dedup, prune, weld, meshopt } from '@gltf-transform/functions'
+import { dedup, prune, weld, meshopt, simplify, textureCompress } from '@gltf-transform/functions'
+import { MeshoptSimplifier } from 'meshoptimizer'
 import { MeshoptEncoder } from 'meshoptimizer'
 import { CONTRACT, validateNames } from '../src/features/navigator/figure/names.ts'
 import { CHAKRAS } from '../src/features/navigator/yantra.ts'
 
 const args = process.argv.slice(2)
+const WITH_VALUE = new Set(['--eyes', '--head', '--simplify'])
 const flags = new Set(args.filter((a) => a.startsWith('--')))
-const [input, namesPath] = args.filter((a) => !a.startsWith('--'))
+const positional = args.filter((a, i) => !a.startsWith('--') && !(i > 0 && WITH_VALUE.has(args[i - 1])))
+const [input, namesPath] = positional
 if (!input) {
   console.error('usage: node scripts/navigator-adopt.mjs <model.glb> [names.json] [--optimize] [--dry]')
   process.exit(2)
@@ -166,24 +172,23 @@ if (flags.has('--augment')) {
     const scene = root.listScenes()[0] ?? doc.createScene()
     let parent = null
     chain.forEach((name, i) => {
-      const node = doc.createNode(name).setTranslation([i === 0 ? cx : 0, i === 0 ? ys[0] : ys[i] - ys[i - 1], i === 0 ? cz : 0])
+      // The skeleton stands on the origin; the meshes are moved onto it below (sculpts often sit off-centre).
+      const node = doc.createNode(name).setTranslation([0, i === 0 ? ys[0] : ys[i] - ys[i - 1], 0])
       if (parent) parent.addChild(node)
       else scene.addChild(node)
       parent = node
     })
-    // Every mesh follows the Head when the figure turns: parent the mesh nodes to it (a bust is all head).
+    // Every mesh follows the Head when the figure turns: parent the mesh nodes to it (a bust is all
+    // head). Sculpt exports carry only a translation, so the local offset is the difference of
+    // world positions; rotation and scale stay the node's own.
     const headNode = byName('Head')
-    const inv = mat4Invert(headNode.getWorldMatrix())
+    const HW = [cx, headY, cz] // where the head is in the sculpt's own space
     for (const node of root.listNodes()) {
       if (!node.getMesh() || chain.includes(node.getName())) continue
-      const w = node.getWorldMatrix()
-      // local = inv(headWorld) × nodeWorld, applied as a matrix on the node.
-      const l = new Array(16).fill(0)
-      for (let r = 0; r < 4; r++) for (let c = 0; c < 4; c++) for (let k = 0; k < 4; k++) l[c * 4 + r] += inv[k * 4 + r] * w[c * 4 + k]
+      const w = worldPos(node)
       const oldParent = node.listParents().find((x) => x.propertyType === 'Node' || x.propertyType === 'Scene')
-      if (oldParent?.propertyType === 'Scene') oldParent.removeChild(node)
-      else oldParent?.removeChild?.(node)
-      node.setMatrix(l)
+      oldParent?.removeChild?.(node)
+      node.setTranslation([w[0] - HW[0], w[1] - HW[1], w[2] - HW[2]])
       headNode.addChild(node)
     }
     console.log(`augment: no skeleton; built Hips…Head down the axis (mesh ${bottom.toFixed(2)}…${top.toFixed(2)} m, Head bone at y=${headY.toFixed(3)}); meshes parented to Head`)
@@ -254,6 +259,12 @@ if (flags.has('--augment')) {
     const c = hex(CHAKRAS[i].color)
     addSphere(name, bone, [p[0], p[1], z], 0.06 * headLen, mat(name, c, { emissive: c, rough: 0.4 }))
   })
+  // A sculpt without materials renders as porcelain: the brand's ceramic.
+  let bare = 0
+  const porcelain = () => mat('Porcelain', hex('#e7e4de'), { rough: 0.45 })
+  let porcelainMat = null
+  for (const mesh of root.listMeshes()) for (const prim of mesh.listPrimitives()) if (!prim.getMaterial()) { prim.setMaterial((porcelainMat ??= porcelain())); bare++ }
+  if (bare) console.log(`augment: ${bare} primitive(s) had no material; porcelain assigned`)
   // A single-mesh model: its one mesh is the Face for the loader's head box.
   if (!byName('Face')) {
     const meshes = root.listNodes().filter((n) => n.getMesh())
@@ -284,6 +295,14 @@ if (!report.ok) {
   console.log('\nnames.json skeleton ({ "theirName": "contractName" }):\n' + JSON.stringify(skeleton, null, 2))
 }
 
+if (flags.has('--simplify')) {
+  const ratio = Number(args[args.indexOf('--simplify') + 1])
+  await MeshoptSimplifier.ready
+  await doc.transform(weld(), simplify({ simplifier: MeshoptSimplifier, ratio, error: 0.001, lockBorder: true }))
+  let after = 0
+  for (const mesh of root.listMeshes()) for (const p of mesh.listPrimitives()) after += Math.floor((p.getIndices()?.getCount() ?? 0) / 3)
+  console.log(`simplified to ratio ${ratio}: ${after} triangles`)
+}
 if (flags.has('--optimize')) {
   await MeshoptEncoder.ready
   // keepLeaves: the Jaw and Mouth empties are part of the contract.
