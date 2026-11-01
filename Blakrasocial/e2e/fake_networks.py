@@ -31,6 +31,7 @@ STORAGE = Path(tempfile.mkdtemp(prefix="fake-s3-"))
 CERT = Path(__file__).parent / ".tls" / "cert.pem"
 
 IG_USER = "17841400000000001"
+FB_USER = "10000000000000042"
 PAGES = [
     {"id": "1010000000000001", "name": "Blakra Page", "tasks": ["CREATE_CONTENT", "MANAGE"]},
     {"id": "1010000000000002", "name": "Blakra Shop", "tasks": ["CREATE_CONTENT"]},
@@ -42,6 +43,10 @@ containers: dict[str, dict[str, Any]] = {}
 published: dict[str, dict[str, Any]] = {}
 videos: dict[str, dict[str, Any]] = {}
 deleted: list[str] = []
+revoked: set[str] = set()  # networks whose tokens the user "removed" (POST /__revoke/<network>)
+tiktok_posts: dict[str, dict[str, Any]] = {}
+linkedin_posts: dict[str, dict[str, Any]] = {}
+uploads: dict[str, int] = {}
 
 app = FastAPI()
 app.add_middleware(CORSMiddleware, allow_origins=["*"], allow_methods=["*"], allow_headers=["*"], expose_headers=["ETag"])
@@ -107,6 +112,8 @@ async def ig_me(version: str) -> dict[str, Any]:
 @app.post("/graph.instagram.com/{version}/{user}/media")
 async def ig_container(version: str, user: str, request: Request) -> Any:
     form = dict(await request.form())
+    if "instagram" in revoked:
+        return _graph_error("Error validating access token: The user has not authorized application.", 190, 400)
     url = str(form.get("video_url") or form.get("image_url") or "")
     if not await _fetchable(url):
         return _graph_error("Media download has failed. The media URI doesn't meet our requirements.", 9004)
@@ -145,6 +152,8 @@ async def fb_dialog(version: str, client_id: str, redirect_uri: str, state: str,
 
 @app.get("/graph.facebook.com/{version}/oauth/access_token")
 async def fb_token(version: str, code: str | None = None, grant_type: str | None = None) -> Any:
+    if grant_type == "client_credentials":  # the doctor's app check
+        return {"access_token": "111|app-token", "token_type": "bearer"}
     if grant_type == "fb_exchange_token":
         return {"access_token": "FB-user-long", "token_type": "bearer", "expires_in": 5_184_000}
     if not (code or "").startswith("fb-code-"):
@@ -188,7 +197,9 @@ async def fb_feed(version: str, page: str, request: Request) -> Any:
 
 
 @app.get("/graph.facebook.com/{version}/{object_id}")
-async def fb_object(version: str, object_id: str, fields: str) -> Any:
+async def fb_object(version: str, object_id: str, fields: str, access_token: str | None = None) -> Any:
+    if object_id == "me":  # the signed-in Facebook user (needed for Meta's data-deletion callback)
+        return {"id": FB_USER}
     video = videos.get(object_id)
     if video is None:
         return _graph_error("Unsupported get request", 100)
@@ -209,6 +220,164 @@ async def fb_delete(version: str, object_id: str) -> Any:
     deleted.append(object_id)
     videos.pop(object_id, None)
     return {"success": True}
+
+
+# ------------------------------- TikTok (Content Posting API) -------------------------------
+def _tt(data: Any = None, code: str = "ok", message: str = "", status: int = 200) -> JSONResponse:
+    return JSONResponse({"data": data or {}, "error": {"code": code, "message": message, "log_id": "fake"}}, status)
+
+
+def _tt_auth(request: Request) -> JSONResponse | None:
+    if request.headers.get("authorization") != "Bearer TT-access" or "tiktok" in revoked:
+        return _tt(code="access_token_invalid", message="The access token is invalid or not found in the request.", status=401)
+    return None
+
+
+@app.get("/www.tiktok.com/v2/auth/authorize/", response_class=HTMLResponse)
+async def tt_authorize(client_key: str, scope: str, response_type: str, redirect_uri: str, state: str) -> str:
+    assert response_type == "code" and "video.publish" in scope.split(",")
+    return _consent("TikTok", "@blakra", redirect_uri, state, "tt-code-" + secrets.token_hex(4))
+
+
+@app.post("/open.tiktokapis.com/v2/oauth/token/")
+async def tt_token(request: Request) -> Any:
+    form = await request.form()
+    if form.get("grant_type") == "client_credentials":
+        return {"access_token": "clt-fake", "expires_in": 7200, "token_type": "Bearer"}
+    if form.get("grant_type") == "authorization_code" and not str(form.get("code", "")).startswith("tt-code-"):
+        return JSONResponse({"error": "invalid_grant", "error_description": "Authorization code is expired."}, 400)
+    return {"access_token": "TT-access", "refresh_token": "TT-refresh", "open_id": "tt-open-1", "expires_in": 86400,
+            "refresh_expires_in": 31536000, "scope": "user.info.basic,video.publish", "token_type": "Bearer"}
+
+
+@app.get("/open.tiktokapis.com/v2/user/info/")
+async def tt_user(request: Request) -> Any:
+    return _tt_auth(request) or _tt({"user": {"open_id": "tt-open-1", "display_name": "Blakra TikTok", "avatar_url": None}})
+
+
+@app.post("/open.tiktokapis.com/v2/post/publish/creator_info/query/")
+async def tt_creator(request: Request) -> Any:
+    # An unaudited app: the creator may only post as "Only me"; Duet is off in their TikTok app.
+    return _tt_auth(request) or _tt({
+        "creator_nickname": "Blakra TikTok", "creator_username": "blakra", "creator_avatar_url": None,
+        "privacy_level_options": ["PUBLIC_TO_EVERYONE", "SELF_ONLY"], "comment_disabled": False,
+        "duet_disabled": True, "stitch_disabled": False, "max_video_post_duration_sec": 600,
+    })
+
+
+@app.post("/open.tiktokapis.com/v2/post/publish/video/init/")
+async def tt_init(request: Request) -> Any:
+    if (denied := _tt_auth(request)) is not None:
+        return denied
+    body = await request.json()
+    info = body["post_info"]
+    for key in ("privacy_level", "disable_comment", "disable_duet", "disable_stitch", "brand_content_toggle", "brand_organic_toggle"):
+        if key not in info:
+            return _tt(code="invalid_params", message=f"missing post_info.{key}", status=400)
+    pid = "v_pub_" + secrets.token_hex(5)
+    tiktok_posts[pid] = {"post_info": info, "source_info": body["source_info"], "received": 0, "polls": 0}
+    return _tt({"publish_id": pid, "upload_url": f"https://open-upload.tiktokapis.com/video/?upload_id={pid}"})
+
+
+@app.put("/open-upload.tiktokapis.com/video/")
+async def tt_upload(upload_id: str, request: Request) -> Response:
+    post = tiktok_posts[upload_id]
+    chunk = await request.body()
+    expected = request.headers["content-range"]  # bytes a-b/total
+    span, total = expected.split(" ")[1].split("/")
+    first, last = (int(x) for x in span.split("-"))
+    if last - first + 1 != len(chunk):
+        return Response(status_code=400)
+    post["received"] += len(chunk)
+    return Response(status_code=206 if post["received"] < int(total) else 201)
+
+
+@app.post("/open.tiktokapis.com/v2/post/publish/status/fetch/")
+async def tt_status(request: Request) -> Any:
+    if (denied := _tt_auth(request)) is not None:
+        return denied
+    post = tiktok_posts.get((await request.json())["publish_id"])
+    if post is None:
+        return _tt(code="invalid_publish_id", message="publish_id not found", status=400)
+    post["polls"] += 1
+    if post["received"] != post["source_info"]["video_size"]:
+        return _tt({"status": "PROCESSING_UPLOAD"})
+    if post["polls"] < 2:
+        return _tt({"status": "PROCESSING_DOWNLOAD"})
+    return _tt({"status": "PUBLISH_COMPLETE", "publicaly_available_post_id": [7300000000000000001]})
+
+
+# ------------------------------- LinkedIn (Posts API) -------------------------------
+def _li_auth(request: Request) -> JSONResponse | None:
+    if request.headers.get("authorization") != "Bearer LI-access" or "linkedin" in revoked:
+        return JSONResponse({"status": 401, "serviceErrorCode": 65600, "code": "REVOKED_ACCESS_TOKEN",
+                             "message": "The token used in the request has been revoked by the user"}, 401)
+    if request.url.path.startswith("/api.linkedin.com/rest/") and not request.headers.get("linkedin-version", "").isdigit():
+        return JSONResponse({"status": 426, "code": "NONEXISTENT_VERSION", "message": "Requested version is not active"}, 426)
+    return None
+
+
+@app.get("/www.linkedin.com/oauth/v2/authorization", response_class=HTMLResponse)
+async def li_authorize(response_type: str, client_id: str, redirect_uri: str, state: str, scope: str) -> str:
+    assert "w_member_social" in scope.split()
+    return _consent("LinkedIn", "Sara Blakra", redirect_uri, state, "li-code-" + secrets.token_hex(4))
+
+
+@app.post("/www.linkedin.com/oauth/v2/accessToken")
+async def li_token(request: Request) -> Any:
+    form = await request.form()
+    if form.get("client_secret") != "li-secret-fake":
+        return JSONResponse({"error": "invalid_client", "error_description": "Client authentication failed"}, 401)
+    if form.get("grant_type") == "client_credentials":
+        return JSONResponse({"error": "access_denied", "error_description": "Not enabled for client credentials"}, 401)
+    return {"access_token": "LI-access", "expires_in": 5184000, "scope": "openid,profile,w_member_social"}
+
+
+@app.get("/api.linkedin.com/v2/userinfo")
+async def li_me(request: Request) -> Any:
+    return _li_auth(request) or {"sub": "li-member-1", "name": "Sara Blakra", "picture": None}
+
+
+@app.post("/api.linkedin.com/rest/images")
+async def li_image_init(action: str, request: Request) -> Any:
+    if (denied := _li_auth(request)) is not None:
+        return denied
+    urn = "urn:li:image:" + secrets.token_hex(5)
+    return {"value": {"uploadUrl": f"https://www.linkedin.com/dms-uploads/{urn}", "image": urn}}
+
+
+@app.put("/www.linkedin.com/dms-uploads/{urn}")
+async def li_image_put(urn: str, request: Request) -> Response:
+    uploads[urn] = len(await request.body())
+    return Response(status_code=201)
+
+
+@app.post("/api.linkedin.com/rest/posts")
+async def li_post(request: Request) -> Any:
+    if (denied := _li_auth(request)) is not None:
+        return denied
+    body = await request.json()
+    media = (body.get("content") or {}).get("media", {}).get("id")
+    if media and not uploads.get(media):
+        return JSONResponse({"status": 422, "message": f"{media} was not uploaded"}, 422)
+    urn = "urn:li:share:" + str(7000000000000000000 + len(linkedin_posts))
+    linkedin_posts[urn] = body
+    return Response(status_code=201, headers={"x-restli-id": urn})
+
+
+@app.post("/__reset")
+async def reset() -> dict[str, bool]:
+    for store in (log, containers, published, videos, deleted, revoked, tiktok_posts, linkedin_posts, uploads):
+        store.clear()
+    for file in [p for p in STORAGE.rglob("*") if p.is_file()]:
+        file.unlink()
+    return {"ok": True}
+
+
+@app.post("/__revoke/{network}")
+async def revoke(network: str) -> dict[str, bool]:
+    revoked.add(network)
+    return {"ok": True}
 
 
 # ------------------------------- S3 (path style) + public reads -------------------------------
@@ -233,6 +402,22 @@ async def s3_put(key: str, request: Request) -> Response:
     return Response(status_code=200, headers={"ETag": f'"{secrets.token_hex(16)}"'})
 
 
+@app.get(f"/{BUCKET}")
+async def s3_list(request: Request) -> Response:
+    """ListObjectsV2 (used when an account is deleted)."""
+    prefix = request.query_params.get("prefix", "")
+    keys = sorted(str(p.relative_to(STORAGE)) for p in STORAGE.rglob("*") if p.is_file())
+    items = "".join(
+        f"<Contents><Key>{html.escape(k)}</Key><Size>1</Size></Contents>" for k in keys if k.startswith(prefix)
+    )
+    xml = (
+        '<?xml version="1.0" encoding="UTF-8"?><ListBucketResult xmlns="http://s3.amazonaws.com/doc/2006-03-01/">'
+        f"<Name>{BUCKET}</Name><Prefix>{html.escape(prefix)}</Prefix><KeyCount>{items.count('<Key>')}</KeyCount>"
+        f"<MaxKeys>1000</MaxKeys><IsTruncated>false</IsTruncated>{items}</ListBucketResult>"
+    )
+    return Response(xml, media_type="application/xml")
+
+
 @app.delete(f"/{BUCKET}/{{key:path}}")
 async def s3_delete(key: str) -> Response:
     _object(key).unlink(missing_ok=True)
@@ -249,7 +434,9 @@ async def public_get(key: str) -> Response:
 
 @app.get("/__debug")
 async def debug() -> dict[str, Any]:
-    return {"log": log, "containers": containers, "published": published, "videos": videos, "deleted": deleted}
+    return {"log": log, "containers": containers, "published": published, "videos": videos, "deleted": deleted,
+            "tiktok": tiktok_posts, "linkedin": linkedin_posts, "objects": sorted(
+                str(p.relative_to(STORAGE)) for p in STORAGE.rglob("*") if p.is_file())}
 
 
 if __name__ == "__main__":

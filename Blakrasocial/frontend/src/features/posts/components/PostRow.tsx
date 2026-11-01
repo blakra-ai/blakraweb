@@ -11,7 +11,7 @@ export function PostRow({ post, onDelete, deleting }: { post: PostStatus; onDele
   const isVideo = thumb ? /\.(mp4|mov|webm)(\?|$)/i.test(thumb) : false;
 
   return (
-    <Card className="flex flex-col gap-4 p-4 sm:flex-row animate-fade-up">
+    <Card role="article" aria-label={post.caption.slice(0, 80) || t("posts.noCaption")} className="flex flex-col gap-4 p-4 sm:flex-row animate-fade-up">
       <div className="size-20 shrink-0 overflow-hidden rounded-xl bg-muted">
         {thumb &&
           (isVideo ? (

@@ -1,6 +1,6 @@
 import { useQuery } from "@tanstack/react-query";
 import { Loader2 } from "lucide-react";
-import { useState, type FormEvent } from "react";
+import { useEffect, useState, type FormEvent } from "react";
 import { useTranslation } from "react-i18next";
 import { Link, useNavigate } from "react-router-dom";
 import { Alert, Button, Input, Label, Skeleton } from "@/shared/ui";
@@ -10,19 +10,21 @@ import { authErrorMessage } from "../components/authError";
 import { newPasswordProblem, PasswordFields } from "../components/PasswordFields";
 import { useAuth } from "../context/AuthProvider";
 
-/** The link token sits in the URL fragment (#…), which browsers never send to servers. It is read
- *  once and removed from the address bar so it doesn't stay in history. */
-function takeTokenFromUrl(): string {
-  const token = window.location.hash.replace(/^#/, "");
-  if (token) window.history.replaceState(null, "", window.location.pathname);
-  return token;
+/** The link token sits in the URL fragment (#…), which browsers never send to servers. */
+function tokenFromUrl(): string {
+  return window.location.hash.replace(/^#/, "");
 }
 
 export default function InvitePage() {
   const { t } = useTranslation();
   const { session } = useAuth();
   const navigate = useNavigate();
-  const [token] = useState(takeTokenFromUrl);
+  const [token] = useState(tokenFromUrl);
+
+  // Remove it from the address bar (and so from history) once it has been read.
+  useEffect(() => {
+    if (window.location.hash) window.history.replaceState(window.history.state, "", window.location.pathname);
+  }, []);
   const [password, setPassword] = useState("");
   const [confirm, setConfirm] = useState("");
   const [busy, setBusy] = useState(false);

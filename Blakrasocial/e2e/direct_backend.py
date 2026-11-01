@@ -22,6 +22,7 @@ HOSTS = {
     "graph.facebook.com",
     "rupload.facebook.com",
     "open.tiktokapis.com",
+    "open-upload.tiktokapis.com",
     "api.linkedin.com",
     "www.linkedin.com",
 }
@@ -52,4 +53,10 @@ def _patched_init(self: httpx.AsyncClient, *args: Any, **kwargs: Any) -> None:
 httpx.AsyncClient.__init__ = _patched_init  # type: ignore[method-assign]
 
 if __name__ == "__main__":
+    import sys
+
+    if sys.argv[1:2] == ["cli"]:  # e.g. `cli create-admin ...` or `cli doctor`, against the fakes
+        from blakrasocial.cli import main
+
+        raise SystemExit(main(sys.argv[2:]))
     uvicorn.run("blakrasocial.main:app_factory", factory=True, host="127.0.0.1", port=8000, log_level="info")

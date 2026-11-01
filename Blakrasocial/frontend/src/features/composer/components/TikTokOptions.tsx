@@ -62,8 +62,9 @@ export function TikTokOptions({ contentType, control, register, setValue, creato
       ) : info ? (
         <p className="text-sm">
           {t("tiktok.postingAs")} <bdi className="font-medium">{info.nickname}</bdi>
+          {info.username && " "}
           {info.username && (
-            <bdi className="ms-1 text-muted-foreground" dir="ltr">
+            <bdi className="text-muted-foreground" dir="ltr">
               @{info.username}
             </bdi>
           )}
