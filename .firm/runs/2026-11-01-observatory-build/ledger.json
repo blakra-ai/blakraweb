@@ -1,1 +1,36 @@
-{"run":"2026-11-01-observatory-build","tier":"T3","run_status":"in_progress","goal":"Build the Observatory redesign on branch observatory per ADR-001 and the revised storyboard","criteria":[{"id":1,"text":"Hero live: framed window, bent grid, lensing ring, guide with hole-eyes; 60 fps on the Intel UHD; Lighthouse mobile ≥ 90","verified":false},{"id":2,"text":"Stage held 2 screens, layers leave the grid into orbit, picker closes it","verified":false},{"id":3,"text":"Proof rows, porcelain screen with one large object, contact window with form states","verified":false},{"id":4,"text":"Phone and tablet per storyboard; reduced motion = still frames","verified":false},{"id":5,"text":"vitest, typecheck, build, e2e pass; three specialist reviews closed","verified":false}],"agents":[]}
+{
+ "run": "2026-11-01-observatory-build",
+ "tier": "T3",
+ "run_status": "awaiting_user",
+ "goal": "Build the Observatory redesign on branch observatory per ADR-001 and the revised storyboard",
+ "criteria": [
+  {
+   "id": 1,
+   "text": "Hero live: framed window, bent grid, lensing ring, guide with hole-eyes; 60 fps on the Intel UHD; Lighthouse mobile \u2265 90",
+   "verified": true,
+   "evidence": "wpC3/probe-log.txt: 60 fps, 2.0\u20132.8 ms CPU with pointer motion on Intel ADL GT2; lighthouse-mobile-2.json 97/100/100/100; wpC/home-default.png; scrub 82 rows 0 jumps"
+  },
+  {
+   "id": 2,
+   "text": "Stage held 2 screens, layers leave the grid into orbit, picker closes it",
+   "verified": false
+  },
+  {
+   "id": 3,
+   "text": "Proof rows, porcelain screen with one large object, contact window with form states",
+   "verified": false
+  },
+  {
+   "id": 4,
+   "text": "Phone and tablet per storyboard; reduced motion = still frames",
+   "verified": false
+  },
+  {
+   "id": 5,
+   "text": "vitest, typecheck, build, e2e pass; three specialist reviews closed",
+   "verified": false
+  }
+ ],
+ "agents": [],
+ "note": "Hero committed (observatory branch). Owner asked to stop the long process; remaining sections (stage, proof, porcelain, contact, phone pass, cleanup) continue on request, one at a time without review rounds."
+}
