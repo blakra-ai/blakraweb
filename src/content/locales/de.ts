@@ -66,6 +66,7 @@ export const de: Dict = {
     proof: 'Referenz',
     everyProject: 'Für Kunden unter NDA: siehe „Ebenfalls umgesetzt“.',
     tell: 'Erzählen Sie uns davon',
+    uses: 'Nutzt die Ebenen',
   },
 
   day: {
@@ -189,6 +190,8 @@ export const de: Dict = {
     crownText: 'Gartner erwartet, dass bis Ende 2027 über 40 % der Projekte mit agentischer KI eingestellt werden, wegen steigender Kosten, unklaren Geschäftsnutzens oder unzureichender Risikokontrollen. Wir legen zuerst den Umfang fest und bauen vom Fundament aufwärts, damit die KI verlässliche Daten, funktionierende Anbindungen und eine klare Aufgabe hat.',
     crownSource: 'Gartner, 25. Juni 2025',
     focus: 'Ihr Projekt',
+    inOrbit: 'Ebenen im Orbit',
+    itTakes: 'Es braucht',
   },
 
   process: {

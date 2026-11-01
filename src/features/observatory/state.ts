@@ -35,6 +35,10 @@ export const obs = {
   transmitAt: 0,
   /** The guide's line on screen: its text, how many characters are revealed, and when it began (clock); the jaw follows it. */
   line: { text: '', typed: 0, from: 0 },
+  /** The stage's hold (0 … 1), how many layers are in orbit (0 … 7) and the ring → marker hand-over (0 … 1, the hold's last tenth). */
+  hold: 0,
+  inOrbit: 0,
+  handover: 0,
   /** When the ring last had an event (the picker, Send), on the clock: the glow pulses once from it; 0 = never. */
   glowAt: 0,
 }

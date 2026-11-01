@@ -133,7 +133,7 @@ function Passes({ handle }: { handle: ReturnType<typeof createGuideHandle> }) {
     viewport.h = size.height
     const windows = getWindows()
     // The load device starts the first time a hero window is on screen; still frames are the final state.
-    if (s.bendStart < 0 && windows.some((w) => w.kind === 'hero' && onScreen(w.rect, y, viewport))) s.bendStart = now
+    if (s.bendStart < 0 && windows.some((w) => w.kind === 'hero' && onScreen(w.rect, y, viewport, w.sticky))) s.bendStart = now
     const bend = still ? 1 : s.bendStart < 0 ? 0 : bendAt(now - s.bendStart)
     const glow = still ? 0 : glowAt(obs.clock, obs.glowAt)
     const hole = holeFor(obs.station)
@@ -145,7 +145,7 @@ function Passes({ handle }: { handle: ReturnType<typeof createGuideHandle> }) {
     const guide = handle.group
     if (guide) guide.visible = false
     for (const w of windows) {
-      const on = onScreen(w.rect, y, viewport)
+      const on = onScreen(w.rect, y, viewport, w.sticky)
       if (!on) continue
       const { view, clip } = on
       const vp = toGl(view, size.height, 1)
@@ -156,22 +156,28 @@ function Passes({ handle }: { handle: ReturnType<typeof createGuideHandle> }) {
 
       // The flat pass: the well and the ring in window px (y down).
       const f = w.framing
+      // The stage's close: across the hold's last tenth the ring shrinks toward the gauge's marker at the
+      // window's left edge (station 04 is 3/8 down the rule); the well's centre travels with it.
+      const hv = w.kind === 'stage' ? obs.handover : 0
+      const rx = f.ring.x + (6 - f.ring.x) * hv
+      const ry = f.ring.y + (view.h * 0.375 - f.ring.y) * hv
+      const rr = f.ring.r * (1 - 0.96 * hv)
       ortho.left = 0
       ortho.right = view.w
       ortho.top = 0
       ortho.bottom = view.h
       ortho.updateProjectionMatrix()
       fitWell(well.mesh, well.uniforms, view.w, view.h)
-      well.uniforms.uCentre.value[0] = f.ring.x
-      well.uniforms.uCentre.value[1] = f.ring.y
-      well.uniforms.uSigma.value = f.sigma
+      well.uniforms.uCentre.value[0] = rx
+      well.uniforms.uCentre.value[1] = ry
+      well.uniforms.uSigma.value = f.sigma * (1 - 0.9 * hv)
       well.uniforms.uPull.value = f.pull
       well.uniforms.uBend.value = w.kind === 'hero' ? bend : 1
-      well.uniforms.uHole.value = f.ring.r * hole
+      well.uniforms.uHole.value = rr * hole
       well.uniforms.uFade.value = f.fade
       well.uniforms.uRadius.value = FRAME_RADIUS
       well.uniforms.uCell.value = GRID_CELL
-      fitRing(ring.mesh, ring.uniforms, f.ring.x, f.ring.y, f.ring.r)
+      fitRing(ring.mesh, ring.uniforms, rx, ry, rr)
       ring.uniforms.uGlow.value = glow
       ring.uniforms.uTime.value = still ? 0 : obs.clock
       if (flat.current) flat.current.visible = true

@@ -66,6 +66,7 @@ export const es: Dict = {
     proof: 'Dónde lo hemos hecho',
     everyProject: 'Clientes bajo NDA: vea «Otros trabajos entregados».',
     tell: 'Cuéntenos',
+    uses: 'Usa las capas',
   },
 
   day: {
@@ -189,6 +190,8 @@ export const es: Dict = {
     crownText: 'Gartner prevé que más del 40 % de los proyectos de IA agéntica se cancelen antes de que acabe 2027, por costos crecientes, un valor de negocio poco claro o controles de riesgo insuficientes. Primero fijamos el alcance y construimos desde los cimientos, para que la IA tenga datos fiables, conexiones que funcionan y una tarea clara.',
     crownSource: 'Gartner, 25 de junio de 2025',
     focus: 'Su proyecto',
+    inOrbit: 'Capas en órbita',
+    itTakes: 'Requiere',
   },
 
   process: {

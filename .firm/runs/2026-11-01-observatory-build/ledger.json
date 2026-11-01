@@ -8,7 +8,7 @@
    "id": 1,
    "text": "Hero live: framed window, bent grid, lensing ring, guide with hole-eyes; 60 fps on the Intel UHD; Lighthouse mobile \u2265 90",
    "verified": true,
-   "evidence": "wpC3/probe-log.txt: 60 fps, 2.0\u20132.8 ms CPU with pointer motion on Intel ADL GT2; lighthouse-mobile-2.json 97/100/100/100; wpC/home-default.png; scrub 82 rows 0 jumps"
+   "evidence": "wpC3/probe-log.txt: 60 fps, 2.0\u20132.8 ms CPU with pointer motion on Intel ADL GT2; lighthouse-mobile-2.json 97/100/100/100; wpC/home-default.png; scrub 82 rows 0 jumps; lighthouse-mobile-3.json 92/100/100/100; e2e 127/127"
   },
   {
    "id": 2,
@@ -32,5 +32,5 @@
   }
  ],
  "agents": [],
- "note": "Hero committed (observatory branch). Owner asked to stop the long process; remaining sections (stage, proof, porcelain, contact, phone pass, cleanup) continue on request, one at a time without review rounds."
+ "note": "Hero milestone committed (fec27b1, + review fixes). Remaining sections on request, one at a time."
 }

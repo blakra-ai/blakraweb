@@ -1,0 +1,338 @@
+/* 02 · 03 · 04 The seven-layer stage (d-02, d-02b, d-03b; m-02). The section is three screens tall in
+   CSS (two on phones) and the window inside it sticks for the hold: no pins, the page height is final
+   from the start. The words scroll over the held window in the left columns. */
+.stage {
+  position: relative;
+  height: calc(3 * 100svh);
+}
+.hold {
+  position: sticky;
+  top: var(--header-h);
+  height: calc(100svh - var(--header-h));
+  padding-top: 0;
+}
+/* The ring's place (columns 9–10, 47 % down) for the CSS still, and her eyes at the lower-right rim. */
+.window {
+  --ring-x: 70.8%;
+  --ring-y: 47%;
+  --ring-r: 165px;
+  --guide-x: 94%;
+  --guide-y: 90%;
+  min-height: 0;
+  height: calc(100svh - var(--header-h) - var(--inset));
+}
+
+.tag {
+  position: absolute;
+  left: 40px;
+  top: 28px;
+  z-index: 1;
+  color: var(--grey);
+}
+.counter {
+  position: absolute;
+  right: 40px;
+  top: 28px;
+  z-index: 1;
+  color: var(--grey);
+  text-align: right;
+}
+.counter b {
+  color: var(--porcelain);
+  font-weight: 600;
+}
+
+/* The orbits and leaders: one static SVG over the world, under the labels. */
+.orbits {
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  display: block;
+  pointer-events: none;
+  overflow: visible;
+}
+.orbit {
+  fill: none;
+  stroke: rgba(236, 233, 226, 0.28);
+  stroke-width: 1;
+}
+.leader {
+  fill: none;
+  stroke: rgba(236, 233, 226, 0.22);
+  stroke-width: 1;
+}
+.waiting {
+  fill: none;
+  stroke: rgba(236, 233, 226, 0.12);
+  stroke-width: 1;
+  stroke-dasharray: 3 5;
+}
+
+/* The seven layers: a label column (real text) with a dot; in orbit the dot moves onto the orbit and the
+   label turns porcelain and bold. Unlit labels are solid grey (5.49 : 1), never faded. */
+.layers {
+  position: absolute;
+  inset: 0;
+  z-index: 2;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  pointer-events: none;
+}
+.layer {
+  position: absolute;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  transform: translateY(-50%);
+  padding: 2px 6px 2px 0;
+  background: var(--frame, #0d0d10);
+  color: var(--grey);
+  font-family: var(--font-mono);
+  font-size: var(--mono-size);
+  font-weight: 500;
+  letter-spacing: var(--mono-track);
+  text-transform: uppercase;
+  white-space: nowrap;
+  outline: none;
+}
+.layer[data-on] {
+  color: var(--porcelain);
+  font-weight: 600;
+}
+.layer[data-picked='false'] {
+  color: var(--grey);
+  font-weight: 500;
+}
+.dot {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: var(--ctrl);
+  flex: none;
+}
+/* In orbit the dot leaves the label for its place on the orbit: --dx/--dy are its offset from the
+   label's anchor (orbit.ts), the anchor being the label's left edge at its vertical middle. */
+.layer[data-on] .dot {
+  position: absolute;
+  left: var(--dx);
+  top: calc(50% + var(--dy));
+  transform: translate(-50%, -50%);
+  width: 8px;
+  height: 8px;
+  background: var(--chakra);
+  box-shadow: 0 0 9px var(--chakra);
+}
+.layer[data-on][data-picked='false'] .dot {
+  background: var(--ctrl);
+  box-shadow: none;
+  width: 7px;
+  height: 7px;
+}
+/* The space the dot held in the row closes when it leaves (the leader ends where the label starts). */
+.layer[data-on] {
+  gap: 0;
+}
+
+/* Her line: columns 7–9 at the top of the window. */
+.voice {
+  position: absolute;
+  left: 50.7%;
+  top: 40px;
+  width: 23.7%;
+  z-index: 2;
+}
+.voiceTag {
+  color: var(--grey);
+  margin-bottom: 10px;
+}
+.voiceTag b {
+  color: var(--porcelain);
+  font-weight: 600;
+}
+
+/* The words: three blocks, one per station, scrolling over the held window in columns 1–5. */
+.words {
+  position: absolute;
+  inset: 0;
+  z-index: 3;
+  pointer-events: none;
+}
+.block {
+  min-height: 80svh;
+  padding: calc(var(--header-h) + 82px) 0 0 calc(var(--inset) + 40px);
+  width: min(570px, 50%);
+  box-sizing: content-box;
+  pointer-events: auto;
+}
+.block:first-child {
+  min-height: 80svh;
+}
+.h2 {
+  margin-top: 30px;
+}
+.lede {
+  margin-top: 28px;
+  max-width: 520px;
+}
+.crown {
+  margin-top: 22px;
+  color: var(--porcelain);
+}
+.picker {
+  padding-top: calc(var(--header-h) + 32px);
+}
+.ask {
+  font-size: clamp(2rem, 1.2rem + 2.2vw, 2.75rem);
+}
+.pills {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  max-width: 520px;
+  margin-top: 28px;
+}
+.pill {
+  height: 36px;
+  padding: 0 14px;
+  font-size: 0.8125rem;
+}
+.pill[aria-checked='true'] {
+  background: var(--porcelain);
+  border-color: var(--porcelain);
+  color: var(--body);
+}
+.takes {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 14px;
+  margin-top: 20px;
+  color: var(--grey);
+}
+.dots {
+  display: flex;
+  gap: 10px;
+  align-items: center;
+}
+.dots i {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: var(--ctrl);
+}
+.dots i[data-on] {
+  background: var(--chakra);
+  box-shadow: 0 0 8px var(--chakra);
+}
+.uses {
+  color: var(--grey);
+  text-transform: none;
+  letter-spacing: 0.06em;
+}
+.verdict {
+  width: 100%;
+  margin-top: 0;
+  color: var(--porcelain);
+}
+.proof {
+  display: inline-block;
+  color: var(--porcelain);
+  border-bottom: 1px solid var(--ctrl);
+  padding-bottom: 3px;
+}
+.proof:hover {
+  border-color: var(--porcelain);
+}
+
+/* Reduced motion / motion off: nothing holds; the window, then the words, in flow; all seven in orbit. */
+:global(html.motion-off) .stage {
+  height: auto;
+}
+:global(html.motion-off) .hold {
+  position: static;
+  height: auto;
+}
+:global(html.motion-off) .window {
+  height: auto;
+  min-height: calc(100svh - var(--header-h) - var(--inset));
+}
+:global(html.motion-off) .words {
+  position: static;
+}
+:global(html.motion-off) .block {
+  min-height: 0;
+  padding-top: 48px;
+  padding-bottom: 48px;
+}
+
+/* Tablet: the label column keeps its place; the words take six columns. */
+@media (max-width: 1099px) {
+  .block {
+    width: min(480px, 56%);
+  }
+  .voice {
+    left: 54%;
+    width: 40%;
+  }
+}
+
+/* Phone (m-02): the hold is two screens; no WebGL (the CSS ring and these SVG orbits are the stage);
+   labels at the left edge; the words in an opaque band so they never sit on the grid. */
+@media (max-width: 767px) {
+  .stage {
+    height: calc(2 * 100svh);
+  }
+  .window {
+    --ring-x: 70.8%;
+    --ring-y: 47%;
+    --ring-r: 82px;
+  }
+  .tag {
+    left: 20px;
+    top: 18px;
+  }
+  .counter {
+    right: 20px;
+    top: 18px;
+  }
+  .voice {
+    display: none;
+  }
+  .layer {
+    font-size: 0.75rem;
+    gap: 6px;
+  }
+  /* The names are long on a 342 px frame: the lit dot stays in the row (m-02) instead of on the orbit under the text. */
+  .layer[data-on] {
+    gap: 6px;
+  }
+  .layer[data-on] .dot {
+    position: static;
+    transform: none;
+    width: 6px;
+    height: 6px;
+    box-shadow: 0 0 7px var(--chakra);
+  }
+  .block {
+    width: auto;
+    margin: 0 var(--inset);
+    padding: 40px 20px 16px;
+    background: var(--frame, #0d0d10);
+    box-sizing: border-box;
+    min-height: 0;
+  }
+  .block:first-child {
+    margin-top: calc(var(--header-h) + 40px);
+    min-height: 0;
+  }
+  .block + .block {
+    margin-top: 60svh;
+  }
+  .picker {
+    padding-top: 32px;
+  }
+  .pills {
+    margin-top: 20px;
+  }
+}

@@ -46,7 +46,8 @@ try {
     expected[`${p}/`] = [
       t.prologue.title.before, t.prologue.lede, t.prologue.facts, t.pulse.title, ...Object.values(t.pulse.needs).map((n) => n.label),
       ...Object.values(t.chapters).flatMap((c) => [c.moment, c.before, c.now, ...c.outcomes]), ...t.day.delivered.items,
-      t.engine.title, ...Object.values(t.engine.layers).map((l) => l.text), t.engine.crownTitle,
+      // The stage (WP-D) names the seven layers; their one-line texts left the page with the old Engine section.
+      t.engine.title, ...Object.values(t.engine.layers).map((l) => l.name), t.engine.crownTitle,
       t.products.title, ...Object.values(t.products.items).flatMap((i) => [i.line, i.offer]), t.products.more,
       t.process.title, ...t.process.terms, t.people.title, ...t.people.roles.map((r) => r.ask), t.contact.title, t.contact.horizon,
     ]
@@ -83,7 +84,7 @@ try {
       }
     })
     const state = await page.evaluate(() => {
-      const acts = ['#top', '#pulse', '#engine', '#day', '#products', '#approach', '#people', '#contact']
+      const acts = ['#top', '#stage', '#day', '#products', '#approach', '#people', '#contact']
       // Screen-reader-only text (1 px, clipped on purpose) is not hidden text.
       const text = [...document.querySelectorAll(acts.map((a) => `${a} *`).join(','))].filter((el) => el.children.length === 0 && el.textContent.trim() && el.getBoundingClientRect().width > 1)
       const day = document.getElementById('day').getBoundingClientRect()
@@ -95,7 +96,7 @@ try {
           const cs = getComputedStyle(el)
           return Number(cs.opacity) < 1 || cs.visibility === 'hidden' || (cs.clipPath !== 'none' && cs.clipPath !== '')
         }).length,
-        details: [...document.querySelectorAll('#engine li')].every((li) => li.lastElementChild.getBoundingClientRect().height > 10),
+        details: [...document.querySelectorAll('#stage li')].every((li) => li.lastElementChild.getBoundingClientRect().height > 10),
         casesInside: [...document.querySelectorAll('#day li[id^="h"]')].every((c) => {
           const r = c.getBoundingClientRect()
           return r.top >= day.top - 1 && r.bottom <= day.bottom + 1 && getComputedStyle(c).visibility === 'visible'
@@ -296,13 +297,15 @@ try {
     await page.locator('#pulse button', { hasText: need }).click()
     await page.waitForTimeout(400)
     const res = await page.evaluate(() => ({
-      pressed: document.querySelector('#pulse button[aria-pressed="true"]')?.textContent ?? '',
+      pressed: document.querySelector('#pulse [role="radio"][aria-checked="true"]')?.textContent ?? '',
       verdict: document.querySelector('#pulse [aria-live]')?.textContent ?? '',
       proof: document.querySelector('#pulse [aria-live] a[href^="#h"]')?.getAttribute('href') ?? '',
       msg: document.querySelector('#contact-msg')?.value ?? '',
-      badge: document.querySelector('#layer-ai')?.textContent ?? '',
+      // The stage's layers: the ones the answer takes are picked (AI among them), the others not.
+      lit: [...document.querySelectorAll('#stage li[id^="layer-"]')].filter((li) => li.dataset.picked === 'true').map((li) => li.id),
+      uses: document.querySelector('#pulse [aria-live]')?.textContent.includes('1, 2, 3, 5, 7'),
     }))
-    check('P1', 'the pulse answer lights its layers, links its proof and starts the message', res.pressed.includes(need) && res.verdict.includes(dicts.en.pulse.verdict) && res.proof === '#h22' && res.msg.startsWith(need) && res.badge.includes(dicts.en.engine.focus), JSON.stringify({ ...res, verdict: res.verdict.slice(0, 60) }))
+    check('P1', 'the pulse answer lights its layers, links its proof and starts the message', res.pressed.includes(need) && res.verdict.includes(dicts.en.pulse.verdict) && res.proof === '#h22' && res.msg.startsWith(need) && res.lit.includes('layer-ai') && !res.lit.includes('layer-design') && res.uses, JSON.stringify({ ...res, verdict: res.verdict.slice(0, 60) }))
     await page.close()
   }
 
@@ -317,16 +320,16 @@ try {
     await page.waitForTimeout(4500)
     const late = await page.evaluate(() => ({ h: document.documentElement.scrollHeight, pins: document.querySelectorAll('.pin-spacer').length, lenis: document.documentElement.classList.contains('lenis') }))
     check('S1', 'motion on: no pins or snapping, and the page height never changes after load', late.pins === 0 && Math.abs(late.h - early) < 2, JSON.stringify({ early, ...late }))
-    // The engine holds the screen with sticky positioning and climbs as the page scrolls.
+    // The stage holds the screen with sticky positioning and the scroll brings the layers into orbit.
     const engine = await page.evaluate(async () => {
-      const el = document.getElementById('engine')
+      const el = document.getElementById('stage')
       const top = el.getBoundingClientRect().top + scrollY
       window.scrollTo({ top: top + (el.offsetHeight - innerHeight) * 0.6, behavior: 'instant' })
       await new Promise((r) => setTimeout(r, 600))
-      const h = document.getElementById('engine-title').getBoundingClientRect()
-      return { held: h.top >= 0 && h.bottom < innerHeight, p: Number(el.style.getPropertyValue('--p')) }
+      const w = el.querySelector('[data-window="stage"]').getBoundingClientRect()
+      return { held: w.top >= 0 && w.bottom <= innerHeight + 1, p: Number(el.style.getPropertyValue('--hold')), orbit: el.querySelectorAll('#stage li[data-on]').length }
     })
-    check('S1', 'the systems hold the screen and the scroll opens them', engine.held && engine.p > 0.3 && engine.p < 0.9, JSON.stringify(engine))
+    check('S1', 'the stage holds the screen and the scroll brings the layers into orbit', engine.held && engine.p > 0.3 && engine.p < 0.9 && engine.orbit === 7, JSON.stringify(engine))
     // The proof: five patches, one open case.
     const proof = await page.evaluate(async () => {
       const el = document.getElementById('day')

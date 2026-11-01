@@ -69,6 +69,7 @@ export const en: Dict = {
     proof: 'Where we’ve done it',
     everyProject: 'For clients under NDA: see Also delivered.',
     tell: 'Tell us about it',
+    uses: 'Uses layers',
   },
 
   day: {
@@ -192,6 +193,8 @@ export const en: Dict = {
     crownText: 'Gartner expects over 40% of agentic AI projects to be canceled by the end of 2027, because of rising costs, unclear business value or inadequate risk controls. We fix the scope first and build from the foundation up, so the AI has trusted data, working connections and a clear job.',
     crownSource: 'Gartner, 25 June 2025',
     focus: 'Your project',
+    inOrbit: 'Layers in orbit',
+    itTakes: 'It takes',
   },
 
   process: {

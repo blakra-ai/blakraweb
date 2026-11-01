@@ -33,10 +33,28 @@ export interface Framing {
 export interface ObsWindow {
   id: string
   kind: WindowKind
-  /** The element's page rect, measured on reflow. */
+  /** The element's page rect at rest, measured on reflow. */
   rect: Rect
   framing: Framing
   el: HTMLElement
+  /** A window inside a `position: sticky` hold (the stage): what the browser clamps its place by. */
+  sticky: Sticky | null
+}
+
+/** A sticky hold: it rests at `naturalY` (page), sticks at `top` (viewport) and stops at the bottom of its container. */
+export interface Sticky {
+  top: number
+  naturalY: number
+  containerY: number
+  containerH: number
+  h: number
+}
+
+/** Where a sticky element's top is on screen for a scroll (the browser's own rule, pure). */
+export function stickyViewY(st: Sticky, scrollY: number): number {
+  const natural = st.naturalY - scrollY
+  const stop = st.containerY + st.containerH - scrollY - st.h
+  return Math.min(Math.max(natural, st.top), stop)
 }
 
 /** The storyboard frame the radii were drawn at (1440 − 2 × 24 inset). */
@@ -66,7 +84,7 @@ export function frameWindow(kind: WindowKind, rect: Rect, hint?: { x: number; y:
   const r = RING[kind] * s
   const ring = { x: rect.w * RING_X, y: rect.h * RING_Y[kind], r }
   let guide: Framing['guide'] = null
-  if (kind !== 'stage') {
+  {
     // 30 % of the window's height, and never so large that she cannot fit in the right half.
     const headPx = Math.min(HEAD_SHARE * rect.h, 0.5 * rect.w)
     // At the lower-right rim: just past the ring's right edge, a third of a head below its centre
@@ -93,8 +111,8 @@ export function holeFor(station: number): number {
 }
 
 /** The window's rect on screen for the scroll `scrollY`: its viewport, and the part of it the viewport shows (or null when off-screen). */
-export function onScreen(rect: Rect, scrollY: number, viewport: { w: number; h: number }): { view: Rect; clip: Rect } | null {
-  const view = { x: rect.x, y: rect.y - scrollY, w: rect.w, h: rect.h }
+export function onScreen(rect: Rect, scrollY: number, viewport: { w: number; h: number }, sticky: Sticky | null = null): { view: Rect; clip: Rect } | null {
+  const view = { x: rect.x, y: sticky ? stickyViewY(sticky, scrollY) + (rect.y - sticky.naturalY) : rect.y - scrollY, w: rect.w, h: rect.h }
   const x0 = Math.max(0, view.x)
   const y0 = Math.max(0, view.y)
   const x1 = Math.min(viewport.w, view.x + view.w)
@@ -184,9 +202,26 @@ function guideHint(el: HTMLElement): { x: number; y: number } | null {
   return Number.isFinite(x) && Number.isFinite(y) ? { x, y } : null
 }
 
+/** The nearest sticky ancestor of the window (its hold), read on reflow only. */
+function stickyOf(el: HTMLElement): Sticky | null {
+  for (let p = el.parentElement; p && p !== document.body; p = p.parentElement) {
+    const cs = getComputedStyle(p)
+    if (cs.position !== 'sticky') continue
+    const container = p.parentElement
+    if (!container) return null
+    const c = container.getBoundingClientRect()
+    const containerY = c.top + window.scrollY
+    return { top: Number.parseFloat(cs.top) || 0, naturalY: containerY + p.offsetTop, containerY, containerH: c.height, h: p.offsetHeight }
+  }
+  return null
+}
+
 function measure(w: ObsWindow) {
   const r = w.el.getBoundingClientRect()
-  w.rect = { x: r.left + window.scrollX, y: r.top + window.scrollY, w: r.width, h: r.height }
+  w.sticky = stickyOf(w.el)
+  // At rest the window sits in its hold's natural place; the rect is the resting one even when measured while stuck.
+  const y = w.sticky ? w.sticky.naturalY + (w.el.offsetParent === w.el.parentElement ? w.el.offsetTop : 0) : r.top + window.scrollY
+  w.rect = { x: r.left + window.scrollX, y, w: r.width, h: r.height }
   w.framing = frameWindow(w.kind, w.rect, guideHint(w.el))
   obs.windows[w.id] = w.rect
 }
@@ -201,7 +236,7 @@ function measureAll() {
  * (resize, fonts, content opening), never per frame. Returns the unregister function.
  */
 export function registerWindow(id: string, el: HTMLElement, kind: WindowKind): () => void {
-  const w: ObsWindow = { id, kind, el, rect: { x: 0, y: 0, w: 1, h: 1 }, framing: frameWindow(kind, { x: 0, y: 0, w: 1, h: 1 }) }
+  const w: ObsWindow = { id, kind, el, rect: { x: 0, y: 0, w: 1, h: 1 }, framing: frameWindow(kind, { x: 0, y: 0, w: 1, h: 1 }), sticky: null }
   measure(w)
   windows.set(id, w)
   if (!offReflow) offReflow = onReflow(measureAll)

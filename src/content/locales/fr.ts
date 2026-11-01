@@ -66,6 +66,7 @@ export const fr: Dict = {
     proof: 'Où nous l’avons fait',
     everyProject: 'Clients sous NDA : voir « Autres réalisations ».',
     tell: 'Parlez-nous-en',
+    uses: 'Utilise les couches',
   },
 
   day: {
@@ -189,6 +190,8 @@ export const fr: Dict = {
     crownText: 'Gartner prévoit que plus de 40 % des projets d’IA agentique seront abandonnés d’ici fin 2027, en raison de coûts croissants, d’une valeur métier floue ou d’un contrôle des risques insuffisant. Nous fixons d’abord le périmètre et partons des fondations, pour que l’IA ait des données fiables, des connexions qui fonctionnent et une mission claire.',
     crownSource: 'Gartner, 25 juin 2025',
     focus: 'Votre projet',
+    inOrbit: 'Couches en orbite',
+    itTakes: 'Il faut',
   },
 
   process: {

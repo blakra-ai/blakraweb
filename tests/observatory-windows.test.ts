@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest'
-import { frameWindow, guideInView, HEAD_SHARE, onScreen, RING, ringScale, toGl, WORDS_COLUMN, type Rect } from '../src/features/observatory/windows'
+import { frameWindow, guideInView, HEAD_SHARE, onScreen, RING, ringScale, stickyViewY, toGl, WORDS_COLUMN, type Rect } from '../src/features/observatory/windows'
 
 const desktop: Rect = { x: 24, y: 88, w: 1392, h: 788 }
 const phone: Rect = { x: 16, y: 80, w: 358, h: 232 }
@@ -22,8 +22,8 @@ describe('window framing', () => {
     expect(frameWindow('hero', phone).ring.r).toBe(75)
   })
 
-  it('gives the hero and contact windows a guide, the stage none', () => {
-    expect(frameWindow('stage', desktop).guide).toBeNull()
+  it('gives every window a guide at the rim (she returns to the stage as in the hero)', () => {
+    expect(frameWindow('stage', desktop).guide).not.toBeNull()
     expect(frameWindow('hero', desktop).guide).not.toBeNull()
     expect(frameWindow('contact', desktop).guide).not.toBeNull()
   })
@@ -102,5 +102,27 @@ describe('the guide hint and her bounds', () => {
     expect(guideInView(guide, { x: 24, y: 88, w: 1392, h: 500 }, view)).toBe(true)
     // Only the left half shows.
     expect(guideInView(guide, { x: 24, y: 88, w: 600, h: 788 }, view)).toBe(false)
+  })
+})
+
+describe('a sticky hold (the stage)', () => {
+  // A hold 836 px tall resting at page 1000 inside a 2700 px section, sticking 64 px under the top.
+  const st = { top: 64, naturalY: 1000, containerY: 1000, containerH: 2700, h: 836 }
+  it('scrolls with the page until it sticks, then holds, then leaves with its section', () => {
+    expect(stickyViewY(st, 0)).toBe(1000)
+    expect(stickyViewY(st, 936)).toBe(64)
+    expect(stickyViewY(st, 1500)).toBe(64)
+    // The container's bottom (3700) minus the hold's height (836) minus the 64: it holds until 2800, then scrolls out.
+    expect(stickyViewY(st, 2800)).toBe(64)
+    expect(stickyViewY(st, 3000)).toBe(64 - 200)
+  })
+  it('keeps the window on screen through the hold', () => {
+    const rect = { x: 24, y: 1000, w: 1392, h: 836 }
+    const vp = { w: 1440, h: 900 }
+    expect(onScreen(rect, 1500, vp, st)!.view.y).toBe(64)
+    expect(onScreen(rect, 2000, vp, st)!.clip.h).toBe(836)
+    expect(onScreen(rect, 1500, vp)).not.toBeNull()
+    expect(onScreen(rect, 2500, vp)).toBeNull()
+    expect(onScreen(rect, 2500, vp, st)).not.toBeNull()
   })
 })

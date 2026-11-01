@@ -130,6 +130,8 @@ export interface Dict {
     proof: string
     everyProject: string
     tell: string
+    /** The dots' text twin on the stage: "Uses layers 1, 2, 3, 7". */
+    uses: string
   }
   day: {
     srTitle: string
@@ -156,6 +158,9 @@ export interface Dict {
     crownSource: string
     /** Marks the layer the visitor picked in the pulse. */
     focus: string
+    /** The stage's counter: "Layers in orbit 03 / 07" and, with a pick, "It takes 04 / 07". */
+    inOrbit: string
+    itTakes: string
   }
   process: {
     eyebrow: string

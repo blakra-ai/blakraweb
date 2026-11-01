@@ -1,0 +1,11 @@
+hold 0: {"hold":0,"inOrbit":0,"handover":0,"station":2,"lit":0}
+hold 0.5: {"hold":0.49982638888888886,"inOrbit":6,"handover":0,"station":3,"lit":6}
+hold 1: {"hold":0.9998263888888889,"inOrbit":7,"handover":0.9982638888888886,"station":4,"lit":7}
+picked: {"picker":"aidata","lit":["layer-cloud","layer-data","layer-automation","layer-ai"],"uses":"What it takesUses layers 1, 2, 3, 7One team builds it, from the foundation up.Where we’ve done it ↓"}
+[info] [observatory] frame 4.90 ms cpu mean over 108 frames in 2.0 s (53 fps), dpr 1
+[info] [observatory] frame 3.71 ms cpu mean over 112 frames in 2.0 s (56 fps), dpr 1
+[info] [observatory] frame 4.33 ms cpu mean over 107 frames in 2.0 s (53 fps), dpr 1
+JUMP dir=1 y=2475->2520 eyes (1278,1035)->(1267,988) head 244->244
+scrub rows=202 flagged=1 stations=1,2,3,4,5 hold range 0..1
+phone: {"glOff":true,"canvas":false,"lit":6}
+reduced motion: {"sticky":false,"lit":7,"counter":"Layers in orbit 07 / 07"}
