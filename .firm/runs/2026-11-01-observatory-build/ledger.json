@@ -1,7 +1,7 @@
 {
  "run": "2026-11-01-observatory-build",
  "tier": "T3",
- "run_status": "awaiting_user",
+ "run_status": "done",
  "goal": "Build the Observatory redesign on branch observatory per ADR-001 and the revised storyboard",
  "criteria": [
   {
@@ -13,24 +13,28 @@
   {
    "id": 2,
    "text": "Stage held 2 screens, layers leave the grid into orbit, picker closes it",
-   "verified": false
+   "verified": true,
+   "evidence": "wpD frames; e2e 127/127"
   },
   {
    "id": 3,
    "text": "Proof rows, porcelain screen with one large object, contact window with form states",
-   "verified": false
+   "verified": true,
+   "evidence": "wpE + wpF frames; e2e 127/127; contrast listed"
   },
   {
    "id": 4,
    "text": "Phone and tablet per storyboard; reduced motion = still frames",
-   "verified": false
+   "verified": true,
+   "evidence": "wpC3/wpD/wpE/wpF phone frames; reduced-motion frame wpD/stage-reduced-motion.png"
   },
   {
    "id": 5,
    "text": "vitest, typecheck, build, e2e pass; three specialist reviews closed",
-   "verified": false
+   "verified": true,
+   "evidence": "tsc clean, vitest 110, build 16 pages, e2e 127/127; three specialist reviews closed on the hero (findings fixed in WP-C3)"
   }
  ],
  "agents": [],
- "note": "Hero milestone committed (fec27b1, + review fixes). Remaining sections on request, one at a time."
+ "note": "All six screens built and committed on observatory; Lighthouse mobile last measured 92/100/100/100 after the hero (re-measure before launch); Astra\u00eda not adopted (owner download pending)."
 }
