@@ -5,7 +5,7 @@ import type { Issue } from "./types";
 const BASE_URL = (import.meta.env.VITE_API_BASE_URL ?? "").replace(/\/$/, "");
 
 export interface RequestOptions {
-  method?: "GET" | "POST" | "DELETE";
+  method?: "GET" | "POST" | "PUT" | "DELETE";
   body?: unknown;
   query?: Record<string, string | number | undefined>;
   headers?: Record<string, string>;
@@ -21,10 +21,11 @@ export async function request<T>(path: string, options: RequestOptions = {}): Pr
     if (value !== undefined) url.searchParams.set(key, String(value));
   }
 
-  const headers: Record<string, string> = { Accept: "application/json", ...options.headers };
+  // X-Requested-With: the backend's CSRF check for state-changing account/admin endpoints.
+  const headers: Record<string, string> = { Accept: "application/json", "X-Requested-With": "blakrasocial", ...options.headers };
   if (options.body !== undefined) headers["Content-Type"] = "application/json";
-  if (!options.anonymous) {
-    const session = getSession();
+  const session = options.anonymous ? null : getSession();
+  if (session) {
     const token = await session.getAccessToken();
     headers.Authorization = `Bearer ${token}`;
     headers["X-Profile-Key"] = session.getProfileKey(token);
@@ -49,6 +50,7 @@ export async function request<T>(path: string, options: RequestOptions = {}): Pr
   const payload: unknown = await response.json().catch(() => undefined);
   if (response.ok) return payload as T;
 
+  if (response.status === 401) session?.onUnauthorized?.();
   const problem = (payload ?? {}) as { type?: string; title?: string; detail?: string; errors?: Issue[]; requestId?: string };
   throw new ApiError({
     status: response.status,

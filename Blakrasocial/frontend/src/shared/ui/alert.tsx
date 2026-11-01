@@ -1,10 +1,11 @@
-import { AlertTriangle, Info, XCircle } from "lucide-react";
+import { AlertTriangle, CheckCircle2, Info, XCircle } from "lucide-react";
 import type { ReactNode } from "react";
 import { cn } from "@/shared/lib/cn";
 
 const tones = {
   info: { icon: Info, cls: "border-primary/30 bg-primary/5 text-foreground" },
   warning: { icon: AlertTriangle, cls: "border-warning/50 bg-warning/10 text-foreground" },
+  success: { icon: CheckCircle2, cls: "border-success/40 bg-success/5 text-foreground" },
   danger: { icon: XCircle, cls: "border-danger/40 bg-danger/5 text-foreground" },
 } as const;
 

@@ -1,6 +1,7 @@
-import { Languages, LayoutList, Link2, PenSquare, Sparkles } from "lucide-react";
-import { NavLink, Outlet } from "react-router-dom";
+import { Languages, LayoutList, Link2, LogOut, PenSquare, Sparkles, UserCircle, Users } from "lucide-react";
+import { Link, NavLink, Outlet, useNavigate } from "react-router-dom";
 import { useTranslation } from "react-i18next";
+import { useAuth } from "@/features/auth";
 import { LANGUAGES } from "@/shared/i18n";
 import { cn } from "@/shared/lib/cn";
 
@@ -9,10 +10,19 @@ const NAV = [
   { to: "/connections", icon: Link2, key: "nav.connections" },
   { to: "/posts", icon: LayoutList, key: "nav.posts" },
 ] as const;
+const ADMIN_NAV = { to: "/admin", icon: Users, key: "nav.admin" } as const;
 
 export function AppShell() {
   const { t, i18n } = useTranslation();
   const next = LANGUAGES.find((l) => !i18n.language.startsWith(l.code)) ?? LANGUAGES[0];
+  const { user, session } = useAuth();
+  const navigate = useNavigate();
+  const nav = user?.role === "admin" ? [...NAV, ADMIN_NAV] : NAV;
+
+  async function signOut() {
+    await session.signOut();
+    navigate("/login", { replace: true });
+  }
 
   return (
     <div className="min-h-dvh">
@@ -28,7 +38,7 @@ export function AppShell() {
             Blakrasocial
           </span>
           <nav aria-label={t("nav.main")} className="flex flex-1 items-center gap-1 overflow-x-auto">
-            {NAV.map(({ to, icon: Icon, key }) => (
+            {nav.map(({ to, icon: Icon, key }) => (
               <NavLink
                 key={to}
                 to={to}
@@ -51,13 +61,39 @@ export function AppShell() {
             className="flex items-center gap-1.5 rounded-xl px-3 py-2 text-sm text-muted-foreground transition-colors hover:bg-muted hover:text-foreground"
             aria-label={t("nav.language")}
           >
-            <Languages className="size-4" aria-hidden /> {next.label}
+            <Languages className="size-4" aria-hidden /> <span className="hidden sm:inline">{next.label}</span>
           </button>
+          {user && (
+            <>
+              <Link
+                to="/account"
+                className="flex max-w-40 items-center gap-1.5 rounded-xl px-3 py-2 text-sm text-muted-foreground transition-colors hover:bg-muted hover:text-foreground"
+                aria-label={t("nav.account")}
+                title={user.email}
+              >
+                <UserCircle className="size-4 shrink-0" aria-hidden /> <bdi className="hidden truncate md:inline">{user.title}</bdi>
+              </Link>
+              <button
+                type="button"
+                onClick={() => void signOut()}
+                className="flex items-center gap-1.5 rounded-xl px-3 py-2 text-sm text-muted-foreground transition-colors hover:bg-muted hover:text-foreground"
+                aria-label={t("nav.signOut")}
+                title={t("nav.signOut")}
+              >
+                <LogOut className="size-4" aria-hidden />
+              </button>
+            </>
+          )}
         </div>
       </header>
       <main id="main" className="mx-auto max-w-7xl px-4 py-8 sm:px-6">
         <Outlet />
       </main>
+      <footer className="mx-auto flex max-w-7xl flex-wrap gap-4 px-4 pb-8 text-xs text-muted-foreground sm:px-6">
+        <Link to="/privacy" className="hover:text-foreground">{t("legal.privacy.title")}</Link>
+        <Link to="/terms" className="hover:text-foreground">{t("legal.terms.title")}</Link>
+        <Link to="/data-deletion" className="hover:text-foreground">{t("legal.deletion.title")}</Link>
+      </footer>
     </div>
   );
 }

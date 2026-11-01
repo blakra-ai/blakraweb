@@ -10,12 +10,15 @@
     "compose": "Create post",
     "connections": "Connections",
     "posts": "Posts",
-    "language": "Change language"
+    "language": "Change language",
+    "admin": "Customers",
+    "account": "My account",
+    "signOut": "Sign out"
   },
   "errors": {
     "title": "Something went wrong",
     "generic": "Something went wrong. Please try again.",
-    "session": "Your session has expired. Sign in again from the main platform.",
+    "session": "Your session has ended. Please sign in again.",
     "network": "Can't reach the server. Check your connection."
   },
   "connections": {
@@ -234,5 +237,91 @@
     "consentSuffix": ".",
     "musicUsage": "Music Usage Confirmation",
     "brandedPolicy": "Branded Content Policy"
+  },
+  "auth": {
+    "signInTitle": "Sign in",
+    "signInDescription": "Use the email and password for your Blakrasocial account.",
+    "email": "Email",
+    "password": "Password",
+    "signIn": "Sign in",
+    "forgot": "Forgot your password? Ask your account manager for a new set-password link.",
+    "badLogin": "Email or password is incorrect.",
+    "tooMany": "Too many attempts. Please wait a few minutes and try again.",
+    "linkExpired": "This link has expired or was already used. Ask for a new one.",
+    "linkProblemTitle": "Link not valid",
+    "goToSignIn": "Go to sign in",
+    "welcomeTitle": "Welcome! Choose a password",
+    "welcomeDescription": "Set a password to activate your account.",
+    "resetTitle": "Choose a new password",
+    "resetDescription": "Your old password stops working and other devices are signed out.",
+    "newPassword": "New password",
+    "confirmPassword": "Repeat the new password",
+    "currentPassword": "Current password",
+    "passwordHelp": "At least {{min}} characters. A short sentence is easy to remember and hard to guess.",
+    "passwordLength": "The password must be at least {{min}} characters.",
+    "passwordWeak": "This password is too easy to guess. Try a longer phrase.",
+    "passwordMismatch": "The two passwords don't match.",
+    "savePassword": "Save password",
+    "currentWrong": "The current password is incorrect.",
+    "accountTitle": "My account",
+    "profile": "Profile",
+    "changePassword": "Change password",
+    "changePasswordHelp": "Other devices will be signed out.",
+    "passwordChanged": "Password changed."
+  },
+  "admin": {
+    "title": "Customers",
+    "description": "Create accounts and send each customer their personal set-password link. Every account has its own connections and posts.",
+    "newCustomer": "New account",
+    "newCustomerHelp": "You get a link to send to the person yourself (email, WhatsApp…). It works once, for 7 days.",
+    "name": "Name",
+    "role": "Role",
+    "roles": {
+      "customer": "Customer",
+      "admin": "Admin"
+    },
+    "create": "Create",
+    "exists": "An account with this email already exists.",
+    "invalid": "Check the name and email.",
+    "linkReady": "Link for {{name}}",
+    "linkHelp": "Send this link only to this person. It works once and expires in {{days}} days.",
+    "link": "Set-password link",
+    "copy": "Copy",
+    "copied": "Copied",
+    "done": "Done",
+    "status": {
+      "active": "Active",
+      "invited": "Invited",
+      "disabled": "Disabled"
+    },
+    "lastLogin": "Last sign-in {{when}}",
+    "neverSignedIn": "Has not signed in yet",
+    "newLink": "New invite link",
+    "resetLink": "Password reset link",
+    "enable": "Enable",
+    "disable": "Disable",
+    "disableTitle": "Disable {{name}}?",
+    "disableHelp": "They are signed out everywhere and can't sign in until you enable the account again. Scheduled posts stay scheduled.",
+    "whatsappTitle": "WhatsApp number for {{name}}",
+    "whatsappHelp": "From Meta's WhatsApp Manager: the phone number ID and a permanent System User token with whatsapp_business_messaging. The token is stored encrypted and never shown again.",
+    "whatsappPhoneId": "Phone number ID",
+    "whatsappToken": "Access token",
+    "whatsappName": "Display name",
+    "whatsappPhone": "Phone number (optional, for display)",
+    "whatsappSaved": "WhatsApp number saved and verified.",
+    "save": "Save"
+  },
+  "legal": {
+    "updated": "Last updated",
+    "back": "Back to the app",
+    "privacy": {
+      "title": "Privacy policy"
+    },
+    "terms": {
+      "title": "Terms of service"
+    },
+    "deletion": {
+      "title": "Data deletion"
+    }
   }
 }

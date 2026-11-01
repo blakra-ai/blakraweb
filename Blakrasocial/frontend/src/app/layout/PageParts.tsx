@@ -25,9 +25,7 @@ export function ErrorState({ error, onRetry }: { error: unknown; onRetry?: () =>
         : error.status === 0
           ? t("errors.network")
           : error.message
-      : error instanceof Error && error.message.includes("configureSession")
-        ? t("errors.session")
-        : t("errors.generic");
+      : t("errors.generic");
   return (
     <Alert tone="danger" title={t("errors.title")}>
       <p>{message}</p>

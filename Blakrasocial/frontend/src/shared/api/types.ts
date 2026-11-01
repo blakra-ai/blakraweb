@@ -14,6 +14,12 @@ export type Account = Schemas["AccountResponse"];
 export type AccountsResponse = Schemas["AccountsResponse"];
 export type ConnectUrlResponse = Schemas["ConnectUrlResponse"];
 export type TikTokCreatorInfo = Schemas["TikTokCreatorInfoResponse"];
+export type User = Schemas["UserOut"];
+export type SessionResponse = Schemas["SessionResponse"];
+export type InviteInfo = Schemas["InviteInfo"];
+export type AdminUser = Schemas["AdminUserOut"];
+export type AdminUsersResponse = Schemas["AdminUsersResponse"];
+export type InviteLinkResponse = Schemas["InviteLinkResponse"];
 
 export type UploadUrlRequest = Schemas["UploadUrlRequest"];
 export type UploadUrlResponse = Schemas["UploadUrlResponse"];

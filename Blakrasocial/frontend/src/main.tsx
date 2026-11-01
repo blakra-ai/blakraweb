@@ -4,15 +4,18 @@ import { App } from "@/app/App";
 import "@/shared/i18n";
 import "./index.css";
 
-import { CallbackSessionProvider, configureSession } from "@/shared/auth/session";
+import { builtinSession } from "@/shared/auth/builtinSession";
+import { CallbackSessionProvider, configureSession, registerBuiltin } from "@/shared/auth/session";
 
-/** Host integration: define `window.BlakrasocialConfig = { getAccessToken }` before this script loads.
- *  The host returns a short-lived JWT it issued for the signed-in customer. */
+/** Optional host integration: a platform that embeds this app defines
+ *  `window.BlakrasocialConfig = { getAccessToken }` before this script loads and returns a short-lived
+ *  JWT it issued. Without it, the app uses its own sign-in (email + password, invite links). */
 declare global {
   interface Window {
     BlakrasocialConfig?: { getAccessToken: () => Promise<string> };
   }
 }
+registerBuiltin(builtinSession);
 if (window.BlakrasocialConfig?.getAccessToken) {
   configureSession(new CallbackSessionProvider(window.BlakrasocialConfig.getAccessToken));
 }

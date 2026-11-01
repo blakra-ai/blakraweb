@@ -3,7 +3,9 @@ import { useState } from "react";
 import { useTranslation } from "react-i18next";
 import { RouterProvider } from "react-router-dom";
 import { Toaster } from "sonner";
+import { AuthProvider } from "@/features/auth";
 import { ApiError } from "@/shared/api/ApiError";
+import { builtinSession } from "@/shared/auth/builtinSession";
 import { router } from "./router";
 
 function createQueryClient(): QueryClient {
@@ -25,7 +27,9 @@ export function App() {
   const { i18n } = useTranslation();
   return (
     <QueryClientProvider client={client}>
-      <RouterProvider router={router} />
+      <AuthProvider session={builtinSession}>
+        <RouterProvider router={router} />
+      </AuthProvider>
       <Toaster richColors closeButton position="top-center" dir={i18n.dir()} />
     </QueryClientProvider>
   );
