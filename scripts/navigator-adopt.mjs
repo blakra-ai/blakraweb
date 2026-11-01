@@ -8,7 +8,9 @@
  * A Sketchfab-style scene (Astraía): --yaw turns the whole scene about Y so she faces +Z; with
  * --augment and no skeleton, --head x,y,z puts the Head pivot at a world point (the neck),
  * --head-meshes limits which rigid nodes follow it (through bridge nodes, so their own animation
- * tracks keep working) and --skin-head skins the matching rigid meshes between Spine1 and Head
+ * tracks keep working), --upright gives the matching nodes an identity world rotation (their
+ * children compensate), so a model's own eyeballs mapped to Eye_L/R turn about world axes for the
+ * gaze, and --skin-head skins the matching rigid meshes between Spine1 and Head
  * with a blend across --neck y0,y1, so one shell from head to hips turns at the neck. --bake-look
  * moves a baked emissive map into the base colour (lit by our lights, not its own), drops
  * transmission and clearcoat and sets a matte PBR; --tint multiplies the base colour of the
@@ -47,7 +49,7 @@ import { CONTRACT, validateNames } from '../src/features/navigator/figure/names.
 import { CHAKRAS } from '../src/features/navigator/yantra.ts'
 
 const args = process.argv.slice(2)
-const WITH_VALUE = new Set(['--eyes', '--head', '--simplify', '--drop', '--webp', '--eye-forward', '--yaw', '--head-meshes', '--skin-head', '--neck', '--tint', '--tex-max', '--tex-hi'])
+const WITH_VALUE = new Set(['--eyes', '--head', '--simplify', '--drop', '--webp', '--eye-forward', '--yaw', '--head-meshes', '--skin-head', '--neck', '--tint', '--tex-max', '--tex-hi', '--upright'])
 const value = (flag) => args[args.indexOf(flag) + 1]
 const flags = new Set(args.filter((a) => a.startsWith('--')))
 const positional = args.filter((a, i) => !a.startsWith('--') && !(i > 0 && WITH_VALUE.has(args[i - 1])))
@@ -360,6 +362,26 @@ if (flags.has('--augment')) {
       }
       console.log(`augment: skinned ${skinned} mesh node(s) to Spine1 → Head across y ${n0}…${n1}`)
     }
+    // --upright: the matching nodes get an identity world rotation; their children take the old
+    // rotation, so nothing moves. The gaze then turns the node about world x and y.
+    if (flags.has('--upright')) {
+      const re = new RegExp(value('--upright'))
+      let n = 0
+      for (const node of root.listNodes()) {
+        if (!re.test(node.getName())) continue
+        const parent = node.listParents().find((x) => x.propertyType === 'Node')
+        const [px, py, pz, pw] = parent ? worldQuat(parent) : [0, 0, 0, 1]
+        const oldLocal = node.getMatrix()
+        node.setRotation([-px, -py, -pz, pw]).setScale([1, 1, 1])
+        const fix = mat4Mul(mat4Invert(node.getMatrix()), oldLocal)
+        for (const child of node.listChildren()) {
+          const { t, r, sc } = mat4Decompose(mat4Mul(fix, child.getMatrix()))
+          child.setTranslation(t).setRotation(r).setScale(sc)
+        }
+        n++
+      }
+      console.log(`augment: ${n} node(s) set upright`)
+    }
     console.log(`augment: no skeleton; built Hips…Head down the axis (mesh ${bottom.toFixed(2)}…${top.toFixed(2)} m, Head bone at y=${headY.toFixed(3)}); ${headRe ? `nodes matching ${headRe} parented to Head through ${bridges.size} bridge(s)` : 'meshes parented to Head'}`)
   }
   const head = byName('Head'), neck = byName('Neck'), hips = byName('Hips'), spine = byName('Spine'), spine1 = byName('Spine1'), spine2 = byName('Spine2')
@@ -440,8 +462,10 @@ if (flags.has('--augment')) {
   const ER = eyeWorld ? eyeWorld.R : [H[0] + ex, H[1] + ey, H[2] + ez]
   if (!byName('Eye_L')) addSphere('Eye_L', head, EL, er, white, { upright: true })
   if (!byName('Eye_R')) addSphere('Eye_R', head, ER, er, white, { upright: true })
-  if (!byName('Lid_L')) addSphere('Lid_L', head, EL, er * 1.12, lidMat, { half: true, upright: true, tiltX: -1.05 })
-  if (!byName('Lid_R')) addSphere('Lid_R', head, ER, er * 1.12, lidMat, { half: true, upright: true, tiltX: -1.05 })
+  // The model's own eyeballs mapped to Eye_L/R keep their look: the lids are empties (blink off).
+  const ownEyes = byName('Eye_L') && byName('Eye_R') && !eyeWorld
+  if (!byName('Lid_L')) ownEyes ? addEmpty('Lid_L', head, worldPos(byName('Eye_L'))) : addSphere('Lid_L', head, EL, er * 1.12, lidMat, { half: true, upright: true, tiltX: -1.05 })
+  if (!byName('Lid_R')) ownEyes ? addEmpty('Lid_R', head, worldPos(byName('Eye_R'))) : addSphere('Lid_R', head, ER, er * 1.12, lidMat, { half: true, upright: true, tiltX: -1.05 })
   if (!byName('Jaw')) {
     const jaw = addEmpty('Jaw', head, [H[0], H[1] + 0.2 * headLen, H[2] + 0.2 * headLen])
     if (!byName('Mouth')) addEmpty('Mouth', jaw, [H[0], H[1] + 0.18 * headLen, H[2] + 0.42 * headLen])

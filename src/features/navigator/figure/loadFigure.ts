@@ -132,9 +132,15 @@ export async function loadFigure(url: string): Promise<LoadedFigure> {
   const uShow = { value: 0 }
   const uBright = { value: 0 }
   const uBand = { value: -1 }
+  // A model that brings its own textured eyeballs (Astraía's porcelain irises) keeps them; the
+  // hole shader goes only on bare spheres. The shader material still exists so the uniforms the
+  // performance writes (uShow, uBright, uBand) have a home either way.
   const eyeMats = eyes.map((e) => {
     const m = new ShaderMaterial({ vertexShader: eyeVertex, fragmentShader: eyeFragment, uniforms: { uLens: lens, uTime, uShow, uBright, uBand } })
-    for (const mesh of meshesUnder(e)) mesh.material = m
+    for (const mesh of meshesUnder(e)) {
+      const own = (mesh.material as MeshStandardMaterial | undefined)?.map
+      if (!own) mesh.material = m
+    }
     return m
   }) as [ShaderMaterial, ShaderMaterial]
 

@@ -28,7 +28,7 @@ describe('window framing', () => {
     expect(frameWindow('contact', desktop).guide).not.toBeNull()
   })
 
-  it('places her head at 27 % of the window in front of the ring, chin near the bottom edge, the key light from the ring', () => {
+  it('places her head at 24 % of the window at the ring’s lower-right edge, chin near the bottom edge, the key light from the ring', () => {
     const f = frameWindow('hero', desktop)
     const g = f.guide!
     expect(g.headPx).toBeCloseTo(HEAD_SHARE * desktop.h)
@@ -36,7 +36,7 @@ describe('window framing', () => {
     // Her head overlaps the ring's lower-right quadrant: the rim is behind her, on the words' side.
     expect(g.x).toBeGreaterThan(f.ring.x)
     expect(g.x - 0.5 * g.headPx).toBeLessThan(f.ring.x + f.ring.r)
-    expect(g.y).toBeGreaterThan(f.ring.y)
+    expect(g.y).toBeGreaterThan(f.ring.y + 0.9 * f.ring.r)
     expect(g.key).toBe(-1)
     expect(g.bust).toBe(true)
     expect(g.y + 0.35 * g.headPx).toBeLessThanOrEqual(desktop.h + 1e-6)
@@ -50,6 +50,7 @@ describe('window framing', () => {
     expect(g.headPx).toBeCloseTo(HEAD_SHARE_CONTACT * desktop.h)
     expect(g.x).toBeGreaterThan(f.ring.x)
     expect(g.x).toBeLessThan(f.ring.x + f.ring.r)
+    expect(g.x + 1.8 * g.headPx).toBeLessThanOrEqual(desktop.w + 1e-6)
     expect(g.y).toBeGreaterThan(f.ring.y)
     expect(g.key).toBe(-1)
     expect(g.bust).toBe(true)
