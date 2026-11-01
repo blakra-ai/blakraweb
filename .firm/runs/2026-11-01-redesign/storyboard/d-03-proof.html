@@ -1,0 +1,106 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>BLAKRA storyboard — 03 Proof, five cases; she turns to the stitched row (desktop 1440×900)</title>
+<meta name="viewport" content="width=1440">
+<link rel="stylesheet" href="./sb.css">
+<style>
+.doc{position:absolute;left:64px;right:64px;top:64px;bottom:0}
+.head{position:absolute;left:0;top:40px;width:560px}
+.head .eyebrow{margin-bottom:22px}
+.head .lede{margin-top:18px;max-width:520px;font-size:16px}
+/* a letterbox window: the same world, her head turned to the rows */
+.win{position:absolute;left:666px;top:36px;width:710px;height:230px;border:1px solid var(--hair);border-radius:16px;overflow:hidden;background:var(--frame)}
+.win svg.well{position:absolute;inset:0;width:100%;height:100%}
+.win .hole{left:690px;top:30px;width:220px;height:220px}
+.win .voicebox{position:absolute;left:28px;top:22px;width:330px;z-index:6}
+.rows{position:absolute;left:0;right:0;top:330px}
+.row{position:relative;border-top:1px solid var(--hair)}
+.row .g{display:grid;grid-template-columns:198px 400px 300px 1fr;column-gap:24px;align-items:start;padding:12px 0 10px}
+.row:last-child{border-bottom:1px solid var(--hair)}
+.row .ind{color:var(--porcelain)}
+.row .ind small{display:block;color:var(--grey);margin-top:4px;font-size:12px;letter-spacing:.04em;text-transform:none;font-family:var(--mono)}
+.row .moment{font-size:19px;line-height:1.25;letter-spacing:-.015em;font-weight:400;color:var(--porcelain)}
+.row .sys{font-size:15px;line-height:1.45;color:var(--grey)}
+.row .sys .uses{display:block;margin-top:6px}
+.row .out{display:flex;flex-direction:column;align-items:flex-end;gap:8px;text-align:right}
+.row .out b{font-weight:400;color:var(--porcelain);font-size:21px;letter-spacing:-.015em;line-height:1}
+.row.near::before{content:"";position:absolute;left:-24px;top:-1px;bottom:-1px;width:2px;background:var(--accent)}
+.row.near .ind::after{content:"Nearest your choice";display:block;margin-top:4px;color:var(--accent);font-size:12px;letter-spacing:.06em;font-family:var(--mono)}
+.process{position:absolute;left:0;right:0;top:752px;display:grid;grid-template-columns:530px 1fr;column-gap:136px;align-items:start}
+.process .h3{margin-top:8px}
+.steps{display:grid;grid-template-columns:repeat(3,1fr);column-gap:24px;margin-top:8px}
+.steps div{border-top:1px solid var(--hair);padding-top:12px}
+.steps b{display:block;font-weight:500;font-size:15px;margin-bottom:6px}
+.steps span{color:var(--grey);font-size:13px;line-height:1.45}
+</style>
+</head>
+<body>
+<div class="screen">
+  <div class="nav">
+    <div class="mark"><b></b>BLAKRA</div>
+    <nav class="mono"><span>Work</span><span>Capabilities</span><span>Products</span><span>People</span><span>Sponsors and buyers</span></nav>
+    <div class="right"><span class="mono lang" role="button" aria-haspopup="menu">EN</span><button class="pill ghost toggle mono" aria-pressed="true"><i></i>Motion on</button><a class="pill ghost">Start a project</a></div>
+  </div>
+  <div id="gauge"></div>
+
+  <div class="doc">
+    <div class="head">
+      <div class="eyebrow mono">05 / 09 &nbsp;·&nbsp; Proof</div>
+      <h2 class="h2">Five businesses. Five systems we built and launched.</h2>
+      <p class="lede">What each business had, what we built and what changed. Client names stay confidential under our contracts.</p>
+    </div>
+
+    <div class="win">
+      <svg class="well" id="well"></svg>
+      <div class="hole"><div class="crescent"></div><div class="photon"></div><div class="disc"></div></div>
+      <div class="voicebox">
+        <div class="voice-tag mono sm"><b>Navigator</b> · station 05</div>
+        <p class="voice" style="font-size:22px">Five missions flown. The one nearest yours wears the gold stitch.</p>
+      </div>
+      <div id="guide"></div>
+    </div>
+
+    <div class="rows" id="rows"></div>
+
+    <div class="process">
+      <div>
+        <div class="eyebrow mono">06 / 09 &nbsp;·&nbsp; How we work</div>
+        <div class="h3">Exact before expensive.</div>
+      </div>
+      <div class="steps">
+        <div><b>Scope the problem</b><span>The first conversation and the technical assessment are free.</span></div>
+        <div><b>Build the first system</b><span>A fixed scope, a fixed price and an agreed bar for done.</span></div>
+        <div><b>Run it with you</b><span>We monitor, fix and improve it with your team.</span></div>
+      </div>
+    </div>
+  </div>
+  <div class="note" style="left:600px;top:70px">DOM rows · a letterbox window keeps her in the world · the marker lights each row as it passes</div>
+</div>
+<script src="./sb.js"></script>
+<script>
+well(document.getElementById('well'),{w:710,h:230,cx:800,cy:140,rh:110,sigma:260,pull:.66,step:46,fadeLeft:.3});
+const C=[
+ ['Retail','Retail chain, 12 stores','Twelve stores, counted by one system. The reorders arrive drafted.','Inventory and reorder system','40%','fewer stockouts',[2,3,5],0],
+ ['Logistics','Delivery fleet, 25 drivers','Routes are planned for each driver. Dispatch sees the fleet live.','Routing and dispatch platform','20%','more deliveries per shift',[2,3,5],8],
+ ['Insurance','Independent insurance brokerage','A client needs their policy. They open the portal instead of calling.','Document pipeline and client portal','24/7','client self-service',[2,5,7],14],
+ ['Manufacturing','Mid-size manufacturing plant','A machine stops. The alert goes out as it happens, not hours later in a report.','Production line monitoring','Live','downtime seen as it happens',[2,5],8],
+ ['E-commerce','E-commerce brand, 50,000 orders a month','Peak season, same questions. The assistant answers most of them.','Customer service AI assistant','65%','of questions answered automatically',[2,3,7],0]];
+let h='';
+C.forEach((c,i)=>{
+  const dots=[1,2,3,4,5,6,7].map(k=>`<i class="${c[6].includes(k)?'on':''}"></i>`).join('');
+  h+=`<div class="row ${i===2?'near':''}"><div class="g" style="transform:translateX(${c[7]}px)">
+    <div class="ind mono">${c[0]}<small>${c[1]}</small></div>
+    <div class="moment">${c[2]}</div>
+    <div class="sys">${c[3]}<span class="uses">Uses layers ${c[6].join(', ')}</span></div>
+    <div class="out"><b>${c[4]} <span style="font-size:13px;color:var(--grey);letter-spacing:0">${c[5]}</span></b><div class="dots" aria-hidden="true">${dots}</div></div>
+  </div></div>`;
+});
+document.getElementById('rows').innerHTML=h;
+document.getElementById('gauge').innerHTML=gauge(5,'Proof · the marker passes the five rows',{frac:.45});
+document.getElementById('guide').innerHTML=guide(500,160,.78,'right')+
+ '<div class="guide-label" style="left:28px;top:132px;max-width:300px"><b>Astraía · her act at 05</b>She turns to the stitched row (Insurance) and holds it; the stitch is the gold word</div>';
+</script>
+</body>
+</html>

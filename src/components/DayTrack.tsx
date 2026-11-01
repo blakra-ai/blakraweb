@@ -62,7 +62,7 @@ export function DayTrack() {
           {chapters.map((ch, k) => {
             const tx = t.chapters[ch.id]
             return (
-              <li key={ch.id} id={ch.id} data-patch={k} style={{ '--i': k } as CSSProperties}>
+              <li role="presentation" key={ch.id} id={ch.id} data-patch={k} style={{ '--i': k } as CSSProperties}>
                 <button type="button" role="tab" id={`${ch.id}-tab`} aria-selected={open === k} aria-controls="day-case" className={s.pick} data-magnetic onClick={() => setOpen(k)}>
                   <Patch name={tx.system} layers={ch.layers} motto={`${caseNo(k)} · ${tx.industry}`} highlight={nearest === k} size={150} className={s.patch} />
                   {nearest === k && <span className={s.near}>{t.pulse.proof}</span>}

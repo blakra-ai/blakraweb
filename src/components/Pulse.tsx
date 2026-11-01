@@ -32,7 +32,7 @@ export function Pulse() {
   const chapter = proof ? chapters.find((c) => c.id === proof)! : null
 
   const mission = (value: Exclude<PulseChoice, null>, label: string, tag: string, layers: readonly LayerId[], i: number) => (
-    <li key={value} style={{ '--i': i } as CSSProperties}>
+    <li role="presentation" key={value} style={{ '--i': i } as CSSProperties}>
       <button type="button" className={s.mission} data-magnetic aria-pressed={choice === value} onClick={() => setPulse(choice === value ? null : value)}>
         <Patch name={label} layers={layers} highlight={choice === value} size={150} className={s.patch} />
         <span className={s.tag}>{tag}</span>

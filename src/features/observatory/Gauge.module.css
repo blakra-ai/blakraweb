@@ -1,0 +1,112 @@
+/* Desktop and tablet: the gutter left of the frames is a ruler; the frame's left edge is its baseline. */
+.gauge {
+  position: fixed;
+  left: 0;
+  top: var(--header-h);
+  bottom: var(--inset);
+  width: var(--inset);
+  z-index: 30;
+  pointer-events: none;
+  container-type: size;
+}
+.tick,
+.major {
+  position: absolute;
+  right: 1px;
+  width: 5px;
+  height: 1px;
+  background: var(--hair);
+}
+.major {
+  width: 9px;
+  background: var(--grey);
+}
+/* The marker: the reader, in gold (one of the ≤ 3 accent elements on a frame). Moved by transform only. */
+.marker {
+  position: absolute;
+  right: -1px;
+  top: -4px;
+  width: 9px;
+  height: 9px;
+  border-radius: 50%;
+  background: var(--accent);
+  box-shadow: 0 0 10px 2px rgba(var(--accent-rgb), 0.45);
+  will-change: transform;
+}
+:global(html.motion-on) .gauge[data-mounted] .marker {
+  transition: transform 0.3s var(--ease);
+}
+.read {
+  position: absolute;
+  left: 13px;
+  top: 14px;
+  transform: rotate(90deg);
+  transform-origin: left top;
+  white-space: nowrap;
+  color: var(--grey);
+  font-family: var(--font-mono);
+  font-size: var(--mono-size);
+  letter-spacing: var(--mono-track);
+  text-transform: uppercase;
+  font-weight: 500;
+  line-height: 1;
+}
+.read b {
+  color: var(--porcelain);
+  font-weight: 600;
+}
+
+/* Phones: no rotated text; a 2 px progress rule under the header, and the chip in the header. */
+.rule {
+  display: none;
+  position: fixed;
+  left: 0;
+  right: 0;
+  top: var(--header-h);
+  height: 2px;
+  z-index: 30;
+  pointer-events: none;
+  background: var(--hair);
+}
+.ruleFill {
+  position: absolute;
+  inset: 0;
+  background: var(--accent);
+  transform: scaleX(0);
+  transform-origin: left;
+  will-change: transform;
+}
+.chip {
+  display: inline-flex;
+  align-items: center;
+  height: 28px;
+  padding: 0 10px;
+  border: 1px solid var(--ctrl);
+  border-radius: var(--r-pill);
+  color: var(--porcelain);
+  font-family: var(--font-mono);
+  font-size: var(--mono-size);
+  letter-spacing: 0.08em;
+  white-space: nowrap;
+}
+.chipDot {
+  width: 6px;
+  height: 6px;
+  margin-right: 8px;
+  border-radius: 50%;
+  background: var(--porcelain);
+}
+
+@media (max-width: 767px) {
+  .gauge {
+    display: none;
+  }
+  .rule {
+    display: block;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .marker {
+    transition: none;
+  }
+}

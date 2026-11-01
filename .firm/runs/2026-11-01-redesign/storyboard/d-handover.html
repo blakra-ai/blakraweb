@@ -1,0 +1,68 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>BLAKRA storyboard — the between state: hero hands over to the stage (desktop 1440×900, scrolled 436 px)</title>
+<meta name="viewport" content="width=1440">
+<link rel="stylesheet" href="./sb.css">
+<style>
+/* One fixed canvas (the world) seen through two windows: the hero frame leaving, the stage frame arriving.
+   The hole and the guide are drawn once, in viewport space; the frames only clip. */
+.win{z-index:5}
+.win .world{position:absolute;left:-24px;width:1440px;height:900px}
+.hole.one{left:1010px;top:410px;width:300px;height:300px}
+.world svg.well{position:absolute;left:0;top:0;width:1440px;height:900px}
+.hero-words{position:absolute;left:40px;top:-436px;width:642px;z-index:6}
+.hero-words .lede{margin-top:30px;max-width:540px}
+.hero-words .actions{margin-top:36px;display:flex;align-items:center;gap:18px}
+.stage-words{position:absolute;left:40px;top:150px;width:530px;z-index:6}
+.stage-words .eyebrow{margin-bottom:30px}
+.gap-note{position:absolute;left:24px;right:24px;top:440px;height:24px;display:flex;align-items:center;justify-content:center;z-index:9}
+.callout{position:absolute;z-index:40;font-family:var(--mono);font-size:10px;letter-spacing:.06em;color:var(--accent);border:1px dashed rgba(var(--accent-rgb),.6);background:rgba(11,11,13,.85);padding:6px 8px;text-transform:uppercase;line-height:1.5}
+</style>
+</head>
+<body>
+<div class="screen">
+  <div class="nav solid">
+    <div class="mark"><b></b>BLAKRA</div>
+    <nav class="mono"><span>Work</span><span>Capabilities</span><span>Products</span><span>People</span><span>Sponsors and buyers</span></nav>
+    <div class="right"><span class="mono lang" role="button" aria-haspopup="menu">EN</span><button class="pill ghost toggle mono" aria-pressed="true"><i></i>Motion on</button><a class="pill ghost">Start a project</a></div>
+  </div>
+  <div id="gauge"></div>
+
+  <!-- hero frame, leaving: top at 88 − 436 = −348, bottom at 440 -->
+  <div class="win frame" style="top:-348px;height:788px">
+    <div class="world" style="top:348px"><svg class="well" id="w1"></svg><div class="hole one"><div class="crescent"></div><div class="photon2"></div><div class="photon"></div><div class="disc"></div></div><div id="g1"></div></div>
+    <section class="hero-words" style="top:150px">
+      <div class="eyebrow mono">BLAKRA — Software with gravity.</div>
+      <h1 class="h1">We build what organizations run&nbsp;on.</h1>
+      <p class="lede">We design, build and run operations and inventory systems, admin panels and online shops, web and mobile apps, bots, and AI that works on your own data. Three principals lead each project, from the first scope to production.</p>
+      <div class="actions"><a class="pill cta">Start a project</a><span class="mono" style="color:var(--grey)">What do you need built? ↓</span></div>
+    </section>
+    <div class="tag foot">Founded 2024 &nbsp;·&nbsp; Fully remote &nbsp;·&nbsp; Reply within 24 hours</div>
+  </div>
+
+  <!-- stage frame, arriving: its section top is at 464; sticky engages when it reaches 88 -->
+  <div class="win frame" style="top:464px;height:788px">
+    <div class="world" style="top:-464px"><svg class="well" id="w2"></svg><div class="hole one"><div class="crescent"></div><div class="photon2"></div><div class="photon"></div><div class="disc"></div></div><div id="g2"></div></div>
+    <div class="tag corner">02 / 09 &nbsp;·&nbsp; Why one team</div>
+    <div class="tag corner-r">Layers in orbit 00 / 07</div>
+    <section class="stage-words">
+      <div class="eyebrow mono">Why one team</div>
+      <h2 class="h2">A product is only as strong as its weakest hand-off.</h2>
+    </section>
+  </div>
+
+  <div class="callout" style="left:640px;top:452px">24 px of document between two windows · the hole is drawn once, in viewport space</div>
+  <div class="callout" style="left:700px;top:600px">Her rings keep orbiting across the cut · same guide, no second guide</div>
+  <div class="callout" style="left:40px;top:540px">Gauge marker glides 01 → 02 · the only hand-over signal</div>
+  <div class="note" style="left:600px;top:70px">Between state · scrollY 436 · native scroll, nothing pinned</div>
+</div>
+<script src="./sb.js"></script>
+<script>
+for(const id of ['w1','w2']) well(document.getElementById(id),{w:1440,h:900,cx:1010,cy:410,rh:150,sigma:320,pull:.66,step:46,fadeLeft:.42});
+for(const id of ['g1','g2']) document.getElementById(id).innerHTML=guide(1174,626,1.08,'left');
+document.getElementById('gauge').innerHTML=gauge(1,'Descending · 01 → 02',{frac:.78});
+</script>
+</body>
+</html>

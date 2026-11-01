@@ -1,0 +1,78 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>BLAKRA storyboard — 05 Contact, the closing stage (desktop 1440×900)</title>
+<meta name="viewport" content="width=1440">
+<link rel="stylesheet" href="./sb.css">
+<style>
+.hole.close{left:1010px;top:300px;width:460px;height:460px}
+.panel{position:absolute;left:40px;top:44px;width:556px;bottom:44px;background:var(--panel);border:1px solid var(--hair);border-radius:14px;padding:30px 32px;z-index:6;display:flex;flex-direction:column}
+.panel .eyebrow{margin-bottom:18px}
+.panel .h2{font-size:44px}
+.panel .lede{margin-top:14px;font-size:15px;max-width:480px}
+.doors{margin-top:22px}
+.doors .mono{color:var(--grey);margin-bottom:10px}
+.doors .pills{display:flex;gap:8px}
+.doors .pill{height:36px;padding:0 14px;font-size:13px;border:1px solid var(--ctrl);color:var(--porcelain)}
+.doors .pill.on{border-color:var(--porcelain);box-shadow:inset 0 0 0 1px var(--porcelain)}
+.doors .hint{margin-top:10px;font-size:13px;color:var(--grey)}
+.field{margin-top:16px}
+.field label{display:block;color:var(--grey);margin-bottom:6px}
+.field .in{height:44px;border:1px solid var(--ctrl);border-radius:4px;padding:0 12px;display:flex;align-items:center;color:var(--porcelain);font-size:15px}
+.field .in.focus{border-color:var(--porcelain);box-shadow:0 0 0 2px var(--body),0 0 0 3px var(--porcelain)}
+.field .in.area{height:76px;align-items:flex-start;padding-top:11px;color:var(--grey)}
+.send{margin-top:auto;display:flex;align-items:center;gap:16px}
+.send .privacy{font-size:12px;color:var(--grey)}
+.send .privacy u{text-decoration:none;border-bottom:1px solid var(--hair);color:var(--porcelain)}
+.voicebox{position:absolute;left:680px;top:540px;width:330px;z-index:6}
+</style>
+</head>
+<body>
+<div class="screen">
+  <div class="nav">
+    <div class="mark"><b></b>BLAKRA</div>
+    <nav class="mono"><span>Work</span><span>Capabilities</span><span>Products</span><span>People</span><span>Sponsors and buyers</span></nav>
+    <div class="right"><span class="mono lang" role="button" aria-haspopup="menu">EN</span><button class="pill ghost toggle mono" aria-pressed="true"><i></i>Motion on</button><a class="pill ghost">Start a project</a></div>
+  </div>
+  <div id="gauge"></div>
+
+  <div class="frame">
+    <svg class="well" id="well"></svg>
+    <div class="hole close"><div class="crescent"></div><div class="photon2"></div><div class="photon"></div><div class="disc"></div></div>
+    <div class="tag corner-r">09 / 09 &nbsp;·&nbsp; Event horizon &nbsp;·&nbsp; r 230<br>scroll-padding-top 88 px · window min-height 100svh</div>
+
+    <form class="panel">
+      <div class="eyebrow mono">Start here</div>
+      <h2 class="h2">Tell us what you need built.</h2>
+      <p class="lede">Within 24 hours, an engineer who would build it replies with a first read: what it involves, the risks we see and a sensible first step. No sales deck, no mailing list.</p>
+      <div class="doors">
+        <div class="mono sm">I would like to</div>
+        <div class="pills"><span class="pill on" role="radio" aria-checked="true">Commission a project</span><span class="pill">Partner with us</span><span class="pill">Sponsor or buy a product</span></div>
+        <div class="hint">A process takes too long, or a system needs building.</div>
+      </div>
+      <div class="field"><label class="mono sm">Name or company</label><div class="in focus"><span style="width:1px;height:18px;background:var(--porcelain)"></span></div></div>
+      <div class="field"><label class="mono sm">Email</label><div class="in" style="color:var(--grey)">name@company.com</div></div>
+      <div class="field"><label class="mono sm">What takes too much of your day?</label><div class="in area">For example: we re-type orders from email into our ERP by hand.</div></div>
+      <div class="send"><span class="pill solid">Send</span><span class="privacy">We use these details only to reply to you. <u>Privacy</u></span></div>
+    </form>
+
+    <div id="guide"></div>
+    <div class="voicebox">
+      <div class="voice-tag mono sm"><b>Navigator</b> · station 09 · faces the form</div>
+      <p class="voice" style="font-size:24px">Your mission is written in. Send it, and an engineer who would build it answers within 24 hours.</p>
+    </div>
+
+    <div class="tag foot" style="left:640px">Read by an engineer, not a sales team.</div>
+  </div>
+  <div class="note" style="left:640px;top:70px">Send: one slow blink, the ring closes to a dot, the success line types</div>
+</div>
+<script src="./sb.js"></script>
+<script>
+well(document.getElementById('well'),{w:1392,h:788,cx:1010,cy:300,rh:230,sigma:430,pull:.7,step:46,fadeLeft:.5});
+document.getElementById('gauge').innerHTML=gauge(9,'Event horizon · the form');
+document.getElementById('guide').innerHTML=guide(1200,600,1.05,'left')+
+ '<div class="guide-label" style="left:1130px;top:440px;max-width:246px"><b>Astraía · her act at 09</b>She faces the form; the chosen door lights its layer in her irises; on Send, one slow blink</div>';
+</script>
+</body>
+</html>

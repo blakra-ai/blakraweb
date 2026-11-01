@@ -215,7 +215,7 @@ try {
     const stops = seen.filter(Boolean)
     const names = stops.map((s) => s.name)
     check('AC8', 'every focus stop shows a visible indicator', stops.every((s) => s.visible), stops.filter((s) => !s.visible).map((s) => s.name).join(', '))
-    check('AC8', 'form fields, doors, language switch and the motion switch are reachable', ['org', 'email', 'msg', 'intent'].every((n) => names.includes(n)) && names.includes('Pause motion') && names.some((n) => /^Language/.test(n ?? '')), `${stops.length} stops`)
+    check('AC8', 'form fields, doors, language switch and the motion switch are reachable', ['org', 'email', 'msg', 'intent'].every((n) => names.includes(n)) && names.includes('Motion') && names.some((n) => /^Language/.test(n ?? '')), `${stops.length} stops`)
     await page.close()
   }
 
@@ -228,7 +228,7 @@ try {
     await page.waitForTimeout(1200)
     await page.evaluate(() => window.scrollTo(0, document.documentElement.scrollHeight * 0.4))
     await page.waitForTimeout(900)
-    await page.locator('header a', { hasText: 'Start a project' }).click()
+    await page.locator('header a.pill:visible', { hasText: 'Start a project' }).click()
     // The glide has a fixed duration; under software rendering frames are slow, so wait for it to land.
     await page.waitForFunction(() => document.activeElement === document.getElementById('contact-title'), null, { timeout: 15000 }).catch(() => {})
     const res = await page.evaluate(() => {
@@ -247,7 +247,7 @@ try {
     await page.waitForTimeout(2500)
     await page.evaluate(() => window.scrollTo(0, document.getElementById('products').getBoundingClientRect().top + scrollY + 150))
     await page.waitForTimeout(1500)
-    await page.locator('button[aria-label="Pause motion"]').click()
+    await page.locator('header button[aria-label="Motion"]:visible').click()
     await page.waitForTimeout(1500)
     const res = await page.evaluate(() => {
       const r = document.getElementById('products').getBoundingClientRect()

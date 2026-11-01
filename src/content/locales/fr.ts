@@ -292,7 +292,7 @@ export const fr: Dict = {
       manifesto: 'Un contrat, un équipage. Chaque passage de relais que vous vous épargnez est une panne que vous ne chercherez jamais.',
       mission: 'Que construisons-nous ? Choisissez, et j\'allume les systèmes qu\'il faut.',
       systems: 'Mes sept systèmes, de la racine à la couronne. Chacun repose sur celui du dessous.',
-      proof: 'Cinq missions accomplies. La plus proche de la vôtre porte la couture orange.',
+      proof: 'Cinq missions accomplies. La plus proche de la vôtre porte la couture dorée.',
       checklist: 'Avant le vol : la checklist. Le dernier point est celui qui compte.',
       payload: 'Notre propre charge utile : une IA qui lit la peau. Scellée, montrée sous NDA.',
       crew: 'L\'équipage que vous rencontrez est celui qui construit. Trois personnes, aucun relais.',

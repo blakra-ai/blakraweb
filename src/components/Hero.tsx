@@ -1,67 +1,67 @@
-import { useRef } from 'react'
-import still from '../assets/navigator/navigator-still.jpg'
-import { yantraPath } from '../features/navigator/yantra'
+import { Voice } from '../features/observatory/Line'
+import heroStill from '../assets/observatory/hero-still.jpg'
+import heroStillPhone from '../assets/observatory/hero-still-phone.jpg'
+import { Window } from '../features/observatory/Window'
+import { chip } from '../features/observatory/gauge'
 import { useI18n } from '../i18n'
-import { useReveal } from '../motion/useReveal'
 import { pathFor } from '../routes'
 import { Section } from './Section'
 import s from './Hero.module.css'
 
 /**
- * The hero: the Navigator. She stands right of the words as the page opens, her systems lighting
- * root to crown; the cursor is an X-ray lens that shows what she is made of. The words: the
- * promise, bottom left, at the scale of a poster. As the page scrolls she glides to the dock in
- * the header and stays with the reader. Before the world loads (and without a GPU) the page
- * draws her still in the same frame, so the hand-off to the figure does not jump.
+ * 01 Hero (storyboard d-01 / m-01): one framed window onto the world. Words in columns 1–6
+ * (eyebrow, H1, lede, the call to action and the cue), the world in 7–12: the lensing ring at
+ * columns 9–10 and the guide at the lower-right rim (both painted by World.tsx at the anchors
+ * `data-world-anchor`; her place is also published as `--guide-x` / `--guide-y` on the window, read
+ * by windows.ts), her line under the ring in columns 7–9, the facts in the foot. No layer readout here (revision 1, item 7): layers appear only where they are the subject. All words are DOM; nothing but the world moves.
  */
 export function Hero() {
   const { t, locale } = useI18n()
   const p = t.prologue
-  const ref = useRef<HTMLElement>(null)
-  useReveal(ref)
+  const title = `${p.title.before} ${p.title.human}${p.title.after}`
 
   return (
-    <Section ref={ref} id="top" beat="hero" className={s.hero} aria-labelledby="title">
-      {/* Before the world loads, and without WebGL: the Navigator drawn by the page itself, framed as
-          the world frames her (head 30% of the screen, eyes at 70% across and 36% down). */}
-      <div className={s.still} aria-hidden="true">
-        {/* A rendered frame of the Navigator on the field, cropped to the right 800×828 of a 1440×900 hero. */}
-        <img src={still} alt="" width={800} height={828} className={s.stillImage} decoding="async" fetchPriority="low" />
-      </div>
+    <Section id="top" beat="hero" surface="body" station={1} className={s.hero} aria-labelledby="title">
+      <Window id="hero" kind="hero" ring still={heroStill} stillPhone={heroStillPhone} className={s.window}>
+        <div className={s.inner}>
+          <p className={`mono ${s.tag}`} aria-hidden="true">
+            {chip(1)}
+          </p>
 
-      <div className={s.lead}>
-        <p className={s.eyebrow}>{p.eyebrow}</p>
-        <p className={s.lede}>{p.lede}</p>
-        <div className={s.actions}>
-          <a className={s.primary} data-magnetic href={`${pathFor('home', locale)}#contact`}>
-            {t.ui.cta}
-          </a>
-          <a className={s.secondary} href="#pulse">
-            {p.cue} <span aria-hidden="true">↓</span>
-          </a>
+
+          <div className={s.words}>
+            <p className={`eyebrow mono ${s.eyebrow}`}>{p.eyebrow}</p>
+            <h1 id="title" className={`h1 ${s.title}`} data-focus tabIndex={-1}>
+              {title}
+            </h1>
+            <p className={`lede ${s.lede}`}>{p.lede}</p>
+            <div className={s.actions}>
+              <a className="pill" data-cta href={`${pathFor('home', locale)}#contact`}>
+                {t.ui.cta}
+              </a>
+              <a className={`mono ${s.cue}`} href="#pulse">
+                {p.cue} <span aria-hidden="true">↓</span>
+              </a>
+            </div>
+          </div>
+
+          {/* The world's places: the ring at columns 9–10 and the guide at the lower-right rim, cut by the frame. */}
+          <div className={s.world} aria-hidden="true">
+            <div className={s.ring} data-world-anchor="hero-ring" />
+            <div className={s.guide} data-world-anchor="hero-guide" />
+          </div>
+
+          {/* Her line: the full text in the DOM, revealed as typed (Line.tsx); labelled with her name. */}
+          <div className={s.voice}>
+            <p className={`mono ${s.voiceTag}`}>
+              <b>{t.navigator.name}</b>
+            </p>
+            <Voice text={t.navigator.lines.hero} />
+          </div>
+
+          <p className={`mono ${s.foot}`}>{p.facts}</p>
         </div>
-        <p className={s.also}>
-          {p.also} <a href={`${pathFor('home', locale)}?intent=partner#contact`}>{t.contact.doors.partner.label}</a>
-          {' · '}
-          <a href={pathFor('investors', locale)}>{t.contact.doors.invest.label}</a>
-        </p>
-      </div>
-
-      <h1 id="title" className={s.title}>
-        <span className={s.line}>{p.title.before}</span>
-        <span className={s.line}>
-          <em>{p.title.human}</em>
-          {p.title.after}
-        </span>
-      </h1>
-
-      <p className={s.card}>
-        <svg viewBox="-1.1 -1.1 2.2 2.2" className={s.cardYantra} aria-hidden="true">
-          <path d={yantraPath(6)} />
-          <circle r="0.075" />
-        </svg>
-        <span>{p.facts}</span>
-      </p>
+      </Window>
     </Section>
   )
 }

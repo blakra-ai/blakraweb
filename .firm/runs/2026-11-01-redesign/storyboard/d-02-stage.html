@@ -1,0 +1,86 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>BLAKRA storyboard — 02 The seven-layer stage, hold 0.0 of 2 (desktop 1440×900)</title>
+<meta name="viewport" content="width=1440">
+<link rel="stylesheet" href="./sb.css">
+<style>
+.words{position:absolute;left:40px;top:170px;width:530px;z-index:6}
+.words .eyebrow{margin-bottom:30px}
+.words .lede{margin-top:28px;max-width:520px}
+.hole.stage{left:986px;top:380px;width:330px;height:330px}
+.orbits{position:absolute;inset:0;width:100%;height:100%;overflow:visible}
+.voicebox{position:absolute;left:706px;top:40px;width:330px;z-index:6}
+.counter{position:absolute;right:40px;top:28px;text-align:right;color:var(--grey)}
+.counter b{color:var(--porcelain);font-weight:600}
+.labels span{position:absolute;background:var(--frame);padding:2px 6px 2px 0;color:var(--grey);font-family:var(--mono);font-size:12px;letter-spacing:.08em;text-transform:uppercase;white-space:nowrap;display:flex;align-items:center;gap:8px}
+.labels i{width:7px;height:7px;border-radius:50%;background:var(--ctrl)}
+.labels i.on{opacity:1;box-shadow:0 0 9px currentColor}
+.labels span.on{color:var(--porcelain);font-weight:600}
+</style>
+</head>
+<body>
+<div class="screen">
+  <div class="nav">
+    <div class="mark"><b></b>BLAKRA</div>
+    <nav class="mono"><span>Work</span><span>Capabilities</span><span>Products</span><span>People</span><span>Sponsors and buyers</span></nav>
+    <div class="right"><span class="mono lang" role="button" aria-haspopup="menu">EN</span><button class="pill ghost toggle mono" aria-pressed="true"><i></i>Motion on</button><a class="pill ghost">Start a project</a></div>
+  </div>
+  <div id="gauge"></div>
+
+  <div class="frame">
+    <svg class="well" id="well"></svg>
+    <svg class="orbits" id="orbits" viewBox="0 0 1392 788"></svg>
+    <div class="hole stage"><div class="crescent"></div><div class="photon2"></div><div class="photon"></div><div class="disc"></div></div>
+    <div class="labels" id="labels"></div>
+
+    <div class="tag corner">02 / 09 &nbsp;·&nbsp; Why one team &nbsp;·&nbsp; frame held, words scroll over it</div>
+    <div class="counter mono">Layers in orbit <b>03 / 07</b></div>
+
+    <section class="words">
+      <div class="eyebrow mono">Why one team</div>
+      <h2 class="h2">A product is only as strong as its weakest hand-off.</h2>
+      <p class="lede">Design from one agency, the app from another, the backend from a freelancer and the AI from a consultant. Each hand-off loses something, and when it breaks, each vendor points at the next. With us it is one contract and one team, led by the same three principals, answering for all of it.</p>
+    </section>
+
+    <div id="guide"></div>
+    <div class="voicebox">
+      <div class="voice-tag mono sm"><b>Navigator</b> · station 02</div>
+      <p class="voice">One contract, one crew. Every hand-off you skip is a failure you never debug.</p>
+    </div>
+
+    <div class="tag foot">Scroll: each layer leaves the grid and snaps into orbit &nbsp;·&nbsp; 01 → 07</div>
+    <div class="tag foot-r">Hold 0.0 of 2 screens</div>
+  </div>
+  <div class="note" style="left:600px;top:70px">Scroll state A · hold 0.0 / 2.0</div>
+</div>
+<script src="./sb.js"></script>
+<script>
+const CX=986,CY=380;
+well(document.getElementById('well'),{w:1392,h:788,cx:CX,cy:CY,rh:165,sigma:340,pull:.66,step:46,fadeLeft:.42});
+const L=[['01 Cloud and backend','--root'],['02 Data and integrations','--sacral'],['03 Automation and bots','--solar'],['04 Product design','--heart'],['05 Web and mobile','--throat'],['06 Launch and search','--third'],['07 AI','--crown']];
+const inOrbit=3; let o='',lab='';
+const LX=1168, LY0=304, DY=27, a=-14*Math.PI/180;
+for(let k=0;k<7;k++){
+  const rx=200+k*34, ry=rx*.3, ly=LY0+k*DY;
+  if(k<inOrbit){
+    o+=`<ellipse cx="${CX}" cy="${CY}" rx="${rx}" ry="${ry}" transform="rotate(-14 ${CX} ${CY})" fill="none" stroke="rgba(236,233,226,.28)" stroke-width="1"/>`;
+    // the dot sits where the orbit passes nearest the label's anchor
+    let best=null; for(let i=0;i<360;i++){const t=i*Math.PI/180; const x=CX+rx*Math.cos(t)*Math.cos(a)-ry*Math.sin(t)*Math.sin(a), y=CY+rx*Math.cos(t)*Math.sin(a)+ry*Math.sin(t)*Math.cos(a); const d=Math.hypot(x-(LX-20),y-ly); if(!best||d<best.d)best={x,y,d};}
+    o+=`<path d="M${best.x} ${best.y} L${LX-8} ${ly}" stroke="rgba(236,233,226,.22)" stroke-width="1"/>`;
+    o+=`<circle cx="${best.x}" cy="${best.y}" r="4" fill="var(${L[k][1]})" style="filter:drop-shadow(0 0 6px var(${L[k][1]}))"/>`;
+    lab+=`<span class="on" style="left:${LX}px;top:${ly-7}px">${L[k][0]}</span>`;
+  } else {
+    // not yet in orbit: still a straight grid line, waiting at the right edge
+    o+=`<path d="M${LX-8} ${ly} L1392 ${ly}" stroke="rgba(236,233,226,.12)" stroke-dasharray="3 5"/>`;
+    lab+=`<span style="left:${LX}px;top:${ly-7}px"><i style="color:var(${L[k][1]})"></i>${L[k][0]}</span>`;
+  }
+}
+document.getElementById('orbits').innerHTML=o; document.getElementById('labels').innerHTML=lab;
+document.getElementById('gauge').innerHTML=gauge(2,'Why one team · the frame holds for 2 screens');
+document.getElementById('guide').innerHTML=guide(1150,560,1.08,'left')+
+ '<div class="guide-label" style="left:706px;top:640px"><b>Astraía · her act at 02</b>She watches each layer leave the grid and snap into orbit; same world, seen through a new window</div>';
+</script>
+</body>
+</html>

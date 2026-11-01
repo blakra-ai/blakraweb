@@ -85,7 +85,8 @@
   font-family: var(--font-mono);
   font-size: var(--label-size);
   padding-top: 0.2rem;
-  color: var(--chakra);
+  /* Porcelain, not the layer colour: two of the seven are under 4.5 : 1 on the body. */
+  color: var(--ink);
 }
 .body {
   display: grid;

@@ -1,0 +1,62 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>BLAKRA storyboard — accent decision: gold #d9a441 vs orange #ff5a1f (hero, side by side)</title>
+<meta name="viewport" content="width=1440">
+<link rel="stylesheet" href="./sb.css">
+<style>
+.ab{position:absolute;top:58px;width:677px;height:423px;overflow:hidden;border:1px solid var(--hair);border-radius:8px}
+.ab iframe{width:1440px;height:900px;border:0;transform:scale(.47);transform-origin:0 0;pointer-events:none}
+.ab.l{left:40px}.ab.r{left:723px}
+.cap{position:absolute;top:30px;font-family:var(--mono);font-size:11px;letter-spacing:.1em;text-transform:uppercase;color:var(--grey)}
+.cap b{color:var(--porcelain);font-weight:600}
+.cap i{display:inline-block;width:10px;height:10px;border-radius:50%;vertical-align:-1px;margin-right:8px}
+.tables{position:absolute;left:40px;right:40px;top:512px;display:grid;grid-template-columns:1fr 1fr;column-gap:46px}
+table{width:100%;border-collapse:collapse;font-size:13px}
+th{text-align:left;font-family:var(--mono);font-size:10px;letter-spacing:.1em;text-transform:uppercase;color:var(--grey);font-weight:500;padding:0 0 8px;border-bottom:1px solid var(--hair)}
+td{padding:7px 0;border-bottom:1px solid var(--hair-2);vertical-align:middle}
+td.n{font-family:var(--mono);font-size:12px;text-align:right}
+td.v{text-align:right;font-family:var(--mono);font-size:10px;letter-spacing:.1em;text-transform:uppercase;width:110px}
+.sw{display:inline-block;width:30px;height:18px;line-height:18px;text-align:center;border-radius:3px;font-size:11px;font-weight:600;margin-right:10px;vertical-align:middle}
+.verdict{position:absolute;left:40px;right:40px;bottom:30px;display:grid;grid-template-columns:1fr 1fr;column-gap:46px;font-size:13px;line-height:1.5;color:var(--grey)}
+.verdict b{color:var(--porcelain);font-weight:500}
+.verdict .mono{color:var(--accent);margin-bottom:6px}
+</style>
+</head>
+<body>
+<div class="screen">
+  <div class="cap" style="left:40px"><i style="background:#d9a441"></i><b>A · Gold #d9a441</b> &nbsp;·&nbsp; accretion light; matches Astraía's brass armillary rings</div>
+  <div class="cap" style="left:723px"><i style="background:#ff5a1f"></i><b>B · Orange #ff5a1f</b> &nbsp;·&nbsp; the current brand accent; OG image, marker, "orange stitch"</div>
+  <div class="ab l"><iframe src="./d-01-hero.html?accent=gold"></iframe></div>
+  <div class="ab r"><iframe src="./d-01-hero.html?accent=orange"></iframe></div>
+
+  <div class="tables">
+    <table>
+      <tr><th>Gold pair (WCAG 2.2)</th><th style="text-align:right">Ratio</th><th style="text-align:right">Use</th></tr>
+      <tr><td><span class="sw" style="color:#d9a441;background:#0b0b0d;border:1px solid var(--hair)">Aa</span>Gold on body #0b0b0d</td><td class="n">8.74 : 1</td><td class="v">AA text</td></tr>
+      <tr><td><span class="sw" style="color:#0b0b0d;background:#d9a441">Aa</span>Body on gold (Send button)</td><td class="n">8.74 : 1</td><td class="v">AA text</td></tr>
+      <tr><td><span class="sw" style="color:#d9a441;background:#121216;border:1px solid var(--hair)">Aa</span>Gold on panel #121216</td><td class="n">8.31 : 1</td><td class="v">AA text</td></tr>
+      <tr><td><span class="sw" style="color:#d9a441;background:#ece9e2">Aa</span>Gold on porcelain #ece9e2</td><td class="n">1.86 : 1</td><td class="v" style="color:var(--accent)">never text</td></tr>
+      <tr><td><span class="sw" style="color:#ece9e2;background:#0b0b0d;border:1px solid var(--hair)">Aa</span>Porcelain on body (display, body text)</td><td class="n">16.22 : 1</td><td class="v">AA text</td></tr>
+      <tr><td><span class="sw" style="color:#8a8781;background:#0b0b0d;border:1px solid var(--hair)">Aa</span>Warm grey #8a8781 on body (lede, mono)</td><td class="n">5.49 : 1</td><td class="v">AA text</td></tr>
+    </table>
+    <table>
+      <tr><th>Orange pair (WCAG 2.2)</th><th style="text-align:right">Ratio</th><th style="text-align:right">Use</th></tr>
+      <tr><td><span class="sw" style="color:#ff5a1f;background:#0b0b0d;border:1px solid var(--hair)">Aa</span>Orange on body #0b0b0d</td><td class="n">6.31 : 1</td><td class="v">AA text</td></tr>
+      <tr><td><span class="sw" style="color:#0b0b0d;background:#ff5a1f">Aa</span>Body on orange (Send button)</td><td class="n">6.31 : 1</td><td class="v">AA text</td></tr>
+      <tr><td><span class="sw" style="color:#ff5a1f;background:#121216;border:1px solid var(--hair)">Aa</span>Orange on panel #121216</td><td class="n">5.99 : 1</td><td class="v">AA text</td></tr>
+      <tr><td><span class="sw" style="color:#ff5a1f;background:#ece9e2">Aa</span>Orange on porcelain #ece9e2</td><td class="n">2.57 : 1</td><td class="v" style="color:var(--accent)">never text</td></tr>
+      <tr><td><span class="sw" style="color:#0b0b0d;background:#ece9e2">Aa</span>Body on porcelain (the light screen)</td><td class="n">16.22 : 1</td><td class="v">AA text</td></tr>
+      <tr><td><span class="sw" style="color:#5f5c56;background:#ece9e2">Aa</span>Grey-on-light #5f5c56 on porcelain</td><td class="n">5.50 : 1</td><td class="v">AA text</td></tr>
+    </table>
+  </div>
+
+  <div class="verdict">
+    <div><div class="mono sm">Recommendation · gold</div><b>Gold is the accretion light the ring already emits, and it is the brass of her armillary rings: one accent, one material, one object.</b> It passes AA as text with 2.4 points to spare, so mono readouts and the eyebrow may carry it on both dark surfaces. It separates us from the orange-on-black register (basement, Darkmoon) the jury has scored before.</div>
+    <div><div class="mono sm">What orange keeps</div><b>Continuity with the OG image and the current marker, and one line of the Navigator's copy ("wears the orange stitch").</b> Against it: 6.31 : 1 is the floor, orange on near-black is the most common dark-site accent of the set, and beside brass rings it reads as two warm hues. If gold is chosen, that one word of copy needs the owner's change in four locales; the OG image is regenerated by `npm run og`.</div>
+  </div>
+</div>
+<script src="./sb.js"></script>
+</body>
+</html>

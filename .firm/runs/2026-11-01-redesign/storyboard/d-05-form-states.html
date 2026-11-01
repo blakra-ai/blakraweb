@@ -1,0 +1,78 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>BLAKRA storyboard — contact form states: error · sending · success · failure (desktop 1440×900)</title>
+<meta name="viewport" content="width=1440">
+<link rel="stylesheet" href="./sb.css">
+<style>
+.cols{position:absolute;left:40px;right:40px;top:40px;display:grid;grid-template-columns:repeat(3,1fr);column-gap:24px}
+.panel{background:var(--panel);border:1px solid var(--hair);border-radius:14px;padding:24px 26px;min-height:720px;position:relative}
+.panel .cap{color:var(--grey);margin-bottom:16px;display:flex;justify-content:space-between}
+.panel .cap b{color:var(--porcelain);font-weight:600}
+.panel .h2{font-size:30px}
+.doors{margin-top:16px}
+.doors .mono{color:var(--grey);margin-bottom:8px}
+.doors .pills{display:flex;gap:6px;flex-wrap:wrap}
+.doors .pill{height:34px;padding:0 12px;font-size:12px;border:1px solid var(--ctrl);color:var(--porcelain)}
+.doors .pill.on{border-color:var(--porcelain);box-shadow:inset 0 0 0 1px var(--porcelain)}
+.field{margin-top:14px}
+.field label{display:block;color:var(--grey);margin-bottom:6px}
+.field .in{height:42px;border-radius:4px;padding:0 12px;display:flex;align-items:center;color:var(--porcelain);font-size:14px;border:1px solid var(--ctrl)}
+.field .in.area{height:64px;align-items:flex-start;padding-top:10px;color:var(--grey)}
+.field .in.dim{color:var(--grey);border-color:var(--hair)}
+.send{margin-top:22px;display:flex;align-items:center;gap:14px}
+.send .privacy{font-size:12px;color:var(--grey)}
+.send .pill.busy{background:var(--grey);color:var(--body)}
+.spin{width:12px;height:12px;border-radius:50%;border:1.5px solid var(--body);border-right-color:transparent;margin-right:8px}
+.rules{position:absolute;left:40px;right:40px;bottom:34px;display:grid;grid-template-columns:repeat(4,1fr);column-gap:24px;color:var(--grey);font-size:13px;line-height:1.45}
+.rules b{display:block;color:var(--porcelain);font-weight:500;margin-bottom:4px}
+.rules .mono{margin-bottom:6px}
+</style>
+</head>
+<body>
+<div class="screen">
+  <div class="cols">
+    <form class="panel" aria-describedby="sum">
+      <div class="cap mono sm"><b>State 1 · errors</b><span>focus → summary</span></div>
+      <h2 class="h2">Tell us what you need built.</h2>
+      <div class="summary" id="sum" role="alert" tabindex="-1" style="outline:2px solid var(--porcelain);outline-offset:2px"><b>Two things to fix before we can reply</b><u>Enter an email address we can reply to.</u><u>Tell us a little more: at least a sentence.</u></div>
+      <div class="doors"><div class="mono sm">I would like to</div><div class="pills"><span class="pill on" role="radio" aria-checked="true">Commission a project</span><span class="pill">Partner with us</span><span class="pill">Sponsor or buy a product</span></div></div>
+      <div class="field"><label class="mono sm">Name or company</label><div class="in">—</div></div>
+      <div class="field err"><label class="mono sm">Email</label><div class="in">name@company</div><div class="msg" id="e-email">That email address looks incomplete.</div></div>
+      <div class="field err"><label class="mono sm">What takes too much of your day?</label><div class="in area">—</div><div class="msg" id="e-msg">Tell us a little more: at least a sentence.</div></div>
+      <div class="send"><span class="pill solid">Send</span><span class="privacy">aria-invalid + aria-describedby="e-email" on the input</span></div>
+    </form>
+
+    <form class="panel" aria-busy="true">
+      <div class="cap mono sm"><b>State 2 · sending</b><span>aria-busy="true"</span></div>
+      <h2 class="h2">Tell us what you need built.</h2>
+      <div class="doors"><div class="mono sm">I would like to</div><div class="pills"><span class="pill on" role="radio" aria-checked="true">Commission a project</span><span class="pill">Partner with us</span><span class="pill">Sponsor or buy a product</span></div></div>
+      <div class="field"><label class="mono sm">Name or company</label><div class="in dim">—</div></div>
+      <div class="field"><label class="mono sm">Email</label><div class="in dim">—</div></div>
+      <div class="field"><label class="mono sm">What takes too much of your day?</label><div class="in area dim">—</div></div>
+      <div class="send"><span class="pill solid busy" aria-disabled="true"><i class="spin"></i>Sending…</span><span class="privacy">Fields disabled; the text stays; Send cannot be pressed twice</span></div>
+      <div class="guide-label" style="left:26px;bottom:26px;max-width:380px"><b>Astraía</b>Holds still while sending; no blink yet</div>
+    </form>
+
+    <div class="panel">
+      <div class="cap mono sm"><b>State 3 · success</b><span>role="status", focused</span></div>
+      <h2 class="h2">Tell us what you need built.</h2>
+      <div class="status" role="status" tabindex="-1" style="margin-top:22px">Thank you. We’ll reply within 24 hours.</div>
+      <p class="body" style="margin-top:18px;max-width:380px">Read by an engineer, not a sales team.</p>
+      <p class="body" style="margin-top:14px;max-width:380px">Prefer email? <span style="color:var(--porcelain);border-bottom:1px solid var(--ctrl)">Email</span></p>
+      <div class="guide-label" style="left:26px;bottom:26px;max-width:380px"><b>Astraía · her act on Send</b>One slow blink; the ring closes to a dot over 1.2 s; the status line is static text, not typed</div>
+    </div>
+  </div>
+
+  <div class="rules">
+    <div><div class="mono sm">Failure</div><b>That didn’t go through. Please try again, or write to us directly.</b>Shown as role="alert" above Send; every field keeps its text; Send re-enables.</div>
+    <div><div class="mono sm">Honeypot</div><b>Hidden properly</b>An off-screen field with tabindex="-1", aria-hidden="true" and autocomplete="off"; never display:none-only, never a visible label.</div>
+    <div><div class="mono sm">Validation</div><b>On submit, then on blur</b>Errors in en.ts wording; the summary links each error to its field; the first invalid field receives focus after the summary is read.</div>
+    <div><div class="mono sm">Reduced motion</div><b>No typing, no blink</b>Success and failure appear at once; the ring stays open; focus moves the same way.</div>
+  </div>
+  <div class="note" style="left:600px;top:8px">Contact form states · copy verbatim from en.ts contact.*</div>
+</div>
+<script src="./sb.js"></script>
+</body>
+</html>

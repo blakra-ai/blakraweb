@@ -292,7 +292,7 @@ export const es: Dict = {
       manifesto: 'Un contrato, una tripulación. Cada traspaso que se ahorra es un fallo que nunca tendrá que buscar.',
       mission: '¿Qué construimos? Elija, y encenderé los sistemas que necesita.',
       systems: 'Mis siete sistemas, de la raíz a la corona. Cada uno descansa sobre el de abajo.',
-      proof: 'Cinco misiones voladas. La más cercana a la suya lleva la costura naranja.',
+      proof: 'Cinco misiones voladas. La más cercana a la suya lleva la costura dorada.',
       checklist: 'Antes de volar: la lista de comprobación. El último punto es el que importa.',
       payload: 'Nuestra propia carga útil: una IA que lee la piel. Sellada, y se muestra bajo NDA.',
       crew: 'La tripulación que conoce es la que construye. Tres personas, sin traspasos.',

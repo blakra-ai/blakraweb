@@ -3,7 +3,7 @@ import { company } from '../content/shared'
 import type { Intent } from '../content/types'
 import { locales, useI18n } from '../i18n'
 import { intents, limits, sendContact, validate, type ContactFields, type FieldErrors } from '../lib/contact'
-import { nav } from '../features/navigator/state'
+import { obs } from '../features/observatory/state'
 import { onPulse } from '../motion/pulse'
 import { Section } from './Section'
 import s from './Contact.module.css'
@@ -117,7 +117,7 @@ export function Contact() {
     })
     setStatus(result === 'failed' ? 'failed' : 'sent')
     // The reply signal goes out: the Navigator answers it.
-    if (result !== 'failed') nav.transmitAt = nav.clock
+    if (result !== 'failed') obs.transmitAt = obs.clock
   }
 
   const mail = (

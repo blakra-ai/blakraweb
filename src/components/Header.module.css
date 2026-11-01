@@ -1,33 +1,36 @@
 .header {
-  --actions-w: 14rem;
   display: contents;
 }
 
-/* A frosted bar: legible over the black hole, the disk and every section, with or without JS. */
+/* The bar: solid body colour over the scrolling page, the hairline inset by the gutter like the frames. */
 .bar {
   position: fixed;
   inset: 0 0 auto;
   z-index: 40;
   display: flex;
   align-items: center;
-  gap: clamp(1rem, 3vw, 3rem);
+  gap: clamp(1rem, 2vw, 2rem);
   height: var(--header-h);
-  padding: 0 calc(var(--margin) + var(--actions-w) + 0.75rem) 0 var(--margin);
-  color: var(--ink-0);
-  background: var(--paper);
-  border-bottom: var(--hairline);
-  pointer-events: none;
+  padding: 0 var(--margin);
+  background: var(--body);
+  color: var(--porcelain);
 }
-.bar a,
-.bar button {
-  pointer-events: auto;
+.bar::after {
+  content: '';
+  position: absolute;
+  left: var(--inset);
+  right: var(--inset);
+  bottom: 0;
+  height: 1px;
+  background: var(--hair);
 }
 
 .brand {
   display: inline-flex;
   align-items: center;
-  gap: 0.6rem;
+  gap: 12px;
   padding: 0.5rem 0;
+  flex: none;
 }
 .mark {
   width: 24px;
@@ -36,260 +39,246 @@
 }
 .word {
   font-weight: 600;
-  font-size: var(--step--1);
+  font-size: 0.8125rem;
   letter-spacing: 0.22em;
   margin-right: -0.22em;
 }
 
+/* The links: mono readouts in grey; the hovered or current one turns porcelain and underlines. */
+.nav {
+  margin: 0 auto;
+  color: var(--grey);
+}
 .nav ul {
   display: flex;
-  gap: clamp(1rem, 2.4vw, 2.25rem);
+  gap: clamp(1.25rem, 2.1vw, 1.875rem);
+}
+.nav a {
+  display: inline-block;
+  padding: 0.5rem 0;
+  transition: color 0.2s var(--ease);
+}
+.nav a:hover,
+.nav a[aria-current] {
+  color: var(--porcelain);
 }
 .nav a[aria-current] {
   text-decoration: underline;
-  text-underline-offset: 0.35em;
-}
-.nav a {
-  position: relative;
-  font-size: var(--step--1);
-  padding: 0.5rem 0;
-}
-.nav a::after {
-  content: '';
-  position: absolute;
-  left: 0;
-  right: 0;
-  bottom: 0.25rem;
-  height: 1px;
-  background: currentColor;
-  transform: scaleX(0);
-  transform-origin: right;
-  transition: transform 0.5s var(--ease-out);
-}
-.nav a:hover::after {
-  transform: scaleX(1);
-  transform-origin: left;
+  text-underline-offset: 0.45em;
 }
 
-
-
-.motion {
-  flex: none;
-  display: grid;
-  place-items: center;
-  width: 2.5rem;
-  height: 2.5rem;
-  border: var(--hairline);
-  border-radius: var(--r-pill);
-  background: transparent;
-  color: inherit;
-  cursor: pointer;
-  transition: border-color 0.3s;
-}
-.motion svg {
-  width: 14px;
-  height: 14px;
-}
-.motion:hover {
-  border-color: var(--ink-0);
-}
-
-.actions {
-  position: fixed;
-  top: calc((var(--header-h) - 2.5rem) / 2);
-  right: var(--margin);
-  z-index: 41;
+.right {
   display: flex;
   align-items: center;
-  gap: 0.5rem;
-}
-/* The Navigator's dock: an empty slot in the bar the world fills once the hero has scrolled out.
-   It sits at the right end of the words, before the controls; on phones it is a 24 px dot. */
-.dock {
-  display: block;
-  width: 2.5rem;
-  height: 2.5rem;
+  gap: 14px;
   margin-left: auto;
   flex: none;
 }
-.dock + .motion {
-  margin-left: 0;
+.chip {
+  display: none;
 }
-@media (max-width: 767px) {
-  .dock {
-    width: 24px;
-    height: 24px;
-  }
+/* The motion switch: a ghost pill with a porcelain dot; pressed = motion on. */
+.toggle {
+  gap: 8px;
+  font-family: var(--font-mono);
+  font-size: var(--mono-size);
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+.toggleDot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: var(--grey);
+}
+.toggle[aria-pressed='true'] .toggleDot {
+  background: var(--porcelain);
 }
 .cta {
-  display: inline-flex;
-  justify-content: center;
+  border-color: var(--porcelain);
+}
+
+/* The hamburger: two lines in a ghost circle; shown below 1100 px. */
+.burger {
+  display: none;
+  flex-direction: column;
   align-items: center;
-  height: 2.5rem;
-  padding: 0 1.1rem;
+  justify-content: center;
+  gap: 5px;
+  width: 40px;
+  height: 40px;
+  padding: 0;
+  border: 1px solid var(--ctrl);
   border-radius: var(--r-pill);
-  background: var(--cta-bg);
-  color: var(--cta-ink);
-  font-size: var(--step--1);
-  font-weight: 500;
-  white-space: nowrap;
-  transition: transform 0.4s var(--ease-out), background-color 0.3s;
-}
-.cta:hover {
-  background: var(--accent);
-  color: var(--ink-0);
-}
-.cta:active {
-  transform: scale(0.97);
-}
-/* The menu: only below 1100 px, where the links have no room in the bar. */
-.menu {
-  display: none;
-  flex: none;
-}
-.menuButton {
-  display: grid;
-  place-items: center;
-  width: 2.5rem;
-  height: 2.5rem;
-  border: var(--hairline);
-  border-radius: var(--r-pill);
+  background: transparent;
+  color: var(--porcelain);
   cursor: pointer;
-  list-style: none;
-  transition: border-color 0.3s;
+  transition: border-color 0.2s var(--ease);
 }
-.menuButton::-webkit-details-marker {
-  display: none;
+.burger:hover {
+  border-color: var(--porcelain);
 }
-.menuButton:hover {
-  border-color: var(--ink-0);
-}
-/* Two lines that cross when the menu is open. */
-.menuIcon,
-.menuIcon::before {
+.burger i {
   display: block;
-  width: 14px;
-  height: 1.6px;
-  border-radius: var(--r-tag);
+  width: 16px;
+  height: 1px;
   background: currentColor;
-  transition: transform 0.35s var(--ease-out);
+  transition: transform 0.3s var(--ease);
 }
-.menuIcon {
-  position: relative;
-  transform: translateY(-2.5px);
+.burger[aria-expanded='true'] i:first-child {
+  transform: translateY(3px) rotate(45deg);
 }
-.menuIcon::before {
-  content: '';
-  position: absolute;
-  inset: 0;
-  transform: translateY(5px);
+.burger[aria-expanded='true'] i:last-child {
+  transform: translateY(-3px) rotate(-45deg);
 }
-.menu[open] .menuIcon {
-  transform: rotate(45deg);
-}
-.menu[open] .menuIcon::before {
-  transform: rotate(-90deg);
-}
-.sheet {
+
+/* The Menu panel (m-menu.html): the whole screen under the bar, on the body colour. */
+.panel {
   position: fixed;
-  top: var(--header-h);
   left: 0;
   right: 0;
-  max-height: calc(100svh - var(--header-h));
-  overflow-y: auto;
-  padding: 0.25rem var(--margin) 1.25rem;
-  background: var(--paper);
-  border-bottom: var(--hairline);
-  box-shadow: 0 24px 48px rgba(11, 11, 16, 0.12);
-}
-.sheetLinks a {
+  top: var(--header-h);
+  bottom: 0;
+  z-index: 39;
   display: flex;
-  align-items: center;
-  min-height: 3.25rem;
-  font-size: var(--step-1);
-  letter-spacing: -0.01em;
-  border-bottom: var(--hairline);
+  flex-direction: column;
+  padding: var(--inset) var(--inset) 28px;
+  overflow-y: auto;
+  background: var(--body);
+  color: var(--porcelain);
 }
-.sheetLinks a[aria-current] {
+.panel[hidden] {
+  display: none;
+}
+.links {
+  display: flex;
+  flex-direction: column;
+}
+.links a {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 16px 0;
+  border-top: 1px solid var(--hair);
+  font-size: 1.5rem;
+  font-weight: 300;
+  letter-spacing: -0.015em;
+}
+.links a:last-child {
+  border-bottom: 1px solid var(--hair);
+}
+.links a span {
+  color: var(--grey);
+  letter-spacing: 0.08em;
+}
+.links a[aria-current] {
   text-decoration: underline;
   text-underline-offset: 0.35em;
 }
-.sheetLang {
-  display: none;
-  margin-top: 0.75rem;
+.group {
+  margin-top: 22px;
 }
-.sheetMotion {
-  display: none;
+.groupTitle {
+  color: var(--grey);
+  margin-bottom: 10px;
+}
+.langs {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 8px;
+}
+.langs a {
+  display: flex;
   align-items: center;
-  gap: 0.5rem;
-  min-height: 3rem;
-  margin-top: 0.5rem;
-  padding: 0;
-  border: 0;
-  background: none;
-  color: var(--ink-2);
-  font: inherit;
-  font-size: var(--step--1);
-  cursor: pointer;
+  justify-content: center;
+  height: 40px;
+  border: 1px solid var(--ctrl);
+  border-radius: var(--r-pill);
+  letter-spacing: 0.08em;
 }
-.sheetMotion span {
-  color: var(--ink-0);
+.langs a[aria-current] {
+  background: var(--porcelain);
+  border-color: var(--porcelain);
+  color: var(--body);
+}
+.toggleRow {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 14px 0;
+  border-top: 1px solid var(--hair);
+  border-bottom: 1px solid var(--hair);
+}
+.toggleRow .groupTitle {
+  margin: 0;
+}
+.panelCta {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  margin-top: auto;
+  padding-top: 28px;
+}
+.panelCta .pill,
+.panelCta :global(.pill) {
+  height: 48px;
+  font-size: 0.9375rem;
+}
+.facts {
+  color: var(--grey);
+  text-align: center;
 }
 
-.cta:focus-visible,
-.menuButton:focus-visible,
-.sheetMotion:focus-visible,
-.motion:focus-visible {
-  outline: 2px solid var(--accent);
-  outline-offset: 3px;
-}
-
+/* Tablet (768–1100): the links go into the panel; the bar keeps the chip, the switch and the call to action. */
 @media (max-width: 1099px) {
-  .header {
-    --actions-w: 16.5rem;
-  }
   .nav {
     display: none;
   }
-  .menu {
-    display: block;
+  .burger {
+    display: inline-flex;
   }
-}
-
-/* Phones: the languages and the motion switch move into the menu. */
-@media (max-width: 599px) {
-  /* The call to action and the menu button: the dock's dot must not reach the wordmark. */
-  .header {
-    --actions-w: 11rem;
-  }
-  .brand {
-    flex: none;
-  }
-  .motion,
   .lang {
     display: none;
   }
-  .sheetLang {
-    display: block;
-  }
-  .sheetMotion {
+  .chip {
     display: inline-flex;
   }
 }
-/* The narrowest phones (and 400% zoom): the name stays, its icon gives way. */
-@media (max-width: 339px) {
-  .header {
-    --actions-w: 11.5rem;
+/* Phones: the switch moves into the panel; the call to action is compact from 360 px, gone below. */
+@media (max-width: 767px) {
+  .bar {
+    gap: 0.5rem;
+    padding: 0 12px;
+  }
+  .brand {
+    gap: 8px;
+  }
+  .right {
+    gap: 6px;
+  }
+  .motion {
+    display: none;
+  }
+  .chip {
+    height: 26px;
+    padding: 0 8px;
+    font-size: 0.6875rem;
+  }
+  .cta {
+    height: 34px;
+    padding: 0 10px;
+    font-size: 0.75rem;
+  }
+  .burger {
+    width: 34px;
+    height: 34px;
+  }
+}
+@media (max-width: 359px) {
+  .cta {
+    display: none;
   }
   .mark {
     display: none;
   }
-  .cta {
-    padding: 0 0.65rem;
-  }
-}
-
-/* The motion switch sits at the right end of the bar, next to the actions. */
-.nav + .motion {
-  margin-left: auto;
 }

@@ -295,7 +295,7 @@ export const en: Dict = {
       manifesto: 'One contract, one crew. Every hand-off you skip is a failure you never debug.',
       mission: 'What are we building? Choose, and I\'ll light the systems it takes.',
       systems: 'My seven systems, root to crown. Each one rests on the one beneath it.',
-      proof: 'Five missions flown. The one nearest yours wears the orange stitch.',
+      proof: 'Five missions flown. The one nearest yours wears the gold stitch.',
       checklist: 'Before we fly: the checklist. The last item is the one that matters.',
       payload: 'Our own payload: an AI that reads skin. Sealed, and shown under NDA.',
       crew: 'The crew you meet is the crew that builds. Three of us, no hand-offs.',

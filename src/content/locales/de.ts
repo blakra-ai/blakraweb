@@ -292,7 +292,7 @@ export const de: Dict = {
       manifesto: 'Ein Vertrag, eine Crew. Jede Übergabe, die Sie sich sparen, ist ein Fehler, den Sie nie suchen müssen.',
       mission: 'Was bauen wir? Wählen Sie, und ich lasse die Systeme leuchten, die es braucht.',
       systems: 'Meine sieben Systeme, von der Wurzel bis zur Krone. Jedes ruht auf dem darunter.',
-      proof: 'Fünf geflogene Missionen. Die Ihrer am nächsten trägt die orange Naht.',
+      proof: 'Fünf geflogene Missionen. Die Ihrer am nächsten trägt die goldene Naht.',
       checklist: 'Vor dem Start: die Checkliste. Der letzte Punkt ist der, der zählt.',
       payload: 'Unsere eigene Nutzlast: eine KI, die Haut liest. Versiegelt, und unter NDA zu sehen.',
       crew: 'Die Crew, die Sie treffen, ist die Crew, die baut. Drei von uns, keine Übergaben.',

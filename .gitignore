@@ -12,3 +12,8 @@ e2e-shots/
 .firm/runs/*/wp6
 .firm/runs/*/wp7
 .firm/runs/*/review5
+.firm/runs/*/refs
+.firm/runs/*/systems/*.jpg
+.firm/runs/*/systems/*.woff2
+.firm/runs/*/storyboard/*.jpg
+.firm/runs/*/storyboard/*.woff2

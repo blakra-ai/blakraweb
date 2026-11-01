@@ -1,0 +1,62 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><title>BLAKRA — System B: Paper and Mass — mood sheet</title><meta name="viewport" content="width=1440">
+<style>
+@font-face{font-family:'Geist';src:url('./geist-latin-wght-normal.woff2') format('woff2');font-weight:100 900;font-display:swap}
+@font-face{font-family:'Geist Mono';src:url('./geist-mono-latin-wght-normal.woff2') format('woff2');font-weight:100 900;font-display:swap}
+@font-face{font-family:'Newsreader';src:url('./newsreader-latin-wght-italic.woff2') format('woff2');font-weight:200 800;font-style:italic;font-display:swap}
+*{box-sizing:border-box;margin:0}
+body{background:#f2f0eb;color:#0b0b10;font-family:'Geist',system-ui,sans-serif;-webkit-font-smoothing:antialiased}
+.frame{width:1440px;height:900px;padding:40px 64px;display:grid;grid-template-columns:repeat(12,1fr);column-gap:24px;grid-template-rows:auto 1fr auto;row-gap:24px;overflow:hidden}
+.mono{font-family:'Geist Mono',monospace;font-size:10px;letter-spacing:.12em;text-transform:uppercase;font-weight:500;color:#5b5a57}
+.head{grid-column:1/13;display:flex;justify-content:space-between;align-items:flex-end;border-bottom:1px solid rgba(11,11,16,.22);padding-bottom:16px}
+.head h1{font-size:40px;font-weight:500;letter-spacing:-.03em;line-height:1}
+.head h1 small{font-family:'Geist Mono',monospace;font-size:12px;letter-spacing:.14em;color:#ff5a1f;display:block;margin-bottom:10px;font-weight:500}
+.head p{max-width:52ch;font-size:15px;line-height:1.45;color:#5b5a57;text-align:right}
+.col{display:flex;flex-direction:column;gap:12px;min-width:0}
+.c1{grid-column:1/5}.c2{grid-column:5/9}.c3{grid-column:9/13}
+h2{font-size:11px;letter-spacing:.14em;text-transform:uppercase;font-family:'Geist Mono',monospace;font-weight:600;color:#0b0b10;border-bottom:1px solid rgba(11,11,16,.22);padding-bottom:8px}
+.sws{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}
+.sw{font-size:11px;line-height:1.35}.sw .chip{height:44px;border-radius:4px;margin-bottom:6px}
+.sw b{display:block;font-weight:600}.sw span{font-family:'Geist Mono',monospace;font-size:10px;color:#5b5a57}.sw em{display:block;font-style:normal;color:#5b5a57;font-size:10px}
+table{width:100%;border-collapse:collapse;font-size:12px}td{padding:5px 0;border-bottom:1px solid rgba(11,11,16,.22);vertical-align:middle}td:nth-child(2){font-size:11px;padding-right:10px}.num{padding-left:14px}
+.num{font-family:'Geist Mono',monospace;font-size:11px;text-align:right;white-space:nowrap}
+.pv{display:inline-block;width:24px;height:20px;line-height:20px;text-align:center;border-radius:3px;margin-right:8px;font-size:11px;font-weight:600}
+.ok{color:#0b0b10;text-align:right;font-family:'Geist Mono',monospace;font-size:10px}.bad{color:#ff5a1f;text-align:right;font-family:'Geist Mono',monospace;font-size:10px}
+.lits{display:grid;grid-template-columns:repeat(7,1fr);gap:4px}.lit{font-size:10px;text-align:center}.lit i{display:block;width:12px;height:12px;border-radius:50%;margin:0 auto 4px}.lit small{display:block;font-family:'Geist Mono',monospace;font-size:8px;color:#5b5a57;letter-spacing:0}
+.spec{display:flex;flex-direction:column;gap:2px}
+.spec .d{font-size:44px;line-height:1;letter-spacing:-.04em;font-weight:400}
+.spec .d i{font-family:'Newsreader',serif;font-style:italic;font-weight:400;}
+.spec .h{font-size:24px;font-weight:500;letter-spacing:-.02em}
+.spec .b{font-size:14px;line-height:1.5;color:#0b0b10}
+.spec .m{font-family:'Geist Mono',monospace;font-size:10px;letter-spacing:.12em;text-transform:uppercase;color:#5b5a57}
+.note{font-size:12px;line-height:1.45;color:#5b5a57}
+.gridv{height:44px;display:grid;grid-template-columns:repeat(12,1fr);gap:4px}.gridv i{background:rgba(11,11,16,.22);border-radius:2px}.gridv i:nth-child(n+7){background:#ff5a1f;opacity:.45}
+.surfs{display:flex;gap:10px}.surf{flex:1;font-size:11px}.surf .chip{height:28px;border-radius:4px;margin-bottom:5px}.surf b{display:block;font-weight:600}.surf span{color:#5b5a57;font-size:10px}
+ul{padding-left:14px;font-size:12px;line-height:1.4;display:flex;flex-direction:column;gap:5px}
+.strip{grid-column:1/13;border-top:1px solid rgba(11,11,16,.22);padding-top:14px}
+.bar{display:flex;gap:3px;height:84px}
+.ch{border-radius:4px;padding:8px;display:flex;flex-direction:column;justify-content:space-between;font-size:11px;min-width:0}
+.ch b{font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.ch span{font-family:'Geist Mono',monospace;font-size:10px;opacity:.8}
+.ch.p{background:rgba(11,11,16,.06);color:#0b0b10}
+.ch.i{background:#0b0b10;color:#f2f0eb}
+
+.strip .mono{margin-top:8px;display:flex;justify-content:space-between}
+</style></head><body><div class="frame">
+<div class="head"><h1><small>System B · mood sheet</small>Paper and Mass</h1><p>A warm paper document whose only proof of the hole is what it bends: the headlines, the row, and the one figure they bend toward.</p></div>
+<div class="col c1">
+ <h2>Palette</h2><div class="sws"><div class="sw"><div class="chip" style="background:#f2f0eb;border:1px solid rgba(11,11,16,.22)"></div><b>Paper</b><span>#f2f0eb</span><em>surface</em></div><div class="sw"><div class="chip" style="background:#ebe8e1;border:1px solid rgba(11,11,16,.22)"></div><b>Paper 2</b><span>#ebe8e1</span><em>panels</em></div><div class="sw"><div class="chip" style="background:#0b0b10;border:1px solid rgba(11,11,16,.22)"></div><b>Ink</b><span>#0b0b10</span><em>text, ink chapters</em></div><div class="sw"><div class="chip" style="background:#3a3a40;border:1px solid rgba(11,11,16,.22)"></div><b>Ink 2</b><span>#3a3a40</span><em>text 2, the bust</em></div><div class="sw"><div class="chip" style="background:#5b5a57;border:1px solid rgba(11,11,16,.22)"></div><b>Mute</b><span>#5b5a57</span><em>labels</em></div><div class="sw"><div class="chip" style="background:#ff5a1f;border:1px solid rgba(11,11,16,.22)"></div><b>Orange</b><span>#ff5a1f</span><em>one button, one dot</em></div></div>
+ <h2>Contrast (WCAG 2.2)</h2><table><tr><td><span class="pv" style="color:#0b0b10;background:#f2f0eb;border:1px solid rgba(11,11,16,.22)">Aa</span>Ink on Paper</td><td class="num">17.24 : 1</td><td class="ok">AA</td></tr><tr><td><span class="pv" style="color:#3a3a40;background:#f2f0eb;border:1px solid rgba(11,11,16,.22)">Aa</span>Ink 2 on Paper</td><td class="num">9.92 : 1</td><td class="ok">AA</td></tr><tr><td><span class="pv" style="color:#5b5a57;background:#f2f0eb;border:1px solid rgba(11,11,16,.22)">Aa</span>Mute on Paper</td><td class="num">6.06 : 1</td><td class="ok">AA</td></tr><tr><td><span class="pv" style="color:#f2f0eb;background:#0b0b10;border:1px solid rgba(11,11,16,.22)">Aa</span>Paper on Ink (chapters)</td><td class="num">17.24 : 1</td><td class="ok">AA</td></tr><tr><td><span class="pv" style="color:#ff5a1f;background:#f2f0eb;border:1px solid rgba(11,11,16,.22)">Aa</span>Orange on Paper (text: FAIL, so never text)</td><td class="num">2.74 : 1</td><td class="bad">fail</td></tr><tr><td><span class="pv" style="color:#f2f0eb;background:#ff5a1f;border:1px solid rgba(11,11,16,.22)">Aa</span>Paper on Orange (button: FAIL, so button is Ink)</td><td class="num">2.74 : 1</td><td class="bad">fail</td></tr></table>
+ <div class="note">Lit layers on Paper (bands in her irises, list ticks; never text):</div><div class="lits"><div class="lit"><i style="background:#e8352b;box-shadow:0 0 10px #e8352b"></i><span>Cloud</span><small>#e8352b · 3.71:1</small></div><div class="lit"><i style="background:#f57a1f;box-shadow:0 0 10px #f57a1f"></i><span>Data</span><small>#f57a1f · 2.40:1</small></div><div class="lit"><i style="background:#f7c21b;box-shadow:0 0 10px #f7c21b"></i><span>Bots</span><small>#f7c21b · 1.45:1</small></div><div class="lit"><i style="background:#2fb35a;box-shadow:0 0 10px #2fb35a"></i><span>Design</span><small>#2fb35a · 2.39:1</small></div><div class="lit"><i style="background:#2a9fe0;box-shadow:0 0 10px #2a9fe0"></i><span>Apps</span><small>#2a9fe0 · 2.58:1</small></div><div class="lit"><i style="background:#4248c2;box-shadow:0 0 10px #4248c2"></i><span>Launch</span><small>#4248c2 · 6.28:1</small></div><div class="lit"><i style="background:#9a4fd0;box-shadow:0 0 10px #9a4fd0"></i><span>AI</span><small>#9a4fd0 · 4.19:1</small></div></div>
+</div>
+<div class="col c2">
+ <h2>Type · Geist · ratio 1.25</h2>
+ <div class="spec"><div class="d">We build <i>run on.</i></div><div class="h">Seven layers. One team.</div><div class="b">Exact before expensive. Software runs over budget when the spending starts before the problem is exact.</div><div class="m">Station 04 / 09 · Reply within 24 hours</div></div>
+ <table><tr class="mono"><td>Role</td><td>Face</td><td class="num">1440 px</td><td class="num">390 px</td></tr><tr><td>Display</td><td>Geist 400 + Newsreader italic 300–500</td><td class="num">118 / 0.92 / −0.04em</td><td class="num">56</td></tr><tr><td>H2</td><td>Geist 400</td><td class="num">60</td><td class="num">34</td></tr><tr><td>Voice</td><td>Newsreader italic 400</td><td class="num">21 / 1.35</td><td class="num">18</td></tr><tr><td>Body</td><td>Geist 400</td><td class="num">19 / 1.5</td><td class="num">17</td></tr><tr><td>Label</td><td>Geist Mono 500</td><td class="num">11 / .14em caps</td><td class="num">10</td></tr></table>
+ <div class="note">Scale: 1.25 (major third) 19 → 24 → 30 → 37 → 47 → 60; display is a free size. Newsreader italic does two jobs only: the accent phrase in a headline and her voice.</div>
+</div>
+<div class="col c3">
+ <h2>Grid and whitespace</h2><div class="gridv"><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i></div><div class="note">12 columns · 64 px margin · 24 px gutter · words 1–7 · the mass 8–12 · her head 30% of the viewport · her voice in the slot above her, columns 8–11 · baseline 8 px</div>
+ <h2>Surfaces</h2><div class="surfs"><div class="surf"><div class="chip" style="background:#f2f0eb;border:1px solid rgba(11,11,16,.22)"></div><b>Paper</b><span>01 03 05 06 08 09</span></div><div class="surf"><div class="chip" style="background:#0b0b10;border:1px solid rgba(11,11,16,.22)"></div><b>Ink</b><span>02 04 07</span></div><div class="surf"><div class="chip" style="background:#ff5a1f;border:1px solid rgba(11,11,16,.22)"></div><b>Orange</b><span>the dot, the button hover, the Send flash</span></div></div>
+ <h2>Motion grammar</h2><ul><li>Moves: display words within her radius (Geist wght 300→600, rotate ≤ 2.5°), the card row (into a lensed arc), her gaze, blink, breath and hair, the thin ring when she is off-screen.</li><li>Never: body text, backgrounds, text opacity, the lede, the form.</li><li>Hand-over: the ring crosses the paper/ink hairline and inverts.</li><li>Hover: the cursor is a second, weaker mass: the nearest display word bows 2 weight units.</li><li>Click: the chosen need lights its bands in her irises, root to crown.</li><li>Reduced motion: HTML is the final state: words straight, bands lit, she is a still frame.</li></ul>
+</div>
+<div class="strip"><h2>Section rhythm · nine chapters · 9.4 screens at 1440×900</h2><div class="bar" style="margin-top:10px"><div class="ch p" style="flex:1"><b>01 Hero</b><span>1 scr</span></div><div class="ch i" style="flex:0.8"><b>02 Manifesto</b><span>0.8 scr</span></div><div class="ch p" style="flex:1.1"><b>03 Mission</b><span>1.1 scr</span></div><div class="ch i" style="flex:1.3"><b>04 Systems</b><span>1.3 scr</span></div><div class="ch p" style="flex:1.3"><b>05 Proof</b><span>1.3 scr</span></div><div class="ch p" style="flex:0.9"><b>06 Checklist</b><span>0.9 scr</span></div><div class="ch i" style="flex:1"><b>07 Payload</b><span>1 scr</span></div><div class="ch p" style="flex:0.9"><b>08 Crew</b><span>0.9 scr</span></div><div class="ch p" style="flex:1.1"><b>09 Contact</b><span>1.1 scr</span></div></div><div class="mono"><span>Block width = screens per chapter · dark blocks are ink chapters</span><span>Owner rule: 1–1.3 screens per section, systems ≤ 1.8, no dead band over 150 px</span></div></div>
+</div></body></html>

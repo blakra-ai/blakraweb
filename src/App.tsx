@@ -7,13 +7,13 @@ import { MotionProvider } from './motion/MotionProvider'
 import { Header } from './components/Header'
 import { Footer } from './components/Footer'
 import { Cursor } from './features/experience/cursor/Cursor'
-import { NavigatorStage } from './features/navigator/NavigatorStage'
+import { ObservatoryStage } from './features/observatory/Stage'
 import { Home } from './pages/Home'
 import { Investors, Legal, NotFound, Privacy } from './pages/Simple'
 
-const pages: Record<PageId, { Page: () => JSX.Element; film?: boolean }> = {
-  // The home page has the Navigator's world behind it; the other pages are plain paper.
-  home: { Page: Home, film: true },
+const pages: Record<PageId, { Page: () => JSX.Element; world?: boolean }> = {
+  // The home page is the Observatory: its world (src/features/observatory) mounts once behind it; the others are plain.
+  home: { Page: Home, world: true },
   investors: { Page: Investors },
   privacy: { Page: Privacy },
   legal: { Page: Legal },
@@ -21,7 +21,7 @@ const pages: Record<PageId, { Page: () => JSX.Element; film?: boolean }> = {
 }
 
 export function App({ route, dict }: { route: Route; dict: Dict }) {
-  const { Page, film } = pages[route.id]
+  const { Page, world } = pages[route.id]
   return (
     <I18nProvider locale={route.locale} dict={dict}>
       <MotionProvider>
@@ -33,7 +33,7 @@ export function App({ route, dict }: { route: Route; dict: Dict }) {
           <Page />
         </main>
         <Footer route={route} />
-        {film && <NavigatorStage />}
+        {world && <ObservatoryStage />}
         <Cursor />
       </MotionProvider>
     </I18nProvider>

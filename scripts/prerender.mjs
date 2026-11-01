@@ -12,13 +12,18 @@ const template = await readFile(join(dist, 'index.html'), 'utf8')
 const manifest = JSON.parse(await readFile(join(dist, '.vite/manifest.json'), 'utf8'))
 const { render, routes } = await import(pathToFileURL(join(ssrDir, 'entry-server.js')).href)
 
-// Preload the fonts that paint the LCP text; the mono swaps in later.
+// Preload the fonts that paint the first screen: Geist (swap, with a metric fallback), Newsreader and Geist Mono (optional).
 const assets = await readdir(join(dist, 'assets'))
 const geist = assets.find((f) => f.startsWith('geist-latin-wght-normal') && f.endsWith('.woff2'))
 if (!geist) throw new Error('prerender: Geist font asset not found in dist/assets')
 // The headline's italic ("gravity") is Newsreader: preloaded too, so the H1 never repaints late.
 const newsreader = assets.find((f) => f.startsWith('newsreader-latin-wght-italic') && f.endsWith('.woff2'))
-const preload = [geist, newsreader].filter(Boolean).map((f) => `<link rel="preload" href="/assets/${f}" as="font" type="font/woff2" crossorigin>`).join('\n    ')
+const mono = assets.find((f) => f.startsWith('geist-mono-latin-wght-normal') && f.endsWith('.woff2'))
+const fontPreload = [geist, newsreader, mono].filter(Boolean).map((f) => `<link rel="preload" href="/assets/${f}" as="font" type="font/woff2" crossorigin>`)
+// The hero's phone still is the first screen's largest paint on phones: it starts with the HTML.
+const phoneStill = assets.find((f) => f.startsWith('hero-still-phone') && f.endsWith('.jpg'))
+const stillPreload = phoneStill ? [`<link rel="preload" href="/assets/${phoneStill}" as="image" media="(max-width: 767px)">`] : []
+const preload = [...fontPreload, ...stillPreload].join('\n    ')
 
 for (const route of routes) {
   const { html, head, lang, locale } = render(route.path)

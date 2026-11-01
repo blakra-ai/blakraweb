@@ -1,0 +1,17 @@
+/* Lab only: the Observatory tokens the real global.css (WP-A) will carry. */
+:root { --body: #0b0b0d; --porcelain: #ece9e2; --grey: #8a8781; --hair: rgba(236, 233, 226, 0.12); --accent: #d9a441; }
+* { box-sizing: border-box; margin: 0; padding: 0; }
+html, body { background: var(--body); color: var(--porcelain); font-family: 'Geist Variable', system-ui, sans-serif; font-weight: 300; }
+main { position: relative; z-index: 1; }
+.lab-nav { position: fixed; left: 24px; right: 24px; top: 0; height: 64px; display: flex; align-items: center; font: 500 12px/1.4 'Geist Mono Variable', monospace; letter-spacing: 0.08em; text-transform: uppercase; color: var(--grey); z-index: 2; }
+.lab-window { position: relative; margin: 88px 24px 24px; min-height: calc(100svh - 112px); height: auto; border: 1px solid var(--hair); border-radius: 16px; padding: 40px; display: flex; align-items: center; }
+.lab-window + .lab-window { margin-top: 24px; }
+.lab-doc { min-height: 100svh; padding: 160px 64px; color: var(--grey); }
+.lab-doc h2 { font-size: 56px; font-weight: 300; letter-spacing: -0.025em; color: var(--porcelain); margin-bottom: 16px; }
+.lab-words { width: 50%; }
+.lab-words h1 { font-size: 84px; line-height: 0.98; letter-spacing: -0.03em; font-weight: 300; margin: 16px 0 20px; }
+.lab-words h2 { font-size: 56px; line-height: 1.02; letter-spacing: -0.025em; font-weight: 300; margin-bottom: 20px; }
+.lab-eyebrow { font: 500 12px/1.4 'Geist Mono Variable', monospace; letter-spacing: 0.08em; text-transform: uppercase; color: var(--grey); }
+.lab-lede { font-size: 18px; line-height: 1.5; color: var(--grey); font-weight: 400; }
+.lab-words button { margin-top: 24px; height: 40px; padding: 0 20px; border-radius: 999px; border: 1px solid var(--porcelain); background: transparent; color: var(--porcelain); font: 500 14px/1 inherit; cursor: pointer; }
+.lab-words button:focus-visible { outline: 2px solid var(--porcelain); outline-offset: 2px; }
