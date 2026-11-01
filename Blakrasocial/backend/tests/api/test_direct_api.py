@@ -3,6 +3,10 @@
 from __future__ import annotations
 
 import asyncio
+import base64
+import hashlib
+import hmac
+import json
 import re
 import time
 from collections.abc import Iterator
@@ -12,10 +16,14 @@ import jwt
 import pytest
 from fastapi.testclient import TestClient
 
+from blakrasocial.application.ports.repositories import profile_id_of
 from blakrasocial.container import Container, DirectServices
-from blakrasocial.domain.enums import Platform
+from blakrasocial.domain.entities import OAuthCredential, TikTokCreatorInfo
+from blakrasocial.domain.enums import Platform, TikTokVisibility
+from blakrasocial.domain.value_objects import ProfileKey
 from blakrasocial.infrastructure.idempotency import InMemoryIdempotencyStore
-from blakrasocial.infrastructure.persistence import create_engine, session_factory
+from blakrasocial.infrastructure.networks.meta.signed_request import SignedRequestVerifier
+from blakrasocial.infrastructure.persistence import SqlDeletionReceiptRepository, create_engine, session_factory
 from blakrasocial.infrastructure.persistence.models import Base
 from blakrasocial.infrastructure.security import HmacMediaSigner, JwtCallerAuthenticator, ServiceKeyVerifier
 from blakrasocial.main import create_app
@@ -31,6 +39,31 @@ async def _reset() -> None:
         await conn.run_sync(Base.metadata.drop_all)
         await conn.run_sync(Base.metadata.create_all)
     await engine.dispose()
+
+
+META_SECRET = "fb-app-secret-for-tests"
+
+
+class FakeCreatorInfo:
+    async def creator_info(self, credential: OAuthCredential) -> TikTokCreatorInfo:
+        return TikTokCreatorInfo(
+            nickname="Blakra",
+            username="blakra",
+            avatar_url=None,
+            privacy_levels=(TikTokVisibility.PUBLIC, TikTokVisibility.PRIVATE),
+            comment_disabled=False,
+            duet_disabled=True,
+            stitch_disabled=False,
+            max_video_seconds=600,
+        )
+
+
+def signed_request(payload: dict[str, object], secret: str = META_SECRET) -> str:
+    def b64(raw: bytes) -> str:
+        return base64.urlsafe_b64encode(raw).rstrip(b"=").decode()
+
+    body = b64(json.dumps(payload).encode())
+    return f"{b64(hmac.new(secret.encode(), body.encode(), hashlib.sha256).digest())}.{body}"
 
 
 class Holder:
@@ -75,6 +108,9 @@ def client() -> Iterator[tuple[TestClient, Holder]]:
                 world.credentials,
                 runtime=None,  # type: ignore[arg-type]
                 platforms=world.registry.platforms,
+                creator_info=FakeCreatorInfo(),
+                receipts=SqlDeletionReceiptRepository(session_factory(engine)),
+                signed_requests={Platform.FACEBOOK: SignedRequestVerifier(META_SECRET)},
             ),
         )
 
@@ -196,3 +232,56 @@ def test_rules_say_which_networks_can_be_connected(client: tuple[TestClient, Hol
     http, _ = client
     platforms = {p["platform"]: p["connectable"] for p in http.get("/platforms/rules").json()["platforms"]}
     assert platforms == {"instagram": False, "facebook": True, "tiktok": False, "linkedin": True, "whatsapp": False}
+
+
+def test_meta_data_deletion_callback_erases_tokens_and_reports_status(client: tuple[TestClient, Holder]) -> None:
+    http, holder = client
+    profile = _profile(http)
+    pid = profile_id_of(ProfileKey(profile))
+    page = credential(Platform.FACEBOOK, "page-1", subject="fb-user-7")
+    http.portal.call(holder.world.credentials.save, pid, page)
+
+    forged = http.post(
+        "/meta/facebook/data-deletion",
+        data={"signed_request": signed_request({"algorithm": "HMAC-SHA256", "user_id": "fb-user-7"}, "wrong")},
+    )
+    assert forged.status_code == 401
+    assert http.portal.call(holder.world.credentials.get, pid, Platform.FACEBOOK) is not None
+
+    done = http.post(
+        "/meta/facebook/data-deletion",
+        data={"signed_request": signed_request({"algorithm": "HMAC-SHA256", "user_id": "fb-user-7"})},
+    )
+    assert done.status_code == 200
+    body = done.json()
+    assert set(body) == {"url", "confirmation_code"} and body["url"].endswith(
+        f"/meta/deletion/{body['confirmation_code']}"
+    )
+    assert http.portal.call(holder.world.credentials.get, pid, Platform.FACEBOOK) is None
+
+    status = http.get(f"/meta/deletion/{body['confirmation_code']}")
+    assert status.status_code == 200 and body["confirmation_code"] in status.text and "deleted" in status.text
+    assert http.get("/meta/deletion/unknowncode").status_code == 404
+    assert http.post("/meta/instagram/deauthorize", data={"signed_request": "x.y"}).status_code == 409  # not set up
+
+
+def test_tiktok_creator_info_endpoint(client: tuple[TestClient, Holder]) -> None:
+    http, holder = client
+    profile = _profile(http)
+    assert http.get("/accounts/tiktok/creator-info", headers=_auth(profile)).status_code == 404
+    pid = profile_id_of(ProfileKey(profile))
+    http.portal.call(holder.world.credentials.save, pid, credential(Platform.TIKTOK, "open-1"))
+    info = http.get("/accounts/tiktok/creator-info", headers=_auth(profile))
+    assert info.status_code == 200 and info.headers["cache-control"] == "no-store"
+    assert info.json() | {"avatarUrl": None} == {
+        "nickname": "Blakra",
+        "username": "blakra",
+        "avatarUrl": None,
+        "privacyLevels": ["public", "private"],
+        "commentDisabled": False,
+        "duetDisabled": True,
+        "stitchDisabled": False,
+        "maxVideoSeconds": 600,
+        "canPost": True,
+        "reason": None,
+    }

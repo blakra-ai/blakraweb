@@ -107,3 +107,17 @@ def _avatar(account: ConnectedAccount) -> str:
     if account.avatar_url and account.avatar_url.startswith("https://"):
         return f'<img src="{html.escape(account.avatar_url)}" alt="" referrerpolicy="no-referrer">'
     return ""
+
+
+def deletion_status(platform: Platform, code: str, removed: int, requested_at: str) -> HTMLResponse:
+    network = _NAMES[platform]
+    code = html.escape(code)
+    return _page(
+        "Data deletion status",
+        f'<h1 class="ok">✓ داده‌های {network} حذف شد</h1>'
+        f"<p>کد پیگیری: <b>{code}</b><br>تاریخ درخواست: {html.escape(requested_at)}</p>"
+        "<p>همهٔ توکن‌های دسترسی این حساب از Blakrasocial پاک شد و دیگر هیچ پستی با آن منتشر نمی‌شود.</p>"
+        f'<p class="en">Your {network} data was deleted. Confirmation code: <b>{code}</b> '
+        f"(requested {html.escape(requested_at)}). All access tokens for this account were erased "
+        f"({removed} connection(s)); nothing will be published with it again.</p>",
+    )

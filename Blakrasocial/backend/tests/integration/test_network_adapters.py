@@ -269,6 +269,7 @@ async def test_facebook_oauth_returns_pages_user_can_post_to(http: httpx.AsyncCl
             httpx.Response(200, json={"access_token": "long"}),
         ]
     )
+    respx.get(f"{base}/me", params={"fields": "id"}).respond(json={"id": "fbuser9"})
     respx.get(f"{base}/me/accounts").respond(
         json={
             "data": [
@@ -281,6 +282,7 @@ async def test_facebook_oauth_returns_pages_user_can_post_to(http: httpx.AsyncCl
     creds = await oauth.exchange_code(code="c", redirect_uri="https://api.test/cb", code_verifier=None)
     assert [(c.account_id, c.access_token) for c in creds] == [("p1", "pt1"), ("p3", "pt3")]
     assert creds[1].account.avatar_url == "https://img/x"
+    assert {c.subject for c in creds} == {"fbuser9"}
 
 
 @respx.mock

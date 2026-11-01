@@ -126,6 +126,7 @@ def dump_credential(c: OAuthCredential) -> dict[str, Any]:
         "refreshExpiresAt": c.refresh_expires_at.isoformat() if c.refresh_expires_at else None,
         "scopes": list(c.scopes),
         "extra": dict(c.extra),
+        "subject": c.subject,
     }
 
 
@@ -141,4 +142,5 @@ def load_credential(data: dict[str, Any]) -> OAuthCredential:
         refresh_expires_at=datetime.fromisoformat(data["refreshExpiresAt"]) if data.get("refreshExpiresAt") else None,
         scopes=tuple(data.get("scopes") or ()),
         extra=dict(data.get("extra") or {}),
+        subject=data.get("subject"),
     )

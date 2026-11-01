@@ -2,6 +2,7 @@ from blakrasocial.infrastructure.persistence.database import create_engine, sess
 from blakrasocial.infrastructure.persistence.repositories import (
     SqlAuthorizationStateRepository,
     SqlCredentialRepository,
+    SqlDeletionReceiptRepository,
     SqlPostRepository,
     SqlProfileRepository,
 )
@@ -9,6 +10,7 @@ from blakrasocial.infrastructure.persistence.repositories import (
 __all__ = [
     "SqlAuthorizationStateRepository",
     "SqlCredentialRepository",
+    "SqlDeletionReceiptRepository",
     "SqlPostRepository",
     "SqlProfileRepository",
     "create_engine",

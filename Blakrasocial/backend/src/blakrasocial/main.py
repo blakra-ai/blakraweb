@@ -11,7 +11,17 @@ from fastapi.middleware.gzip import GZipMiddleware
 from blakrasocial import __version__
 from blakrasocial.api.errors import install_error_handlers
 from blakrasocial.api.middleware import RequestContextMiddleware
-from blakrasocial.api.routers import accounts, health, media, oauth, platforms, posts, profiles, webhooks
+from blakrasocial.api.routers import (
+    accounts,
+    health,
+    media,
+    meta_callbacks,
+    oauth,
+    platforms,
+    posts,
+    profiles,
+    webhooks,
+)
 from blakrasocial.container import Container, build_container
 from blakrasocial.infrastructure.logging import configure_logging
 from blakrasocial.infrastructure.settings import Settings, get_settings
@@ -72,6 +82,7 @@ def create_app(
         posts.router,
         webhooks.router,
         oauth.router,
+        meta_callbacks.router,
     ):
         app.include_router(router)
     return app

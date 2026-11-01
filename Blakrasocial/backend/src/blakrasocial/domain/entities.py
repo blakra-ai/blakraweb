@@ -204,6 +204,9 @@ class OAuthCredential:
     scopes: tuple[str, ...] = ()
     extra: dict[str, str] = field(default_factory=dict, hash=False, compare=False)
     needs_reconnect: bool = False
+    # The network user who approved access (Facebook user id, Instagram user id). Lets us honor the
+    # networks' "user removed your app" and "delete my data" callbacks. Stored only as a hash.
+    subject: str | None = None
 
     def is_usable(self, now: datetime) -> bool:
         return not self.needs_reconnect and (self.expires_at is None or self.expires_at > now)

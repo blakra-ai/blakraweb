@@ -70,6 +70,9 @@ class FacebookOAuth:
                 "fb_exchange_token": short.body["access_token"],
             },
         )
+        user_token = str(long.body["access_token"])
+        me = await self._api.call("GET", f"{self._base}/me", params={"fields": "id", "access_token": user_token})
+        subject = str(me.body["id"])  # the Facebook user who approved; Meta's callbacks name this id
         pages = await self._api.call(
             "GET",
             f"{self._base}/me/accounts",
@@ -97,6 +100,7 @@ class FacebookOAuth:
                     ),
                     access_token=str(page["access_token"]),
                     scopes=SCOPES,
+                    subject=subject,
                 )
             )
         return credentials

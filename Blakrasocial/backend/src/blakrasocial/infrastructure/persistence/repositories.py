@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+import hashlib
 import json
 from collections.abc import Sequence
 from datetime import datetime, timedelta
@@ -12,6 +13,7 @@ from blakrasocial.application.dto import ListPostsQuery, Page
 from blakrasocial.application.ports import Clock
 from blakrasocial.application.ports.repositories import (
     ClaimedTarget,
+    DeletionReceipt,
     PendingAuthorization,
     ProfileId,
     StoredPost,
@@ -27,6 +29,7 @@ from blakrasocial.infrastructure.persistence import codec
 from blakrasocial.infrastructure.persistence.models import (
     AuthorizationStateRow,
     CredentialRow,
+    DeletionReceiptRow,
     PostRow,
     ProfileRow,
     TargetRow,
@@ -91,6 +94,7 @@ class SqlCredentialRepository:
             "expires_at": credential.expires_at,
             "needs_reconnect": credential.needs_reconnect,
             "updated_at": self._clock.now(),
+            "subject_hash": subject_hash(credential.platform, credential.subject) if credential.subject else None,
         }
         statement = pg_insert(CredentialRow).values(**values)
         statement = statement.on_conflict_do_update(
@@ -117,6 +121,16 @@ class SqlCredentialRepository:
                 .values(needs_reconnect=True, updated_at=self._clock.now())
             )
 
+    async def delete_by_subject(self, platform: Platform, subject: str) -> int:
+        async with self._sessions.begin() as session:
+            result = await session.execute(
+                delete(CredentialRow).where(
+                    CredentialRow.platform == platform.value,
+                    CredentialRow.subject_hash == subject_hash(platform, subject),
+                )
+            )
+            return int(getattr(result, "rowcount", 0) or 0)
+
     async def expiring(self, before: datetime, limit: int) -> list[tuple[ProfileId, OAuthCredential]]:
         async with self._sessions() as session:
             rows = await session.scalars(
@@ -130,6 +144,33 @@ class SqlCredentialRepository:
                 .limit(limit)
             )
             return [(ProfileId(r.profile_id), self._load(r)) for r in rows]
+
+
+def subject_hash(platform: Platform, subject: str) -> str:
+    return hashlib.sha256(f"{platform.value}|{subject}".encode()).hexdigest()
+
+
+class SqlDeletionReceiptRepository:
+    def __init__(self, sessions: Sessions) -> None:
+        self._sessions = sessions
+
+    async def add(self, receipt: DeletionReceipt) -> None:
+        async with self._sessions.begin() as session:
+            session.add(
+                DeletionReceiptRow(
+                    code=receipt.code,
+                    platform=receipt.platform.value,
+                    removed=receipt.removed,
+                    requested_at=receipt.requested_at,
+                )
+            )
+
+    async def get(self, code: str) -> DeletionReceipt | None:
+        async with self._sessions() as session:
+            row = await session.get(DeletionReceiptRow, code)
+            if row is None:
+                return None
+            return DeletionReceipt(row.code, Platform(row.platform), row.removed, row.requested_at)
 
 
 class SqlAuthorizationStateRepository:

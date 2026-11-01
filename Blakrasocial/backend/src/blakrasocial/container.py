@@ -3,11 +3,13 @@
 from __future__ import annotations
 
 from dataclasses import dataclass, field
+from typing import TYPE_CHECKING
 
 import httpx
 
 from blakrasocial.application.direct import AccountLinker
 from blakrasocial.application.direct.creator_info import GetTikTokCreatorInfo
+from blakrasocial.application.direct.data_deletion import ForgetNetworkUser, GetDeletionReceipt
 from blakrasocial.application.errors import NotConfigured
 from blakrasocial.application.ports import (
     CallerAuthenticator,
@@ -22,7 +24,11 @@ from blakrasocial.application.ports import (
     WebhookSignatureVerifier,
 )
 from blakrasocial.application.ports.platform_connector import CreatorInfoReader
-from blakrasocial.application.ports.repositories import CredentialRepository, ProfileRepository
+from blakrasocial.application.ports.repositories import (
+    CredentialRepository,
+    DeletionReceiptRepository,
+    ProfileRepository,
+)
 from blakrasocial.application.use_cases import (
     ConnectAccount,
     CreateProfile,
@@ -51,6 +57,7 @@ from blakrasocial.infrastructure.event_sink import LoggingPublishEventSink
 from blakrasocial.infrastructure.http.resilient_client import ResilientHttpClient
 from blakrasocial.infrastructure.idempotency import InMemoryIdempotencyStore, RedisIdempotencyStore
 from blakrasocial.infrastructure.media import FfprobeMediaInspector
+from blakrasocial.infrastructure.networks.meta.signed_request import SignedRequestVerifier
 from blakrasocial.infrastructure.security import (
     HmacMediaSigner,
     JwtCallerAuthenticator,
@@ -58,6 +65,10 @@ from blakrasocial.infrastructure.security import (
 )
 from blakrasocial.infrastructure.settings import Settings
 from blakrasocial.infrastructure.worker_runtime import WorkerRuntime
+
+if TYPE_CHECKING:
+    from blakrasocial.application.direct import NetworkRegistry
+    from blakrasocial.infrastructure.networks.http import MediaSource
 
 
 @dataclass
@@ -70,6 +81,8 @@ class DirectServices:
     runtime: WorkerRuntime
     platforms: frozenset[Platform] = frozenset()
     creator_info: CreatorInfoReader | None = None
+    receipts: DeletionReceiptRepository | None = None
+    signed_requests: dict[Platform, SignedRequestVerifier] = field(default_factory=dict)
 
 
 @dataclass
@@ -151,6 +164,22 @@ class Container:
             raise NotConfigured("TikTok isn't set up for this service.")
         return GetTikTokCreatorInfo(direct.credentials, direct.creator_info, self.clock)
 
+    def meta_signed_requests(self, platform: Platform) -> SignedRequestVerifier:
+        verifier = self.require_direct().signed_requests.get(platform)
+        if verifier is None:
+            raise NotConfigured(f"{platform.value.title()} isn't set up for this service.")
+        return verifier
+
+    def forget_network_user(self) -> ForgetNetworkUser:
+        direct = self.require_direct()
+        assert direct.receipts is not None
+        return ForgetNetworkUser(direct.credentials, direct.receipts, self.clock)
+
+    def deletion_receipt(self) -> GetDeletionReceipt:
+        direct = self.require_direct()
+        assert direct.receipts is not None
+        return GetDeletionReceipt(direct.receipts)
+
     def setup_whatsapp(self) -> SetupWhatsApp:
         direct = self.require_direct()
         return SetupWhatsApp(direct.profiles, direct.credentials)
@@ -200,19 +229,17 @@ def _build_direct(settings: Settings) -> Container:
     from blakrasocial.application.direct import (
         AccountLinker,
         DirectSocialPublisher,
-        Network,
-        NetworkRegistry,
         PostQueue,
         PublishWorker,
         TokenRefresher,
     )
     from blakrasocial.infrastructure.logging import get_logger
-    from blakrasocial.infrastructure.networks import linkedin, tiktok
     from blakrasocial.infrastructure.networks.http import MediaSource, NetworkApi
-    from blakrasocial.infrastructure.networks.meta import facebook, graph, instagram, whatsapp
+    from blakrasocial.infrastructure.networks.meta import graph, whatsapp
     from blakrasocial.infrastructure.persistence import (
         SqlAuthorizationStateRepository,
         SqlCredentialRepository,
+        SqlDeletionReceiptRepository,
         SqlPostRepository,
         SqlProfileRepository,
         create_engine,
@@ -243,8 +270,61 @@ def _build_direct(settings: Settings) -> Container:
 
     resilient = ResilientHttpClient(network_http, settings.http_max_retries)
     media = MediaSource(upload_http)
+    registry, signed_requests, creator_info = _build_networks(settings, resilient, upload_http, media)
+
+    signal = AsyncioWorkSignal()
+    linker = AccountLinker(registry, profiles, credentials, states, clock, settings.oauth_callback_base)
+    queue = PostQueue(posts, credentials, registry, clock, signal)
+    storage = S3ObjectStorage(
+        endpoint_url=str(settings.storage_endpoint_url),
+        bucket=settings.storage_bucket,
+        region=settings.storage_region,
+        access_key_id=settings.storage_access_key_id.get_secret_value(),
+        secret_access_key=settings.storage_secret_access_key.get_secret_value(),
+        public_base_url=str(settings.storage_public_base_url),
+    )
+    runtime = WorkerRuntime(
+        PublishWorker(posts, credentials, registry, clock, logger=get_logger("worker")),
+        TokenRefresher(credentials, registry, clock),
+        signal,
+        settings.worker_poll_seconds,
+    )
+    return Container(
+        **_shared(settings, media_http),  # type: ignore[arg-type]
+        publisher=DirectSocialPublisher(profiles, linker, queue, storage),
+        messenger=whatsapp.CloudApiMessenger(
+            NetworkApi(resilient, "WhatsApp", graph.translate), credentials, settings.meta_graph_version
+        ),
+        idempotency=_idempotency(settings, closers),
+        clock=clock,
+        webhook_verifier=AyrshareWebhookVerifier(None, settings.webhook_max_age_seconds),  # no inbound webhooks
+        webhook_parser=AyrshareWebhookParser(),
+        closers=closers,
+        direct=DirectServices(
+            linker=linker,
+            profiles=profiles,
+            credentials=credentials,
+            runtime=runtime,
+            platforms=registry.platforms,
+            creator_info=creator_info,
+            receipts=SqlDeletionReceiptRepository(sessions),
+            signed_requests=signed_requests,
+        ),
+    )
+
+
+def _build_networks(
+    settings: Settings, resilient: ResilientHttpClient, upload_http: httpx.AsyncClient, media: MediaSource
+) -> tuple[NetworkRegistry, dict[Platform, SignedRequestVerifier], CreatorInfoReader | None]:
+    """One entry per network whose app id/secret is configured (others stay hidden in the app)."""
+    from blakrasocial.application.direct import Network, NetworkRegistry
+    from blakrasocial.infrastructure.networks import linkedin, tiktok
+    from blakrasocial.infrastructure.networks.http import NetworkApi
+    from blakrasocial.infrastructure.networks.meta import facebook, graph, instagram
+
     version = settings.meta_graph_version
     networks: dict[Platform, Network] = {}
+    signed_requests: dict[Platform, SignedRequestVerifier] = {}
     if settings.instagram_app_id and settings.instagram_app_secret:
         api = NetworkApi(resilient, "Instagram", graph.translate)
         networks[Platform.INSTAGRAM] = Network(
@@ -253,6 +333,7 @@ def _build_direct(settings: Settings) -> Container:
             ),
             instagram.InstagramConnector(api, version),
         )
+        signed_requests[Platform.INSTAGRAM] = SignedRequestVerifier(settings.instagram_app_secret.get_secret_value())
     if settings.facebook_app_id and settings.facebook_app_secret:
         api = NetworkApi(resilient, "Facebook", graph.translate)
         networks[Platform.FACEBOOK] = Network(
@@ -261,6 +342,7 @@ def _build_direct(settings: Settings) -> Container:
             ),
             facebook.FacebookConnector(api, version),
         )
+        signed_requests[Platform.FACEBOOK] = SignedRequestVerifier(settings.facebook_app_secret.get_secret_value())
     creator_info: CreatorInfoReader | None = None
     if settings.tiktok_client_key and settings.tiktok_client_secret:
         api = NetworkApi(resilient, "TikTok", tiktok.translate)
@@ -285,43 +367,7 @@ def _build_direct(settings: Settings) -> Container:
                 settings.linkedin_version(),
             ),
         )
-    registry = NetworkRegistry(networks)
-
-    signal = AsyncioWorkSignal()
-    linker = AccountLinker(registry, profiles, credentials, states, clock, settings.oauth_callback_base)
-    queue = PostQueue(posts, credentials, registry, clock, signal)
-    storage = S3ObjectStorage(
-        endpoint_url=str(settings.storage_endpoint_url),
-        bucket=settings.storage_bucket,
-        region=settings.storage_region,
-        access_key_id=settings.storage_access_key_id.get_secret_value(),
-        secret_access_key=settings.storage_secret_access_key.get_secret_value(),
-        public_base_url=str(settings.storage_public_base_url),
-    )
-    runtime = WorkerRuntime(
-        PublishWorker(posts, credentials, registry, clock, logger=get_logger("worker")),
-        TokenRefresher(credentials, registry, clock),
-        signal,
-        settings.worker_poll_seconds,
-    )
-    return Container(
-        **_shared(settings, media_http),  # type: ignore[arg-type]
-        publisher=DirectSocialPublisher(profiles, linker, queue, storage),
-        messenger=whatsapp.CloudApiMessenger(NetworkApi(resilient, "WhatsApp", graph.translate), credentials, version),
-        idempotency=_idempotency(settings, closers),
-        clock=clock,
-        webhook_verifier=AyrshareWebhookVerifier(None, settings.webhook_max_age_seconds),  # no inbound webhooks
-        webhook_parser=AyrshareWebhookParser(),
-        closers=closers,
-        direct=DirectServices(
-            linker=linker,
-            profiles=profiles,
-            credentials=credentials,
-            runtime=runtime,
-            platforms=registry.platforms,
-            creator_info=creator_info,
-        ),
-    )
+    return NetworkRegistry(networks), signed_requests, creator_info
 
 
 def _build_ayrshare(settings: Settings) -> Container:

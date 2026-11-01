@@ -107,6 +107,10 @@ class CredentialRepository(Protocol):
 
     async def expiring(self, before: datetime, limit: int) -> list[tuple[ProfileId, OAuthCredential]]: ...
 
+    async def delete_by_subject(self, platform: Platform, subject: str) -> int:
+        """Removes every credential the given network user approved (across all profiles)."""
+        ...
+
 
 class AuthorizationStateRepository(Protocol):
     async def put(self, state_hash: str, pending: PendingAuthorization) -> None: ...
@@ -128,3 +132,17 @@ class PostRepository(Protocol):
     async def claim_due(self, now: datetime, limit: int, lease: timedelta) -> Sequence[ClaimedTarget]: ...
 
     async def update_target(self, target_id: int, update: TargetUpdate) -> None: ...
+
+
+@dataclass(frozen=True, slots=True)
+class DeletionReceipt:
+    code: str
+    platform: Platform
+    removed: int
+    requested_at: datetime
+
+
+class DeletionReceiptRepository(Protocol):
+    async def add(self, receipt: DeletionReceipt) -> None: ...
+
+    async def get(self, code: str) -> DeletionReceipt | None: ...

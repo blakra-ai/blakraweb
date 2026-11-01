@@ -58,6 +58,18 @@ class CredentialRow(Base):
     expires_at: Mapped[datetime | None] = mapped_column(index=True)
     needs_reconnect: Mapped[bool] = mapped_column(Boolean, default=False)
     updated_at: Mapped[datetime]
+    subject_hash: Mapped[str | None] = mapped_column(String(64), index=True)  # sha256(platform|network user id)
+
+
+class DeletionReceiptRow(Base):
+    """Answers the networks' data-deletion status checks. Holds no personal data."""
+
+    __tablename__ = "deletion_receipts"
+
+    code: Mapped[str] = mapped_column(String(32), primary_key=True)
+    platform: Mapped[str] = mapped_column(String(16))
+    removed: Mapped[int] = mapped_column(Integer)
+    requested_at: Mapped[datetime]
 
 
 class AuthorizationStateRow(Base):

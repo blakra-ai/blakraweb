@@ -96,6 +96,7 @@ class InstagramOAuth:
                 access_token=token,
                 expires_at=datetime.now(UTC) + timedelta(seconds=int(long.body.get("expires_in", 5_184_000))),
                 scopes=tuple(str(permissions).split(",")),
+                subject=str(entry.get("user_id") or me.body.get("user_id")),
             )
         ]
 
