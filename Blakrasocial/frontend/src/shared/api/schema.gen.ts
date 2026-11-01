@@ -106,6 +106,23 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/accounts/tiktok/creator-info": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** TikTok account's current posting options (read before each TikTok post, as TikTok requires) */
+        get: operations["tiktok_creator_info_accounts_tiktok_creator_info_get"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/accounts/{platform}": {
         parameters: {
             query?: never;
@@ -472,10 +489,36 @@ export interface components {
          * @enum {string}
          */
         PublishState: "pending" | "scheduled" | "published" | "failed" | "partial" | "deleted";
+        /**
+         * TikTokCreatorInfoResponse
+         * @description Shown above the TikTok options; the composer may offer only these choices (TikTok UX rules).
+         */
+        TikTokCreatorInfoResponse: {
+            /** Nickname */
+            nickname: string;
+            /** Username */
+            username: string | null;
+            /** Avatarurl */
+            avatarUrl: string | null;
+            /** Privacylevels */
+            privacyLevels: components["schemas"]["TikTokVisibility"][];
+            /** Commentdisabled */
+            commentDisabled: boolean;
+            /** Duetdisabled */
+            duetDisabled: boolean;
+            /** Stitchdisabled */
+            stitchDisabled: boolean;
+            /** Maxvideoseconds */
+            maxVideoSeconds: number | null;
+            /** Canpost */
+            canPost: boolean;
+            /** Reason */
+            reason: string | null;
+        };
         /** TikTokOptionsIn */
         TikTokOptionsIn: {
-            /** @default public */
-            visibility?: components["schemas"]["TikTokVisibility"];
+            /** @description Required: TikTok has no default audience */
+            visibility?: components["schemas"]["TikTokVisibility"] | null;
             /**
              * Disablecomments
              * @default false
@@ -788,6 +831,38 @@ export interface operations {
                 };
                 content: {
                     "application/json": components["schemas"]["AccountsResponse"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    tiktok_creator_info_accounts_tiktok_creator_info_get: {
+        parameters: {
+            query?: never;
+            header?: {
+                "X-Profile-Key"?: string | null;
+                authorization?: string | null;
+            };
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["TikTokCreatorInfoResponse"];
                 };
             };
             /** @description Validation Error */

@@ -5,7 +5,12 @@ from typing import Annotated
 from fastapi import APIRouter, Query, Response, status
 
 from blakrasocial.api.dependencies import ContainerDep, ProfileDep
-from blakrasocial.api.schemas.accounts import AccountResponse, AccountsResponse, ConnectUrlResponse
+from blakrasocial.api.schemas.accounts import (
+    AccountResponse,
+    AccountsResponse,
+    ConnectUrlResponse,
+    TikTokCreatorInfoResponse,
+)
 from blakrasocial.application.dto import ConnectAccountCommand
 from blakrasocial.domain.enums import Platform
 
@@ -28,6 +33,17 @@ async def connect_url(
 async def list_accounts(profile: ProfileDep, container: ContainerDep) -> AccountsResponse:
     accounts = await container.list_accounts().execute(profile)
     return AccountsResponse(accounts=[AccountResponse.from_domain(a) for a in accounts])
+
+
+@router.get(
+    "/tiktok/creator-info",
+    summary="TikTok account's current posting options (read before each TikTok post, as TikTok requires)",
+)
+async def tiktok_creator_info(
+    profile: ProfileDep, container: ContainerDep, response: Response
+) -> TikTokCreatorInfoResponse:
+    response.headers["Cache-Control"] = "no-store"
+    return TikTokCreatorInfoResponse.from_domain(await container.tiktok_creator_info().execute(profile))
 
 
 @router.delete("/{platform}", status_code=status.HTTP_204_NO_CONTENT, summary="Disconnect a network")

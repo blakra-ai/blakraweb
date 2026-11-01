@@ -35,6 +35,8 @@ class IssueCode(StrEnum):
     SCHEDULE_UNSUPPORTED = "schedule_unsupported"
     SCHEDULE_IN_PAST = "schedule_in_past"
     OPTION_INVALID = "option_invalid"
+    PRIVACY_REQUIRED = "privacy_required"
+    BRANDED_CONTENT_PRIVATE = "branded_content_private"
 
 
 _MESSAGES: dict[IssueCode, str] = {
@@ -64,6 +66,8 @@ _MESSAGES: dict[IssueCode, str] = {
     IssueCode.SCHEDULE_UNSUPPORTED: "{platform} messages cannot be scheduled; they are sent immediately.",
     IssueCode.SCHEDULE_IN_PAST: "Schedule time must be at least {minMinutes} minutes in the future.",
     IssueCode.OPTION_INVALID: "{detail}",
+    IssueCode.PRIVACY_REQUIRED: "Choose who can see this {platform} post.",
+    IssueCode.BRANDED_CONTENT_PRIVATE: "Branded content visibility cannot be set to private.",
 }
 
 

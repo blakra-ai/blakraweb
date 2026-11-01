@@ -1,5 +1,9 @@
 {
-  "common": { "cancel": "Cancel", "retry": "Try again", "remove": "Remove" },
+  "common": {
+    "cancel": "Cancel",
+    "retry": "Try again",
+    "remove": "Remove"
+  },
   "nav": {
     "main": "Main navigation",
     "skip": "Skip to content",
@@ -117,7 +121,12 @@
     "shareReelsToFeed": "Also show the Reel in the main feed",
     "videoTitle": "Video title (optional)",
     "privacy": "Who can see this",
-    "tiktokVisibility": { "public": "Everyone", "friends": "Friends", "followers": "Followers (private accounts)", "private": "Only me" },
+    "tiktokVisibility": {
+      "public": "Everyone",
+      "friends": "Friends",
+      "followers": "Followers (private accounts)",
+      "private": "Only me"
+    },
     "disableComments": "Turn off comments",
     "disableDuet": "Turn off Duet",
     "disableStitch": "Turn off Stitch",
@@ -125,7 +134,11 @@
     "brandedContent": "Paid partnership",
     "brandOrganic": "Promoting my own brand",
     "visibility": "Visibility",
-    "linkedinVisibility": { "public": "Anyone", "connections": "Connections only", "loggedin": "LinkedIn members" },
+    "linkedinVisibility": {
+      "public": "Anyone",
+      "connections": "Connections only",
+      "loggedin": "LinkedIn members"
+    },
     "recipients": "Recipients",
     "recipientsHelp": "Phone numbers with country code, separated by commas or new lines."
   },
@@ -159,9 +172,14 @@
     "schedule_unsupported": "Can't be scheduled; it's sent right away.",
     "schedule_in_past": "Pick a time at least {{minMinutes}} minutes from now.",
     "option_invalid": "{{detail}}",
+    "privacy_required": "Choose who can see this {{platform}} post.",
+    "branded_content_private": "Branded content visibility cannot be set to private.",
     "media_rejected": "A file couldn't be used. Upload it again.",
     "invalid_value": "Please check this value.",
-    "invalid_request": "Please check this value."
+    "invalid_request": "Please check this value.",
+    "tiktok_cannot_post": "{{reason}}",
+    "tiktok_privacy_unavailable": "This TikTok account doesn't offer the chosen audience. Pick another one.",
+    "tiktok_disclosure_choice": "Choose 'Your brand', 'Branded content' or both, or turn off the disclosure."
   },
   "states": {
     "published": "Published",
@@ -187,5 +205,34 @@
     "cancelTitle": "Cancel this scheduled post?",
     "deleteBody": "It will be removed from the networks where that's possible. Instagram and TikTok don't allow deleting published posts through the API.",
     "deleted": "Post deleted"
+  },
+  "tiktok": {
+    "loadingCreator": "Checking your TikTok account…",
+    "postingAs": "Posting to TikTok as",
+    "creatorError": "Couldn't read your TikTok settings. Try again in a moment.",
+    "cannotPost": "TikTok isn't accepting posts from this account right now. Try again later.",
+    "choosePrivacy": "Choose who can see it",
+    "privateBlocked": "not allowed for branded content",
+    "allowUsers": "Allow users to",
+    "allowComments": "Comment",
+    "allowDuet": "Duet",
+    "allowStitch": "Stitch",
+    "disabledInApp": "Turned off in your TikTok app settings",
+    "disclose": "Disclose commercial content",
+    "discloseHelp": "Turn on if this post promotes yourself, a third party, or both.",
+    "yourBrand": "Your brand",
+    "yourBrandHelp": "You are promoting yourself or your own business.",
+    "brandedContent": "Branded content",
+    "brandedContentHelp": "You are promoting another brand or a third party.",
+    "label": {
+      "promotional": "Your post will be labeled as 'Promotional content'.",
+      "paidPartnership": "Your post will be labeled as 'Paid partnership'."
+    },
+    "processingNotice": "After publishing, it can take a few minutes for the post to appear on your TikTok profile.",
+    "consentPrefix": "By posting, you agree to TikTok's",
+    "and": "and",
+    "consentSuffix": ".",
+    "musicUsage": "Music Usage Confirmation",
+    "brandedPolicy": "Branded Content Policy"
   }
 }

@@ -405,7 +405,9 @@ async def test_tiktok_video_upload_and_status(http: httpx.AsyncClient) -> None:
     respx.get(f"{CDN}/clip.mp4").respond(content=b"0123456789AB")
     put = respx.put("https://upload.tiktok.test/x").respond(201)
     cred = credential(Platform.TIKTOK, "o1")
-    target = PostTarget(Platform.TIKTOK, ContentType.VIDEO, TikTokOptions(disable_duet=True))
+    target = PostTarget(
+        Platform.TIKTOK, ContentType.VIDEO, TikTokOptions(visibility=TikTokVisibility.PUBLIC, disable_duet=True)
+    )
     result = await connector.publish(cred, "Tik", target, [VIDEO])
     body = json.loads(init.calls[0].request.content)
     assert body["post_info"]["privacy_level"] == "PUBLIC_TO_EVERYONE" and body["post_info"]["disable_duet"] is True
@@ -440,10 +442,48 @@ async def test_tiktok_auth_error(http: httpx.AsyncClient) -> None:
     respx.post(f"{tiktok.API}/post/publish/creator_info/query/").respond(
         401, json={"error": {"code": "access_token_invalid", "message": "expired"}}
     )
+    target = PostTarget(Platform.TIKTOK, ContentType.VIDEO, TikTokOptions(visibility=TikTokVisibility.PUBLIC))
     with pytest.raises(ProviderAuthError):
+        await connector.publish(credential(Platform.TIKTOK), "x", target, [VIDEO])
+
+
+async def test_tiktok_refuses_to_post_without_a_chosen_audience(http: httpx.AsyncClient) -> None:
+    connector = tiktok.TikTokConnector(api(http, "TikTok", tiktok.translate), MediaSource(http))
+    with pytest.raises(ProviderRejected, match="Choose who can see"):
         await connector.publish(
             credential(Platform.TIKTOK), "x", PostTarget(Platform.TIKTOK, ContentType.VIDEO), [VIDEO]
         )
+
+
+@respx.mock
+async def test_tiktok_creator_info_maps_options_and_cannot_post(http: httpx.AsyncClient) -> None:
+    connector = tiktok.TikTokConnector(api(http, "TikTok", tiktok.translate), MediaSource(http))
+    route = respx.post(f"{tiktok.API}/post/publish/creator_info/query/")
+    route.respond(
+        json={
+            "data": {
+                "creator_nickname": "Blakra",
+                "creator_username": "blakra",
+                "privacy_level_options": ["PUBLIC_TO_EVERYONE", "FOLLOWER_OF_CREATOR", "SELF_ONLY", "NEW_ONE"],
+                "comment_disabled": False,
+                "duet_disabled": True,
+                "stitch_disabled": False,
+                "max_video_post_duration_sec": 300,
+            },
+            "error": {"code": "ok"},
+        }
+    )
+    info = await connector.creator_info(credential(Platform.TIKTOK))
+    assert info.nickname == "Blakra" and info.can_post and info.max_video_seconds == 300
+    assert info.privacy_levels == (TikTokVisibility.PUBLIC, TikTokVisibility.FOLLOWERS, TikTokVisibility.PRIVATE)
+    assert info.duet_disabled and not info.comment_disabled
+
+    route.respond(403, json={"error": {"code": "spam_risk_too_many_posts", "message": "cap"}})
+    blocked = await connector.creator_info(credential(Platform.TIKTOK))
+    assert not blocked.can_post and blocked.reason and "daily post limit" in blocked.reason
+    target = PostTarget(Platform.TIKTOK, ContentType.VIDEO, TikTokOptions(visibility=TikTokVisibility.PUBLIC))
+    with pytest.raises(ProviderRejected, match="daily post limit"):
+        await connector.publish(credential(Platform.TIKTOK), "x", target, [VIDEO])
 
 
 # ======================================================================= WhatsApp

@@ -1,10 +1,11 @@
-import { Controller, type Control, type UseFormRegister } from "react-hook-form";
+import { Controller, useWatch, type Control, type UseFormRegister, type UseFormSetValue } from "react-hook-form";
 import { useTranslation } from "react-i18next";
-import type { ContentType, Platform } from "@/shared/api/types";
-import { LINKEDIN_VISIBILITIES, TIKTOK_VISIBILITIES } from "@/shared/api/types";
+import type { ContentType, Platform, TikTokCreatorInfo } from "@/shared/api/types";
+import { LINKEDIN_VISIBILITIES } from "@/shared/api/types";
 import { PLATFORM_META, PlatformTile } from "@/shared/platform";
 import { Card, Input, Label, NativeSelect, Switch, Textarea } from "@/shared/ui";
 import type { ComposerValues } from "../schema/composerSchema";
+import { TikTokOptions } from "./TikTokOptions";
 import { WhatsAppNotice } from "./WhatsAppNotice";
 
 /** Content types that can be produced from browser uploads (documents need a separate storage adapter). */
@@ -15,10 +16,12 @@ interface Props {
   contentTypes: ContentType[];
   control: Control<ComposerValues>;
   register: UseFormRegister<ComposerValues>;
+  setValue: UseFormSetValue<ComposerValues>;
+  tiktokCreator: { data?: TikTokCreatorInfo | undefined; isPending: boolean; isError: boolean };
   recipientsError?: string | undefined;
 }
 
-function ToggleRow({ control, name, label }: { control: Control<ComposerValues>; name: `tiktok.${keyof ComposerValues["tiktok"]}` | "instagram.shareReelsToFeed"; label: string }) {
+function ToggleRow({ control, name, label }: { control: Control<ComposerValues>; name: "instagram.shareReelsToFeed"; label: string }) {
   return (
     <Controller
       control={control}
@@ -33,8 +36,9 @@ function ToggleRow({ control, name, label }: { control: Control<ComposerValues>;
   );
 }
 
-export function PlatformOptions({ platform, contentTypes, control, register, recipientsError }: Props) {
+export function PlatformOptions({ platform, contentTypes, control, register, setValue, tiktokCreator, recipientsError }: Props) {
   const { t } = useTranslation();
+  const contentType = useWatch({ control, name: `targets.${platform}.contentType` });
   const id = `ct-${platform}`;
   const types = contentTypes.filter((c) => UPLOADABLE.has(c));
 
@@ -68,24 +72,7 @@ export function PlatformOptions({ platform, contentTypes, control, register, rec
       )}
 
       {platform === "tiktok" && (
-        <div className="space-y-3">
-          <div className="space-y-1.5">
-            <Label htmlFor="tt-visibility">{t("options.privacy")}</Label>
-            <NativeSelect id="tt-visibility" {...register("tiktok.visibility")}>
-              {TIKTOK_VISIBILITIES.map((v) => (
-                <option key={v} value={v}>
-                  {t(`options.tiktokVisibility.${v}`)}
-                </option>
-              ))}
-            </NativeSelect>
-          </div>
-          <ToggleRow control={control} name="tiktok.disableComments" label={t("options.disableComments")} />
-          <ToggleRow control={control} name="tiktok.disableDuet" label={t("options.disableDuet")} />
-          <ToggleRow control={control} name="tiktok.disableStitch" label={t("options.disableStitch")} />
-          <ToggleRow control={control} name="tiktok.isAiGenerated" label={t("options.aiGenerated")} />
-          <ToggleRow control={control} name="tiktok.isBrandedContent" label={t("options.brandedContent")} />
-          <ToggleRow control={control} name="tiktok.isBrandOrganic" label={t("options.brandOrganic")} />
-        </div>
+        <TikTokOptions contentType={contentType} control={control} register={register} setValue={setValue} creator={tiktokCreator} />
       )}
 
       {platform === "linkedin" && (

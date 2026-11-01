@@ -5,7 +5,7 @@ import { useForm, useWatch } from "react-hook-form";
 import { useTranslation } from "react-i18next";
 import { Link } from "react-router-dom";
 import { toast } from "sonner";
-import { useAccounts } from "@/features/connections";
+import { useAccounts, useTikTokCreatorInfo } from "@/features/connections";
 import { MediaDropzone, MediaList, useMediaUpload } from "@/features/media";
 import { usePlatformRules } from "@/features/rules";
 import { ApiError } from "@/shared/api/ApiError";
@@ -16,6 +16,7 @@ import { Button, Card, CardContent, CardHeader, CardTitle, Label, Skeleton, Text
 import { ErrorState, PageHeader } from "@/app/layout/PageParts";
 import { buildPublishRequest, enabledPlatforms } from "../buildRequest";
 import { PlatformOptions } from "../components/PlatformOptions";
+import { TikTokConsent } from "../components/TikTokOptions";
 import { PreviewFrame } from "../components/preview/PreviewFrame";
 import { ScheduleField } from "../components/ScheduleField";
 import { TargetPicker } from "../components/TargetPicker";
@@ -23,6 +24,7 @@ import { ValidationPanel } from "../components/ValidationPanel";
 import { usePublishPost } from "../hooks/usePublishPost";
 import { composerSchema, defaultComposerValues, type ComposerValues } from "../schema/composerSchema";
 import { validateDraft, type ClientIssue, type ClientMedia } from "../validation/clientValidator";
+import { validateTikTok } from "../validation/tiktokRules";
 
 /** The networks may still be processing the post ("pending"); say so instead of claiming it is live. */
 const SUCCESS_MESSAGE: Partial<Record<string, string>> = {
@@ -43,6 +45,8 @@ export default function ComposerPage() {
   const form = useForm<ComposerValues>({ resolver: zodResolver(composerSchema), defaultValues: defaultComposerValues(), mode: "onChange" });
   const values = useWatch({ control: form.control }) as ComposerValues;
   const selected = enabledPlatforms(values);
+  const tiktokSelected = selected.includes("tiktok");
+  const tiktokCreator = useTikTokCreatorInfo(tiktokSelected && Boolean(accounts.data?.has("tiktok")));
   const activePreview = previewPlatform && selected.includes(previewPlatform) ? previewPlatform : selected[0];
 
   // Keep the chosen content type valid for each platform once rules load.
@@ -70,8 +74,8 @@ export default function ComposerPage() {
   );
 
   const clientIssues = useMemo(
-    () =>
-      rules.data
+    () => [
+      ...(rules.data
         ? validateDraft({
             rules: rules.data,
             targets: selected.map((platform) => ({ platform, contentType: values.targets[platform]!.contentType })),
@@ -80,8 +84,12 @@ export default function ComposerPage() {
             accounts: accounts.data,
             scheduled: values.mode === "schedule",
           })
-        : [],
-    [rules.data, selected, values, media, accounts.data],
+        : []),
+      ...(tiktokSelected
+        ? validateTikTok({ values: values.tiktok, contentType: values.targets.tiktok!.contentType, creator: tiktokCreator.data, media })
+        : []),
+    ],
+    [rules.data, selected, values, media, accounts.data, tiktokSelected, tiktokCreator.data],
   );
   const draft = JSON.stringify(buildPublishRequest(values, uploads.items));
   const issues = [...clientIssues, ...(serverIssues.draft === draft ? serverIssues.issues : [])];
@@ -168,6 +176,8 @@ export default function ComposerPage() {
                       contentTypes={rules.data.contentTypes(platform)}
                       control={form.control}
                       register={form.register}
+                      setValue={form.setValue}
+                      tiktokCreator={tiktokCreator}
                       recipientsError={form.formState.errors.whatsappRecipients?.message}
                     />
                   ))}
@@ -226,6 +236,7 @@ export default function ComposerPage() {
                 register={form.register}
                 error={form.formState.errors.scheduleAt?.message}
               />
+              {tiktokSelected && <TikTokConsent control={form.control} />}
               <Button
                 type="submit"
                 size="lg"

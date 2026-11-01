@@ -6,7 +6,7 @@ from datetime import timedelta
 from enum import StrEnum
 from typing import Protocol
 
-from blakrasocial.domain.entities import MediaAsset, OAuthCredential, PostTarget
+from blakrasocial.domain.entities import MediaAsset, OAuthCredential, PostTarget, TikTokCreatorInfo
 
 
 class ConnectorState(StrEnum):
@@ -54,3 +54,9 @@ class PlatformConnector(Protocol):
     async def poll(self, credential: OAuthCredential, handle: str) -> ConnectorResult: ...
 
     async def delete(self, credential: OAuthCredential, remote_id: str) -> None: ...
+
+
+class CreatorInfoReader(Protocol):
+    """TikTok: the creator's current posting options, read before every post (required by TikTok)."""
+
+    async def creator_info(self, credential: OAuthCredential) -> TikTokCreatorInfo: ...

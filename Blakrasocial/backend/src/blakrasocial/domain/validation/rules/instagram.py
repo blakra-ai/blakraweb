@@ -16,7 +16,7 @@ from blakrasocial.domain.validation.rule import PlatformRule, ValidationContext
 from blakrasocial.domain.validation.spec import GB, MB, ContentSpec, MediaConstraints
 from blakrasocial.domain.value_objects import VERTICAL_9_16, AspectRatioRange, Caption
 
-_IMAGE_EXT = frozenset({"jpg", "jpeg", "png"})
+_IMAGE_EXT = frozenset({"jpg", "jpeg"})  # Instagram accepts JPEG only
 _VIDEO_EXT = frozenset({"mp4", "mov"})
 _FEED_RATIOS = (AspectRatioRange(0.8, 1.91, "4:5 to 1.91:1"), VERTICAL_9_16)
 _CAPTION = 2200

@@ -64,7 +64,7 @@ class FacebookOptions(PlatformOptions):
 
 @dataclass(frozen=True, slots=True)
 class TikTokOptions(PlatformOptions):
-    visibility: TikTokVisibility = TikTokVisibility.PUBLIC
+    visibility: TikTokVisibility | None = None  # TikTok rules: the user must choose; there is no default
     disable_comments: bool = False
     disable_duet: bool = False
     disable_stitch: bool = False
@@ -75,6 +75,22 @@ class TikTokOptions(PlatformOptions):
     title: str | None = None
     cover_index: int = 0
     thumbnail_offset_ms: int | None = None
+
+
+@dataclass(frozen=True, slots=True)
+class TikTokCreatorInfo:
+    """What TikTok allows this creator right now; the composer must show and honor it (TikTok UX rules)."""
+
+    nickname: str
+    username: str | None
+    avatar_url: str | None
+    privacy_levels: tuple[TikTokVisibility, ...]
+    comment_disabled: bool
+    duet_disabled: bool
+    stitch_disabled: bool
+    max_video_seconds: int | None
+    can_post: bool = True
+    reason: str | None = None
 
 
 @dataclass(frozen=True, slots=True)

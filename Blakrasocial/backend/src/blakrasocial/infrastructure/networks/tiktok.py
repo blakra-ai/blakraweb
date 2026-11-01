@@ -20,7 +20,14 @@ from blakrasocial.application.errors import (
     ProviderRejected,
 )
 from blakrasocial.application.ports.platform_connector import ConnectorResult
-from blakrasocial.domain.entities import ConnectedAccount, MediaAsset, OAuthCredential, PostTarget, TikTokOptions
+from blakrasocial.domain.entities import (
+    ConnectedAccount,
+    MediaAsset,
+    OAuthCredential,
+    PostTarget,
+    TikTokCreatorInfo,
+    TikTokOptions,
+)
 from blakrasocial.domain.enums import ContentType, MediaKind, Platform, TikTokVisibility
 from blakrasocial.infrastructure.networks.http import MediaSource, NetworkApi, default_error
 
@@ -36,6 +43,7 @@ _PRIVACY = {
     TikTokVisibility.FOLLOWERS: "FOLLOWER_OF_CREATOR",
     TikTokVisibility.PRIVATE: "SELF_ONLY",
 }
+_FROM_TIKTOK = {v: k for k, v in _PRIVACY.items()}
 _AUTH = frozenset({"access_token_invalid", "scope_not_authorized", "scope_permission_missed", "invalid_grant"})
 _RATE = frozenset({"rate_limit_exceeded"})
 _FRIENDLY = {
@@ -154,7 +162,11 @@ class TikTokConnector:
         self, credential: OAuthCredential, caption: str, target: PostTarget, media: Sequence[MediaAsset]
     ) -> ConnectorResult:
         options = target.options if isinstance(target.options, TikTokOptions) else TikTokOptions()
-        creator = (await self._call(credential, "/post/publish/creator_info/query/", {})).get("data") or {}
+        if options.visibility is None:
+            raise ProviderRejected("Choose who can see this TikTok post.")
+        creator = await self._creator(credential)  # read fresh before every post (TikTok rules)
+        if not creator.get("can_post", True):
+            raise ProviderRejected(_cannot_post_message(creator))
         privacy = _PRIVACY[options.visibility]
         allowed = creator.get("privacy_level_options") or []
         if allowed and privacy not in allowed:
@@ -220,6 +232,36 @@ class TikTokConnector:
         await self._upload(data["upload_url"], video, chunk_size, count)
         return ConnectorResult.processing(str(data["publish_id"]), timedelta(seconds=15))
 
+    async def creator_info(self, credential: OAuthCredential) -> TikTokCreatorInfo:
+        creator = await self._creator(credential)
+        can_post = bool(creator.get("can_post", True))
+        max_seconds = creator.get("max_video_post_duration_sec")
+        return TikTokCreatorInfo(
+            nickname=str(creator.get("creator_nickname") or credential.account.display_name),
+            username=creator.get("creator_username"),
+            avatar_url=creator.get("creator_avatar_url"),
+            privacy_levels=tuple(
+                _FROM_TIKTOK[level] for level in creator.get("privacy_level_options") or [] if level in _FROM_TIKTOK
+            ),
+            comment_disabled=bool(creator.get("comment_disabled")),
+            duet_disabled=bool(creator.get("duet_disabled")),
+            stitch_disabled=bool(creator.get("stitch_disabled")),
+            max_video_seconds=int(max_seconds) if max_seconds else None,
+            can_post=can_post,
+            reason=None if can_post else _cannot_post_message(creator),
+        )
+
+    async def _creator(self, credential: OAuthCredential) -> dict[str, Any]:
+        try:
+            data: dict[str, Any] = (await self._call(credential, "/post/publish/creator_info/query/", {})).get(
+                "data"
+            ) or {}
+        except ProviderRejected as exc:
+            if exc.provider_code in _CANNOT_POST:  # TikTok answers "can't post right now" as an error code
+                return {"can_post": False, "reason_code": exc.provider_code}
+            raise
+        return data
+
     async def poll(self, credential: OAuthCredential, handle: str) -> ConnectorResult:
         found = (await self._call(credential, "/post/publish/status/fetch/", {"publish_id": handle})).get("data") or {}
         status = found.get("status")
@@ -274,6 +316,14 @@ class TikTokConnector:
             },
             content=data,
         )
+
+
+_CANNOT_POST = frozenset({"spam_risk_too_many_posts", "spam_risk_user_banned_from_posting", "reached_active_user_cap"})
+
+
+def _cannot_post_message(creator: dict[str, Any]) -> str:
+    code = str(creator.get("reason_code") or "")
+    return _FRIENDLY.get(code, "TikTok isn't accepting posts from this account right now. Try again later.")
 
 
 def chunk_plan(size: int) -> tuple[int, int]:

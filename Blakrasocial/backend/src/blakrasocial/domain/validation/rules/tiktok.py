@@ -1,4 +1,4 @@
-"""TikTok: one video, or a photo post of 1-35 images. Limits: Ayrshare TikTok media guidelines."""
+"""TikTok: one video, or a photo post of 1-35 images (TikTok Content Posting API media rules)."""
 
 from __future__ import annotations
 
@@ -61,15 +61,10 @@ class TikTokRule(PlatformRule):
         if not isinstance(options, TikTokOptions):
             return []
         issues: list[ValidationIssue] = []
-        if options.is_branded_content and options.visibility is TikTokVisibility.PRIVATE:
-            issues.append(
-                self._issue(
-                    IssueCode.OPTION_INVALID,
-                    "options.visibility",
-                    target,
-                    detail="TikTok branded content cannot be private.",
-                )
-            )
+        if options.visibility is None:
+            issues.append(self._issue(IssueCode.PRIVACY_REQUIRED, "options.visibility", target))
+        elif options.is_branded_content and options.visibility is TikTokVisibility.PRIVATE:
+            issues.append(self._issue(IssueCode.BRANDED_CONTENT_PRIVATE, "options.visibility", target))
         if target.content_type is ContentType.PHOTO and not 0 <= options.cover_index < max(len(media), 1):
             issues.append(
                 self._issue(

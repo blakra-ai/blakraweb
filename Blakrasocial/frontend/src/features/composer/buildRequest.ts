@@ -17,7 +17,7 @@ export function buildPublishRequest(values: ComposerValues, media: UploadItem[])
       case "facebook":
         return { platform, contentType, options: { title: values.facebook.title.trim() || null } };
       case "tiktok":
-        return { platform, contentType, options: { ...values.tiktok } };
+        return { platform, contentType, options: tiktokOptions(values.tiktok) };
       case "linkedin":
         return { platform, contentType, options: { visibility: values.linkedin.visibility } };
       case "whatsapp":
@@ -30,5 +30,17 @@ export function buildPublishRequest(values: ComposerValues, media: UploadItem[])
     media: media.filter((m) => m.accessUrl && m.mediaToken).map((m) => ({ url: m.accessUrl!, token: m.mediaToken! })),
     targets,
     scheduleAt: values.mode === "schedule" && values.scheduleAt ? new Date(values.scheduleAt).toISOString() : null,
+  };
+}
+
+function tiktokOptions(v: ComposerValues["tiktok"]) {
+  return {
+    visibility: v.visibility || null,
+    disableComments: !v.allowComments,
+    disableDuet: !v.allowDuet,
+    disableStitch: !v.allowStitch,
+    isAiGenerated: v.isAiGenerated,
+    isBrandedContent: v.discloseCommercial && v.isBrandedContent,
+    isBrandOrganic: v.discloseCommercial && v.isBrandOrganic,
   };
 }

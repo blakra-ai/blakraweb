@@ -2,6 +2,7 @@ from __future__ import annotations
 
 import base64
 import binascii
+from datetime import UTC, date, datetime
 from functools import lru_cache
 from typing import Annotated, Literal
 
@@ -54,7 +55,9 @@ class Settings(BaseSettings):
     tiktok_client_secret: SecretStr | None = None
     linkedin_client_id: str | None = None
     linkedin_client_secret: SecretStr | None = None
-    linkedin_api_version: str = "202610"
+    # LinkedIn retires each monthly API version after about a year. Empty = use the version from
+    # two months ago, which always exists and never ages out. Pin a YYYYMM value only to debug.
+    linkedin_api_version: str = Field("", pattern=r"^(\d{6})?$")
 
     # --- Caller authentication (tokens issued by the host platform) ---
     auth_jwt_jwks_url: HttpUrl | None = None
@@ -145,6 +148,13 @@ class Settings(BaseSettings):
                 raise ValueError(f"Set both the id and the secret for {label} (or neither)")
         if self.environment == "production" and self.public_api_base_url and self.public_api_base_url.scheme != "https":
             raise ValueError("PUBLIC_API_BASE_URL must use https in production")
+
+    def linkedin_version(self, today: date | None = None) -> str:
+        if self.linkedin_api_version:
+            return self.linkedin_api_version
+        day = today or datetime.now(UTC).date()
+        months = day.year * 12 + day.month - 1 - 2
+        return f"{months // 12}{months % 12 + 1:02d}"
 
     def encryption_keys(self) -> list[tuple[str, bytes]]:
         """`kid:base64key` entries; the first one encrypts, all of them decrypt (key rotation)."""

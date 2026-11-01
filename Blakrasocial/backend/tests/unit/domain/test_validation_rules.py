@@ -117,19 +117,25 @@ def test_missing_connection_is_reported(registry) -> None:  # type: ignore[no-un
 
 
 def test_tiktok_photo_rules(registry) -> None:  # type: ignore[no-untyped-def]
-    target = PostTarget(Platform.TIKTOK, ContentType.PHOTO, TikTokOptions(cover_index=0))
+    public = TikTokVisibility.PUBLIC
+    target = PostTarget(Platform.TIKTOK, ContentType.PHOTO, TikTokOptions(visibility=public, cover_index=0))
     assert codes(registry, target, [image()] * 3) == set()
     assert IssueCode.MEDIA_FORMAT in codes(registry, target, [image(ext="png")])
     assert IssueCode.MEDIA_KIND in codes(registry, target, [video()])
-    bad_cover = PostTarget(Platform.TIKTOK, ContentType.PHOTO, TikTokOptions(cover_index=5))
+    bad_cover = PostTarget(Platform.TIKTOK, ContentType.PHOTO, TikTokOptions(visibility=public, cover_index=5))
     assert IssueCode.OPTION_INVALID in codes(registry, bad_cover, [image()])
 
 
 def test_tiktok_branded_content_cannot_be_private(registry) -> None:  # type: ignore[no-untyped-def]
     options = TikTokOptions(visibility=TikTokVisibility.PRIVATE, is_branded_content=True)
-    assert IssueCode.OPTION_INVALID in codes(
+    assert IssueCode.BRANDED_CONTENT_PRIVATE in codes(
         registry, PostTarget(Platform.TIKTOK, ContentType.VIDEO, options), [video()]
     )
+
+
+def test_tiktok_audience_must_be_chosen(registry) -> None:  # type: ignore[no-untyped-def]
+    unset = PostTarget(Platform.TIKTOK, ContentType.VIDEO, TikTokOptions())
+    assert IssueCode.PRIVACY_REQUIRED in codes(registry, unset, [video()])
 
 
 def test_linkedin_text_post_document_and_visibility(registry) -> None:  # type: ignore[no-untyped-def]

@@ -3,8 +3,8 @@ from __future__ import annotations
 from datetime import datetime
 
 from blakrasocial.api.schemas.base import CamelModel
-from blakrasocial.domain.entities import ConnectedAccount, ConnectUrl
-from blakrasocial.domain.enums import Platform
+from blakrasocial.domain.entities import ConnectedAccount, ConnectUrl, TikTokCreatorInfo
+from blakrasocial.domain.enums import Platform, TikTokVisibility
 
 
 class ConnectUrlResponse(CamelModel):
@@ -40,3 +40,33 @@ class AccountResponse(CamelModel):
 
 class AccountsResponse(CamelModel):
     accounts: list[AccountResponse]
+
+
+class TikTokCreatorInfoResponse(CamelModel):
+    """Shown above the TikTok options; the composer may offer only these choices (TikTok UX rules)."""
+
+    nickname: str
+    username: str | None
+    avatar_url: str | None
+    privacy_levels: list[TikTokVisibility]
+    comment_disabled: bool
+    duet_disabled: bool
+    stitch_disabled: bool
+    max_video_seconds: int | None
+    can_post: bool
+    reason: str | None
+
+    @classmethod
+    def from_domain(cls, info: TikTokCreatorInfo) -> TikTokCreatorInfoResponse:
+        return cls(
+            nickname=info.nickname,
+            username=info.username,
+            avatar_url=info.avatar_url,
+            privacy_levels=list(info.privacy_levels),
+            comment_disabled=info.comment_disabled,
+            duet_disabled=info.duet_disabled,
+            stitch_disabled=info.stitch_disabled,
+            max_video_seconds=info.max_video_seconds,
+            can_post=info.can_post,
+            reason=info.reason,
+        )

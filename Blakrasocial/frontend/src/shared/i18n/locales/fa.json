@@ -1,5 +1,9 @@
 {
-  "common": { "cancel": "انصراف", "retry": "تلاش دوباره", "remove": "حذف" },
+  "common": {
+    "cancel": "انصراف",
+    "retry": "تلاش دوباره",
+    "remove": "حذف"
+  },
   "nav": {
     "main": "منوی اصلی",
     "skip": "رفتن به محتوا",
@@ -117,7 +121,12 @@
     "shareReelsToFeed": "نمایش ریلز در فید اصلی هم",
     "videoTitle": "عنوان ویدیو (اختیاری)",
     "privacy": "چه کسانی ببینند",
-    "tiktokVisibility": { "public": "همه", "friends": "دوستان", "followers": "دنبال‌کنندگان (حساب خصوصی)", "private": "فقط من" },
+    "tiktokVisibility": {
+      "public": "همه",
+      "friends": "دوستان",
+      "followers": "دنبال‌کنندگان (حساب خصوصی)",
+      "private": "فقط من"
+    },
     "disableComments": "بستن نظرها",
     "disableDuet": "بستن Duet",
     "disableStitch": "بستن Stitch",
@@ -125,7 +134,11 @@
     "brandedContent": "همکاری تبلیغاتی پولی",
     "brandOrganic": "تبلیغ برند خودم",
     "visibility": "نمایش برای",
-    "linkedinVisibility": { "public": "همه", "connections": "فقط ارتباطات", "loggedin": "اعضای لینکدین" },
+    "linkedinVisibility": {
+      "public": "همه",
+      "connections": "فقط ارتباطات",
+      "loggedin": "اعضای لینکدین"
+    },
     "recipients": "گیرندگان",
     "recipientsHelp": "شماره تلفن با کد کشور؛ با ویرگول یا خط جدید جدا کنید."
   },
@@ -159,9 +172,14 @@
     "schedule_unsupported": "قابل زمان‌بندی نیست و فوراً ارسال می‌شود.",
     "schedule_in_past": "زمانی دست‌کم {{minMinutes}} دقیقه بعد از اکنون انتخاب کنید.",
     "option_invalid": "{{detail}}",
+    "privacy_required": "مشخص کنید چه کسانی این پست {{platform}} را ببینند.",
+    "branded_content_private": "محتوای تبلیغاتی (Branded content) نمی‌تواند خصوصی باشد.",
     "media_rejected": "یکی از فایل‌ها قابل استفاده نیست. آن را دوباره بارگذاری کنید.",
     "invalid_value": "لطفاً این مقدار را بررسی کنید.",
-    "invalid_request": "لطفاً این مقدار را بررسی کنید."
+    "invalid_request": "لطفاً این مقدار را بررسی کنید.",
+    "tiktok_cannot_post": "{{reason}}",
+    "tiktok_privacy_unavailable": "این حساب تیک‌تاک مخاطب انتخاب‌شده را ندارد. گزینهٔ دیگری انتخاب کنید.",
+    "tiktok_disclosure_choice": "«برند خودم»، «محتوای برند دیگر» یا هر دو را انتخاب کنید، یا اعلام محتوای تجاری را خاموش کنید."
   },
   "states": {
     "published": "منتشر شد",
@@ -187,5 +205,34 @@
     "cancelTitle": "این پست زمان‌بندی‌شده لغو شود؟",
     "deleteBody": "از شبکه‌هایی که امکانش را می‌دهند حذف می‌شود. اینستاگرام و تیک‌تاک حذف پست منتشرشده از طریق API را اجازه نمی‌دهند.",
     "deleted": "پست حذف شد"
+  },
+  "tiktok": {
+    "loadingCreator": "در حال بررسی حساب تیک‌تاک…",
+    "postingAs": "انتشار در تیک‌تاک با حساب",
+    "creatorError": "تنظیمات تیک‌تاک خوانده نشد. چند لحظه بعد دوباره امتحان کنید.",
+    "cannotPost": "تیک‌تاک فعلاً از این حساب پست نمی‌پذیرد. بعداً دوباره امتحان کنید.",
+    "choosePrivacy": "انتخاب کنید چه کسانی ببینند",
+    "privateBlocked": "برای محتوای تبلیغاتی مجاز نیست",
+    "allowUsers": "اجازه به کاربران برای",
+    "allowComments": "نظر دادن",
+    "allowDuet": "Duet",
+    "allowStitch": "Stitch",
+    "disabledInApp": "در تنظیمات اپ تیک‌تاک شما خاموش است",
+    "disclose": "اعلام محتوای تجاری",
+    "discloseHelp": "اگر این پست خودتان، یک برند دیگر یا هر دو را تبلیغ می‌کند، روشن کنید.",
+    "yourBrand": "برند خودم",
+    "yourBrandHelp": "خودتان یا کسب‌وکار خودتان را تبلیغ می‌کنید.",
+    "brandedContent": "محتوای برند دیگر (Branded content)",
+    "brandedContentHelp": "برند یا شخص دیگری را تبلیغ می‌کنید.",
+    "label": {
+      "promotional": "پست شما با برچسب «Promotional content» نمایش داده می‌شود.",
+      "paidPartnership": "پست شما با برچسب «Paid partnership» نمایش داده می‌شود."
+    },
+    "processingNotice": "بعد از انتشار، ممکن است چند دقیقه طول بکشد تا پست در پروفایل تیک‌تاک دیده شود.",
+    "consentPrefix": "با انتشار، با",
+    "and": "و",
+    "consentSuffix": "تیک‌تاک موافقت می‌کنید.",
+    "musicUsage": "تأییدیهٔ استفاده از موسیقی (Music Usage Confirmation)",
+    "brandedPolicy": "سیاست محتوای برند (Branded Content Policy)"
   }
 }

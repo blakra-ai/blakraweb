@@ -16,7 +16,7 @@ from blakrasocial.domain.entities import (
     PostTarget,
     TikTokOptions,
 )
-from blakrasocial.domain.enums import ContentType, MediaKind, Platform, PublishState
+from blakrasocial.domain.enums import ContentType, MediaKind, Platform, PublishState, TikTokVisibility
 from blakrasocial.domain.value_objects import PostId
 
 _PLATFORM_VALUES = {p.value for p in Platform}
@@ -101,7 +101,7 @@ def _facebook(target: PostTarget) -> dict[str, Any]:
 def _tiktok(target: PostTarget) -> dict[str, Any]:
     opts = target.options if isinstance(target.options, TikTokOptions) else TikTokOptions()
     result: dict[str, Any] = {
-        "visibility": opts.visibility.value,
+        "visibility": (opts.visibility or TikTokVisibility.PUBLIC).value,
         "disableComments": opts.disable_comments,
         "isBrandedContent": opts.is_branded_content,
         "isBrandOrganic": opts.is_brand_organic,

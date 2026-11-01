@@ -51,7 +51,7 @@ def load_options(platform: Platform, data: dict[str, Any]) -> PlatformOptions:
     if not data:
         return cls()
     values = dict(data)
-    if cls is TikTokOptions and "visibility" in values:
+    if cls is TikTokOptions and values.get("visibility") is not None:
         values["visibility"] = TikTokVisibility(values["visibility"])
     if cls is LinkedInOptions and "visibility" in values:
         values["visibility"] = LinkedInVisibility(values["visibility"])

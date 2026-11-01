@@ -7,6 +7,7 @@ from dataclasses import dataclass, field
 import httpx
 
 from blakrasocial.application.direct import AccountLinker
+from blakrasocial.application.direct.creator_info import GetTikTokCreatorInfo
 from blakrasocial.application.errors import NotConfigured
 from blakrasocial.application.ports import (
     CallerAuthenticator,
@@ -20,6 +21,7 @@ from blakrasocial.application.ports import (
     WebhookEventParser,
     WebhookSignatureVerifier,
 )
+from blakrasocial.application.ports.platform_connector import CreatorInfoReader
 from blakrasocial.application.ports.repositories import CredentialRepository, ProfileRepository
 from blakrasocial.application.use_cases import (
     ConnectAccount,
@@ -67,6 +69,7 @@ class DirectServices:
     credentials: CredentialRepository
     runtime: WorkerRuntime
     platforms: frozenset[Platform] = frozenset()
+    creator_info: CreatorInfoReader | None = None
 
 
 @dataclass
@@ -141,6 +144,12 @@ class Container:
         if self.direct is None:
             raise NotConfigured("This endpoint is available only when PUBLISHER=direct.")
         return self.direct
+
+    def tiktok_creator_info(self) -> GetTikTokCreatorInfo:
+        direct = self.require_direct()
+        if direct.creator_info is None:
+            raise NotConfigured("TikTok isn't set up for this service.")
+        return GetTikTokCreatorInfo(direct.credentials, direct.creator_info, self.clock)
 
     def setup_whatsapp(self) -> SetupWhatsApp:
         direct = self.require_direct()
@@ -252,14 +261,17 @@ def _build_direct(settings: Settings) -> Container:
             ),
             facebook.FacebookConnector(api, version),
         )
+    creator_info: CreatorInfoReader | None = None
     if settings.tiktok_client_key and settings.tiktok_client_secret:
         api = NetworkApi(resilient, "TikTok", tiktok.translate)
+        tiktok_connector = tiktok.TikTokConnector(
+            NetworkApi(ResilientHttpClient(upload_http, settings.http_max_retries), "TikTok", tiktok.translate),
+            media,
+        )
+        creator_info = tiktok_connector
         networks[Platform.TIKTOK] = Network(
             tiktok.TikTokOAuth(api, settings.tiktok_client_key, settings.tiktok_client_secret.get_secret_value()),
-            tiktok.TikTokConnector(
-                NetworkApi(ResilientHttpClient(upload_http, settings.http_max_retries), "TikTok", tiktok.translate),
-                media,
-            ),
+            tiktok_connector,
         )
     if settings.linkedin_client_id and settings.linkedin_client_secret:
         api = NetworkApi(resilient, "LinkedIn", linkedin.translate)
@@ -270,7 +282,7 @@ def _build_direct(settings: Settings) -> Container:
             linkedin.LinkedInConnector(
                 NetworkApi(ResilientHttpClient(upload_http, settings.http_max_retries), "LinkedIn", linkedin.translate),
                 media,
-                settings.linkedin_api_version,
+                settings.linkedin_version(),
             ),
         )
     registry = NetworkRegistry(networks)
@@ -307,6 +319,7 @@ def _build_direct(settings: Settings) -> Container:
             credentials=credentials,
             runtime=runtime,
             platforms=registry.platforms,
+            creator_info=creator_info,
         ),
     )
 

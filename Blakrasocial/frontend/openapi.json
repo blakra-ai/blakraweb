@@ -342,6 +342,71 @@
         }
       }
     },
+    "/accounts/tiktok/creator-info": {
+      "get": {
+        "tags": [
+          "accounts"
+        ],
+        "summary": "TikTok account's current posting options (read before each TikTok post, as TikTok requires)",
+        "operationId": "tiktok_creator_info_accounts_tiktok_creator_info_get",
+        "parameters": [
+          {
+            "name": "X-Profile-Key",
+            "in": "header",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "X-Profile-Key"
+            }
+          },
+          {
+            "name": "authorization",
+            "in": "header",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Authorization"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/TikTokCreatorInfoResponse"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
     "/accounts/{platform}": {
       "delete": {
         "tags": [
@@ -1804,11 +1869,109 @@
         ],
         "title": "PublishState"
       },
+      "TikTokCreatorInfoResponse": {
+        "properties": {
+          "nickname": {
+            "type": "string",
+            "title": "Nickname"
+          },
+          "username": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Username"
+          },
+          "avatarUrl": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Avatarurl"
+          },
+          "privacyLevels": {
+            "items": {
+              "$ref": "#/components/schemas/TikTokVisibility"
+            },
+            "type": "array",
+            "title": "Privacylevels"
+          },
+          "commentDisabled": {
+            "type": "boolean",
+            "title": "Commentdisabled"
+          },
+          "duetDisabled": {
+            "type": "boolean",
+            "title": "Duetdisabled"
+          },
+          "stitchDisabled": {
+            "type": "boolean",
+            "title": "Stitchdisabled"
+          },
+          "maxVideoSeconds": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Maxvideoseconds"
+          },
+          "canPost": {
+            "type": "boolean",
+            "title": "Canpost"
+          },
+          "reason": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Reason"
+          }
+        },
+        "additionalProperties": false,
+        "type": "object",
+        "required": [
+          "nickname",
+          "username",
+          "avatarUrl",
+          "privacyLevels",
+          "commentDisabled",
+          "duetDisabled",
+          "stitchDisabled",
+          "maxVideoSeconds",
+          "canPost",
+          "reason"
+        ],
+        "title": "TikTokCreatorInfoResponse",
+        "description": "Shown above the TikTok options; the composer may offer only these choices (TikTok UX rules)."
+      },
       "TikTokOptionsIn": {
         "properties": {
           "visibility": {
-            "$ref": "#/components/schemas/TikTokVisibility",
-            "default": "public"
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/TikTokVisibility"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "description": "Required: TikTok has no default audience"
           },
           "disableComments": {
             "type": "boolean",

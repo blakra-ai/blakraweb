@@ -13,6 +13,7 @@ export type LinkedInVisibility = Schemas["LinkedInVisibility"];
 export type Account = Schemas["AccountResponse"];
 export type AccountsResponse = Schemas["AccountsResponse"];
 export type ConnectUrlResponse = Schemas["ConnectUrlResponse"];
+export type TikTokCreatorInfo = Schemas["TikTokCreatorInfoResponse"];
 
 export type UploadUrlRequest = Schemas["UploadUrlRequest"];
 export type UploadUrlResponse = Schemas["UploadUrlResponse"];
