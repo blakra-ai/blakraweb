@@ -106,7 +106,7 @@ docker compose up --build              # API :8000 (+ Redis), web :5173
 ## Tests and checks
 
 ```bash
-cd backend  && uv run pytest && uv run ruff check . && uv run mypy src     # 89 tests
+cd backend  && uv run pytest && uv run ruff check . && uv run mypy src     # 90 tests
 cd frontend && npm test && npm run lint && npm run build
 ```
 
