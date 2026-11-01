@@ -17,13 +17,27 @@ import pytest
 from fastapi.testclient import TestClient
 
 from blakrasocial.application.ports.repositories import profile_id_of
-from blakrasocial.container import Container, DirectServices
+from blakrasocial.container import AccountServices, Container, DirectServices
 from blakrasocial.domain.entities import OAuthCredential, TikTokCreatorInfo
 from blakrasocial.domain.enums import Platform, TikTokVisibility
 from blakrasocial.domain.value_objects import ProfileKey
+from blakrasocial.infrastructure.accounts import (
+    Argon2PasswordHasher,
+    BuiltinTokenAuthenticator,
+    CompositeAuthenticator,
+    InMemoryLoginThrottle,
+    JwtAccessTokenIssuer,
+)
 from blakrasocial.infrastructure.idempotency import InMemoryIdempotencyStore
 from blakrasocial.infrastructure.networks.meta.signed_request import SignedRequestVerifier
-from blakrasocial.infrastructure.persistence import SqlDeletionReceiptRepository, create_engine, session_factory
+from blakrasocial.infrastructure.persistence import (
+    SqlDeletionReceiptRepository,
+    SqlInviteRepository,
+    SqlSessionRepository,
+    SqlUserRepository,
+    create_engine,
+    session_factory,
+)
 from blakrasocial.infrastructure.persistence.models import Base
 from blakrasocial.infrastructure.security import HmacMediaSigner, JwtCallerAuthenticator, ServiceKeyVerifier
 from blakrasocial.main import create_app
@@ -42,6 +56,7 @@ async def _reset() -> None:
 
 
 META_SECRET = "fb-app-secret-for-tests"
+SESSION_SECRET = "session-secret-for-tests-0123456789abcdef"
 
 
 class FakeCreatorInfo:
@@ -94,14 +109,25 @@ def client() -> Iterator[tuple[TestClient, Holder]]:
             signer=HmacMediaSigner("m" * 40, now=world.clock.now),
             idempotency=InMemoryIdempotencyStore(),
             clock=world.clock,
-            authenticator=JwtCallerAuthenticator(
-                issuer="https://host.example", audience="blakrasocial", algorithms=["HS256"], secret=JWT_SECRET
+            authenticator=CompositeAuthenticator(
+                BuiltinTokenAuthenticator(SESSION_SECRET),
+                JwtCallerAuthenticator(
+                    issuer="https://host.example", audience="blakrasocial", algorithms=["HS256"], secret=JWT_SECRET
+                ),
             ),
             service_keys=ServiceKeyVerifier([SERVICE_KEY]),
             webhook_verifier=AyrshareWebhookVerifier(None),
             webhook_parser=AyrshareWebhookParser(),
             event_sink=RecordingSink(),
             closers=[engine],
+            accounts=AccountServices(
+                users=SqlUserRepository(session_factory(engine), world.cipher),
+                sessions=SqlSessionRepository(session_factory(engine)),
+                invites=SqlInviteRepository(session_factory(engine)),
+                hasher=Argon2PasswordHasher(),
+                throttle=InMemoryLoginThrottle(max_failures=3),
+                issuer=JwtAccessTokenIssuer(SESSION_SECRET),
+            ),
             direct=DirectServices(
                 world.linker,
                 world.profiles,
@@ -285,3 +311,92 @@ def test_tiktok_creator_info_endpoint(client: tuple[TestClient, Holder]) -> None
         "canPost": True,
         "reason": None,
     }
+
+
+CSRF = {"X-Requested-With": "blakrasocial"}
+
+
+def _bearer(session: dict[str, object]) -> dict[str, str]:
+    user = session["user"]
+    assert isinstance(user, dict)
+    return {"Authorization": f"Bearer {session['accessToken']}", "X-Profile-Key": str(user["profileKey"])}
+
+
+def _token(link: str) -> str:
+    assert "/invite#" in link
+    return link.split("#", 1)[1]
+
+
+def test_accounts_invite_sign_in_refresh_rotation_and_admin_rules(client: tuple[TestClient, Holder]) -> None:
+    http, _ = client
+    container = http.app.state.container  # type: ignore[attr-defined]
+    owner = http.portal.call(container.bootstrap_admin().execute, "Owner@Blakra.com", "Blakra")
+    token = owner.token
+
+    info = http.get(f"/auth/invites/{token}").json()
+    assert info == {"email": "owner@blakra.com", "title": "Blakra", "passwordSet": False}
+    assert http.post(f"/auth/invites/{token}", json={"password": "Str0ng-pass!"}).status_code == 403  # no CSRF header
+    weak = http.post(f"/auth/invites/{token}", json={"password": "short"}, headers=CSRF)
+    assert weak.status_code == 422
+    admin = http.post(f"/auth/invites/{token}", json={"password": "Str0ng-pass!"}, headers=CSRF)
+    assert admin.status_code == 200 and admin.json()["user"]["role"] == "admin"
+    assert "bs_session" in admin.cookies and "httponly" in admin.headers["set-cookie"].lower()
+    assert http.post(f"/auth/invites/{token}", json={"password": "Str0ng-pass!"}, headers=CSRF).status_code == 404
+
+    created = http.post(
+        "/admin/users", json={"email": "cafe@example.com", "title": "Cafe"}, headers=_bearer(admin.json()) | CSRF
+    )
+    assert created.status_code == 201
+    customer_link = created.json()["link"]
+    dup = http.post(
+        "/admin/users", json={"email": "CAFE@example.com", "title": "x"}, headers=_bearer(admin.json()) | CSRF
+    )
+    assert dup.status_code == 409
+
+    http.cookies.clear()
+    customer = http.post(f"/auth/invites/{_token(customer_link)}", json={"password": "Open-daily-24h!"}, headers=CSRF)
+    assert customer.status_code == 200 and customer.json()["user"]["role"] == "customer"
+    assert customer.json()["user"]["profileKey"] != admin.json()["user"]["profileKey"]
+    assert http.get("/accounts", headers=_bearer(customer.json())).status_code == 200
+    assert http.get("/admin/users", headers=_bearer(customer.json())).status_code == 403
+
+    first_cookie = http.cookies.get("bs_session")
+    rotated = http.post("/auth/refresh", headers=CSRF)
+    assert rotated.status_code == 200 and http.cookies.get("bs_session") != first_cookie
+    newest = http.cookies.get("bs_session")
+    http.cookies.set("bs_session", first_cookie)  # replay of the old, already-rotated token
+    assert http.post("/auth/refresh", headers=CSRF).status_code == 401
+    http.cookies.set("bs_session", newest)
+    assert http.post("/auth/refresh", headers=CSRF).status_code == 401  # whole sign-in was revoked
+
+    users = http.get("/admin/users", headers=_bearer(admin.json())).json()["users"]
+    cafe = next(u for u in users if u["email"] == "cafe@example.com")
+    assert cafe["passwordSet"] is True
+    off = http.post(f"/admin/users/{cafe['id']}/disable", headers=_bearer(admin.json()) | CSRF)
+    assert off.status_code == 200 and off.json()["disabled"] is True
+    login = http.post("/auth/login", json={"email": "cafe@example.com", "password": "Open-daily-24h!"}, headers=CSRF)
+    assert login.status_code == 401
+    me_off = http.post(f"/admin/users/{admin.json()['user']['id']}/disable", headers=_bearer(admin.json()) | CSRF)
+    assert me_off.status_code == 403
+
+
+def test_login_errors_are_generic_and_throttled(client: tuple[TestClient, Holder]) -> None:
+    http, _ = client
+    container = http.app.state.container  # type: ignore[attr-defined]
+    link = http.portal.call(container.bootstrap_admin().execute, "boss@blakra.com", "Blakra")
+    assert (
+        http.post(f"/auth/invites/{link.token}", json={"password": "correct-horse-9"}, headers=CSRF).status_code == 200
+    )
+
+    unknown = http.post("/auth/login", json={"email": "nobody@blakra.com", "password": "whatever-123"}, headers=CSRF)
+    wrong = http.post("/auth/login", json={"email": "boss@blakra.com", "password": "wrong-password"}, headers=CSRF)
+    assert unknown.status_code == wrong.status_code == 401
+    assert unknown.json()["detail"] == wrong.json()["detail"]
+    for _ in range(2):
+        http.post("/auth/login", json={"email": "boss@blakra.com", "password": "wrong-password"}, headers=CSRF)
+    locked = http.post("/auth/login", json={"email": "boss@blakra.com", "password": "correct-horse-9"}, headers=CSRF)
+    assert locked.status_code == 429 and int(locked.headers["retry-after"]) > 0
+
+    reset = http.portal.call(container.bootstrap_admin().execute, "boss@blakra.com", "Blakra")  # forgot password
+    assert http.get(f"/auth/invites/{link.token}").status_code == 404  # older link no longer works
+    assert http.get(f"/auth/invites/{reset.token}").json()["passwordSet"] is True

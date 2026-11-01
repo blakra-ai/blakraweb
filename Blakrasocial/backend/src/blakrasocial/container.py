@@ -7,6 +7,20 @@ from typing import TYPE_CHECKING
 
 import httpx
 
+from blakrasocial.application.accounts.service import (
+    AcceptInvite,
+    AccountPolicy,
+    BootstrapAdmin,
+    ChangePassword,
+    CurrentUser,
+    InspectInvite,
+    Invitations,
+    ManageCustomers,
+    RefreshAccess,
+    SignIn,
+    SignOut,
+)
+from blakrasocial.application.accounts.service import Sessions as AccountSessions
 from blakrasocial.application.direct import AccountLinker
 from blakrasocial.application.direct.creator_info import GetTikTokCreatorInfo
 from blakrasocial.application.direct.data_deletion import ForgetNetworkUser, GetDeletionReceipt
@@ -22,6 +36,14 @@ from blakrasocial.application.ports import (
     SocialPublisher,
     WebhookEventParser,
     WebhookSignatureVerifier,
+)
+from blakrasocial.application.ports.accounts import (
+    AccessTokenIssuer,
+    InviteRepository,
+    LoginThrottle,
+    PasswordHasher,
+    SessionRepository,
+    UserRepository,
 )
 from blakrasocial.application.ports.platform_connector import CreatorInfoReader
 from blakrasocial.application.ports.repositories import (
@@ -86,6 +108,19 @@ class DirectServices:
 
 
 @dataclass
+class AccountServices:
+    """Built-in sign-in (direct mode only, it needs the database)."""
+
+    users: UserRepository
+    sessions: SessionRepository
+    invites: InviteRepository
+    hasher: PasswordHasher
+    throttle: LoginThrottle
+    issuer: AccessTokenIssuer
+    policy: AccountPolicy = field(default_factory=AccountPolicy)
+
+
+@dataclass
 class Container:
     settings: Settings
     publisher: SocialPublisher
@@ -102,6 +137,7 @@ class Container:
     event_sink: PublishEventSink
     closers: list[object] = field(default_factory=list)
     direct: DirectServices | None = None
+    accounts: AccountServices | None = None
 
     # ---- use case factories (cheap objects, built per request) ----
 
@@ -158,6 +194,51 @@ class Container:
             raise NotConfigured("This endpoint is available only when PUBLISHER=direct.")
         return self.direct
 
+    # ---- built-in accounts ----
+    def require_accounts(self) -> AccountServices:
+        if self.accounts is None:
+            raise NotConfigured("Built-in sign-in is available only when PUBLISHER=direct.")
+        return self.accounts
+
+    def _starter(self) -> AccountSessions:
+        a = self.require_accounts()
+        return AccountSessions(a.sessions, a.issuer, self.clock, a.policy)
+
+    def sign_in(self) -> SignIn:
+        a = self.require_accounts()
+        return SignIn(a.users, a.hasher, a.throttle, self._starter(), self.clock)
+
+    def refresh_access(self) -> RefreshAccess:
+        a = self.require_accounts()
+        return RefreshAccess(a.users, a.sessions, self._starter(), self.clock)
+
+    def sign_out(self) -> SignOut:
+        return SignOut(self.require_accounts().sessions)
+
+    def current_user(self) -> CurrentUser:
+        return CurrentUser(self.require_accounts().users)
+
+    def inspect_invite(self) -> InspectInvite:
+        a = self.require_accounts()
+        return InspectInvite(a.invites, a.users, self.clock)
+
+    def accept_invite(self) -> AcceptInvite:
+        a = self.require_accounts()
+        return AcceptInvite(a.invites, a.users, a.sessions, a.hasher, self._starter(), self.clock)
+
+    def change_password(self) -> ChangePassword:
+        a = self.require_accounts()
+        return ChangePassword(a.users, a.sessions, a.hasher, self._starter())
+
+    def manage_customers(self) -> ManageCustomers:
+        a = self.require_accounts()
+        return ManageCustomers(
+            a.users, a.sessions, self.publisher, Invitations(a.invites, self.clock, a.policy), self.clock
+        )
+
+    def bootstrap_admin(self) -> BootstrapAdmin:
+        return BootstrapAdmin(self.require_accounts().users, self.manage_customers())
+
     def tiktok_creator_info(self) -> GetTikTokCreatorInfo:
         direct = self.require_direct()
         if direct.creator_info is None:
@@ -202,17 +283,58 @@ def _shared(settings: Settings, media_http: httpx.AsyncClient) -> dict[str, obje
         "rules": default_registry(),
         "inspector": FfprobeMediaInspector(media_http, settings.ffprobe_path, settings.media_probe_timeout_seconds),
         "signer": HmacMediaSigner(settings.media_signing_secret.get_secret_value()),
-        "authenticator": JwtCallerAuthenticator(
+        "authenticator": _authenticator(settings),
+        "service_keys": ServiceKeyVerifier(k.get_secret_value() for k in settings.service_api_keys),
+        "event_sink": LoggingPublishEventSink(),
+    }
+
+
+def _authenticator(settings: Settings) -> CallerAuthenticator:
+    from blakrasocial.infrastructure.accounts import BuiltinTokenAuthenticator, CompositeAuthenticator
+
+    external = (
+        JwtCallerAuthenticator(
             issuer=settings.auth_jwt_issuer,
             audience=settings.auth_jwt_audience,
             algorithms=settings.auth_jwt_algorithms,
             profile_key_claim=settings.auth_profile_key_claim,
             jwks_url=str(settings.auth_jwt_jwks_url) if settings.auth_jwt_jwks_url else None,
             secret=settings.auth_jwt_secret.get_secret_value() if settings.auth_jwt_secret else None,
-        ),
-        "service_keys": ServiceKeyVerifier(k.get_secret_value() for k in settings.service_api_keys),
-        "event_sink": LoggingPublishEventSink(),
-    }
+        )
+        if settings.external_auth_enabled
+        else None
+    )
+    builtin = BuiltinTokenAuthenticator(settings.session_secret.get_secret_value()) if settings.session_secret else None
+    return CompositeAuthenticator(builtin, external)
+
+
+def _accounts(settings: Settings, sessions: object, cipher: object, closers: list[object]) -> AccountServices:
+    from blakrasocial.infrastructure.accounts import (
+        Argon2PasswordHasher,
+        InMemoryLoginThrottle,
+        JwtAccessTokenIssuer,
+        RedisLoginThrottle,
+    )
+    from blakrasocial.infrastructure.persistence import SqlInviteRepository, SqlSessionRepository, SqlUserRepository
+
+    assert settings.session_secret is not None
+    throttle: LoginThrottle
+    if settings.redis_url:
+        from redis.asyncio import Redis
+
+        redis = Redis.from_url(settings.redis_url.get_secret_value())
+        closers.append(redis)
+        throttle = RedisLoginThrottle(redis)
+    else:
+        throttle = InMemoryLoginThrottle()
+    return AccountServices(
+        users=SqlUserRepository(sessions, cipher),  # type: ignore[arg-type]
+        sessions=SqlSessionRepository(sessions),  # type: ignore[arg-type]
+        invites=SqlInviteRepository(sessions),  # type: ignore[arg-type]
+        hasher=Argon2PasswordHasher(),
+        throttle=throttle,
+        issuer=JwtAccessTokenIssuer(settings.session_secret.get_secret_value()),
+    )
 
 
 def _idempotency(settings: Settings, closers: list[object]) -> IdempotencyStore:
@@ -300,6 +422,7 @@ def _build_direct(settings: Settings) -> Container:
         webhook_verifier=AyrshareWebhookVerifier(None, settings.webhook_max_age_seconds),  # no inbound webhooks
         webhook_parser=AyrshareWebhookParser(),
         closers=closers,
+        accounts=_accounts(settings, sessions, cipher, closers),
         direct=DirectServices(
             linker=linker,
             profiles=profiles,

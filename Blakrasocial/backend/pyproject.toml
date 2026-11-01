@@ -21,6 +21,7 @@ dependencies = [
     "cryptography>=45",
     "aioboto3>=15",
     "python-multipart>=0.0.20",
+    "argon2-cffi>=25.1",
 ]
 
 [dependency-groups]

@@ -121,3 +121,42 @@ class TargetRow(Base):
     poll_handle: Mapped[str | None] = mapped_column(Text)
 
     post: Mapped[PostRow] = relationship(back_populates="targets")
+
+
+class UserRow(Base):
+    """Built-in accounts. The profile key is stored encrypted (it is a bearer secret for the API)."""
+
+    __tablename__ = "users"
+
+    id: Mapped[str] = mapped_column(String(32), primary_key=True)
+    email: Mapped[str] = mapped_column(String(254), unique=True)
+    title: Mapped[str] = mapped_column(String(120))
+    role: Mapped[str] = mapped_column(String(16))
+    profile_secret: Mapped[str] = mapped_column(Text)
+    password_hash: Mapped[str | None] = mapped_column(String(255))
+    disabled: Mapped[bool] = mapped_column(Boolean, default=False)
+    created_at: Mapped[datetime]
+    last_login_at: Mapped[datetime | None]
+
+
+class SessionRow(Base):
+    """Refresh sessions; only the SHA-256 of each refresh token is stored."""
+
+    __tablename__ = "user_sessions"
+
+    token_hash: Mapped[str] = mapped_column(String(64), primary_key=True)
+    id: Mapped[str] = mapped_column(String(32), unique=True)
+    user_id: Mapped[str] = mapped_column(ForeignKey("users.id", ondelete="CASCADE"), index=True)
+    family: Mapped[str] = mapped_column(String(32), index=True)
+    expires_at: Mapped[datetime] = mapped_column(index=True)
+    revoked: Mapped[bool] = mapped_column(Boolean, default=False)
+
+
+class InviteRow(Base):
+    """Set-password links (invite or reset); only the SHA-256 of each link token is stored."""
+
+    __tablename__ = "user_invites"
+
+    token_hash: Mapped[str] = mapped_column(String(64), primary_key=True)
+    user_id: Mapped[str] = mapped_column(ForeignKey("users.id", ondelete="CASCADE"), index=True)
+    expires_at: Mapped[datetime]

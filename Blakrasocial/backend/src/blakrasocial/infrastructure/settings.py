@@ -63,8 +63,12 @@ class Settings(BaseSettings):
     auth_jwt_jwks_url: HttpUrl | None = None
     auth_jwt_secret: SecretStr | None = None
     auth_jwt_algorithms: Annotated[list[str], NoDecode] = Field(default_factory=lambda: ["RS256"])
-    auth_jwt_issuer: str
-    auth_jwt_audience: str
+    auth_jwt_issuer: str = ""
+    auth_jwt_audience: str = ""
+    # Built-in accounts (direct mode): signs our own short-lived access tokens. >= 32 random chars.
+    session_secret: SecretStr | None = None
+    # Public address of the web app, used in invite / reset-password links.
+    public_app_url: HttpUrl | None = None
     auth_profile_key_claim: str = "profile_key"
     service_api_keys: Annotated[list[SecretStr], NoDecode] = Field(default_factory=list)
 
@@ -98,8 +102,12 @@ class Settings(BaseSettings):
 
     @model_validator(mode="after")
     def _check_security(self) -> Settings:
-        if bool(self.auth_jwt_jwks_url) == bool(self.auth_jwt_secret):
-            raise ValueError("Set exactly one of AUTH_JWT_JWKS_URL or AUTH_JWT_SECRET")
+        if self.auth_jwt_jwks_url and self.auth_jwt_secret:
+            raise ValueError("Set only one of AUTH_JWT_JWKS_URL or AUTH_JWT_SECRET")
+        if self.external_auth_enabled and not (self.auth_jwt_issuer and self.auth_jwt_audience):
+            raise ValueError("External tokens (AUTH_JWT_*) need AUTH_JWT_ISSUER and AUTH_JWT_AUDIENCE")
+        if self.publisher == "ayrshare" and not self.external_auth_enabled:
+            raise ValueError("PUBLISHER=ayrshare needs AUTH_JWT_JWKS_URL or AUTH_JWT_SECRET (no built-in accounts)")
         if self.auth_jwt_secret and len(self.auth_jwt_secret.get_secret_value()) < 32:
             raise ValueError("AUTH_JWT_SECRET must be at least 32 characters")
         if self.auth_jwt_secret and any(not a.startswith("HS") for a in self.auth_jwt_algorithms):
@@ -135,8 +143,16 @@ class Settings(BaseSettings):
             )
             if not value
         ]
+        missing += [
+            name
+            for name, value in (("SESSION_SECRET", self.session_secret), ("PUBLIC_APP_URL", self.public_app_url))
+            if not value
+        ]
         if missing:
             raise ValueError(f"PUBLISHER=direct requires {', '.join(missing)}")
+        assert self.session_secret is not None
+        if len(self.session_secret.get_secret_value()) < 32:
+            raise ValueError("SESSION_SECRET must be at least 32 characters")
         self.encryption_keys()  # validates format
         for app_id, secret, label in (
             (self.facebook_app_id, self.facebook_app_secret, "FACEBOOK_APP"),
@@ -146,8 +162,21 @@ class Settings(BaseSettings):
         ):
             if bool(app_id) != bool(secret):
                 raise ValueError(f"Set both the id and the secret for {label} (or neither)")
-        if self.environment == "production" and self.public_api_base_url and self.public_api_base_url.scheme != "https":
-            raise ValueError("PUBLIC_API_BASE_URL must use https in production")
+        if self.environment == "production":
+            for name, url in (
+                ("PUBLIC_API_BASE_URL", self.public_api_base_url),
+                ("PUBLIC_APP_URL", self.public_app_url),
+            ):
+                if url and url.scheme != "https":
+                    raise ValueError(f"{name} must use https in production")
+
+    @property
+    def external_auth_enabled(self) -> bool:
+        return bool(self.auth_jwt_jwks_url or self.auth_jwt_secret)
+
+    @property
+    def app_base(self) -> str:
+        return str(self.public_app_url).rstrip("/") if self.public_app_url else ""
 
     def linkedin_version(self, today: date | None = None) -> str:
         if self.linkedin_api_version:

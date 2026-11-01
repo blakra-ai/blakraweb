@@ -25,6 +25,16 @@ class InvalidSignature(ApplicationError):
     pass
 
 
+class Conflict(ApplicationError):
+    """The request clashes with existing data (e.g. an email that is already registered)."""
+
+
+class TooManyAttempts(ApplicationError):
+    def __init__(self, message: str, retry_after_seconds: int) -> None:
+        super().__init__(message)
+        self.retry_after_seconds = retry_after_seconds
+
+
 class MediaRejected(ApplicationError):
     """A media reference is forged, expired, unreachable or of an unsupported type."""
 

@@ -261,5 +261,5 @@ def test_env_example_loads_as_is(monkeypatch: pytest.MonkeyPatch, tmp_path) -> N
     assert loaded.environment == "development" and loaded.publisher == "direct"
     assert loaded.redis_url is None and loaded.public_webhook_url is None
     assert loaded.encryption_keys()[0][0] == "dev"
-    assert loaded.auth_jwt_algorithms == ["HS256"]
+    assert not loaded.external_auth_enabled and loaded.app_base == "http://localhost:5173"
     assert loaded.allowed_origins == frozenset({"http://localhost:5173"})

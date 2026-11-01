@@ -13,6 +13,8 @@ from blakrasocial.api.errors import install_error_handlers
 from blakrasocial.api.middleware import RequestContextMiddleware
 from blakrasocial.api.routers import (
     accounts,
+    admin,
+    auth,
     health,
     media,
     meta_callbacks,
@@ -65,9 +67,16 @@ def create_app(
     app.add_middleware(
         CORSMiddleware,
         allow_origins=sorted(settings.allowed_origins),
-        allow_credentials=False,
-        allow_methods=["GET", "POST", "DELETE"],
-        allow_headers=["Authorization", "Content-Type", "X-Profile-Key", "Idempotency-Key", "X-Request-Id"],
+        allow_credentials=True,  # only the /auth session cookie; origins are an explicit allow-list
+        allow_methods=["GET", "POST", "PUT", "DELETE"],
+        allow_headers=[
+            "Authorization",
+            "Content-Type",
+            "X-Profile-Key",
+            "Idempotency-Key",
+            "X-Request-Id",
+            "X-Requested-With",
+        ],
         expose_headers=["X-Request-Id", "Idempotent-Replayed", "Retry-After"],
         max_age=600,
     )
@@ -75,6 +84,8 @@ def create_app(
     install_error_handlers(app)
     for router in (
         health.router,
+        auth.router,
+        admin.router,
         platforms.router,
         profiles.router,
         accounts.router,

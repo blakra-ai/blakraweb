@@ -23,6 +23,8 @@ _MAPPING: Sequence[tuple[type[Exception], int, str, str]] = (
     (app.InvalidSignature, 401, "invalid-signature", "Invalid webhook signature"),
     (app.Forbidden, 403, "forbidden", "Not allowed"),
     (app.NotFound, 404, "not-found", "Not found"),
+    (app.Conflict, 409, "conflict", "Conflict"),
+    (app.TooManyAttempts, 429, "too-many-attempts", "Too many attempts"),
     (app.IdempotencyConflict, 409, "idempotency-conflict", "Idempotency key reused"),
     (app.RequestInProgress, 409, "request-in-progress", "Request in progress"),
     (app.MediaRejected, 422, "media-rejected", "Media rejected"),
@@ -109,7 +111,7 @@ def install_error_handlers(app_: FastAPI) -> None:
 
 
 def _headers_for(exc: Any) -> dict[str, str] | None:
-    if isinstance(exc, app.ProviderRateLimited) and exc.retry_after_seconds:
+    if isinstance(exc, app.ProviderRateLimited | app.TooManyAttempts) and exc.retry_after_seconds:
         return {"Retry-After": str(exc.retry_after_seconds)}
     if isinstance(exc, app.Unauthorized):
         return {"WWW-Authenticate": "Bearer"}
