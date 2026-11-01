@@ -53,6 +53,11 @@ class Doctor:
             if network in self._configured():
                 urls[f"{network} deauthorize callback"] = f"{base}/meta/{network.lower()}/deauthorize"
                 urls[f"{network} data deletion request URL"] = f"{base}/meta/{network.lower()}/data-deletion"
+        if app := self._s.app_base:  # asked for by every network's app review form
+            urls["Privacy policy URL"] = f"{app}/privacy"
+            urls["Terms of service URL"] = f"{app}/terms"
+            urls["Data deletion instructions URL"] = f"{app}/data-deletion"
+            urls["App domain / website"] = app
         return urls
 
     def _configured(self) -> list[str]:

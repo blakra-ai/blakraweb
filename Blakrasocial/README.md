@@ -8,8 +8,9 @@ WhatsApp is supported for **messages to contacts** (not Status).
 Blakrasocial/
 ├── backend/    Python 3.12 · FastAPI · Clean Architecture · PostgreSQL · official network APIs (or Ayrshare)
 ├── frontend/   React 18 · TypeScript · Vite · TanStack Query · RHF + Zod · Tailwind · i18n (fa/en, RTL)
-├── e2e/        Browser test of the full flow against simulated services
-└── docker-compose.yml
+├── e2e/        Browser test of the full flow (17 scenarios) against simulated networks
+├── deploy/     Production on one server: Caddy (automatic HTTPS), Docker Compose, nightly backups
+└── docker-compose.yml   Local stack
 ```
 
 ## Two ways to reach the networks
@@ -26,14 +27,14 @@ the `SocialPublisher` port changes.
 ## How direct mode works
 
 ```
-Browser ──JWT──▶ API ──▶ PostgreSQL (posts, encrypted tokens) ◀── Worker ──▶ Instagram / Facebook / TikTok / LinkedIn / WhatsApp
+Browser ──session──▶ API ──▶ PostgreSQL (posts, encrypted tokens) ◀── Worker ──▶ Instagram / Facebook / TikTok / LinkedIn / WhatsApp
    │               │                                                │
    │               └── consent popup: network login ──▶ /oauth/<network>/callback
    └── PUT file ──▶ S3-compatible bucket (presigned URL) ◀──────────┘ networks download / worker streams from it
 ```
 
-1. **Profiles**: the host platform creates one profile per customer (`POST /profiles`, server-to-server) and keeps the returned `profileKey`. The database stores only its SHA-256.
-2. **Session**: the host gives the frontend a short-lived **JWT** carrying the `profile_key` claim.
+1. **Accounts**: the owner runs `create-admin` once; the admin creates customers in the panel and sends each one a single-use set-password link (7 days). Every account gets its own publishing profile; the database stores only the SHA-256 of a profile key, and the key itself encrypted.
+2. **Session**: email + password (Argon2id) gives a 15-minute access token kept in memory and a rotating refresh token in an `HttpOnly`, `SameSite=Strict` cookie (`__Host-` on HTTPS). A platform that embeds the app can instead hand it short-lived JWTs (`window.BlakrasocialConfig`, `AUTH_JWT_*`).
 3. **Connect**: `GET /accounts/connect-url?platform=…` returns the network's consent URL with a one-time `state` (hashed, 10 minutes, bound to the network) and PKCE where the network supports it. The network redirects to `/oauth/<network>/callback`; tokens are encrypted with AES-256-GCM and never reach the browser. Facebook users pick which Page to connect.
 4. **Upload**: the API returns a presigned PUT (content type and size are signed) plus a signed `mediaToken`; the browser uploads straight to the bucket.
 5. **Publish**: the API verifies media tokens, measures files with `ffprobe`, validates every network's rules and stores the post with one **target per network**. "Publish now" and "schedule" use the same queue.
@@ -62,8 +63,11 @@ Adding a network = one `OAuthProvider` + one `PlatformConnector` + one line in t
 | Secrets in the browser | App secrets, tokens and signing keys live only in the backend. |
 | Fake media metadata, SSRF, using another customer's files | Only URLs carrying our HMAC `mediaToken` (bound to customer and expiry) are accepted; ffprobe measures files server-side; presigned uploads sign size and type. |
 | Double posting | `Idempotency-Key` per customer (Redis or memory) plus a unique `(profile, key)` constraint in the database; worker leases stop two workers from taking the same target. |
-| Admin-only actions | `POST /profiles` and `PUT /profiles/whatsapp` need a server-to-server `X-Service-Key`. |
-| Misconfiguration | Startup refuses short secrets, malformed encryption keys, half-configured network apps, mixed JWT algorithms, CORS `*` and plain-HTTP callback URLs in production. |
+| Account takeover | Argon2id passwords (10+ characters, not the email name), generic sign-in errors, 5 failures per 15 minutes per email (30 per IP), refresh-token rotation with reuse detection (a replayed token ends the whole sign-in), CSRF header on every cookie endpoint, password change and reset sign out other devices. |
+| Invite links | Random, single-use, stored hashed, 7 days; the token sits in the URL fragment so it never reaches server logs or `Referer`, and the page removes it from history. |
+| Admin-only actions | `/admin/*` needs an admin session; admins can't disable or delete themselves. Server-to-server `POST /profiles` and `PUT /profiles/whatsapp` need `X-Service-Key`. |
+| Privacy requests | Meta's deauthorize and data-deletion callbacks (HMAC-verified `signed_request`) delete the user's tokens and return a status page; admins can delete an account with its tokens, posts and files. |
+| Misconfiguration | Startup refuses the public example secrets in production, short secrets, malformed encryption keys, half-configured network apps, mixed JWT algorithms, CORS `*` and plain-HTTP callback URLs in production. |
 | Leaks in logs | Profile keys are masked; tokens and auth headers are redacted. |
 
 ## Setup
@@ -90,68 +94,42 @@ Create an S3-compatible bucket with a **public HTTPS read URL** (Cloudflare R2: 
 Allow `PUT` from your frontend origin in the bucket's CORS rules, and add a lifecycle rule that deletes objects
 after 30 days. Fill `STORAGE_*` in `backend/.env`.
 
-### 3. Backend
+### 3. Run it locally
 
 ```bash
 cd Blakrasocial/backend
-cp .env.example .env               # fill in (every variable is documented there)
+cp .env.example .env               # every variable is documented there
 uv sync
 uv run alembic upgrade head        # creates the tables
 uv run uvicorn blakrasocial.main:app_factory --factory --reload
+uv run python -m blakrasocial.cli create-admin --email you@example.com   # prints your set-password link
+uv run python -m blakrasocial.cli doctor   # checks database, storage, network apps; lists the URLs to register
+
+cd ../frontend
+cp .env.example .env.local
+npm install && npm run dev         # http://localhost:5173
 ```
 
 `RUN_WORKER_IN_API=true` publishes from the API process. With more than one instance, set it to `false` and run
 `uv run python -m blakrasocial.worker` (any number of workers is safe).
 
-Create a profile and a development token:
+### 4. Production
 
-```bash
-curl -X POST localhost:8000/profiles -H "X-Service-Key: $SERVICE_KEY" -H "Content-Type: application/json" -d '{"title":"Demo customer"}'
-uv run python scripts/issue_dev_token.py <profileKey>   # development only
-```
-
-Attach a WhatsApp Business number to a profile (admin):
-
-```bash
-curl -X PUT localhost:8000/profiles/whatsapp -H "X-Service-Key: $SERVICE_KEY" -H "Content-Type: application/json" \
-  -d '{"profileKey":"<profileKey>","phoneNumberId":"<id>","accessToken":"<system user token>","displayName":"Support"}'
-```
-
-### 4. Frontend
-
-```bash
-cd Blakrasocial/frontend
-cp .env.example .env.local         # VITE_API_BASE_URL, and VITE_DEV_ACCESS_TOKEN from the step above
-npm install
-npm run dev                        # http://localhost:5173
-```
-
-In production the host page supplies tokens instead of the env var:
-
-```html
-<script>
-  window.BlakrasocialConfig = { getAccessToken: () => fetch("/api/social-token").then((r) => r.text()) };
-</script>
-```
-
-### 5. Everything with Docker
-
-```bash
-cp backend/.env.example backend/.env   # fill in storage and network apps
-docker compose up --build              # migrations, API :8000, worker, PostgreSQL, Redis, web :5173
-```
+See [`deploy/README.md`](deploy/README.md): `./setup.sh your-domain you@email` generates every secret, then
+`docker compose up -d --build` runs HTTPS (Caddy + Let's Encrypt), the app, API, worker, PostgreSQL, Redis and
+nightly backups on one server. The app is served at `https://domain` and the API at `https://domain/api`.
 
 ## Tests and checks
 
 ```bash
-cd backend  && uv run pytest && uv run ruff check . && uv run mypy src     # 136 tests (PostgreSQL ones need TEST_DATABASE_URL)
-cd frontend && npm test && npm run lint && npm run build
+cd backend  && uv run pytest && uv run ruff check . && uv run mypy src     # 157 tests (PostgreSQL ones need TEST_DATABASE_URL)
+cd frontend && npm test && npm run lint && npm run build                   # 31 tests
 ```
 
 - PostgreSQL integration: OAuth state single use/expiry/binding, encryption at rest, queue, worker retries, polling, reconnect flags, cancellation, isolation between customers, concurrent workers never taking the same post.
 - Every network adapter against `respx` mocks: OAuth exchange and refresh, request bodies, chunked uploads, polling, error translation.
 - Validation strategies, use cases, security (JWT, media tokens, webhooks) and the HTTP API, including the callback pages.
-- `e2e/`: the whole flow in a real browser against simulated services.
+- `e2e/`: 17 scenarios in a real browser against simulated networks, from an empty database to account deletion (see `e2e/README.md`).
 
 Keeping DTOs in sync: `uv run python scripts/export_openapi.py ../frontend/openapi.json`, then `npm run gen:api`.
 
@@ -159,9 +137,15 @@ Keeping DTOs in sync: `uv run python scripts/export_openapi.py ../frontend/opena
 
 | Method | Path | Auth | Purpose |
 |---|---|---|---|
-| POST | `/profiles` | `X-Service-Key` | Create customer profile → `profileKey` |
+| POST | `/auth/login`, `/auth/refresh`, `/auth/logout` | password / session cookie + CSRF header | Sign in, renew the access token, sign out |
+| GET, POST | `/auth/invites/{token}` | single-use link + CSRF header | Who the link is for; set the password |
+| GET, POST | `/auth/me`, `/auth/password` | session | Current user; change password |
+| GET, POST, DELETE, PUT | `/admin/users…` | admin session | List/create accounts, new link, disable/enable, delete, WhatsApp number |
+| POST | `/meta/{facebook,instagram}/deauthorize`, `/data-deletion` | Meta `signed_request` | Meta's privacy callbacks |
+| GET | `/meta/deletion/{code}` | public | Data-deletion status page |
+| POST | `/profiles` | `X-Service-Key` | Create customer profile → `profileKey` (embedding platforms) |
 | PUT | `/profiles/whatsapp` | `X-Service-Key` | Attach a WhatsApp Business number (direct mode) |
-| GET | `/accounts/connect-url?platform=` | JWT + `X-Profile-Key` | Consent URL for the popup |
+| GET | `/accounts/connect-url?platform=` | session + `X-Profile-Key` | Consent URL for the popup |
 | GET | `/oauth/{platform}/callback` | one-time `state` | Where the network returns after consent |
 | GET | `/accounts` | JWT | Connected networks, names, avatars, reconnect flags |
 | DELETE | `/accounts/{platform}` | JWT | Disconnect |

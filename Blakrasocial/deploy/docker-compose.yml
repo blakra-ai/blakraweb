@@ -1,0 +1,113 @@
+# Production stack for one server: HTTPS (Caddy), web app, API, worker, PostgreSQL, Redis, daily backups.
+# First time: ./setup.sh your-domain.com you@example.com   then follow deploy/README.md.
+# Media files live in an S3-compatible bucket (Cloudflare R2 free tier): STORAGE_* in backend.env.
+name: blakrasocial
+
+x-backend: &backend
+  build: ../backend
+  env_file: ./backend.env
+  environment:
+    DATABASE_URL: postgresql+asyncpg://blakra:${POSTGRES_PASSWORD:?run ./setup.sh first}@db:5432/blakrasocial
+    REDIS_URL: redis://redis:6379/0
+  read_only: true
+  tmpfs: [/tmp]
+  security_opt: ["no-new-privileges:true"]
+  restart: unless-stopped
+  logging: &logging
+    driver: json-file
+    options: { max-size: "10m", max-file: "5" }
+
+services:
+  caddy:
+    image: caddy:2.10-alpine
+    ports: ["80:80", "443:443", "443:443/udp"]
+    environment:
+      DOMAIN: ${DOMAIN:?run ./setup.sh first}
+      ACME_EMAIL: ${ACME_EMAIL:?run ./setup.sh first}
+    volumes:
+      - ./Caddyfile:/etc/caddy/Caddyfile:ro
+      - caddy_data:/data
+      - caddy_config:/config
+    depends_on: [api, web]
+    restart: unless-stopped
+    logging: *logging
+
+  web:
+    build:
+      context: ../frontend
+      args:
+        VITE_API_BASE_URL: /api
+        VITE_CONTACT_EMAIL: ${CONTACT_EMAIL:?run ./setup.sh first}
+        VITE_COMPANY_NAME: ${COMPANY_NAME:-Blakra}
+    restart: unless-stopped
+    logging: *logging
+
+  db:
+    image: postgres:17-alpine
+    environment:
+      POSTGRES_USER: blakra
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:?run ./setup.sh first}
+      POSTGRES_DB: blakrasocial
+    volumes: [pgdata:/var/lib/postgresql/data]
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U blakra -d blakrasocial"]
+      interval: 5s
+      retries: 20
+    restart: unless-stopped
+    logging: *logging
+
+  redis:
+    image: redis:8-alpine
+    command: ["redis-server", "--save", "", "--appendonly", "no"]
+    restart: unless-stopped
+    logging: *logging
+
+  migrate:
+    <<: *backend
+    command: ["alembic", "upgrade", "head"]
+    depends_on:
+      db: { condition: service_healthy }
+    restart: "no"
+
+  api:
+    <<: *backend
+    # Not published: only Caddy reaches it, so the client IP it forwards can be trusted.
+    expose: ["8000"]
+    depends_on:
+      migrate: { condition: service_completed_successfully }
+      redis: { condition: service_started }
+
+  worker:
+    <<: *backend
+    command: ["python", "-m", "blakrasocial.worker"]
+    healthcheck: { disable: true }
+    depends_on:
+      migrate: { condition: service_completed_successfully }
+
+  backup:
+    image: postgres:17-alpine
+    environment:
+      PGPASSWORD: ${POSTGRES_PASSWORD:?run ./setup.sh first}
+      KEEP_DAYS: ${BACKUP_KEEP_DAYS:-14}
+    volumes: ["./backups:/backups"]
+    # A compressed dump every night, the last KEEP_DAYS kept. Copy ./backups off the server too.
+    entrypoint:
+      - /bin/sh
+      - -c
+      - |
+        until pg_isready -h db -U blakra -d blakrasocial; do sleep 5; done
+        while true; do
+          file=/backups/blakrasocial-$$(date +%Y-%m-%d).dump
+          pg_dump -h db -U blakra -d blakrasocial -Fc -f "$$file.tmp" && mv "$$file.tmp" "$$file" && echo "backup ok: $$file"
+          find /backups -name 'blakrasocial-*.dump' -mtime +$$KEEP_DAYS -delete
+          sleep 86400
+        done
+    depends_on:
+      db: { condition: service_healthy }
+    restart: unless-stopped
+    logging: *logging
+
+volumes:
+  pgdata:
+  caddy_data:
+  caddy_config:

@@ -169,6 +169,21 @@ class Settings(BaseSettings):
             ):
                 if url and url.scheme != "https":
                     raise ValueError(f"{name} must use https in production")
+            # The example values in .env.example are public: refuse to run a real deployment with them.
+            published = [
+                name
+                for name, value in (
+                    ("SESSION_SECRET", self.session_secret),
+                    ("MEDIA_SIGNING_SECRET", self.media_signing_secret),
+                    *(("SERVICE_API_KEYS", key) for key in self.service_api_keys),
+                )
+                if value is not None and "dev-only" in value.get_secret_value()
+            ]
+            if self.encryption_keys()[0][0] == "dev":
+                published.append("CREDENTIALS_ENCRYPTION_KEYS")
+            if published:
+                names = ", ".join(published)
+                raise ValueError(f"Still the public example values: {names}. deploy/setup.sh makes new ones.")
 
     @property
     def external_auth_enabled(self) -> bool:

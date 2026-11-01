@@ -59,7 +59,7 @@ const en: Record<LegalDoc, Builder> = {
         heading: "How long we keep it",
         paragraphs: [
           "Access tokens are deleted as soon as you disconnect an account, remove the app in the network's settings, or close your account.",
-          "Uploaded media and post history are kept while your account is open so you can see what was published, and deleted when the account is closed. Sign-in sessions expire after 30 days.",
+          "Uploaded photos and videos are deleted from our storage automatically 30 days after upload (a network that published them keeps its own copy). Post history is kept while your account is open so you can see what was published, and deleted when the account is closed. Sign-in sessions expire after 30 days.",
         ],
       },
       {
@@ -176,7 +176,7 @@ const fa: Record<LegalDoc, Builder> = {
         heading: "مدت نگهداری",
         paragraphs: [
           "توکن‌ها به محض قطع اتصال، حذف برنامه از تنظیمات شبکه یا بستن حساب پاک می‌شوند.",
-          "فایل‌ها و تاریخچهٔ پست‌ها تا زمانی که حساب باز است نگه داشته می‌شوند و با بستن حساب حذف می‌شوند. نشست‌های ورود پس از ۳۰ روز منقضی می‌شوند.",
+          "عکس‌ها و ویدئوهای بارگذاری‌شده ۳۰ روز پس از بارگذاری خودکار از فضای ذخیره‌سازی ما پاک می‌شوند (شبکه‌ای که آن‌ها را منتشر کرده نسخهٔ خودش را دارد). تاریخچهٔ پست‌ها تا زمانی که حساب باز است نگه داشته می‌شود و با بستن حساب حذف می‌شود. نشست‌های ورود پس از ۳۰ روز منقضی می‌شوند.",
         ],
       },
       { heading: "حقوق و انتخاب‌های شما", paragraphs: [`هر زمان می‌توانید از صفحهٔ «اتصال حساب‌ها» اتصال را قطع کنید. برای دریافت نسخه‌ای از اطلاعات، اصلاح یا حذف آن به ${email} بنویسید. همچنین می‌توانید برنامه را از تنظیمات فیس‌بوک، اینستاگرام، تیک‌تاک یا لینکدین حذف کنید؛ در این صورت اطلاعات مربوط به‌طور خودکار پاک می‌شود (صفحهٔ حذف اطلاعات را ببینید).`] },
