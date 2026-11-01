@@ -49,7 +49,9 @@ class FakePublisher:
     async def create_profile(self, title: str) -> ProfileKey:
         return ProfileKey(f"pk_{title.lower().replace(' ', '_')}_123456")
 
-    async def get_connect_url(self, profile: ProfileKey, redirect_url: str | None, origin: str | None) -> ConnectUrl:
+    async def get_connect_url(
+        self, profile: ProfileKey, platform: Platform | None, redirect_url: str | None, origin: str | None
+    ) -> ConnectUrl:
         return ConnectUrl("https://link.example.com/session/abc", NOW + timedelta(minutes=5))
 
     async def get_connected_accounts(self, profile: ProfileKey) -> list[ConnectedAccount]:
@@ -58,7 +60,9 @@ class FakePublisher:
     async def unlink_account(self, profile: ProfileKey, platform: Platform) -> None:
         self.unlinked.append(platform)
 
-    async def upload_media(self, profile: ProfileKey, file_name: str, content_type: str) -> MediaUploadTicket:
+    async def upload_media(
+        self, profile: ProfileKey, file_name: str, content_type: str, size_bytes: int = 1
+    ) -> MediaUploadTicket:
         return MediaUploadTicket(
             upload_url=f"https://upload.example.com/{file_name}?sig=1",
             access_url=f"https://media.example.com/{file_name}",

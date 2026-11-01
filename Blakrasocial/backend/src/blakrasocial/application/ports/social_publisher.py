@@ -16,7 +16,7 @@ from blakrasocial.domain.value_objects import IdempotencyKey, PostId, ProfileKey
 
 @runtime_checkable
 class SocialPublisher(Protocol):
-    """The one abstraction over a unified social media provider (Ayrshare today).
+    """The one abstraction over how we reach the networks (direct official APIs, or Ayrshare).
 
     Implementations translate provider failures into `ProviderError` subclasses so that
     nothing above the infrastructure layer ever sees provider-specific codes.
@@ -25,14 +25,18 @@ class SocialPublisher(Protocol):
     async def create_profile(self, title: str) -> ProfileKey: ...
 
     async def get_connect_url(
-        self, profile: ProfileKey, redirect_url: str | None, origin: str | None
-    ) -> ConnectUrl: ...
+        self, profile: ProfileKey, platform: Platform | None, redirect_url: str | None, origin: str | None
+    ) -> ConnectUrl:
+        """`platform` picks one network's consent page; a provider with one shared page may ignore it."""
+        ...
 
     async def get_connected_accounts(self, profile: ProfileKey) -> list[ConnectedAccount]: ...
 
     async def unlink_account(self, profile: ProfileKey, platform: Platform) -> None: ...
 
-    async def upload_media(self, profile: ProfileKey, file_name: str, content_type: str) -> MediaUploadTicket: ...
+    async def upload_media(
+        self, profile: ProfileKey, file_name: str, content_type: str, size_bytes: int
+    ) -> MediaUploadTicket: ...
 
     async def publish(self, profile: ProfileKey, post: Post, idempotency_key: IdempotencyKey) -> PostStatus: ...
 

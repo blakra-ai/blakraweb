@@ -32,6 +32,7 @@ class ContentSpecOut(CamelModel):
 
 class PlatformRulesOut(CamelModel):
     platform: Platform
+    connectable: bool  # false = this deployment has no app for it (or it is set up by an admin, like WhatsApp)
     content_types: list[ContentSpecOut]
 
 
@@ -39,11 +40,12 @@ class PlatformRulesResponse(CamelModel):
     platforms: list[PlatformRulesOut]
 
     @classmethod
-    def from_registry(cls, registry: PlatformRuleRegistry) -> PlatformRulesResponse:
+    def from_registry(cls, registry: PlatformRuleRegistry, connectable: frozenset[Platform]) -> PlatformRulesResponse:
         return cls(
             platforms=[
                 PlatformRulesOut(
                     platform=platform,
+                    connectable=platform in connectable,
                     content_types=[_spec(ct, spec) for ct, spec in rule.specs().items()],
                 )
                 for platform, rule in registry.all().items()

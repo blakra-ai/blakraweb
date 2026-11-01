@@ -26,6 +26,7 @@ _MAPPING: Sequence[tuple[type[Exception], int, str, str]] = (
     (app.IdempotencyConflict, 409, "idempotency-conflict", "Idempotency key reused"),
     (app.RequestInProgress, 409, "request-in-progress", "Request in progress"),
     (app.MediaRejected, 422, "media-rejected", "Media rejected"),
+    (app.NotConfigured, 409, "not-configured", "Network not set up"),
     (app.ProviderRateLimited, 429, "rate-limited", "Too many requests"),
     (app.ProviderRejected, 422, "provider-rejected", "The social network rejected the request"),
     (app.ProviderAuthError, 502, "provider-auth", "Provider authentication failed"),

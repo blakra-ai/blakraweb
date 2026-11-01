@@ -1,5 +1,7 @@
 from __future__ import annotations
 
+import base64
+import binascii
 from functools import lru_cache
 from typing import Annotated, Literal
 
@@ -10,21 +12,49 @@ from pydantic_settings import BaseSettings, NoDecode, SettingsConfigDict
 class Settings(BaseSettings):
     """All configuration comes from environment variables (or a local .env in development)."""
 
-    model_config = SettingsConfigDict(
-        env_file=".env", env_file_encoding="utf-8", extra="ignore", env_ignore_empty=True
-    )
+    model_config = SettingsConfigDict(env_file=".env", env_file_encoding="utf-8", extra="ignore", env_ignore_empty=True)
 
     environment: Literal["development", "test", "production"] = "production"
     log_level: str = "INFO"
 
+    # --- Which adapter implements SocialPublisher ---
+    # direct: our own OAuth + official network APIs (free, needs DB/storage/app approvals)
+    # ayrshare: Ayrshare Business (paid, no approvals)
+    publisher: Literal["direct", "ayrshare"] = "direct"
+
     # --- Ayrshare (secrets never leave the backend) ---
-    ayrshare_api_key: SecretStr
+    ayrshare_api_key: SecretStr | None = None
     ayrshare_base_url: HttpUrl = HttpUrl("https://api.ayrshare.com/api")
     ayrshare_link_domain: str | None = None
     ayrshare_instagram_link_method: Literal["facebook", "instagram"] = "facebook"
     ayrshare_webhook_secret: SecretStr | None = None
     ayrshare_messaging_enabled: bool = False
     public_webhook_url: HttpUrl | None = None
+
+    # --- Direct mode: persistence, token encryption, storage ---
+    public_api_base_url: HttpUrl | None = None  # where networks redirect after OAuth: <base>/oauth/<platform>/callback
+    database_url: SecretStr | None = None  # postgresql+asyncpg://user:pass@host/db
+    credentials_encryption_keys: Annotated[list[SecretStr], NoDecode] = Field(default_factory=list)  # kid:base64(32B)
+    storage_endpoint_url: HttpUrl | None = None  # S3-compatible: Cloudflare R2, MinIO, AWS S3
+    storage_bucket: str | None = None
+    storage_region: str = "auto"
+    storage_access_key_id: SecretStr | None = None
+    storage_secret_access_key: SecretStr | None = None
+    storage_public_base_url: HttpUrl | None = None  # public URL networks download from
+    run_worker_in_api: bool = False
+    worker_poll_seconds: float = 15.0
+
+    # --- Direct mode: network apps (a network is enabled when its id + secret are set) ---
+    meta_graph_version: str = "v26.0"
+    facebook_app_id: str | None = None
+    facebook_app_secret: SecretStr | None = None
+    instagram_app_id: str | None = None
+    instagram_app_secret: SecretStr | None = None
+    tiktok_client_key: str | None = None
+    tiktok_client_secret: SecretStr | None = None
+    linkedin_client_id: str | None = None
+    linkedin_client_secret: SecretStr | None = None
+    linkedin_api_version: str = "202610"
 
     # --- Caller authentication (tokens issued by the host platform) ---
     auth_jwt_jwks_url: HttpUrl | None = None
@@ -56,7 +86,7 @@ class Settings(BaseSettings):
             return [item.strip() for item in value.split(",") if item.strip()]
         return value
 
-    @field_validator("service_api_keys", mode="before")
+    @field_validator("service_api_keys", "credentials_encryption_keys", mode="before")
     @classmethod
     def _split_secret_csv(cls, value: object) -> object:
         if isinstance(value, str):
@@ -77,11 +107,62 @@ class Settings(BaseSettings):
             raise ValueError("MEDIA_SIGNING_SECRET must be at least 32 characters")
         if any(len(k.get_secret_value()) < 32 for k in self.service_api_keys):
             raise ValueError("Each SERVICE_API_KEYS entry must be at least 32 characters")
+        if self.publisher == "ayrshare" and not self.ayrshare_api_key:
+            raise ValueError("PUBLISHER=ayrshare requires AYRSHARE_API_KEY")
+        if self.publisher == "direct":
+            self._check_direct_mode()
         if self.public_webhook_url and not self.ayrshare_webhook_secret:
             raise ValueError("PUBLIC_WEBHOOK_URL requires AYRSHARE_WEBHOOK_SECRET")
         if self.environment == "production" and "*" in self.cors_allowed_origins:
             raise ValueError("CORS wildcard is not allowed in production")
         return self
+
+    def _check_direct_mode(self) -> None:
+        missing = [
+            name
+            for name, value in (
+                ("DATABASE_URL", self.database_url),
+                ("PUBLIC_API_BASE_URL", self.public_api_base_url),
+                ("CREDENTIALS_ENCRYPTION_KEYS", self.credentials_encryption_keys),
+                ("STORAGE_ENDPOINT_URL", self.storage_endpoint_url),
+                ("STORAGE_BUCKET", self.storage_bucket),
+                ("STORAGE_ACCESS_KEY_ID", self.storage_access_key_id),
+                ("STORAGE_SECRET_ACCESS_KEY", self.storage_secret_access_key),
+                ("STORAGE_PUBLIC_BASE_URL", self.storage_public_base_url),
+            )
+            if not value
+        ]
+        if missing:
+            raise ValueError(f"PUBLISHER=direct requires {', '.join(missing)}")
+        self.encryption_keys()  # validates format
+        for app_id, secret, label in (
+            (self.facebook_app_id, self.facebook_app_secret, "FACEBOOK_APP"),
+            (self.instagram_app_id, self.instagram_app_secret, "INSTAGRAM_APP"),
+            (self.tiktok_client_key, self.tiktok_client_secret, "TIKTOK_CLIENT"),
+            (self.linkedin_client_id, self.linkedin_client_secret, "LINKEDIN_CLIENT"),
+        ):
+            if bool(app_id) != bool(secret):
+                raise ValueError(f"Set both the id and the secret for {label} (or neither)")
+        if self.environment == "production" and self.public_api_base_url and self.public_api_base_url.scheme != "https":
+            raise ValueError("PUBLIC_API_BASE_URL must use https in production")
+
+    def encryption_keys(self) -> list[tuple[str, bytes]]:
+        """`kid:base64key` entries; the first one encrypts, all of them decrypt (key rotation)."""
+        keys: list[tuple[str, bytes]] = []
+        for entry in self.credentials_encryption_keys:
+            kid, sep, encoded = entry.get_secret_value().partition(":")
+            try:
+                key = base64.b64decode(encoded, validate=True) if sep else b""
+            except (binascii.Error, ValueError):
+                key = b""
+            if not kid or len(key) != 32:
+                raise ValueError("Each CREDENTIALS_ENCRYPTION_KEYS entry must be 'id:<base64 of 32 random bytes>'")
+            keys.append((kid, key))
+        return keys
+
+    @property
+    def oauth_callback_base(self) -> str:
+        return str(self.public_api_base_url).rstrip("/") if self.public_api_base_url else ""
 
     @property
     def allowed_origins(self) -> frozenset[str]:

@@ -1,7 +1,8 @@
 from __future__ import annotations
 
+import asyncio
 from collections.abc import AsyncIterator, Callable
-from contextlib import asynccontextmanager
+from contextlib import asynccontextmanager, suppress
 
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
@@ -10,7 +11,7 @@ from fastapi.middleware.gzip import GZipMiddleware
 from blakrasocial import __version__
 from blakrasocial.api.errors import install_error_handlers
 from blakrasocial.api.middleware import RequestContextMiddleware
-from blakrasocial.api.routers import accounts, health, media, platforms, posts, profiles, webhooks
+from blakrasocial.api.routers import accounts, health, media, oauth, platforms, posts, profiles, webhooks
 from blakrasocial.container import Container, build_container
 from blakrasocial.infrastructure.logging import configure_logging
 from blakrasocial.infrastructure.settings import Settings, get_settings
@@ -25,11 +26,21 @@ def create_app(
 
     @asynccontextmanager
     async def lifespan(app: FastAPI) -> AsyncIterator[None]:
-        app.state.container = container_factory(settings)
+        container = container_factory(settings)
+        app.state.container = container
+        stop = asyncio.Event()
+        worker: asyncio.Task[None] | None = None
+        if settings.run_worker_in_api and container.direct is not None:
+            # Single-box deployments: publish from the API process (separate worker: `python -m blakrasocial.worker`).
+            worker = asyncio.create_task(container.direct.runtime.run(stop))
         try:
             yield
         finally:
-            await app.state.container.aclose()
+            stop.set()
+            if worker is not None:
+                with suppress(asyncio.CancelledError):
+                    await asyncio.wait_for(worker, timeout=10)
+            await container.aclose()
 
     is_prod = settings.environment == "production"
     app = FastAPI(
@@ -60,6 +71,7 @@ def create_app(
         media.router,
         posts.router,
         webhooks.router,
+        oauth.router,
     ):
         app.include_router(router)
     return app

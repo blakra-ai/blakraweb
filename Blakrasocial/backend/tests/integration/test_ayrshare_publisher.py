@@ -169,14 +169,14 @@ async def test_upload_url_and_link_session(publisher: AyrsharePublisher) -> None
     upload = respx.get(f"{BASE}/media/uploadUrl").respond(
         200, json={"uploadUrl": "https://s.test/put", "accessUrl": "https://s.test/a.mp4", "contentType": "video/mp4"}
     )
-    ticket = await publisher.upload_media(PROFILE, "a.mp4", "video/mp4")
+    ticket = await publisher.upload_media(PROFILE, "a.mp4", "video/mp4", 1024)
     assert upload.calls.last.request.url.params["contentType"] == "mp4"
     assert ticket.access_url == "https://s.test/a.mp4"
 
     link = respx.post(f"{BASE}/profiles/link-sessions").respond(
         200, json={"url": "https://profile.ayrshare.com/x", "expiresAt": "2026-11-01T12:05:00Z"}
     )
-    connect = await publisher.get_connect_url(PROFILE, "https://app.test/done", None)
+    connect = await publisher.get_connect_url(PROFILE, None, "https://app.test/done", None)
     body = json.loads(link.calls.last.request.content)
     assert body["instagramLinkMethod"] == "facebook" and body["redirect"] == "https://app.test/done"
     assert connect.expires_at is not None and connect.expires_at - datetime(2026, 11, 1, 12, tzinfo=UTC) == timedelta(

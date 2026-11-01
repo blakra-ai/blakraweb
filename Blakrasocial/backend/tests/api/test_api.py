@@ -30,6 +30,7 @@ VIDEO_URL = "https://media.example.com/clip.mp4"
 def settings() -> Settings:
     return Settings(
         environment="test",
+        publisher="ayrshare",
         ayrshare_api_key="test",  # type: ignore[arg-type]
         auth_jwt_secret=JWT_SECRET,  # type: ignore[arg-type]
         auth_jwt_algorithms=["HS256"],
@@ -239,6 +240,7 @@ def test_cors_preflight_only_for_allowed_origin(client: TestClient) -> None:
 def test_settings_refuse_insecure_config() -> None:
     with pytest.raises(ValueError, match="AUTH_JWT_SECRET"):
         Settings(
+            publisher="ayrshare",
             ayrshare_api_key="x",  # type: ignore[arg-type]
             auth_jwt_secret="short",  # type: ignore[arg-type]
             auth_jwt_algorithms=["HS256"],
@@ -256,7 +258,8 @@ def test_env_example_loads_as_is(monkeypatch: pytest.MonkeyPatch, tmp_path) -> N
     (tmp_path / ".env").write_text(example.read_text(encoding="utf-8"), encoding="utf-8")
     monkeypatch.chdir(tmp_path)
     loaded = Settings()  # type: ignore[call-arg]
-    assert loaded.environment == "development"
+    assert loaded.environment == "development" and loaded.publisher == "direct"
     assert loaded.redis_url is None and loaded.public_webhook_url is None
+    assert loaded.encryption_keys()[0][0] == "dev"
     assert loaded.auth_jwt_algorithms == ["HS256"]
     assert loaded.allowed_origins == frozenset({"http://localhost:5173"})

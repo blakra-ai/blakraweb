@@ -55,6 +55,8 @@ class ResilientHttpClient:
         headers: Mapping[str, str] | None = None,
         json: Any = None,
         params: Mapping[str, Any] | None = None,
+        data: Mapping[str, Any] | None = None,
+        content: bytes | None = None,
     ) -> httpx.Response:
         safe = idempotent if idempotent is not None else method.upper() in {"GET", "HEAD", "DELETE", "PUT"}
 
@@ -75,7 +77,9 @@ class ResilientHttpClient:
         try:
             async for attempt in retrying:
                 with attempt:
-                    response = await self._client.request(method, url, headers=headers, json=json, params=params)
+                    response = await self._client.request(
+                        method, url, headers=headers, json=json, params=params, data=data, content=content
+                    )
                     if response.status_code in _RETRYABLE_STATUS and safe:
                         raise RetryableStatus(response)
                     return response

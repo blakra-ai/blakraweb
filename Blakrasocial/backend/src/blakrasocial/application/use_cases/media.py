@@ -42,7 +42,7 @@ class UploadMedia:
             raise MediaRejected("File must be between 1 byte and 5 GB.", field="sizeBytes")
 
         safe_name = _SAFE_NAME.sub("-", command.file_name)[-120:]
-        ticket = await self._publisher.upload_media(profile, safe_name, content_type)
+        ticket = await self._publisher.upload_media(profile, safe_name, content_type, command.size_bytes)
         expires_at = self._clock.now() + MEDIA_LIFETIME
         token = self._signer.sign(profile, ticket.access_url, content_type, expires_at)
         return SignedUploadTicket(ticket=ticket, media_token=token, media_expires_at=expires_at)

@@ -16,10 +16,11 @@ router = APIRouter(prefix="/accounts", tags=["accounts"])
 async def connect_url(
     profile: ProfileDep,
     container: ContainerDep,
+    platform: Platform | None = None,
     redirect_url: Annotated[str | None, Query(alias="redirectUrl", max_length=2048)] = None,
     origin: Annotated[str | None, Query(max_length=255)] = None,
 ) -> ConnectUrlResponse:
-    command = ConnectAccountCommand(redirect_url=redirect_url, origin=origin)
+    command = ConnectAccountCommand(platform=platform, redirect_url=redirect_url, origin=origin)
     return ConnectUrlResponse.from_domain(await container.connect_account().execute(profile, command))
 
 

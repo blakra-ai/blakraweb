@@ -65,3 +65,7 @@ class ProviderRejected(ProviderError):
 
 class ProviderAuthError(ProviderError):
     """Our provider credentials are wrong or the profile key is unknown."""
+
+
+class NotConfigured(ApplicationError):
+    """A network is not set up for this deployment (its app id/secret are missing)."""

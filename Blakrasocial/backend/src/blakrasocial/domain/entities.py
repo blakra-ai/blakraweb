@@ -168,3 +168,26 @@ class MediaUploadTicket:
     access_url: str
     content_type: str
     expires_at: datetime | None
+
+
+@dataclass(frozen=True, slots=True)
+class OAuthCredential:
+    """What a network gave us when the customer approved access. Tokens never leave the backend.
+
+    `account_id` is the identity we publish as: Instagram user id, Facebook Page id, TikTok open_id,
+    LinkedIn person URN or WhatsApp phone-number id. `extra` holds small network-specific facts.
+    """
+
+    platform: Platform
+    account_id: str
+    account: ConnectedAccount
+    access_token: str = field(repr=False)
+    refresh_token: str | None = field(default=None, repr=False)
+    expires_at: datetime | None = None
+    refresh_expires_at: datetime | None = None
+    scopes: tuple[str, ...] = ()
+    extra: dict[str, str] = field(default_factory=dict, hash=False, compare=False)
+    needs_reconnect: bool = False
+
+    def is_usable(self, now: datetime) -> bool:
+        return not self.needs_reconnect and (self.expires_at is None or self.expires_at > now)

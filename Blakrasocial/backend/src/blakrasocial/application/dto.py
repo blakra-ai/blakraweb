@@ -25,6 +25,7 @@ class CreateProfileCommand:
 
 @dataclass(frozen=True, slots=True)
 class ConnectAccountCommand:
+    platform: Platform | None = None
     redirect_url: str | None = None
     origin: str | None = None
 

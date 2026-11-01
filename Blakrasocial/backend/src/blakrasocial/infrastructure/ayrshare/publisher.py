@@ -72,7 +72,10 @@ class AyrsharePublisher:
 
     # ------------------------------------------------------------ accounts
 
-    async def get_connect_url(self, profile: ProfileKey, redirect_url: str | None, origin: str | None) -> ConnectUrl:
+    async def get_connect_url(
+        self, profile: ProfileKey, platform: Platform | None, redirect_url: str | None, origin: str | None
+    ) -> ConnectUrl:
+        del platform  # Ayrshare shows every network on one linking page
         payload: dict[str, Any] = {
             "mode": "grid",
             "instagramLinkMethod": self._instagram_link_method,
@@ -96,7 +99,10 @@ class AyrsharePublisher:
 
     # ------------------------------------------------------------ media
 
-    async def upload_media(self, profile: ProfileKey, file_name: str, content_type: str) -> MediaUploadTicket:
+    async def upload_media(
+        self, profile: ProfileKey, file_name: str, content_type: str, size_bytes: int
+    ) -> MediaUploadTicket:
+        del size_bytes  # Ayrshare's presigned URL does not bind the size
         extension = mapper.UPLOAD_EXTENSION_BY_MIME.get(content_type)
         if extension is None:
             raise MediaRejected(f"'{content_type}' cannot be uploaded.", field="contentType")

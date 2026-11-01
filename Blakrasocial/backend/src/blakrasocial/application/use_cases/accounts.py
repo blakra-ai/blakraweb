@@ -20,7 +20,7 @@ class ConnectAccount:
         for name, value in (("redirectUrl", command.redirect_url), ("origin", command.origin)):
             if value is not None and not self._is_allowed(value):
                 raise InvalidValue(name, "is not an allowed origin for this deployment")
-        return await self._publisher.get_connect_url(profile, command.redirect_url, command.origin)
+        return await self._publisher.get_connect_url(profile, command.platform, command.redirect_url, command.origin)
 
     def _is_allowed(self, url: str) -> bool:
         from urllib.parse import urlparse
