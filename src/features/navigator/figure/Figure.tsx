@@ -1,6 +1,6 @@
 import { useFrame, useThree } from '@react-three/fiber'
 import { useEffect, useMemo, useRef, useState } from 'react'
-import { Bone, Euler, Group, Matrix4, MeshStandardMaterial, Object3D, Quaternion, Vector3 } from 'three'
+import { AnimationMixer, Bone, Euler, Group, LoopRepeat, Matrix4, MeshStandardMaterial, Object3D, Quaternion, Vector3 } from 'three'
 import { createHair, segmentQuaternion, stepHair, type HairState } from '../hair'
 import { nav } from '../state'
 import { CHAKRAS } from '../yantra'
@@ -28,6 +28,8 @@ const DEG = Math.PI / 180
 const SHARE = { Head: 0.6, Neck: 0.3, Spine2: 0.1 } as const
 const BREATH_M = 0.004
 const COLLAR_TURN = 0.006 // map offset per second
+/** The model's own idle clip (Astraía's "Slow Mvt", the arms' sway) plays at half speed, looping; the still keeps its first frame. */
+const CLIP_SPEED = 0.5
 
 /* Hair: the Verlet chains (hair.ts) live in the head's space in metres and are carried into world
  * units by the Head bone's world matrix, so gravity and the wind scale with the figure. */
@@ -174,6 +176,7 @@ export function Figure({ rig, variant }: { rig: FigureRig; variant: 'world' | 'd
   const show = useRef(0)
   const collarOffset = useRef(0)
   const hair = useRef<HairRig | null>(null)
+  const mixer = useRef<AnimationMixer | null>(null)
   /** Single hair bones (HairSway_n, a model's own dynamic-hair joints): a damped spring per bone that lags her turns. */
   const sway = useRef<{ bones: Object3D[]; rest: Quaternion[]; ang: Float32Array; vel: Float32Array; last: { yaw: number; pitch: number } } | null>(null)
 
@@ -222,6 +225,26 @@ export function Figure({ rig, variant }: { rig: FigureRig; variant: 'world' | 'd
     }
   }, [figure])
 
+  // The model's idle clip, world variant only: the mixer binds the clip's tracks to this clone by node name.
+  useEffect(() => {
+    if (!figure || variant !== 'world' || !figure.clips.length) {
+      mixer.current = null
+      return
+    }
+    const m = new AnimationMixer(figure.root)
+    const action = m.clipAction(figure.clips[0])
+    action.setLoop(LoopRepeat, Infinity)
+    action.timeScale = CLIP_SPEED
+    action.play()
+    m.update(0)
+    mixer.current = m
+    return () => {
+      m.stopAllAction()
+      m.uncacheRoot(figure.root)
+      mixer.current = null
+    }
+  }, [figure, variant])
+
   // The hair's chains, world variant only (the dock's badge is still too small for it to read).
   useEffect(() => {
     hair.current = variant === 'world' && figure?.hair ? buildHair(figure, figure.hair.bones.map((_, i) => i)) : null
@@ -258,6 +281,9 @@ export function Figure({ rig, variant }: { rig: FigureRig; variant: 'world' | 'd
       m.uniforms.uBright.value = p.bright
       m.uniforms.uBand.value = Math.round(p.band)
     }
+
+    // The idle clip: the arms sway on; under reduced motion the first frame stays.
+    if (mixer.current && !still) mixer.current.update(Math.min(dt, 0.1))
 
     // Gaze: the eyes lead; head, neck and shoulders share the head's turn; the body turns the group.
     const set = (o: Object3D, r: { x: number; y: number; z: number }, yaw: number, pitch: number) => {

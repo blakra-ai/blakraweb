@@ -1,6 +1,6 @@
 import { useFrame, useThree } from '@react-three/fiber'
 import { useEffect, useMemo, useRef } from 'react'
-import { Group, type Object3D, PerspectiveCamera, Vector3 } from 'three'
+import { type DirectionalLight, Group, type Object3D, PerspectiveCamera, Vector3 } from 'three'
 import { Studio } from '../experience/objects/Studio'
 import { Figure, type FigureRig } from '../navigator/figure/Figure'
 import { createLivingState, IGNITION_GAP, stepLiving, type LivingInput, type LivingState } from '../navigator/living'
@@ -18,7 +18,10 @@ import type { Framing, Rect } from './windows'
  * the line from `obs.line`; her hair spring is Figure's own. Where she stands is the world's
  * business (`placeGuide`, per window pass): this file only mounts and animates her.
  *
- * She is the Cyber Girl GLB (src/assets/navigator/navigator.glb) until Astraía arrives.
+ * She is Astraía (Quentin Otani, CC BY 4.0; src/assets/navigator/source/README.md), adopted as
+ * src/assets/navigator/navigator.glb: a porcelain figure with six arms and gold wire, her own
+ * "Slow Mvt" clip (the arms' sway, played by Figure), her head skinned to turn at the neck. Nodes
+ * named Far_* (the four far arms and what they hold) are hidden where a window asks for the bust.
  */
 
 export interface GuideHandle {
@@ -28,9 +31,12 @@ export interface GuideHandle {
   living: LivingState | null
   /** Her eye nodes, found once under the loaded figure. */
   eyes: [Object3D, Object3D] | null
-  /** Whether the legs have been hidden (see Guide's frame step). */
-  cut: boolean
-  /** Show or hide her seven systems' lights (the chakra dots show only where layers are the subject: never in the hero). */
+  /** Her far arms (nodes named Far_*), found once; and whether they are shown. */
+  far: Object3D[] | null
+  farShown: boolean
+  /** The key light (from the ring's side): placeGuide turns it to the window's side. */
+  key: DirectionalLight | null
+  /** Show or hide her seven systems' lights (the chakra dots show only where layers are the subject: never in these windows). */
   systems: (on: boolean) => void
   /** The living step's wake-up times (clock s): the next blink and the next idle glance. */
   nextEvent: () => number
@@ -44,7 +50,9 @@ export function createGuideHandle(): GuideHandle {
     group: null,
     living: null,
     eyes: null,
-    cut: false,
+    far: null,
+    farShown: true,
+    key: null,
     systems: () => {},
     nextEvent: () => Infinity,
     moving: () => false,
@@ -79,6 +87,8 @@ export function createGuideHandle(): GuideHandle {
 
 const FOV = 30
 const DEG = Math.PI / 180
+/** The key light's stand-off on x (its side flips per window) and the fill's: world units are px here, the lights are directional. */
+const KEY_X = 3
 
 /** The camera that draws a window of w × h px with world units = CSS px at z = 0. */
 export function fitGuideCamera(camera: PerspectiveCamera, w: number, h: number) {
@@ -111,6 +121,21 @@ export function placeGuide(h: GuideHandle, framing: Framing, view: Rect, camera:
   g.position.set(x, y - s * m.eyeY + h.rig.float * s, -s * m.headZ)
   g.scale.setScalar(s)
   g.updateMatrixWorld(true)
+  // The bust crop: her far arms (and what they hold) are hidden where the window asks for it.
+  if (!h.far) {
+    const list: Object3D[] = []
+    g.traverse((o) => {
+      if (/^Far_/.test(o.name)) list.push(o)
+    })
+    h.far = list
+  }
+  const showFar = !place.bust
+  if (h.farShown !== showFar) {
+    for (const o of h.far) o.visible = showFar
+    h.farShown = showFar
+  }
+  // The key light comes from the ring's side of this window.
+  if (h.key) h.key.position.x = KEY_X * place.key
   // Her eyes on screen: the midpoint projected through the window's camera into viewport px.
   if (!h.eyes) {
     const l = g.getObjectByName('Eye_L')
@@ -165,7 +190,9 @@ export function Guide({ handle }: { handle: GuideHandle }) {
     [],
   )
 
+  const key = useRef<DirectionalLight>(null)
   useEffect(() => {
+    handle.key = key.current
     // The world's figure never docks here: Figure then leaves the anchor to placeGuide.
     nav.atDock = true
     return () => {
@@ -178,14 +205,6 @@ export function Guide({ handle }: { handle: GuideHandle }) {
     handle.group = group.current
     if (!handle.rig.metrics) return
     if (!handle.living) handle.living = createLivingState(1, obs.clock + 0.3)
-    if (!handle.cut) {
-      // She is cut at the chest by every frame: the legs never show, so they are not drawn (one skinned mesh fewer).
-      const legs = handle.rig.group?.getObjectByName('Legs')
-      if (legs) {
-        legs.visible = false
-        handle.cut = true
-      }
-    }
     input.viewport.w = size.width
     input.viewport.h = size.height
     input.beat = `station-${obs.station}`
@@ -207,11 +226,11 @@ export function Guide({ handle }: { handle: GuideHandle }) {
 
   return (
     <>
-      {/* One rim light from the ring's side (left of her), a dim environment: no shadows. The lights stay outside her placed group. */}
+      {/* The key from the ring's side (gold, warm; placeGuide flips its side per window), a cool porcelain fill from the front, a dim environment: no shadows. The lights stay outside her placed group. */}
       <Studio warm="#d9a441" cool="#8a8781" base="#1a1a1f" />
-      <directionalLight position={[-3, 2, 2]} intensity={2.2} color="#d9a441" />
-      <directionalLight position={[2, 3, 4]} intensity={0.5} color="#ece9e2" />
-      <ambientLight intensity={0.2} />
+      <directionalLight ref={key} position={[-KEY_X, 2, 2]} intensity={2.4} color="#d9a441" />
+      <directionalLight position={[0.5, 2.5, 4]} intensity={1.1} color="#ece9e2" />
+      <ambientLight intensity={0.35} color="#ece9e2" />
       <group ref={group}>
         <Figure rig={handle.rig} variant="world" />
       </group>

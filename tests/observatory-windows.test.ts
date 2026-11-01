@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest'
-import { frameWindow, guideInView, HEAD_SHARE, onScreen, RING, ringScale, stickyViewY, toGl, WORDS_COLUMN, type Rect } from '../src/features/observatory/windows'
+import { frameWindow, guideInView, HEAD_SHARE, HEAD_SHARE_CONTACT, onScreen, RING, ringScale, stickyViewY, toGl, WORDS_COLUMN, type Rect } from '../src/features/observatory/windows'
 
 const desktop: Rect = { x: 24, y: 88, w: 1392, h: 788 }
 const phone: Rect = { x: 16, y: 80, w: 358, h: 232 }
@@ -28,16 +28,31 @@ describe('window framing', () => {
     expect(frameWindow('contact', desktop).guide).not.toBeNull()
   })
 
-  it('places her head at 30 % of the window, right of the ring, chin near the bottom edge', () => {
+  it('places her head at 27 % of the window in front of the ring, chin near the bottom edge, the key light from the ring', () => {
     const f = frameWindow('hero', desktop)
     const g = f.guide!
     expect(g.headPx).toBeCloseTo(HEAD_SHARE * desktop.h)
-    expect(frameWindow('hero', { x: 0, y: 0, w: 320, h: 568 }).guide!.headPx).toBe(160)
-    expect(g.x - 0.4 * g.headPx).toBeGreaterThan(f.ring.x + f.ring.r)
+    expect(frameWindow('hero', { x: 0, y: 0, w: 320, h: 568 }).guide!.headPx).toBeCloseTo(HEAD_SHARE * 568)
+    // Her head overlaps the ring's lower-right quadrant: the rim is behind her, on the words' side.
+    expect(g.x).toBeGreaterThan(f.ring.x)
+    expect(g.x - 0.5 * g.headPx).toBeLessThan(f.ring.x + f.ring.r)
     expect(g.y).toBeGreaterThan(f.ring.y)
+    expect(g.key).toBe(-1)
+    expect(g.bust).toBe(true)
     expect(g.y + 0.35 * g.headPx).toBeLessThanOrEqual(desktop.h + 1e-6)
     // Her head (half a head either side of the eyes) stays inside the frame.
     expect(g.x + 0.45 * g.headPx).toBeLessThanOrEqual(desktop.w)
+  })
+
+  it('gives the contact a fuller, smaller figure inside the disk, right of her line, lit from the rim', () => {
+    const f = frameWindow('contact', desktop)
+    const g = f.guide!
+    expect(g.headPx).toBeCloseTo(HEAD_SHARE_CONTACT * desktop.h)
+    expect(g.x).toBeGreaterThan(f.ring.x)
+    expect(g.x).toBeLessThan(f.ring.x + f.ring.r)
+    expect(g.y).toBeGreaterThan(f.ring.y)
+    expect(g.key).toBe(-1)
+    expect(g.bust).toBe(true)
   })
 
   it('never lets her cross the words column, whatever the rect', () => {

@@ -1,5 +1,6 @@
 import {
   AdditiveBlending,
+  type AnimationClip,
   Bone,
   Box3,
   SkinnedMesh,
@@ -92,6 +93,8 @@ export interface LoadedFigure extends Figure {
   glows: SpriteMaterial[]
   outer: Mesh[]
   inner: Mesh[]
+  /** The model's own animation clips (an idle sway), bound by node name; empty for a still model. */
+  clips: AnimationClip[]
 }
 
 /** Load the figure at `url`. Rejects when the GLB breaks the contract (throws in dev, warns in prod). */
@@ -281,6 +284,7 @@ export async function loadFigure(url: string): Promise<LoadedFigure> {
     glows,
     outer,
     inner,
+    clips: gltf.animations,
   }
   if (import.meta.env.DEV) (globalThis as Record<string, unknown>).__figure = figure
   return figure

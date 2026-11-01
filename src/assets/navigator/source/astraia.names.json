@@ -1,0 +1,23 @@
+{
+ "Retopo 001_Body Ext_0": "Face",
+ "EYE L001": "EyeSocket_R",
+ "EYE R001": "EyeSocket_L",
+ "Object_248": "Far_Arm_1_Ext",
+ "Object_249": "Far_Arm_1_Int",
+ "Object_251": "Far_Arm_2_Ext",
+ "Object_252": "Far_Arm_2_Int",
+ "Object_254": "Far_Arm_3_Ext",
+ "Object_255": "Far_Arm_3_Int",
+ "Object_257": "Far_Arm_4_Ext",
+ "Object_258": "Far_Arm_4_Int",
+ "Object_260": "Far_Arm_5_Ext",
+ "Object_261": "Far_Arm_5_Int",
+ "Group005": "Far_Compass",
+ "Circle009": "Far_Sphere_R",
+ "Circle011": "Far_Sphere_L",
+ "Circle003": "Far_Bracelet_3",
+ "Circle004": "Far_Bracelet_4",
+ "Circle005": "Far_Bracelet_5",
+ "Circle007": "Far_Bracelet_7",
+ "Circle008": "Far_Bracelet_8"
+}

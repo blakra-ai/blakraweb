@@ -162,9 +162,18 @@ export function Legal() {
           <div>
             <dt>{l.creditsTitle}</dt>
             <dd>
+              {/* The licence's own credit line (CC BY 4.0): the work, its author and the licence, each linked. */}
               {l.credits}{' '}
-              <a href="https://sketchfab.com/3d-models/cyber-girl-46640796f0dd4fbab5eba5262d542e25" rel="license noopener" target="_blank">
-                sketchfab.com
+              <a href="https://sketchfab.com/3d-models/astraia-c0f37ac567d34fa8881ed7a79b335c4d" rel="noopener" target="_blank">
+                Astraía
+              </a>
+              {' · '}
+              <a href="https://sketchfab.com/quentinotani" rel="noopener" target="_blank">
+                Quentin Otani
+              </a>
+              {' · '}
+              <a href="https://creativecommons.org/licenses/by/4.0/" rel="license noopener" target="_blank">
+                CC BY 4.0
               </a>
             </dd>
           </div>

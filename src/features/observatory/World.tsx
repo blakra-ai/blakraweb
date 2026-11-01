@@ -2,19 +2,20 @@ import { PerformanceMonitor } from '@react-three/drei'
 import { Canvas, useFrame, useThree } from '@react-three/fiber'
 import { useEffect, useMemo, useRef, useState } from 'react'
 import { createPortal } from 'react-dom'
-import { Group, OrthographicCamera } from 'three'
+import { Group, OrthographicCamera, PerspectiveCamera } from 'three'
 import { useMotion } from '../../motion/MotionProvider'
 import { onPulse } from '../../motion/pulse'
 import { needs } from '../../content/shared'
 import { LAYERS, nav } from '../navigator/state'
 import { ORBIT_END } from './orbit'
 import { obs } from './state'
+import { createGuideHandle, fitGuideCamera, Guide, placeGuide } from './Guide'
 
 /** The picker's choice as her layers (indices 0 … 6), or null. */
 export const pickedLayers = () => (obs.picker ? (obs.picker === 'all' ? LAYERS : needs[obs.picker].layers).map((l) => LAYERS.indexOf(l)) : null)
 import { createRing, fitRing, glowAt } from './shaders/ring'
 import { createWell, fitWell } from './shaders/well'
-import { bendAt, FRAME_RADIUS, getWindows, GRID_CELL, holeFor, onScreen, onWindows, toGl } from './windows'
+import { bendAt, FRAME_RADIUS, getWindows, GRID_CELL, guideInView, holeFor, onScreen, onWindows, toGl } from './windows'
 import { LAYERS_N } from './orbit'
 
 /*
@@ -22,11 +23,12 @@ import { LAYERS_N } from './orbit'
  * evolving object (the warped grid, the lensing ring and, on the stage, its seven bands) through
  * every registered window (windows.ts). Each window is rendered with gl viewport = the window's
  * own rect (so its picture scrolls with it) and gl scissor = the part of it on screen, through an
- * orthographic camera in the window's CSS px. The hole is the guide (art pass v1): the figure
- * pipeline (Guide.tsx, navigator/*) stays on disk but is not mounted, so no GLB is requested.
+ * orthographic camera in the window's CSS px. The guide (Guide.tsx: Astraía from the navigator
+ * pipeline) is drawn after the flat pass, through a perspective camera (world units = CSS px at
+ * z 0), in the two windows whose framing places her (hero, contact).
  *
- * frameloop="demand": a frame is drawn on scroll, reflow and while the load device or a pulse
- * plays, otherwise nothing runs.
+ * frameloop="demand": a frame is drawn on scroll, pointer move (her gaze), reflow and while the
+ * load device or a pulse plays; while she is on screen her idle clip keeps the frames coming.
  * dpr 1 … 1.25, lowered to 1 by the PerformanceMonitor when continuous frames fall under 40 fps.
  * `?profile` logs the frame's CPU time every 2 s. Nothing here reads layout: the scroll is one
  * number per frame, the rects come from the registry.
@@ -49,13 +51,14 @@ function rendererName(gl: { getContext(): WebGLRenderingContext | WebGL2Renderin
 /** Frames drawn so far (`?profile`: globalThis.__obsWorld.frames.n, for an idle-cost probe). */
 const frames = { n: 0, why: '' }
 
-function Passes() {
+function Passes({ handle }: { handle: ReturnType<typeof createGuideHandle> }) {
   const { gl, scene, size, invalidate } = useThree()
   const flat = useRef<Group>(null)
   const ortho = useMemo(() => new OrthographicCamera(0, 1, 0, 1, -10, 10), [])
+  const persp = useMemo(() => new PerspectiveCamera(30, 1, 1, 20000), [])
   const well = useMemo(createWell, [])
   const ring = useMemo(createRing, [])
-  const t = useRef({ last: 0, lastY: 0, bendStart: -1, inputAt: 0, frames: 0, ms: 0, since: 0, raf: 0, viewport: { w: 1, h: 1 } })
+  const t = useRef({ last: 0, lastY: 0, bendStart: -1, inputAt: 0, frames: 0, ms: 0, since: 0, raf: 0, guideShown: false, viewport: { w: 1, h: 1 } })
 
   useEffect(() => {
     gl.autoClear = false
@@ -71,20 +74,27 @@ function Passes() {
         invalidate()
       })
     }
-    // The cursor is kept for the page (obs.pointer); the object does not follow it, so no frame is due.
+    // The cursor moves only her gaze: without her on screen a move needs no frame.
     const move = (e: PointerEvent) => {
       obs.pointer.x = e.clientX
       obs.pointer.y = e.clientY
       obs.pointer.on = e.pointerType === 'mouse'
+      if (s.guideShown) input()
+    }
+    const leave = () => {
+      obs.pointer.on = false
+      if (s.guideShown) input()
     }
     window.addEventListener('scroll', input, { passive: true })
     window.addEventListener('pointermove', move, { passive: true })
+    document.documentElement.addEventListener('pointerleave', leave)
     const offWindows = onWindows(input)
     const offPulse = onPulse(input)
     invalidate()
     return () => {
       window.removeEventListener('scroll', input)
       window.removeEventListener('pointermove', move)
+      document.documentElement.removeEventListener('pointerleave', leave)
       offWindows()
       offPulse()
       cancelAnimationFrame(s.raf)
@@ -142,6 +152,9 @@ function Passes() {
     gl.setScissorTest(false)
     gl.setViewport(0, 0, size.width, size.height)
     gl.clear(true, true, false)
+    let guideShown = false
+    const guide = handle.group
+    if (guide) guide.visible = false
     for (const w of windows) {
       const on = onScreen(w.rect, y, viewport, w.sticky)
       if (!on) continue
@@ -182,13 +195,29 @@ function Passes() {
       if (flat.current) flat.current.visible = true
       gl.render(scene, ortho)
       if (flat.current) flat.current.visible = false
+
+      // The guide's pass: her in front of the ring, through the window's own perspective camera, only when the visible part touches her.
+      if (f.guide && guide && guideInView(f.guide, clip, view)) {
+        handle.systems(false)
+        fitGuideCamera(persp, view.w, view.h)
+        if (placeGuide(handle, f, view, persp)) {
+          guide.visible = true
+          gl.clearDepth()
+          gl.render(scene, persp)
+          guide.visible = false
+          guideShown = true
+        }
+      }
     }
     gl.setScissorTest(false)
+    s.guideShown = guideShown
+    if (!guideShown) nav.anchor.on = false
 
-    // The next frame: while something moves (the bend, a pulse, the scroll settling), at once; else none.
+    // The next frame: while something moves (the bend, a pulse, the scroll settling, her clip and her life while she shows), at once; else none.
     const sinceInput = (now - s.inputAt) / 1000
-    const moving = !still && (bend < 1 || glow > 0 || Math.abs(nav.scrollV) > 0 || sinceInput < INPUT_HOLD_S)
-    if (PROFILE) frames.why = moving ? `bend${bend < 1 ? 1 : 0} glow${glow > 0 ? 1 : 0} scroll${nav.scrollV !== 0 ? 1 : 0} input${sinceInput < INPUT_HOLD_S ? 1 : 0}` : 'idle'
+    const alive = guideShown && (handle.moving() || handle.rig.metrics !== null)
+    const moving = !still && (bend < 1 || glow > 0 || Math.abs(nav.scrollV) > 0 || sinceInput < INPUT_HOLD_S || alive)
+    if (PROFILE) frames.why = moving ? `bend${bend < 1 ? 1 : 0} glow${glow > 0 ? 1 : 0} scroll${nav.scrollV !== 0 ? 1 : 0} input${sinceInput < INPUT_HOLD_S ? 1 : 0} guide${alive ? 1 : 0}` : 'idle'
     if (moving) invalidate()
 
     if (PROFILE) {
@@ -222,12 +251,15 @@ function Governor({ burst, onDpr }: { burst: () => number; onDpr: (dpr: number) 
 
 export default function World() {
   const { enabled } = useMotion()
+  const handle = useMemo(createGuideHandle, [])
   const [dpr, setDpr] = useState<number | [number, number]>([1, DPR_MAX])
   const burstRef = useRef(0)
   useEffect(() => {
     obs.still = !enabled
   }, [enabled])
   useEffect(() => {
+    // The figure pipeline reads the cursor from nav: one object for both.
+    nav.pointer = obs.pointer
     document.documentElement.classList.add('gl-live')
     return () => document.documentElement.classList.remove('gl-live')
   }, [])
@@ -246,7 +278,8 @@ export default function World() {
         }}
       >
         <Governor burst={() => burstRef.current} onDpr={setDpr} />
-        <Passes />
+        <Guide handle={handle} />
+        <Passes handle={handle} />
         <Burst to={burstRef} />
       </Canvas>
     </div>,

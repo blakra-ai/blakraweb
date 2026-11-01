@@ -359,7 +359,7 @@ export const en: Dict = {
     phoneLabel: 'Phone',
     country: 'United States',
     creditsTitle: 'Credits',
-    credits: 'The Navigator’s figure is adapted from “Cyber Girl” by Rotmill (Sketchfab), licensed CC BY 4.0.',
+    credits: 'The Navigator’s figure is based on “Astraía” by Quentin Otani (Sketchfab), licensed under CC BY 4.0.',
   },
   notFound: { eyebrow: '404', title: 'This page fell past the horizon.', text: 'It doesn’t exist, or it has moved.', back: 'Back to the start' },
 }

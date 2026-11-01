@@ -2,7 +2,19 @@
 /*
  * Adopt a delivered model as the Navigator.
  *
- *   node scripts/navigator-adopt.mjs <model.glb> [names.json] [--augment] [--eyes x,y,z,r] [--head y] [--simplify ratio] [--drop regex] [--webp quality] [--optimize] [--dry]
+ *   node scripts/navigator-adopt.mjs <model.glb> [names.json] [--augment] [--eyes x,y,z,r] [--head y|x,y,z] [--simplify ratio] [--drop regex] [--webp quality] [--optimize] [--dry]
+ *       [--yaw deg] [--head-meshes regex] [--skin-head regex --neck y0,y1] [--bake-look] [--tint r,g,b:regex] [--tex-max px] [--tex-hi regex]
+ *
+ * A Sketchfab-style scene (Astraía): --yaw turns the whole scene about Y so she faces +Z; with
+ * --augment and no skeleton, --head x,y,z puts the Head pivot at a world point (the neck),
+ * --head-meshes limits which rigid nodes follow it (through bridge nodes, so their own animation
+ * tracks keep working) and --skin-head skins the matching rigid meshes between Spine1 and Head
+ * with a blend across --neck y0,y1, so one shell from head to hips turns at the neck. --bake-look
+ * moves a baked emissive map into the base colour (lit by our lights, not its own), drops
+ * transmission and clearcoat and sets a matte PBR; --tint multiplies the base colour of the
+ * materials matching the regex (a blue bake made porcelain). --tex-max caps every texture
+ * (default 2048 with --webp); --tex-hi keeps that cap for the matching materials' base and normal
+ * maps and halves it for the rest.
  *
  * --drop <regex> removes every node whose name matches, with its subtree (a second copy of the
  * figure, preview props); --webp <q> re-encodes textures as WebP at that quality (needs sharp).
@@ -35,7 +47,8 @@ import { CONTRACT, validateNames } from '../src/features/navigator/figure/names.
 import { CHAKRAS } from '../src/features/navigator/yantra.ts'
 
 const args = process.argv.slice(2)
-const WITH_VALUE = new Set(['--eyes', '--head', '--simplify', '--drop', '--webp', '--eye-forward'])
+const WITH_VALUE = new Set(['--eyes', '--head', '--simplify', '--drop', '--webp', '--eye-forward', '--yaw', '--head-meshes', '--skin-head', '--neck', '--tint', '--tex-max', '--tex-hi'])
+const value = (flag) => args[args.indexOf(flag) + 1]
 const flags = new Set(args.filter((a) => a.startsWith('--')))
 const positional = args.filter((a, i) => !a.startsWith('--') && !(i > 0 && WITH_VALUE.has(args[i - 1])))
 const [input, namesPath] = positional
@@ -86,6 +99,25 @@ if (flags.has('--drop')) {
   console.log(`dropped ${dropped} node(s) matching ${re}; pruned unused meshes, skins, materials and textures`)
 }
 
+// ---- Yaw: turn the scene's top-level nodes about Y (she faces +Z, the camera) ------------------
+if (flags.has('--yaw')) {
+  const deg = Number(value('--yaw'))
+  const h = (deg * Math.PI) / 360
+  const qy = [0, Math.sin(h), 0, Math.cos(h)]
+  const mulQ = (a, b) => [
+    a[3] * b[0] + a[0] * b[3] + a[1] * b[2] - a[2] * b[1],
+    a[3] * b[1] - a[0] * b[2] + a[1] * b[3] + a[2] * b[0],
+    a[3] * b[2] + a[0] * b[1] - a[1] * b[0] + a[2] * b[3],
+    a[3] * b[3] - a[0] * b[0] - a[1] * b[1] - a[2] * b[2],
+  ]
+  const rotV = ([x, y, z]) => [x * Math.cos(2 * h) + z * Math.sin(2 * h), y, -x * Math.sin(2 * h) + z * Math.cos(2 * h)]
+  for (const scene of root.listScenes()) for (const top of scene.listChildren()) {
+    top.setRotation(mulQ(qy, top.getRotation()))
+    top.setTranslation(rotV(top.getTranslation()))
+  }
+  console.log(`yawed the scene by ${deg}°`)
+}
+
 // ---- Augmentation: the parts a single-mesh model lacks --------------------------------------
 const byName = (n) => root.listNodes().find((x) => x.getName() === n) ?? null
 const scratch = root.listBuffers()[0] ?? doc.createBuffer()
@@ -105,6 +137,17 @@ function mat4Invert(m) {
     (a10 * b10 - a11 * b08 + a13 * b06) * det, (a01 * b08 - a00 * b10 - a03 * b06) * det, (a30 * b04 - a31 * b02 + a33 * b00) * det, (a21 * b02 - a20 * b04 - a23 * b00) * det,
     (a11 * b07 - a10 * b09 - a12 * b06) * det, (a00 * b09 - a01 * b07 + a02 * b06) * det, (a31 * b01 - a30 * b03 - a32 * b00) * det, (a20 * b03 - a21 * b01 + a22 * b00) * det,
   ]
+}
+const mat4Mul = (a, b) => {
+  const o = new Array(16).fill(0)
+  for (let c = 0; c < 4; c++) for (let r = 0; r < 4; r++) for (let k = 0; k < 4; k++) o[c * 4 + r] += a[k * 4 + r] * b[c * 4 + k]
+  return o
+}
+/** A column-major TRS matrix as translation, quaternion and scale (no shear). */
+function mat4Decompose(m) {
+  const sx = Math.hypot(m[0], m[1], m[2]), sy = Math.hypot(m[4], m[5], m[6]), sz = Math.hypot(m[8], m[9], m[10])
+  const r = [m[0] / sx, m[1] / sx, m[2] / sx, 0, m[4] / sy, m[5] / sy, m[6] / sy, 0, m[8] / sz, m[9] / sz, m[10] / sz, 0, 0, 0, 0, 1]
+  return { t: [m[12], m[13], m[14]], r: worldQuatOf(r), sc: [sx, sy, sz] }
 }
 const xform = (m, p) => [m[0] * p[0] + m[4] * p[1] + m[8] * p[2] + m[12], m[1] * p[0] + m[5] * p[1] + m[9] * p[2] + m[13], m[2] * p[0] + m[6] * p[1] + m[10] * p[2] + m[14]]
 const worldPos = (node) => { const m = node.getWorldMatrix(); return [m[12], m[13], m[14]] }
@@ -136,7 +179,9 @@ function spherePrim(r, material, { half = false, seg = 20, ring = 14 } = {}) {
 }
 /** The rotation part of a world matrix as a quaternion [x, y, z, w] (scale removed). */
 function worldQuat(node) {
-  const m = node.getWorldMatrix()
+  return worldQuatOf(node.getWorldMatrix())
+}
+function worldQuatOf(m) {
   const sx = Math.hypot(m[0], m[1], m[2]) || 1, sy = Math.hypot(m[4], m[5], m[6]) || 1, sz = Math.hypot(m[8], m[9], m[10]) || 1
   const r00 = m[0] / sx, r01 = m[4] / sy, r02 = m[8] / sz, r10 = m[1] / sx, r11 = m[5] / sy, r12 = m[9] / sz, r20 = m[2] / sx, r21 = m[6] / sy, r22 = m[10] / sz
   const t = r00 + r11 + r22
@@ -209,7 +254,10 @@ if (flags.has('--augment')) {
     }
     cx /= n || 1; cz /= n || 1
     const h = top - bottom
-    const headY = flags.has('--head') ? Number(args[args.indexOf('--head') + 1]) : top - (h > 1.2 ? 0.235 : 0.34 * h)
+    const headArg = flags.has('--head') ? value('--head').split(',').map(Number) : null
+    const headY = headArg ? headArg[headArg.length === 3 ? 1 : 0] : top - (h > 1.2 ? 0.235 : 0.34 * h)
+    // --head x,y,z: the pivot stands at that world point (the chain is built there and recentred below).
+    const [hx, hz] = headArg && headArg.length === 3 ? [headArg[0], headArg[2]] : [0, 0]
     const chain = ['Hips', 'Spine', 'Spine1', 'Spine2', 'Neck', 'Head']
     const ys = h > 1.2
       ? [bottom + 0.53 * h, bottom + 0.6 * h, bottom + 0.68 * h, bottom + 0.77 * h, headY - 0.07, headY]
@@ -218,25 +266,101 @@ if (flags.has('--augment')) {
     let parent = null
     chain.forEach((name, i) => {
       // The skeleton stands on the origin; the meshes are moved onto it below (sculpts often sit off-centre).
-      const node = doc.createNode(name).setTranslation([0, i === 0 ? ys[0] : ys[i] - ys[i - 1], 0])
+      const node = doc.createNode(name).setTranslation([i === 0 ? hx : 0, i === 0 ? ys[0] : ys[i] - ys[i - 1], i === 0 ? hz : 0])
       if (parent) parent.addChild(node)
       else scene.addChild(node)
       parent = node
     })
     // Every mesh follows the Head when the figure turns: parent the mesh nodes to it (a bust is all
-    // head). Sculpt exports carry only a translation, so the local offset is the difference of
-    // world positions; rotation and scale stay the node's own.
+    // head). With --head-meshes only the matching nodes follow, each through a bridge node that
+    // carries its old parent's frame, so the node's own TRS (and any animation track on it) is kept.
     const headNode = byName('Head')
     const HW = [cx, headY, cz] // where the head is in the sculpt's own space
+    const headRe = flags.has('--head-meshes') ? new RegExp(value('--head-meshes')) : null
+    const skinRe = flags.has('--skin-head') ? new RegExp(value('--skin-head')) : null
+    const bridges = new Map()
+    const topLevel = new Set(root.listScenes().flatMap((sc) => sc.listChildren()))
     for (const node of root.listNodes()) {
-      if (!node.getMesh() || chain.includes(node.getName())) continue
-      const w = worldPos(node)
+      if (!node.getMesh() || chain.includes(node.getName()) || node.getSkin()) continue
+      if (skinRe && (skinRe.test(node.getName()) || skinRe.test(node.listParents().find((x) => x.propertyType === 'Node')?.getName() ?? ''))) continue
       const oldParent = node.listParents().find((x) => x.propertyType === 'Node' || x.propertyType === 'Scene')
+      if (headRe) {
+        if (!headRe.test(node.getName()) && !headRe.test(oldParent?.getName?.() ?? '')) continue
+        // The bridge: Head-local = inv(HeadWorld) × oldParentWorld (the Head node is built upright and unscaled).
+        const key = oldParent?.propertyType === 'Node' ? oldParent : null
+        let bridge = bridges.get(key)
+        if (!bridge) {
+          const HWm = headNode.getWorldMatrix()
+          const PW = key ? key.getWorldMatrix() : [1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1]
+          const inv = mat4Invert(HWm)
+          const local = mat4Mul(inv, PW)
+          bridge = doc.createNode(`HeadRig_${bridges.size + 1}`)
+          const { t, r, sc } = mat4Decompose(local)
+          bridge.setTranslation(t).setRotation(r).setScale(sc)
+          headNode.addChild(bridge)
+          bridges.set(key, bridge)
+        }
+        if (topLevel.has(node)) topLevel.delete(node)
+        oldParent?.removeChild?.(node)
+        bridge.addChild(node)
+        continue
+      }
+      const w = worldPos(node)
       oldParent?.removeChild?.(node)
       node.setTranslation([w[0] - HW[0], w[1] - HW[1], w[2] - HW[2]])
       headNode.addChild(node)
     }
-    console.log(`augment: no skeleton; built Hips…Head down the axis (mesh ${bottom.toFixed(2)}…${top.toFixed(2)} m, Head bone at y=${headY.toFixed(3)}); meshes parented to Head`)
+    // --skin-head: one shell from head to hips turns at the neck: the matching rigid meshes are
+    // baked to world space and skinned between Spine1 (still) and Head across the --neck band.
+    if (skinRe) {
+      const [n0, n1] = flags.has('--neck') ? value('--neck').split(',').map(Number) : [headY - 0.04, headY + 0.04]
+      const spine1 = byName('Spine1')
+      const scene = root.listScenes()[0]
+      const ibm = (joint) => mat4Invert(joint.getWorldMatrix())
+      const skin = doc.createSkin('HeadSkin').addJoint(spine1).addJoint(headNode)
+      skin.setInverseBindMatrices(doc.createAccessor().setType('MAT4').setArray(new Float32Array([...ibm(spine1), ...ibm(headNode)])).setBuffer(scratch))
+      let skinned = 0
+      for (const node of root.listNodes()) {
+        if (!node.getMesh() || node.getSkin()) continue
+        const parent = node.listParents().find((x) => x.propertyType === 'Node')
+        if (!(skinRe.test(node.getName()) || skinRe.test(parent?.getName() ?? ''))) continue
+        const m = node.getWorldMatrix()
+        const mesh = node.getMesh()
+        for (const prim of mesh.listPrimitives()) {
+          const pos = prim.getAttribute('POSITION')
+          const nor = prim.getAttribute('NORMAL')
+          const n = pos.getCount()
+          const P = new Float32Array(n * 3), N = nor ? new Float32Array(n * 3) : null
+          const J = new Uint8Array(n * 4), W = new Float32Array(n * 4)
+          const v = []
+          for (let i = 0; i < n; i++) {
+            const w = xform(m, pos.getElement(i, v))
+            P.set(w, i * 3)
+            if (N) {
+              const q = nor.getElement(i, v)
+              const r = [m[0] * q[0] + m[4] * q[1] + m[8] * q[2], m[1] * q[0] + m[5] * q[1] + m[9] * q[2], m[2] * q[0] + m[6] * q[1] + m[10] * q[2]]
+              const l = Math.hypot(...r) || 1
+              N.set([r[0] / l, r[1] / l, r[2] / l], i * 3)
+            }
+            const t = Math.max(0, Math.min(1, (w[1] - n0) / Math.max(1e-6, n1 - n0)))
+            const wh = t * t * (3 - 2 * t)
+            J.set([0, 1, 0, 0], i * 4)
+            W.set([1 - wh, wh, 0, 0], i * 4)
+          }
+          pos.setArray(P)
+          if (N) nor.setArray(N)
+          prim.setAttribute('JOINTS_0', doc.createAccessor().setType('VEC4').setArray(J).setBuffer(scratch))
+          prim.setAttribute('WEIGHTS_0', doc.createAccessor().setType('VEC4').setArray(W).setBuffer(scratch))
+        }
+        // The node now holds world-space geometry: it stands at the scene root with the identity.
+        parent?.removeChild(node)
+        node.setTranslation([0, 0, 0]).setRotation([0, 0, 0, 1]).setScale([1, 1, 1]).setSkin(skin)
+        scene.addChild(node)
+        skinned++
+      }
+      console.log(`augment: skinned ${skinned} mesh node(s) to Spine1 → Head across y ${n0}…${n1}`)
+    }
+    console.log(`augment: no skeleton; built Hips…Head down the axis (mesh ${bottom.toFixed(2)}…${top.toFixed(2)} m, Head bone at y=${headY.toFixed(3)}); ${headRe ? `nodes matching ${headRe} parented to Head through ${bridges.size} bridge(s)` : 'meshes parented to Head'}`)
   }
   const head = byName('Head'), neck = byName('Neck'), hips = byName('Hips'), spine = byName('Spine'), spine1 = byName('Spine1'), spine2 = byName('Spine2')
   if (!head || !hips) {
@@ -285,6 +409,22 @@ if (flags.has('--augment')) {
     const L = worldPos(sockL), R = worldPos(sockR)
     const half = Math.abs(R[0] - L[0]) / 2
     er = flags.has('--eyes') ? er : Math.min(defaultR, half * 0.45)
+    // A socket that is the model's own eyeball mesh: the sphere takes its radius and replaces it.
+    let ownR = 0
+    for (const holder of [sockL, sockR].flatMap((sock) => [sock, ...sock.listChildren()])) {
+      const sock = holder
+      const mesh = sock.getMesh()
+      if (!mesh) continue
+      const m = sock.getWorldMatrix()
+      let mn = [Infinity, Infinity, Infinity], mx = [-Infinity, -Infinity, -Infinity]
+      for (const prim of mesh.listPrimitives()) {
+        const p = prim.getAttribute('POSITION'), v = []
+        for (let i = 0; i < p.getCount(); i++) { const w = xform(m, p.getElement(i, v)); for (let k = 0; k < 3; k++) { mn[k] = Math.min(mn[k], w[k]); mx[k] = Math.max(mx[k], w[k]) } }
+      }
+      ownR = Math.max(ownR, Math.max(mx[0] - mn[0], mx[1] - mn[1], mx[2] - mn[2]) / 2)
+      sock.setMesh(null)
+    }
+    if (ownR && !flags.has('--eyes')) er = ownR
     // Forward by most of a radius: the shader's disk must clear the model's own eyeball and lids.
     const fwd = flags.has('--eye-forward') ? Number(args[args.indexOf('--eye-forward') + 1]) : 1.6
     eyeWorld = { L: [L[0], L[1], L[2] + fwd * er], R: [R[0], R[1], R[2] + fwd * er] }
@@ -355,6 +495,56 @@ if (flags.has('--augment')) {
   }
 }
 
+// ---- Look: a baked Sketchfab look (emissive maps) becomes lit PBR; a tint warms a blue bake -----
+if (flags.has('--bake-look')) {
+  let baked = 0
+  for (const m of root.listMaterials()) {
+    const em = m.getEmissiveTexture()
+    if (em) {
+      // The bake is the colour: it goes in the base slot (lit by our key and fill), the emissive goes dark.
+      const info = m.getEmissiveTextureInfo()
+      m.setBaseColorTexture(em)
+      if (info) { m.getBaseColorTextureInfo().setTexCoord(info.getTexCoord()) }
+      m.setEmissiveTexture(null)
+      m.setEmissiveFactor([0, 0, 0])
+      m.setBaseColorFactor([1, 1, 1, m.getBaseColorFactor()[3]])
+      baked++
+    }
+    m.setMetallicRoughnessTexture(null)
+    m.setMetallicFactor(0)
+    m.setRoughnessFactor(0.55)
+    for (const e of m.listExtensions()) if (/transmission|clearcoat|ior|specular|volume/.test(e.extensionName)) e.dispose()
+  }
+  await doc.transform(prune({ keepLeaves: true }))
+  console.log(`bake-look: ${baked} emissive map(s) moved to base colour; metallic and transmission dropped; ${root.listTextures().length} texture(s) remain`)
+}
+if (flags.has('--tint')) {
+  // r,g,b:regex multiplies the matching materials' base colour (gains over 1 are applied to the
+  // pixels, a dark blue bake made porcelain); grey:regex turns their base map monochrome.
+  const sharp = (await import('sharp')).default
+  for (const spec of value('--tint').split(';')) {
+    const [what, re] = spec.split(':')
+    const test = new RegExp(re ?? '.')
+    const done = new Set()
+    let n = 0
+    for (const m of root.listMaterials()) {
+      if (!test.test(m.getName())) continue
+      n++
+      const t = m.getBaseColorTexture()
+      if (what === 'grey') {
+        if (t && !done.has(t)) { t.setImage(new Uint8Array(await sharp(Buffer.from(t.getImage())).grayscale().png().toBuffer())).setMimeType('image/png'); done.add(t) }
+        continue
+      }
+      const f = what.split(',').map(Number)
+      const b = m.getBaseColorFactor()
+      if (f.some((x) => x > 1) && t) {
+        if (!done.has(t)) { t.setImage(new Uint8Array(await sharp(Buffer.from(t.getImage())).linear(f, [0, 0, 0]).png().toBuffer())).setMimeType('image/png'); done.add(t) }
+      } else m.setBaseColorFactor([b[0] * f[0], b[1] * f[1], b[2] * f[2], b[3]])
+    }
+    console.log(`tint ${what} on ${n} material(s) matching ${test}`)
+  }
+}
+
 const nodes = new Set(root.listNodes().map((n) => n.getName()))
 const morphs = new Set()
 for (const mesh of root.listMeshes()) for (const prim of mesh.listPrimitives()) for (const name of prim.getParent?.()?.getExtras?.()?.targetNames ?? mesh.getExtras()?.targetNames ?? []) morphs.add(name)
@@ -389,7 +579,18 @@ if (flags.has('--webp')) {
   const q = Number(args[args.indexOf('--webp') + 1]) || 82
   const sharp = (await import('sharp')).default
   const before = root.listTextures().reduce((a, t) => a + (t.getImage()?.byteLength ?? 0), 0)
-  await doc.transform(textureCompress({ encoder: sharp, targetFormat: 'webp', quality: q, resize: [2048, 2048] }))
+  const max = flags.has('--tex-max') ? Number(value('--tex-max')) : 2048
+  // Textures are named after their material and slot, so --tex-hi can pick them by pattern.
+  for (const m of root.listMaterials()) for (const slot of ['BaseColor', 'Normal', 'MetallicRoughness', 'Emissive', 'Occlusion']) {
+    const t = m[`get${slot}Texture`]()
+    if (t && !t.getName()) t.setName(`${m.getName()}:${slot}`)
+  }
+  if (flags.has('--tex-hi')) {
+    const hi = new RegExp(`^(${value('--tex-hi')}):(BaseColor|Normal)$`)
+    await doc.transform(textureCompress({ encoder: sharp, targetFormat: 'webp', quality: q, resize: [max, max], pattern: hi }))
+    const lo = new RegExp(`^(?!(${value('--tex-hi')}):(BaseColor|Normal)$)`)
+    await doc.transform(textureCompress({ encoder: sharp, targetFormat: 'webp', quality: q, resize: [max / 2, max / 2], pattern: lo }))
+  } else await doc.transform(textureCompress({ encoder: sharp, targetFormat: 'webp', quality: q, resize: [max, max] }))
   const after = root.listTextures().reduce((a, t) => a + (t.getImage()?.byteLength ?? 0), 0)
   console.log(`textures → webp q${q}: ${(before / 1e6).toFixed(1)} MB → ${(after / 1e6).toFixed(1)} MB (${root.listTextures().length} textures)`)
 }

@@ -26,8 +26,8 @@ export interface Framing {
   pull: number
   /** Where the grid's left fade ends (0 … 1 of the width): the words' column stays quiet. */
   fade: number
-  /** The guide's eyes in window-local px and her head's height in px, or null where she is absent. */
-  guide: { x: number; y: number; headPx: number } | null
+  /** The guide's eyes in window-local px, her head's height in px, which side her key light comes from (−1 left, 1 right: the lit rim's side) and whether she is cropped to the bust (nodes named Far_* hidden); null where she is absent. */
+  guide: { x: number; y: number; headPx: number; key: -1 | 1; bust: boolean } | null
 }
 
 export interface ObsWindow {
@@ -66,8 +66,9 @@ const FADE = { hero: 0.42, stage: 0.42, contact: 0.5 } as const
 /** The ring's centre: 62 % across the hero, 58 % on the stage (its bands reach 1.6 r; the line stands on the tangent beyond them). */
 const RING_X = { hero: 0.62, stage: 0.58, contact: 0.74 } as const
 const RING_Y = { hero: 322 / 788, stage: 0.47, contact: 300 / 788 } as const
-/** The guide's head: 30 % of the window's height; the words own the left half. */
-export const HEAD_SHARE = 0.3
+/** The guide's head as a share of the window's height: a bust in the hero (27 %), a fuller, smaller figure in the contact (20 %); the words own the left half. */
+export const HEAD_SHARE = 0.27
+export const HEAD_SHARE_CONTACT = 0.2
 export const WORDS_COLUMN = 0.5
 export const FRAME_RADIUS = 16
 export const GRID_CELL = 24
@@ -91,19 +92,31 @@ export function frameWindow(kind: WindowKind, rect: Rect, hint?: { x: number; y:
     ring.r = r
   }
   let guide: Framing['guide'] = null
-  {
-    // 30 % of the window's height, and never so large that she cannot fit in the right half.
+  if (kind === 'contact') {
+    // The closing stage: a fuller figure at a fifth of the height, standing inside the disk right
+    // of its centre (her line keeps the disk's left), the lit rim below and left of her (her key
+    // light's side), still the bust crop so no arm crosses the line or the panel.
+    const headPx = Math.min(HEAD_SHARE_CONTACT * rect.h, 0.5 * rect.w)
+    let x = hint ? hint.x * rect.w : ring.x + 0.45 * r
+    let y = hint ? hint.y * rect.h : ring.y + 0.1 * r
+    x = Math.max(x, WORDS_COLUMN * rect.w + 0.5 * headPx)
+    x = Math.min(x, rect.w - 0.45 * headPx)
+    y = Math.max(y, 0.5 * headPx)
+    guide = { x, y, headPx, key: -1, bust: true }
+  } else {
+    // 27 % of the window's height, and never so large that she cannot fit in the right half.
     const headPx = Math.min(HEAD_SHARE * rect.h, 0.5 * rect.w)
-    // At the lower-right rim: just past the ring's right edge, a third of a head below its centre
-    // line times the radius, her chin near the frame's bottom edge (the shoulders are cut by it).
-    let x = hint ? hint.x * rect.w : ring.x + r + 0.45 * headPx
-    let y = hint ? hint.y * rect.h : ring.y + 1.3 * r
+    // A bust in front of the ring's lower-right quadrant: her eyes a third of the radius right of
+    // its centre and below its centre line, the gold rim behind her head on the words' side (her
+    // key light), her chin near the frame's bottom edge (the shoulders are cut by it).
+    let x = hint ? hint.x * rect.w : ring.x + 0.38 * r
+    let y = hint ? hint.y * rect.h : ring.y + 0.72 * r
     y = Math.min(y, rect.h - 0.35 * headPx)
     // Never over the words: she stays right of the left column, and inside the frame.
     x = Math.max(x, WORDS_COLUMN * rect.w + 0.5 * headPx)
     x = Math.min(x, rect.w - 0.45 * headPx)
     y = Math.max(y, 0.5 * headPx)
-    guide = { x, y, headPx }
+    guide = { x, y, headPx, key: -1, bust: true }
   }
   return { ring, sigma: SIGMA[kind] * s, pull: PULL[kind], fade: FADE[kind], guide }
 }
