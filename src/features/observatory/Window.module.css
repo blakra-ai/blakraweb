@@ -8,6 +8,8 @@
   margin: 0 var(--inset) var(--inset);
   border: 1px solid var(--hair);
   border-radius: var(--r-window);
+  /* One of the two dark windows: transparent, so the world's canvas (under the document) shows through;
+     the world paints the ink inside the frame, and the still carries it when the world does not run. */
   background: transparent;
   overflow: hidden;
   isolation: isolate;
@@ -20,6 +22,7 @@
   z-index: 0;
   pointer-events: none;
   overflow: hidden;
+  background: var(--body);
 }
 :global(html.gl-live) .still {
   display: none;
@@ -81,7 +84,10 @@
 
 /* Phones: the still is the window's lower band (--still-h); without a still the CSS ring stands there. */
 @media (max-width: 767px) {
-  /* Phones draw the object in CSS (the ring below): the desktop still would only double it. */
+  /* No WebGL on phones: the window carries its own ink, and the object is the CSS ring in the band below. */
+  .window {
+    background: var(--body);
+  }
   .stillImage {
     display: none;
   }

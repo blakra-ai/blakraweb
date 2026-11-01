@@ -1,4 +1,5 @@
-/* Desktop and tablet: the gutter left of the frames is a ruler; the frame's left edge is its baseline. */
+/* The thread: the left 24 px gutter carries an orange 2 px line drawn down with the scroll, a tick
+   and the station's number at each of the nine stations. */
 .gauge {
   position: fixed;
   left: 0;
@@ -7,56 +8,68 @@
   width: var(--inset);
   z-index: 30;
   pointer-events: none;
-  container-type: size;
 }
-.tick,
-.major {
+.thread {
   position: absolute;
-  right: 1px;
-  width: 5px;
-  height: 1px;
-  background: var(--hair);
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  display: block;
+  overflow: visible;
 }
-.major {
-  width: 9px;
+.threadRest {
+  stroke: var(--hair);
+  stroke-width: 1;
+  vector-effect: non-scaling-stroke;
+}
+.threadLine {
+  stroke: var(--accent);
+  stroke-width: 2;
+  vector-effect: non-scaling-stroke;
+  will-change: stroke-dashoffset;
+}
+:global(html.motion-on) .gauge[data-mounted] .threadLine {
+  transition: stroke-dashoffset 0.3s var(--ease);
+}
+/* Each station: a tick across the thread and its number, passed stations in ink, the rest grey. */
+.station {
+  position: absolute;
+  left: 0;
+  width: 24px;
+  display: flex;
+  align-items: center;
+  transform: translateY(-50%);
+}
+.tickMark {
+  position: absolute;
+  left: 8px;
+  width: 8px;
+  height: 1px;
   background: var(--grey);
 }
-/* The marker: the reader, in gold (one of the ≤ 3 accent elements on a frame). Moved by transform only. */
-.marker {
-  position: absolute;
-  right: -1px;
-  top: -4px;
-  width: 9px;
-  height: 9px;
-  border-radius: 50%;
+.station[data-on] .tickMark {
   background: var(--accent);
-  box-shadow: 0 0 10px 2px rgba(var(--accent-rgb), 0.45);
-  will-change: transform;
+  height: 2px;
 }
-:global(html.motion-on) .gauge[data-mounted] .marker {
-  transition: transform 0.3s var(--ease);
-}
-.read {
+/* The number stays inside the gutter: set along the thread, shown for the station the reader is at. */
+.station b {
+  display: none;
   position: absolute;
-  left: 13px;
-  top: 14px;
-  transform: rotate(90deg);
-  transform-origin: left top;
-  white-space: nowrap;
-  color: var(--grey);
-  font-family: var(--font-mono);
-  font-size: var(--mono-size);
-  letter-spacing: var(--mono-track);
-  text-transform: uppercase;
-  font-weight: 500;
-  line-height: 1;
-}
-.read b {
+  left: 2px;
+  top: 10px;
+  writing-mode: vertical-rl;
   color: var(--porcelain);
+  font-family: var(--font-mono);
+  font-size: 0.625rem;
+  letter-spacing: 0.12em;
   font-weight: 600;
+  white-space: nowrap;
+}
+.station[data-now] b {
+  display: block;
 }
 
-/* Phones: no rotated text; a 2 px progress rule under the header, and the chip in the header. */
+/* Phones: a 2 px progress rule under the header, and the chip in the header. */
 .rule {
   display: none;
   position: fixed;
@@ -89,9 +102,6 @@
   letter-spacing: 0.08em;
   white-space: nowrap;
 }
-:global([data-surface='light']) .chipDot {
-  background: var(--body);
-}
 .chipDot {
   width: 6px;
   height: 6px;
@@ -109,31 +119,8 @@
   }
 }
 @media (prefers-reduced-motion: reduce) {
-  .marker {
+  .threadLine {
     transition: none;
   }
 }
 
-/* Over the porcelain screen (stations 07 and 08) the gauge turns ink: ticks, readout and the marker. */
-.gauge[data-light] .tick {
-  background: var(--hair-ink);
-}
-.gauge[data-light] .major {
-  background: var(--grey-on-light);
-}
-.gauge[data-light] .read {
-  color: var(--grey-on-light);
-}
-.gauge[data-light] .read b {
-  color: var(--body);
-}
-.gauge[data-light] .marker {
-  background: var(--body);
-  box-shadow: none;
-}
-.rule[data-light] {
-  background: var(--hair-ink);
-}
-.rule[data-light] .ruleFill {
-  background: var(--body);
-}

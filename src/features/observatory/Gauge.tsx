@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState, useSyncExternalStore } from 'react'
 import { onReflow } from '../../motion/reflow'
-import { STATIONS, chip, markerY, progressFrom, readout, stationY } from './gauge'
+import { STATIONS, chip, markerY, progressFrom, stationY } from './gauge'
 import { obs } from './state'
 import s from './Gauge.module.css'
 
@@ -74,25 +74,25 @@ export function GaugeChip({ className }: { className?: string }) {
 
 /* ---------- the gauge: the left 24 px gutter is a ruler ---------- */
 
-const RULE_PX = 1000 // the rule's length in the CSS (any value: positions are percentages of it)
 
 /**
- * Nine stations with major ticks (and three minor ticks between neighbours), a marker that moves
- * with `obs.progress` by transform only, and a mono readout rotated along the rule on desktop.
- * Under 768 px the rule is a 2 px progress line under the header instead (no rotated text), and
- * the header carries the chip. The gauge is aria-hidden: the stations are real headings in the
- * document; the chip announces the station.
+ * The thread (art pass v2): an orange 2 px line in the left 24 px gutter, drawn down as the page
+ * scrolls (stroke-dashoffset from `obs.progress`, by the scroll driver above: no layout reads), a
+ * tick and the station's "04 / 09" at each of the nine stations. Under 768 px it is a 2 px rule
+ * under the header instead, and the header carries the chip. Aria-hidden: the stations are real
+ * headings in the document; the chip announces the station.
  */
-export function Gauge({ labels }: { labels?: Partial<Record<number, string>> }) {
+const RULE = 1000 // the SVG's rule length (any value: positions are shares of it)
+export function Gauge() {
   const station = useStation()
-  const marker = useRef<HTMLElement>(null)
+  const line = useRef<SVGLineElement>(null)
   const rule = useRef<HTMLElement>(null)
   const [mounted, setMounted] = useState(false)
 
   useEffect(() => {
     setMounted(true)
     const move = (p: number) => {
-      if (marker.current) marker.current.style.transform = `translateY(${(markerY(p, RULE_PX) / RULE_PX) * 100}cqh)`
+      if (line.current) line.current.style.strokeDashoffset = `${RULE - markerY(p, RULE)}`
       if (rule.current) rule.current.style.transform = `scaleX(${markerY(p, 1)})`
     }
     markers.add(move)
@@ -103,25 +103,21 @@ export function Gauge({ labels }: { labels?: Partial<Record<number, string>> }) 
     }
   }, [])
 
-  const ticks: { y: number; major: boolean }[] = []
-  for (let n = 1; n <= STATIONS; n++) {
-    ticks.push({ y: stationY(n, 100), major: true })
-    if (n < STATIONS) for (let k = 1; k < 4; k++) ticks.push({ y: stationY(n, 100) + (k * (100 / (STATIONS - 1))) / 4, major: false })
-  }
-
   return (
     <>
-      <div className={s.gauge} aria-hidden="true" data-mounted={mounted || undefined} data-light={station === 7 || station === 8 || undefined}>
-        {ticks.map((t, i) => (
-          <i key={i} className={t.major ? s.major : s.tick} style={{ top: `${t.y}%` }} />
+      <div className={s.gauge} aria-hidden="true" data-mounted={mounted || undefined}>
+        <svg className={s.thread} viewBox={`0 0 24 ${RULE}`} preserveAspectRatio="none">
+          <line x1="12" y1="0" x2="12" y2={RULE} className={s.threadRest} />
+          <line ref={line} x1="12" y1="0" x2="12" y2={RULE} className={s.threadLine} strokeDasharray={RULE} strokeDashoffset={RULE} />
+        </svg>
+        {Array.from({ length: STATIONS }, (_, i) => i + 1).map((n) => (
+          <span key={n} className={s.station} data-on={n <= station || undefined} data-now={n === station || undefined} style={{ top: `${stationY(n, 100)}%` }}>
+            <i className={s.tickMark} />
+            <b>{chip(n)}</b>
+          </span>
         ))}
-        <i ref={marker} className={s.marker} />
-        <span className={s.read}>
-          <b>{readout(station)}</b>
-          {labels?.[station] && <> · {labels[station]}</>}
-        </span>
       </div>
-      <div className={s.rule} aria-hidden="true" data-light={station === 7 || station === 8 || undefined}>
+      <div className={s.rule} aria-hidden="true">
         <i ref={rule} className={s.ruleFill} />
       </div>
     </>

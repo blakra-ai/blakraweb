@@ -34,7 +34,7 @@ export function Window({ id, kind, still, stillPhone, stillAlt = '', ring, class
   }, [id, k])
 
   return (
-    <div ref={ref} className={`${s.window}${className ? ` ${className}` : ''}`} data-window={id}>
+    <div ref={ref} className={`dark ${s.window}${className ? ` ${className}` : ''}`} data-window={id}>
       <div className={s.still} data-still aria-hidden="true">
         {still && (
           <picture>

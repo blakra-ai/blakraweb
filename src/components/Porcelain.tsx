@@ -4,37 +4,13 @@ import type { LayerId } from '../content/types'
 import { useI18n } from '../i18n'
 import { getPulse, onPulse, type PulseChoice } from '../motion/pulse'
 import { pathFor } from '../routes'
+import { InkWell, WellGrid } from '../features/observatory/Well'
 import { Section } from './Section'
 import s from './Porcelain.module.css'
 
 const ORDER: readonly LayerId[] = ['cloud', 'data', 'automation', 'design', 'apps', 'growth', 'ai']
 const num = (id: LayerId) => ORDER.indexOf(id) + 1
 const two = (n: number) => String(n).padStart(2, '0')
-
-/**
- * The seal: the disk inverted on porcelain, an ink disk with a porcelain ring inside its limb and
- * the chosen layers as gold ticks on its rim (root at the top, clockwise); 320 px.
- */
-function Seal({ lit }: { lit: readonly number[] }) {
-  const c = 160
-  const R = 120
-  return (
-    <svg viewBox="0 0 320 320" className={s.ring} aria-hidden="true">
-      <circle cx={c} cy={c} r={R + 24} fill="none" stroke="var(--hair-ink)" />
-      <circle cx={c} cy={c} r={R} fill="var(--body)" />
-      <circle cx={c} cy={c} r={R - 10} fill="none" stroke="var(--porcelain)" strokeWidth="1.5" />
-      {ORDER.map((id, k) => {
-        const a = -Math.PI / 2 + k * ((2 * Math.PI) / 7)
-        const on = lit.includes(k + 1)
-        const x1 = c + (R + 6) * Math.cos(a)
-        const y1 = c + (R + 6) * Math.sin(a)
-        const x2 = c + (R + (on ? 24 : 14)) * Math.cos(a)
-        const y2 = c + (R + (on ? 24 : 14)) * Math.sin(a)
-        return <line key={id} x1={x1} y1={y1} x2={x2} y2={y2} stroke={on ? 'var(--accent)' : 'var(--ctrl-light)'} strokeWidth={on ? 3 : 1.5} strokeLinecap="round" />
-      })}
-    </svg>
-  )
-}
 
 /**
  * 07 Products + 08 People, the porcelain screen (storyboard d-04-porcelain): the light surface,
@@ -57,6 +33,8 @@ export function Porcelain() {
 
   return (
     <Section id="products" beat="payload" surface="porcelain" station={7} className={s.porcelain} aria-labelledby="products-title">
+      {/* The page's grid bends into the well here too (static SVG under the content). */}
+      <WellGrid cx={0.76} cy={0.1} sigma={300} pull={0.64} className={s.grid} />
       <div className={s.col}>
         <div className={s.block}>
           <p className="eyebrow mono">
@@ -117,9 +95,9 @@ export function Porcelain() {
         </div>
       </div>
 
-      {/* The one large object: the seal, the remembered choice's layers as gold ticks; her line on its tangent. */}
+      {/* The one large object: the ink well, the remembered choice's layers as orange ticks on its rim; the line under it. */}
       <div className={s.object} data-hold>
-        <Seal lit={lit} />
+        <InkWell r={56} ticks={lit} seal className={s.ring} />
         <p className="voice" data-caret>
           {t.navigator.lines.payload}
         </p>

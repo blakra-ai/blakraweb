@@ -1,11 +1,18 @@
 /* The porcelain screen: the light surface from hairline to hairline; 12 columns from the 64 px margin. */
 .porcelain {
   position: relative;
+  background: var(--body);
   display: grid;
   grid-template-columns: repeat(12, minmax(0, 1fr));
   column-gap: var(--gutter);
   padding: calc(var(--header-h) + 44px) 64px 56px;
   border-top: 1px solid var(--hair-ink);
+}
+.porcelain > * {
+  position: relative;
+}
+.grid {
+  z-index: 0;
 }
 .col {
   grid-column: 1 / 7;
@@ -56,7 +63,7 @@
   display: block;
   font-style: normal;
   font-size: 0.8125rem;
-  color: var(--body);
+  color: var(--porcelain);
   margin-top: 5px;
 }
 .stage,
@@ -76,12 +83,12 @@
   margin-top: 14px;
   padding-bottom: 2px;
   border-bottom: 1px solid var(--ctrl-light);
-  color: var(--body);
+  color: var(--porcelain);
   font-size: 0.875rem;
   transition: border-color 0.2s var(--ease);
 }
 .link:hover {
-  border-color: var(--body);
+  border-color: var(--porcelain);
 }
 
 /* The one large object: columns 8–12. */
@@ -102,13 +109,13 @@
   row-gap: 22px;
 }
 .object :global(.voice) {
-  color: var(--body);
+  color: var(--porcelain);
   max-width: 420px;
   text-align: center;
 }
 .ring {
-  width: 320px;
-  height: 320px;
+  width: 200px;
+  height: 200px;
 }
 .cap {
   color: var(--grey-on-light);
@@ -120,11 +127,11 @@
   font-family: var(--font-serif);
   font-style: italic;
   font-size: 1.375rem;
-  color: var(--body);
+  color: var(--porcelain);
   margin-bottom: 4px;
 }
 .cap a {
-  color: var(--body);
+  color: var(--porcelain);
   text-decoration: underline;
   text-underline-offset: 0.3em;
 }
@@ -160,8 +167,8 @@
     margin-top: 36px;
   }
   .ring {
-    width: 240px;
-    height: 240px;
+    width: 160px;
+    height: 160px;
   }
   .object :global(.voice) {
     font-size: 1.125rem;

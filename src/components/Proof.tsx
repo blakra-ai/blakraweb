@@ -5,6 +5,7 @@ import { useI18n } from '../i18n'
 import { useMotion } from '../motion/MotionProvider'
 import { getPulse, onPulse, type PulseChoice } from '../motion/pulse'
 import { pathFor } from '../routes'
+import { InkWell, WellGrid } from '../features/observatory/Well'
 import { Section } from './Section'
 import s from './Proof.module.css'
 
@@ -12,43 +13,6 @@ import s from './Proof.module.css'
 const ORDER: readonly LayerId[] = ['cloud', 'data', 'automation', 'design', 'apps', 'growth', 'ai']
 const num = (id: LayerId) => ORDER.indexOf(id) + 1
 const two = (n: number) => String(n).padStart(2, '0')
-
-/**
- * The object on the proof screen: the disk, and the five cases as five points of light on ONE
- * tilted orbit round it (a lensed arc). Each point carries its row's index; the stylesheet lights
- * it when that row is lit (`[data-lit]` on the row sets `--lit-<i>` on the section).
- */
-function Orbit({ lit }: { lit: readonly string[] }) {
-  const cx = 200
-  const cy = 170
-  const R = 92
-  const rx = 184
-  const ry = 56
-  const tilt = -14
-  return (
-    <svg viewBox="0 0 400 340" className={s.orbitSvg} aria-hidden="true">
-      <defs>
-        <radialGradient id="proof-glow" cx="50%" cy="50%" r="50%">
-          <stop offset="0.86" stopColor="#f3e2b4" stopOpacity="0" />
-          <stop offset="0.93" stopColor="#f3e2b4" stopOpacity="0.9" />
-          <stop offset="0.95" stopColor="#d9a441" stopOpacity="0.55" />
-          <stop offset="1" stopColor="#d9a441" stopOpacity="0" />
-        </radialGradient>
-      </defs>
-      <circle cx={cx} cy={cy} r={R * 1.12} fill="url(#proof-glow)" />
-      <circle cx={cx} cy={cy} r={R} fill="var(--body)" stroke="#f3e2b4" strokeWidth="1.5" />
-      <ellipse cx={cx} cy={cy} rx={rx} ry={ry} transform={`rotate(${tilt} ${cx} ${cy})`} fill="none" stroke="rgba(236,233,226,0.28)" />
-      {lit.map((i, k) => {
-        // Five points spread over the orbit's front and sides, the first just past the limb's right.
-        const a = (-0.35 + k * 0.52) * Math.PI
-        const t = (tilt * Math.PI) / 180
-        const x = cx + rx * Math.cos(a) * Math.cos(t) - ry * Math.sin(a) * Math.sin(t)
-        const y = cy + rx * Math.cos(a) * Math.sin(t) + ry * Math.sin(a) * Math.cos(t)
-        return <circle key={i} className={s.point} data-i={i} cx={x} cy={y} r="4" />
-      })}
-    </svg>
-  )
-}
 
 /**
  * 05 Proof + 06 how we work (storyboard d-03-proof / m-03-proof): DOM only, no canvas. H2 and
@@ -65,6 +29,7 @@ export function Proof() {
   const ref = useRef<HTMLElement>(null)
   const [choice, setChoice] = useState<PulseChoice>(null)
   const nearest = choice && choice !== 'all' ? needs[choice].proof : null
+  const [litRows, setLitRows] = useState<boolean[]>(() => chapters.map(() => !enabled))
 
   useEffect(() => {
     setChoice(getPulse().choice)
@@ -76,13 +41,15 @@ export function Proof() {
   useEffect(() => {
     const el = ref.current
     if (!el || !enabled || typeof IntersectionObserver === 'undefined') return
+    setLitRows(chapters.map(() => false))
     const rows = [...el.querySelectorAll<HTMLElement>('[data-row]')]
     const io = new IntersectionObserver(
       (entries) => {
         for (const e of entries)
           if (e.isIntersecting) {
             e.target.setAttribute('data-lit', '')
-            el.setAttribute(`data-lit-${rows.indexOf(e.target as HTMLElement)}`, '')
+            const i = rows.indexOf(e.target as HTMLElement)
+            setLitRows((prev) => (prev[i] ? prev : prev.map((v, k) => v || k === i)))
           }
       },
       { rootMargin: '0px 0px -40% 0px', threshold: 0 },
@@ -95,6 +62,8 @@ export function Proof() {
 
   return (
     <Section ref={ref} id="day" beat="proof" surface="body" station={5} className={s.proof} aria-labelledby="day-title">
+      {/* The page's grid bends into the well here (static SVG over the section's paper). */}
+      <WellGrid cx={0.585} cy={0.14} sigma={340} pull={0.7} className={s.grid} />
       <div className={s.head}>
         <p className="eyebrow mono">{two(5)} / 09 &nbsp;·&nbsp; {t.day.eyebrow}</p>
         <h2 id="day-title" className={`h2 ${s.title}`} data-focus tabIndex={-1}>
@@ -103,10 +72,10 @@ export function Proof() {
         <p className={`lede ${s.lede}`}>{t.day.lede}</p>
       </div>
 
-      {/* The object here: the disk with the five cases as five points of light on one lensed orbit;
-          each point lights as its row does. Her line on the object's tangent. */}
+      {/* The object here: the ink well with the five cases as dots on one hairline orbit; each dot
+          fills as its row lights. The line on the object's tangent. */}
       <div className={s.object}>
-        <Orbit lit={chapters.map((_, i) => `${i}`)} />
+        <InkWell r={56} dots={litRows} />
         <p className="voice" data-caret>
           {t.navigator.lines.proof}
         </p>

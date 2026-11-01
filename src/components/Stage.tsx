@@ -4,9 +4,9 @@ import type { LayerId } from '../content/types'
 import { useStation } from '../features/observatory/Gauge'
 import { chip } from '../features/observatory/gauge'
 import { Voice } from '../features/observatory/Line'
-import { handoverAt, holdAt, inOrbit, LAYERS_N } from '../features/observatory/orbit'
+import { handoverAt, holdAt, inOrbit, LAYERS_N, ORBIT_END } from '../features/observatory/orbit'
 import { obs } from '../features/observatory/state'
-import { Window } from '../features/observatory/Window'
+import { InkWell, WellGrid } from '../features/observatory/Well'
 import { useI18n } from '../i18n'
 import { useMotion } from '../motion/MotionProvider'
 import { getPulse, onPulse, setPulse, type PulseChoice } from '../motion/pulse'
@@ -18,10 +18,10 @@ import s from './Stage.module.css'
 const ROOT_TO_CROWN: readonly LayerId[] = ['cloud', 'data', 'automation', 'design', 'apps', 'growth', 'ai']
 
 /**
- * 02 · 03 · 04 The seven-layer stage (art pass v1): one window held by `position: sticky` inside
- * a section whose CSS height is three screens (two on phones), no pins. The world paints the one
- * evolving object through it: as the hold scrubs, the seven layers form as concentric luminous
- * bands around the disk (ring.ts, obs.hold), one every tenth of the hold; this file names each
+ * 02 · 03 · 04 The seven-layer stage (art pass v2, on paper): the object held by `position: sticky`
+ * inside a section whose CSS height is 2.4 screens, no pins. The page's grid bends into a small ink
+ * well (Well.tsx, static SVG); as the hold scrubs, the seven layers draw themselves round it as
+ * hairline rings, inner to outer, one every tenth of the hold; this file names each
  * layer ONCE in large type at the moment its band forms (Geist 300, 40 px, the layer's colour as
  * the 2 px line under the name, a 24 px transform on entry), keeps her line on the object's
  * tangent, and lets the words scroll over the window in the left columns: 02 why one team,
@@ -37,6 +37,7 @@ export function Stage() {
   const ref = useRef<HTMLElement>(null)
   // All seven formed is the final state (prerendered, reduced motion); the scroll scrubs it back.
   const [orbit, setOrbit] = useState(LAYERS_N)
+  const [bandsNow, setBandsNow] = useState(LAYERS_N)
   const [choice, setChoice] = useState<PulseChoice>(null)
 
   useEffect(() => {
@@ -54,6 +55,7 @@ export function Stage() {
       obs.inOrbit = LAYERS_N
       obs.handover = 1
       setOrbit(LAYERS_N)
+      setBandsNow(LAYERS_N)
       el.style.removeProperty('--hold')
       return
     }
@@ -69,6 +71,9 @@ export function Stage() {
       const n = inOrbit(hold)
       obs.inOrbit = n
       el.style.setProperty('--hold', hold.toFixed(3))
+      // The rings draw round as the hold scrubs (one state update per 2 % of a band).
+      const b = Math.min(LAYERS_N, (hold / ORBIT_END) * LAYERS_N)
+      setBandsNow(Math.round(b * 50) / 50)
       if (n !== last) {
         last = n
         setOrbit(n)
@@ -111,13 +116,18 @@ export function Stage() {
 
   return (
     <Section ref={ref} id="stage" beat="systems" surface="body" className={s.stage} aria-labelledby="stage-title">
-      <div className={s.hold}>
-        <Window id="stage" kind="stage" ring className={s.window}>
+      <div className={s.hold} data-hold>
+        {/* The object on paper: the grid bends into the ink well; the seven bands form as hairline rings round it. */}
+        <div className={s.object}>
+          <WellGrid cx={0.58} cy={0.47} sigma={300} pull={0.62} />
+          <div className={s.well}>
+            <InkWell r={64} bands={enabled ? bandsNow : LAYERS_N} lit={picked ? ROOT_TO_CROWN.map((id) => picked.includes(id)) : null} />
+          </div>
           <p className={`mono ${s.tag}`} aria-hidden="true">
             {chip(at)}
           </p>
 
-          {/* The object's tangent: her line, then the layer forming now, named once, in large type. */}
+          {/* The object's tangent: the line, then the layer forming now, named once, in large type. */}
           <div className={s.tangent}>
             <Voice text={line} delay={0} className={`voice ${s.voice}`} />
             <ul className={s.layers} aria-label={t.engine.title}>
@@ -140,7 +150,7 @@ export function Stage() {
               })}
             </ul>
           </div>
-        </Window>
+        </div>
       </div>
 
       {/* The words scroll over the held window: one block per station, columns 1–5 (an opaque band on phones). */}

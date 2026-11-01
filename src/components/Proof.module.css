@@ -1,12 +1,19 @@
-/* 05 Proof: a document screen on the body, 12 columns from the 64 px margin. */
+/* 05 Proof: a document screen on paper, 12 columns from the 64 px margin; the grid bends into the well. */
 .proof {
   position: relative;
+  background: var(--body);
   display: grid;
   grid-template-columns: repeat(12, minmax(0, 1fr));
   column-gap: var(--gutter);
   padding: calc(var(--header-h) + 40px) 64px 48px;
   max-width: var(--max-w);
   margin: 0 auto;
+}
+.proof > * {
+  position: relative;
+}
+.grid {
+  z-index: 0;
 }
 .head {
   grid-column: 1 / 6;
@@ -28,29 +35,10 @@
 .object {
   grid-column: 7 / 13;
   display: grid;
-  grid-template-columns: 340px minmax(0, 1fr);
+  grid-template-columns: auto minmax(0, 1fr);
   align-items: center;
-  column-gap: 20px;
-  margin-top: -24px;
-}
-.orbitSvg {
-  width: 340px;
-  height: auto;
-  overflow: visible;
-}
-.point {
-  fill: var(--grey);
-  transition: fill 0.24s var(--ease), r 0.24s var(--ease);
-}
-.proof[data-lit-0] .point[data-i='0'],
-.proof[data-lit-1] .point[data-i='1'],
-.proof[data-lit-2] .point[data-i='2'],
-.proof[data-lit-3] .point[data-i='3'],
-.proof[data-lit-4] .point[data-i='4'],
-:global(html.motion-off) .point {
-  fill: #f3e2b4;
-  r: 5;
-  filter: drop-shadow(0 0 6px rgba(217, 164, 65, 0.9));
+  column-gap: 28px;
+  margin-top: -8px;
 }
 
 /* Five hairline rows; the inner grid sits in a lensed arc (--arc), the hairlines stay straight. */
@@ -91,21 +79,22 @@
   letter-spacing: 0.04em;
   text-transform: none;
 }
-/* The stitch: the gold word of this screen (one of its ≤ 3 accent elements) and the 2 px rim. */
+/* The stitch: the thread runs in from the margin to the nearest case, 2 px orange; its label in ink. */
 .near {
   display: block;
   margin-top: 4px;
-  color: var(--accent);
+  color: var(--porcelain);
   font-size: 0.75rem;
   letter-spacing: 0.06em;
 }
 .row[data-near]::before {
   content: '';
   position: absolute;
-  left: -24px;
-  top: -1px;
-  bottom: -1px;
-  width: 2px;
+  left: -64px;
+  top: 50%;
+  width: 64px;
+  height: 2px;
+  margin-top: -1px;
   background: var(--accent);
 }
 .moment {
@@ -205,9 +194,6 @@
     row-gap: 8px;
     margin-top: 0;
   }
-  .orbitSvg {
-    width: 260px;
-  }
   .g {
     grid-template-columns: 150px minmax(0, 1fr) minmax(0, 220px) 140px;
   }
@@ -236,9 +222,6 @@
     grid-template-columns: 1fr;
     margin-top: 14px;
     row-gap: 8px;
-  }
-  .orbitSvg {
-    width: 220px;
   }
   .object :global(.voice) {
     font-size: 1.125rem;

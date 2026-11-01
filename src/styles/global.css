@@ -45,20 +45,26 @@
   --font-serif: 'Newsreader', 'Iowan Old Style', 'Palatino Linotype', Georgia, serif;
   --font-mono: 'Geist Mono', ui-monospace, 'SF Mono', Menlo, Consolas, monospace;
 
-  /* Surfaces */
-  --body: #0b0b0d;
-  --panel: #121216;
-  --porcelain: #ece9e2;
-  --grey: #8a8781;
+  /*
+   * Surfaces (art pass v2, "a light document with two dark windows"): the document is paper
+   * #f4f2ec with ink #0b0b0d, secondary #5f5c56 (5.9 : 1), hairlines at 14 % ink and ONE accent on
+   * paper, orange #ff5a1f, for state only (the thread, the caret, Send). The two dark windows (hero,
+   * contact) re-declare the same names in `.dark` below, so every component keeps one vocabulary:
+   * `--body` is the surface, `--porcelain` the text on it, `--grey` the secondary, `--accent` the state.
+   */
+  --body: #f4f2ec;
+  --panel: #ece9e2;
+  --porcelain: #0b0b0d;
+  --grey: #5f5c56;
   --grey-on-light: #5f5c56;
-  --hair: rgba(236, 233, 226, 0.12);
-  --hair-2: rgba(236, 233, 226, 0.06);
+  --hair: rgba(11, 11, 13, 0.14);
+  --hair-2: rgba(11, 11, 13, 0.07);
   --hair-ink: rgba(11, 11, 13, 0.14);
   /* Control borders: ≥ 3 : 1 on their surface (revision-1 §10). */
-  --ctrl: #6b6963;
+  --ctrl: #7a776f;
   --ctrl-light: #7a776f;
-  --accent: #d9a441;
-  --accent-rgb: 217, 164, 65;
+  --accent: #ff5a1f;
+  --accent-rgb: 255, 90, 31;
   /* The seven layers, root to crown: only ever a lit dot where layers are the subject. */
   --root: #e8352b;
   --sacral: #f57a1f;
@@ -98,6 +104,20 @@
   --ease-out: var(--ease);
   --ease-in-out: cubic-bezier(0.65, 0, 0.35, 1);
 
+  color-scheme: light;
+}
+/* The two dark windows and the panel on one of them: ink surface, porcelain text, gold state. */
+.dark {
+  --body: #0b0b0d;
+  --panel: #121216;
+  --porcelain: #ece9e2;
+  --grey: #8a8781;
+  --hair: rgba(236, 233, 226, 0.12);
+  --hair-2: rgba(236, 233, 226, 0.06);
+  --ctrl: #6b6963;
+  --accent: #d9a441;
+  --accent-rgb: 217, 164, 65;
+  color: var(--porcelain);
   color-scheme: dark;
 }
 @media (max-width: 767px) {
@@ -127,12 +147,12 @@
   --signal: var(--tone-signal);
   color: var(--ink);
 }
-/* The old paper sections carry their paper themselves now that the body is dark; ink ones are the body. */
+/* Legacy surfaces (the plain pages): paper is the body; ink sections take the dark scope's values. */
 [data-surface='paper'] {
-  background: var(--porcelain);
+  background: var(--body);
 }
 [data-surface='ink'] {
-  background: var(--body);
+  background: #0b0b0d;
 }
 /* The one legacy label (composed by the old modules): mono, capitals, one tracking. */
 .label {
@@ -265,42 +285,7 @@
   color: var(--body);
 }
 
-/* The light screen (porcelain): ink text, grey-on-light secondary (5.50 : 1), ink hairlines; gold is never text here. */
-.light {
-  background: var(--porcelain);
-  color: var(--body);
-  color-scheme: light;
-}
-.light .lede,
-.light .mono,
-.light .eyebrow {
-  color: var(--grey-on-light);
-}
-.light .eyebrow::before {
-  background: var(--grey-on-light);
-}
-.light .hairline {
-  background: var(--hair-ink);
-}
-.light .voice {
-  color: var(--body);
-}
-.light .voice[data-caret]::after {
-  background: var(--body);
-}
-.light .pill {
-  border-color: var(--ctrl-light);
-  color: var(--body);
-}
-.light .pill:hover,
-.light .pill[data-cta] {
-  border-color: var(--body);
-}
-.light .pill[data-solid] {
-  background: var(--body);
-  border-color: var(--body);
-  color: var(--porcelain);
-}
+/* `.light` (the former porcelain screen): the whole document is paper now; the class is kept for the markup. */
 
 /* ---------- base ---------- */
 *,
@@ -328,12 +313,14 @@ html.lenis body {
   overflow: clip;
 }
 
-/* The body is solid; the document over it is transparent. The world's canvas (fixed, z 0) sits
-   between them and paints only inside the framed windows, so the body shows wherever no window is. */
+/* The body is paper with the hairline grid (24 px, 14 % ink); the document over it is transparent.
+   The world's canvas (fixed, z 0) sits between them and paints only inside the two dark windows. */
 body {
   margin: 0;
   min-height: 100svh;
-  background: var(--body);
+  background-color: var(--body);
+  background-image: linear-gradient(var(--hair-2) 1px, transparent 1px), linear-gradient(90deg, var(--hair-2) 1px, transparent 1px);
+  background-size: 24px 24px;
   font-family: var(--font-sans);
   font-size: var(--body-size);
   line-height: 1.5;
@@ -411,16 +398,11 @@ canvas {
   color: var(--body);
 }
 
-/* Focus: a 2 px gold ring with a 2 px body gap on the dark surfaces (8.74 : 1); on porcelain an
-   ink ring with a porcelain gap (revision-1 §10). Gold is never used on porcelain. */
+/* Focus: a 2 px ring in the surface's text colour with a 2 px gap (ink on paper, porcelain in the dark windows). */
 :focus-visible {
-  outline: 2px solid var(--accent);
+  outline: 2px solid var(--porcelain);
   outline-offset: 2px;
   border-radius: var(--r-tag);
-}
-.light :focus-visible,
-.light:focus-visible {
-  outline-color: var(--body);
 }
 .pill:focus-visible {
   border-radius: var(--r-pill);

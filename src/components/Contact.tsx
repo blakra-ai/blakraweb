@@ -160,7 +160,7 @@ export function Contact() {
       </Window>
 
       {/* The panel: over the window's left columns on desktop, plain DOM under the band on phones. */}
-      <div className={s.panel}>
+      <div className={`dark ${s.panel}`}>
         <p className="eyebrow mono">{c.eyebrow}</p>
         <h2 id="contact-title" className={`h2 ${s.title}`} data-focus tabIndex={-1}>
           {c.title}

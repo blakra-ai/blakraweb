@@ -33,3 +33,17 @@ describe('text on ink meets WCAG 2.2 AA', () => {
     expect(contrast(paper, ink)).toBeGreaterThanOrEqual(4.5)
   })
 })
+
+describe('the paper document (art pass v2) meets WCAG 2.2 AA', () => {
+  const paperV2 = hex('#f4f2ec')
+  it('ink and the secondary on paper >= 4.5:1; porcelain and the grey in the dark windows too', () => {
+    expect(contrast(hex('#0b0b0d'), paperV2)).toBeGreaterThanOrEqual(4.5)
+    expect(contrast(hex('#5f5c56'), paperV2)).toBeGreaterThanOrEqual(4.5)
+    expect(contrast(hex('#ece9e2'), hex('#0b0b0d'))).toBeGreaterThanOrEqual(4.5)
+    expect(contrast(hex('#8a8781'), hex('#0b0b0d'))).toBeGreaterThanOrEqual(4.5)
+    expect(contrast(hex('#8a8781'), hex('#121216'))).toBeGreaterThanOrEqual(4.5)
+  })
+  it('the controls\' border on paper >= 3:1 (orange is state only, never text)', () => {
+    expect(contrast(hex('#7a776f'), paperV2)).toBeGreaterThanOrEqual(3)
+  })
+})

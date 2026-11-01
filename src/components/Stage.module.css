@@ -11,13 +11,22 @@
   top: var(--header-h);
   height: calc(100svh - var(--header-h));
 }
-/* The ring's place (58 % across, 47 % down) for the CSS still and the tangent. */
-.window {
+/* The object's place (58 % across, 47 % down): the ink well, its rings reaching ~160 px, and the tangent. */
+.object {
   --ring-x: 58%;
   --ring-y: 47%;
-  --ring-r: 165px;
-  min-height: 0;
+  --ring-r: 160px;
+  position: relative;
   height: calc(100svh - var(--header-h) - var(--inset));
+  margin: 0 var(--inset) var(--inset);
+  background: var(--body);
+  overflow: hidden;
+}
+.well {
+  position: absolute;
+  left: var(--ring-x);
+  top: var(--ring-y);
+  transform: translate(-50%, -50%);
 }
 
 .tag {
@@ -32,7 +41,7 @@
    vertically centred on the ring. Her line, then the layer forming now. */
 .tangent {
   position: absolute;
-  left: calc(var(--ring-x) + var(--ring-r) * 1.62 + 28px);
+  left: calc(var(--ring-x) + var(--ring-r) + 36px);
   right: 40px;
   top: var(--ring-y);
   transform: translateY(-50%);
@@ -168,7 +177,7 @@
   position: static;
   height: auto;
 }
-:global(html.motion-off) .window {
+:global(html.motion-off) .object {
   height: auto;
   min-height: calc(100svh - var(--header-h) - var(--inset));
 }
@@ -204,12 +213,10 @@
   .stage {
     height: calc(2.4 * 100svh);
   }
-  .window {
-    --ring-x: 58%;
+  .object {
+    --ring-x: 50%;
     --ring-y: 36%;
-    --ring-r: 82px;
-    /* The CSS ring sits in the whole window here, not in a bottom band (Window.module.css). */
-    --still-h: 100%;
+    --ring-r: 160px;
   }
   .tag {
     left: 20px;
@@ -234,7 +241,7 @@
     width: auto;
     margin: 0 var(--inset);
     padding: 40px 20px 16px;
-    background: var(--frame, #0d0d10);
+    background: var(--body);
     box-sizing: border-box;
     min-height: 0;
   }

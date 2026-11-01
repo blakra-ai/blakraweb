@@ -321,7 +321,7 @@ try {
       const top = el.getBoundingClientRect().top + scrollY
       window.scrollTo({ top: top + (el.offsetHeight - innerHeight) * 0.6, behavior: 'instant' })
       await new Promise((r) => setTimeout(r, 600))
-      const w = el.querySelector('[data-window="stage"]').getBoundingClientRect()
+      const w = el.querySelector('[data-hold]').getBoundingClientRect()
       return { held: w.top >= 0 && w.bottom <= innerHeight + 1, p: Number(el.style.getPropertyValue('--hold')), orbit: el.querySelectorAll('#stage li[data-on]').length }
     })
     check('S1', 'the stage holds the screen and the scroll brings the layers into orbit', engine.held && engine.p > 0.3 && engine.p < 0.9 && engine.orbit === 7, JSON.stringify(engine))
