@@ -5,6 +5,9 @@
 	email {$ACME_EMAIL}
 }
 
+# Old domains that redirect here, written by change-domain.sh (none at first).
+import /etc/caddy/redirects/*.caddy
+
 {$DOMAIN} {
 	encode zstd gzip
 

@@ -26,6 +26,7 @@ services:
       ACME_EMAIL: ${ACME_EMAIL:?run ./setup.sh first}
     volumes:
       - ./Caddyfile:/etc/caddy/Caddyfile:ro
+      - ./redirects:/etc/caddy/redirects:ro
       - caddy_data:/data
       - caddy_config:/config
     depends_on: [api, web]

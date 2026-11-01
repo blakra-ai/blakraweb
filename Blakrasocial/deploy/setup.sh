@@ -50,7 +50,7 @@ sed \
   -e "s/^\([A-Z0-9_]*=[^ ]*\)  *#.*$/\1/" \
   ../backend/.env.example > backend.env
 
-mkdir -p backups
+mkdir -p backups redirects
 echo "Wrote deploy/.env and deploy/backend.env (secrets generated, readable only by you)."
 echo
 echo "Next:"

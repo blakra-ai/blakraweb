@@ -320,3 +320,24 @@ async def test_concurrent_workers_never_claim_the_same_target(world: World) -> N
     )
     ids = [c.target.id for batch in claims for c in batch]
     assert len(ids) == 6 and len(set(ids)) == 6
+
+
+# ---------------------------------------------------------------- maintenance
+
+
+async def test_moving_the_media_address_rewrites_only_matching_urls(world: World) -> None:
+    from blakrasocial.domain.errors import InvalidValue
+    from blakrasocial.infrastructure.persistence.maintenance import MediaBaseUrlMigration
+
+    profile, _state, _ = await connect(world)
+    later = video_post(Platform.LINKEDIN, schedule_in=timedelta(hours=1), now=world.clock.now())
+    await world.publisher.publish(profile, later, IdempotencyKey("key-move-001"))
+    migration = MediaBaseUrlMigration(world.sessions)
+
+    assert await migration.run("https://other.test", "https://media.blakra.test") == 0
+    assert await migration.run("https://cdn.test/", "https://media.blakra.test") == 1
+    async with world.sessions() as s:
+        media = (await s.execute(text("select media from posts"))).scalar_one()
+    assert media[0]["url"] == "https://media.blakra.test/u/a.mp4"
+    with pytest.raises(InvalidValue):
+        await migration.run("http://cdn.test", "https://media.blakra.test")
