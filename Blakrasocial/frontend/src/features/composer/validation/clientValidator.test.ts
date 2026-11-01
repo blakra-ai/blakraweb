@@ -7,6 +7,7 @@ const rules = new RulesIndex({
   platforms: [
     {
       platform: "instagram",
+      connectable: true,
       contentTypes: [
         {
           contentType: "reel",

@@ -14,11 +14,18 @@ export function usePlatformRules() {
 
 export class RulesIndex {
   private readonly specs = new Map<Platform, Map<ContentType, ContentSpec>>();
+  private readonly connectable = new Set<Platform>();
 
   constructor(data: PlatformRulesResponse) {
     for (const platform of data.platforms) {
       this.specs.set(platform.platform, new Map(platform.contentTypes.map((c) => [c.contentType, c])));
+      if (platform.connectable) this.connectable.add(platform.platform);
     }
+  }
+
+  /** Whether customers can connect this network themselves in this deployment. */
+  isConnectable(platform: Platform): boolean {
+    return this.connectable.has(platform);
   }
 
   contentTypes(platform: Platform): ContentType[] {

@@ -55,6 +55,23 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/profiles/whatsapp": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        /** Attach a WhatsApp Business number to a profile (server-to-server, direct mode) */
+        put: operations["setup_whatsapp_profiles_whatsapp_put"];
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/accounts/connect-url": {
         parameters: {
             query?: never;
@@ -363,6 +380,8 @@ export interface components {
         /** PlatformRulesOut */
         PlatformRulesOut: {
             platform: components["schemas"]["Platform"];
+            /** Connectable */
+            connectable: boolean;
             /** Contenttypes */
             contentTypes: components["schemas"]["ContentSpecOut"][];
         };
@@ -562,6 +581,29 @@ export interface components {
             /** Recipients */
             recipients?: string[];
         };
+        /** WhatsAppSetupRequest */
+        WhatsAppSetupRequest: {
+            /** Profilekey */
+            profileKey: string;
+            /**
+             * Phonenumberid
+             * @description Phone number ID from WhatsApp Manager
+             */
+            phoneNumberId: string;
+            /**
+             * Accesstoken
+             * Format: password
+             * @description System-user token with whatsapp_business_messaging
+             */
+            accessToken: string;
+            /** Displayname */
+            displayName: string;
+            /**
+             * Phonedisplay
+             * @description e.g. +98 912 123 4567
+             */
+            phoneDisplay?: string | null;
+        };
         /** WhatsAppTarget */
         WhatsAppTarget: {
             contentType: components["schemas"]["ContentType"];
@@ -658,9 +700,43 @@ export interface operations {
             };
         };
     };
+    setup_whatsapp_profiles_whatsapp_put: {
+        parameters: {
+            query?: never;
+            header?: {
+                "X-Service-Key"?: string | null;
+            };
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["WhatsAppSetupRequest"];
+            };
+        };
+        responses: {
+            /** @description Successful Response */
+            204: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
     connect_url_accounts_connect_url_get: {
         parameters: {
             query?: {
+                platform?: components["schemas"]["Platform"] | null;
                 redirectUrl?: string | null;
                 origin?: string | null;
             };

@@ -10,12 +10,13 @@ interface Props {
   onConnect: () => void;
   onDisconnect: () => void;
   busy: boolean;
+  /** False when this deployment has no app for the network (WhatsApp is always set up by our team). */
+  connectable: boolean;
 }
 
-export function ConnectionCard({ platform, account, onConnect, onDisconnect, busy }: Props) {
+export function ConnectionCard({ platform, account, onConnect, onDisconnect, busy, connectable }: Props) {
   const { t } = useTranslation();
   const meta = PLATFORM_META[platform];
-  const connectable = platform !== "whatsapp";
 
   return (
     <Card className="flex flex-col gap-4 p-5 transition-shadow duration-300 hover:shadow-lg animate-fade-up">
@@ -85,7 +86,9 @@ export function ConnectionCard({ platform, account, onConnect, onDisconnect, bus
             {busy ? <Loader2 className="animate-spin" /> : <Plug />} {t("connections.connect")}
           </Button>
         ) : (
-          <p className="text-xs text-muted-foreground">{t("platforms.whatsapp.setup")}</p>
+          <p className="text-xs text-muted-foreground">
+            {platform === "whatsapp" ? t("platforms.whatsapp.setup") : t("connections.notAvailable")}
+          </p>
         )}
       </div>
     </Card>

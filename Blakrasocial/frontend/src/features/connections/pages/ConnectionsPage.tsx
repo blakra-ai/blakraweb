@@ -2,6 +2,7 @@ import { useTranslation } from "react-i18next";
 import { toast } from "sonner";
 import { PLATFORMS } from "@/shared/api/types";
 import { Alert, Skeleton } from "@/shared/ui";
+import { usePlatformRules } from "@/features/rules";
 import { ErrorState, PageHeader } from "@/app/layout/PageParts";
 import { ConnectionCard } from "../components/ConnectionCard";
 import { useAccounts, useUnlinkAccount } from "../hooks/useAccounts";
@@ -12,6 +13,7 @@ export default function ConnectionsPage() {
   const accounts = useAccounts();
   const unlink = useUnlinkAccount();
   const popup = useConnectPopup();
+  const rules = usePlatformRules();
 
   return (
     <div className="space-y-6">
@@ -27,15 +29,16 @@ export default function ConnectionsPage() {
       ) : (
         <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-3">
           {PLATFORMS.map((platform) =>
-            accounts.isPending ? (
+            accounts.isPending || rules.isPending ? (
               <Skeleton key={platform} className="h-48" />
             ) : (
               <ConnectionCard
                 key={platform}
                 platform={platform}
                 account={accounts.data.get(platform)}
-                busy={popup.isOpen || (unlink.isPending && unlink.variables === platform)}
-                onConnect={() => void popup.open()}
+                connectable={rules.data?.isConnectable(platform) ?? false}
+                busy={popup.openFor === platform || (unlink.isPending && unlink.variables === platform)}
+                onConnect={() => void popup.open(platform)}
                 onDisconnect={() =>
                   unlink.mutate(platform, {
                     onSuccess: () => toast.success(t("connections.disconnected")),

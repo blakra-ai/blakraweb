@@ -27,11 +27,12 @@
     "disconnectBody": "You can connect it again at any time. Scheduled posts for this network may fail.",
     "disconnected": "Account disconnected",
     "popupBlocked": "Your browser blocked the window. Allow pop-ups for this site and try again.",
-    "popupOpen": "Finish connecting in the window that opened. This page updates when you close it."
+    "popupOpen": "Finish connecting in the window that opened. This page updates when you close it.",
+    "notAvailable": "This network isn't set up for this service yet."
   },
   "platforms": {
     "instagram": {
-      "requirement": "Business or Creator account linked to a Facebook Page.",
+      "requirement": "An Instagram professional account (Business or Creator).",
       "rules": "Feed (4:5 to 1.91:1), Reels and Stories in 9:16. Reels 3s to 15min, Stories up to 60s. Max 2,200 characters, 5 hashtags, 3 mentions. Stories need a Business account."
     },
     "facebook": {
@@ -43,7 +44,7 @@
       "rules": "One 9:16 video (3s to 10min) or up to 35 JPG photos. Max 2,200 characters. Choose who can see the post."
     },
     "linkedin": {
-      "requirement": "Personal profile or a company page where you are an admin.",
+      "requirement": "Your personal LinkedIn profile. LinkedIn asks you to reconnect every 60 days.",
       "rules": "Text, up to 9 images, or one video. Max 3,000 characters. 'Connections only' works on personal profiles."
     },
     "whatsapp": {

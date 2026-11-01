@@ -1,76 +1,107 @@
 # Blakrasocial: Social Publisher
 
-Customers connect their Instagram, Facebook, TikTok and LinkedIn accounts through each network's own
-OAuth consent page, then create and publish posts, Reels, Stories, videos and images from one panel.
+Customers connect their Instagram, Facebook, TikTok and LinkedIn accounts on each network's own login and
+consent page, then create and publish posts, Reels, Stories, videos and images from one panel.
 WhatsApp is supported for **messages to contacts** (not Status).
 
 ```
 Blakrasocial/
-├── backend/    Python 3.12 · FastAPI · Clean Architecture · Ayrshare adapter
+├── backend/    Python 3.12 · FastAPI · Clean Architecture · PostgreSQL · official network APIs (or Ayrshare)
 ├── frontend/   React 18 · TypeScript · Vite · TanStack Query · RHF + Zod · Tailwind · i18n (fa/en, RTL)
+├── e2e/        Browser test of the full flow against simulated services
 └── docker-compose.yml
 ```
 
-## How it works
+## Two ways to reach the networks
+
+| | `PUBLISHER=direct` (default) | `PUBLISHER=ayrshare` |
+|---|---|---|
+| Cost | **Free** network APIs (you host the API, database and storage) | Ayrshare Business plan |
+| Customer accounts | Our own OAuth with each network | Ayrshare's linking page |
+| Needs | PostgreSQL, an S3-compatible bucket, one developer app per network, **app review** by Meta and TikTok before customers outside your team can connect | Only an API key |
+
+The use cases, validation rules, security and frontend are identical in both modes; only the adapter behind
+the `SocialPublisher` port changes.
+
+## How direct mode works
 
 ```
-Browser ──JWT──▶ Blakrasocial API ──API key + Profile-Key──▶ Ayrshare ──▶ Instagram / Facebook / TikTok / LinkedIn / WhatsApp
-   │                    │
-   └── PUT file ───────▶ provider storage (presigned URL, never through our API)
+Browser ──JWT──▶ API ──▶ PostgreSQL (posts, encrypted tokens) ◀── Worker ──▶ Instagram / Facebook / TikTok / LinkedIn / WhatsApp
+   │               │                                                │
+   │               └── consent popup: network login ──▶ /oauth/<network>/callback
+   └── PUT file ──▶ S3-compatible bucket (presigned URL) ◀──────────┘ networks download / worker streams from it
 ```
 
-1. The host platform creates one Ayrshare **User Profile** per customer (`POST /profiles`, server-to-server) and stores the returned `profileKey`.
-2. When a customer opens the panel, the host gives the frontend a short-lived **JWT** that carries the `profileKey` claim.
-3. **Connect**: the API returns a hosted linking URL; the frontend opens it in a popup; the customer logs in on the network's own page. On close, accounts are refetched.
-4. **Upload**: the API returns a single-use presigned URL plus a signed `mediaToken`; the browser uploads straight to storage with a progress bar.
-5. **Publish**: the frontend sends captions, targets and `{url, token}` pairs with an `Idempotency-Key`. The API verifies the tokens, measures each file with `ffprobe`, validates every network's rules, and only then calls the provider.
+1. **Profiles**: the host platform creates one profile per customer (`POST /profiles`, server-to-server) and keeps the returned `profileKey`. The database stores only its SHA-256.
+2. **Session**: the host gives the frontend a short-lived **JWT** carrying the `profile_key` claim.
+3. **Connect**: `GET /accounts/connect-url?platform=…` returns the network's consent URL with a one-time `state` (hashed, 10 minutes, bound to the network) and PKCE where the network supports it. The network redirects to `/oauth/<network>/callback`; tokens are encrypted with AES-256-GCM and never reach the browser. Facebook users pick which Page to connect.
+4. **Upload**: the API returns a presigned PUT (content type and size are signed) plus a signed `mediaToken`; the browser uploads straight to the bucket.
+5. **Publish**: the API verifies media tokens, measures files with `ffprobe`, validates every network's rules and stores the post with one **target per network**. "Publish now" and "schedule" use the same queue.
+6. **Worker**: claims due targets with `FOR UPDATE SKIP LOCKED` leases, publishes with the customer's token, polls networks that process asynchronously (Reels, TikTok, LinkedIn video), retries transient failures with backoff, flags accounts that must reconnect, and refreshes Instagram/TikTok tokens before they expire.
 
 ## Architecture (backend)
 
 | Layer | Contents | Depends on |
 |---|---|---|
-| `domain/` | Entities and value objects (`Post`, `PostTarget`, `MediaAsset`, `Platform`, `ContentType`…), one validation **Strategy** per network (`InstagramRule`, `TikTokRule`, …) driven by declarative `ContentSpec` data | nothing |
-| `application/` | Use cases (`PublishPost`, `SchedulePost`, `UploadMedia`, `ConnectAccount`, `ListAccounts`, `UnlinkAccount`, `GetPostStatus`, `ListPosts`, `DeletePost`, `HandlePublishWebhook`) and **ports**: `SocialPublisher`, `DirectMessenger`, `MediaInspector`, `MediaReferenceSigner`, `IdempotencyStore`, `WebhookSignatureVerifier`, `CallerAuthenticator`, `Clock` | domain |
-| `infrastructure/` | `AyrsharePublisher` (the only Ayrshare code), WhatsApp messenger, resilient httpx client (tenacity backoff + jitter, safe retries only), ffprobe inspector, HMAC media signer, JWT authenticator, Redis/in-memory idempotency, structlog | application, domain |
-| `api/` | Routers, Pydantic v2 schemas (camelCase), DI, problem+json error mapping, security headers | application |
-| `container.py` | Composition root: the only place that picks adapters | all |
+| `domain/` | Entities and value objects (`Post`, `PostTarget`, `MediaAsset`, `OAuthCredential`…), one validation **Strategy** per network driven by declarative `ContentSpec` data | nothing |
+| `application/` | Use cases (`PublishPost`, `SchedulePost`, `UploadMedia`, `ConnectAccount`, `ListPosts`, `DeletePost`, `SetupWhatsApp`…); **ports** (`SocialPublisher`, `OAuthProvider`, `PlatformConnector`, repositories, `ObjectStorage`, `SecretCipher`, `DirectMessenger`, `MediaInspector`, `IdempotencyStore`…); `direct/` services: `AccountLinker`, `PostQueue`, `PublishWorker`, `TokenRefresher`, `DirectSocialPublisher` | domain |
+| `infrastructure/` | `networks/` (Instagram, Facebook, WhatsApp, TikTok, LinkedIn adapters), `persistence/` (SQLAlchemy 2 + Alembic), `storage/` (S3), AES-GCM cipher, `ayrshare/`, resilient httpx client, ffprobe, JWT, idempotency, logging | application, domain |
+| `api/` | Routers, Pydantic v2 schemas (camelCase), DI, problem+json errors, OAuth callback pages | application |
+| `container.py` | Composition root: picks adapters from `PUBLISHER` and which networks have apps | all |
 
-Replacing Ayrshare means writing one new class that implements `SocialPublisher` and changing one line in `container.py`.
+Adding a network = one `OAuthProvider` + one `PlatformConnector` + one line in the registry.
 
 ## Security decisions
 
 | Risk | What we do |
 |---|---|
-| A user sending another customer's `X-Profile-Key` | The key must match the `profile_key` claim inside the verified JWT (issuer, audience, expiry and signature checked; `alg=none` rejected). |
-| Secrets in the browser | Ayrshare API key, webhook secret and signing secrets live only in backend env vars. The frontend never sees them. |
-| Fake media metadata, SSRF through arbitrary URLs, using another customer's files | Publishing accepts only URLs carrying our HMAC `mediaToken` bound to the customer and expiry. Size, ratio and duration are measured server-side with ffprobe. |
-| Double posting (double click, retry after timeout) | `Idempotency-Key` per request, scoped per customer, stored atomically (Redis `SET NX` or in-memory), also forwarded to Ayrshare's `idempotencyKey`. Same key + different body → 409. |
-| Forged webhooks | HMAC-SHA256 over the raw body, constant-time compare, timestamp window, fails closed without a secret. |
-| Profile creation abuse | `POST /profiles` requires a server-to-server `X-Service-Key`. |
-| Misconfiguration | Startup refuses short secrets, mixed JWT algorithm types, and CORS `*` in production. Docs are hidden in production. |
-| Leaks in logs | Profile keys are masked; auth headers and secrets are redacted by the log processor. |
+| A user sending another customer's `X-Profile-Key` | The key must match the `profile_key` claim inside the verified JWT (issuer, audience, expiry, signature; `alg=none` rejected). |
+| Stolen database | Tokens are AES-256-GCM encrypted with the row identity as associated data (a ciphertext can't be moved to another customer); profile keys are stored only as hashes. Keys come from env and can be rotated. |
+| OAuth CSRF / replayed callbacks | Random single-use `state`, stored hashed, expires in 10 minutes, bound to customer and network; PKCE where supported; redirects only to allowed origins. |
+| Callback page injection | Every value is HTML-escaped; strict CSP with a per-response nonce, `frame-ancestors 'none'`. |
+| Secrets in the browser | App secrets, tokens and signing keys live only in the backend. |
+| Fake media metadata, SSRF, using another customer's files | Only URLs carrying our HMAC `mediaToken` (bound to customer and expiry) are accepted; ffprobe measures files server-side; presigned uploads sign size and type. |
+| Double posting | `Idempotency-Key` per customer (Redis or memory) plus a unique `(profile, key)` constraint in the database; worker leases stop two workers from taking the same target. |
+| Admin-only actions | `POST /profiles` and `PUT /profiles/whatsapp` need a server-to-server `X-Service-Key`. |
+| Misconfiguration | Startup refuses short secrets, malformed encryption keys, half-configured network apps, mixed JWT algorithms, CORS `*` and plain-HTTP callback URLs in production. |
+| Leaks in logs | Profile keys are masked; tokens and auth headers are redacted. |
 
 ## Setup
 
-### 1. Ayrshare keys
+The step-by-step Persian guide for creating each network's app and getting it approved is in
+`/mnt/project-files/blakrasocial/04-direct-setup-guide-fa.md` (project files). In short:
 
-1. Sign up at [ayrshare.com](https://www.ayrshare.com) and choose the **Business** plan (User Profiles are required for multi-customer use).
-2. Dashboard → **API Key**: copy the Primary Profile API key → `AYRSHARE_API_KEY`.
-3. Dashboard → **Social Networks**: enable Instagram, Facebook, TikTok and LinkedIn. Optionally register your own linking domain → `AYRSHARE_LINK_DOMAIN`.
-4. Webhooks (recommended): pick a random secret → `AYRSHARE_WEBHOOK_SECRET`, and set `PUBLIC_WEBHOOK_URL=https://<your-api>/webhooks/ayrshare`. New profiles register the webhook automatically.
-5. WhatsApp: email Ayrshare to join the WhatsApp/Messages private beta, then set `AYRSHARE_MESSAGING_ENABLED=true`.
+### 1. Network apps (free)
 
-### 2. Backend
+| Network | Where | Products / permissions | Callback URL to register |
+|---|---|---|---|
+| Instagram | developers.facebook.com → app → Instagram → API setup with Instagram login | `instagram_business_basic`, `instagram_business_content_publish` | `<PUBLIC_API_BASE_URL>/oauth/instagram/callback` |
+| Facebook | same Meta app → Facebook Login for Business | `pages_show_list`, `pages_read_engagement`, `pages_manage_posts` | `<PUBLIC_API_BASE_URL>/oauth/facebook/callback` |
+| TikTok | developers.tiktok.com | Login Kit + Content Posting API (Direct Post), scopes `user.info.basic`, `video.publish` | `<PUBLIC_API_BASE_URL>/oauth/tiktok/callback` |
+| LinkedIn | linkedin.com/developers | Sign In with LinkedIn using OpenID Connect + Share on LinkedIn | `<PUBLIC_API_BASE_URL>/oauth/linkedin/callback` |
+| WhatsApp | Meta app → WhatsApp → API setup | System-user token with `whatsapp_business_messaging` | — (set per profile with `PUT /profiles/whatsapp`) |
+
+Until Meta's App Review and TikTok's audit are approved, only accounts with a role in your app can connect, and
+TikTok posts are forced to "Only me". LinkedIn personal profiles work without review.
+
+### 2. Storage
+
+Create an S3-compatible bucket with a **public HTTPS read URL** (Cloudflare R2: 10 GB free, no download fees).
+Allow `PUT` from your frontend origin in the bucket's CORS rules, and add a lifecycle rule that deletes objects
+after 30 days. Fill `STORAGE_*` in `backend/.env`.
+
+### 3. Backend
 
 ```bash
 cd Blakrasocial/backend
-cp .env.example .env              # fill in the values (see comments in the file)
-uv sync                           # Python 3.12 + deps (or: pip install -e . && pip install pytest respx ...)
+cp .env.example .env               # fill in (every variable is documented there)
+uv sync
+uv run alembic upgrade head        # creates the tables
 uv run uvicorn blakrasocial.main:app_factory --factory --reload
-# http://localhost:8000/docs  (hidden when ENVIRONMENT=production)
 ```
 
-`ffprobe` must be installed (`brew install ffmpeg` / `apt install ffmpeg`); the Docker image includes it.
+`RUN_WORKER_IN_API=true` publishes from the API process. With more than one instance, set it to `false` and run
+`uv run python -m blakrasocial.worker` (any number of workers is safe).
 
 Create a profile and a development token:
 
@@ -79,13 +110,20 @@ curl -X POST localhost:8000/profiles -H "X-Service-Key: $SERVICE_KEY" -H "Conten
 uv run python scripts/issue_dev_token.py <profileKey>   # development only
 ```
 
-### 3. Frontend
+Attach a WhatsApp Business number to a profile (admin):
+
+```bash
+curl -X PUT localhost:8000/profiles/whatsapp -H "X-Service-Key: $SERVICE_KEY" -H "Content-Type: application/json" \
+  -d '{"profileKey":"<profileKey>","phoneNumberId":"<id>","accessToken":"<system user token>","displayName":"Support"}'
+```
+
+### 4. Frontend
 
 ```bash
 cd Blakrasocial/frontend
-cp .env.example .env.local        # VITE_API_BASE_URL, and VITE_DEV_ACCESS_TOKEN from the step above
+cp .env.example .env.local         # VITE_API_BASE_URL, and VITE_DEV_ACCESS_TOKEN from the step above
 npm install
-npm run dev                       # http://localhost:5173
+npm run dev                        # http://localhost:5173
 ```
 
 In production the host page supplies tokens instead of the env var:
@@ -96,54 +134,54 @@ In production the host page supplies tokens instead of the env var:
 </script>
 ```
 
-### 4. Everything with Docker
+### 5. Everything with Docker
 
 ```bash
-cp backend/.env.example backend/.env   # fill in
-docker compose up --build              # API :8000 (+ Redis), web :5173
+cp backend/.env.example backend/.env   # fill in storage and network apps
+docker compose up --build              # migrations, API :8000, worker, PostgreSQL, Redis, web :5173
 ```
 
 ## Tests and checks
 
 ```bash
-cd backend  && uv run pytest && uv run ruff check . && uv run mypy src     # 90 tests
+cd backend  && uv run pytest && uv run ruff check . && uv run mypy src     # 136 tests (PostgreSQL ones need TEST_DATABASE_URL)
 cd frontend && npm test && npm run lint && npm run build
 ```
 
-Backend tests cover every validation strategy, the use cases (idempotency, forged media, scheduling, WhatsApp fan-out), the Ayrshare adapter against `respx` mocks (body mapping, retries, error translation), security (JWT, media tokens, webhooks), and the HTTP API (auth, problem+json, CORS).
+- PostgreSQL integration: OAuth state single use/expiry/binding, encryption at rest, queue, worker retries, polling, reconnect flags, cancellation, isolation between customers, concurrent workers never taking the same post.
+- Every network adapter against `respx` mocks: OAuth exchange and refresh, request bodies, chunked uploads, polling, error translation.
+- Validation strategies, use cases, security (JWT, media tokens, webhooks) and the HTTP API, including the callback pages.
+- `e2e/`: the whole flow in a real browser against simulated services.
 
-Keeping DTOs in sync: `uv run python scripts/export_openapi.py ../frontend/openapi.json`, then `npm run gen:api` in the frontend.
-
-## Environment variables
-
-See [`backend/.env.example`](backend/.env.example) and [`frontend/.env.example`](frontend/.env.example); every variable is documented there.
+Keeping DTOs in sync: `uv run python scripts/export_openapi.py ../frontend/openapi.json`, then `npm run gen:api`.
 
 ## API
 
 | Method | Path | Auth | Purpose |
 |---|---|---|---|
 | POST | `/profiles` | `X-Service-Key` | Create customer profile → `profileKey` |
-| GET | `/accounts/connect-url` | JWT + `X-Profile-Key` | Hosted linking URL for the popup |
-| GET | `/accounts` | JWT | Connected networks, names, avatars, account type |
+| PUT | `/profiles/whatsapp` | `X-Service-Key` | Attach a WhatsApp Business number (direct mode) |
+| GET | `/accounts/connect-url?platform=` | JWT + `X-Profile-Key` | Consent URL for the popup |
+| GET | `/oauth/{platform}/callback` | one-time `state` | Where the network returns after consent |
+| GET | `/accounts` | JWT | Connected networks, names, avatars, reconnect flags |
 | DELETE | `/accounts/{platform}` | JWT | Disconnect |
 | POST | `/media/upload-url` | JWT | Presigned upload URL + access URL + `mediaToken` |
 | POST | `/posts` | JWT + `Idempotency-Key` | Publish now, or schedule with `scheduleAt` |
-| GET | `/posts` | JWT | Recent posts with per-network status |
-| GET | `/posts/{id}` | JWT | Status per network |
-| DELETE | `/posts/{id}` | JWT | Delete / cancel |
-| POST | `/webhooks/ayrshare` | HMAC signature | Publish results |
-| GET | `/platforms/rules` | public | The limits the backend enforces (the UI reads these) |
+| GET | `/posts`, `/posts/{id}` | JWT | Posts with per-network status |
+| DELETE | `/posts/{id}` | JWT | Cancel a scheduled post or delete where the network allows it |
+| GET | `/platforms/rules` | public | Limits the backend enforces, and which networks can be connected |
+| POST | `/webhooks/ayrshare` | HMAC signature | Publish results (Ayrshare mode) |
 | GET | `/health` | public | Liveness |
 
 Errors are `application/problem+json` with an `errors[]` list of `{code, platform, field, severity, message, params}`.
 
 ## Known platform limitations
 
-- **Instagram**: Business or Creator accounts only (linked to a Facebook Page). Stories need a **Business** account. Max 5 hashtags, 3 mentions, 2,200 characters, 50 posts per 24 h. Published posts **cannot be deleted** through the API.
-- **Facebook**: Pages only (not personal profiles or groups). Image Stories can't be deleted through the API. A photo or video already used in a post can't be reused as a Story.
-- **TikTok**: Max 15 posts per day, photo posts accept JPG/WEBP only (not PNG), one video per post. Published posts **cannot be deleted** through the API. The account must be re-authorized yearly. "Followers" visibility only works on private accounts.
-- **LinkedIn**: Groups aren't supported. Video on company pages needs admin rights. Document (PDF/PPT) posts are supported by the backend rules but need a storage adapter that accepts documents, because the provider's presigned upload accepts only JPG, PNG, MP4 and MOV.
-- **WhatsApp**: Status **cannot** be published by any API. Messages only reach contacts who wrote to the business in the last 24 hours (template messages aren't available yet through Ayrshare). Ayrshare's WhatsApp support is in private beta. Messages can't be scheduled, and their results are returned only in the publish response (there's no database in v1).
-- **Media lifetime**: uploaded files are kept by the provider for 30 days, so posts can be scheduled up to 29 days after upload.
-- **No database (v1)**: Ayrshare is the source of truth. Post history comes from Ayrshare (last 365 days max), and webhook results are written to structured logs.
-- **Idempotency** uses memory by default; set `REDIS_URL` when running more than one API instance.
+- **Instagram**: professional (Business or Creator) accounts only; Stories need Business. Images must be JPEG. About 100 API posts per 24 h. Published posts **cannot be deleted** through the API. Tokens last 60 days and are refreshed automatically.
+- **Facebook**: Pages only (not personal profiles or groups). Reels: 9:16, 3–90 s, 30 per 24 h.
+- **TikTok**: until TikTok audits the app, posts are visible to **Only me**. Photo posts need the storage domain verified in the TikTok developer portal. Published posts **cannot be deleted** through the API. Access tokens last 24 h and are refreshed automatically; customers reconnect once a year.
+- **LinkedIn**: personal profiles. Company pages need LinkedIn's Community Management API approval. Self-serve apps get no refresh token, so customers **reconnect every 60 days** (the card shows "Reconnect needed").
+- **WhatsApp**: Status **cannot** be published by any API. Free-form messages only reach contacts who wrote to the business in the last 24 hours. Meta gives each number 1,000 free service messages a month; beyond that and for templates it charges per message. Messages can't be scheduled.
+- **Media lifetime**: uploads are signed for 29 days; delete them with a bucket lifecycle rule.
+- **At-least-once publishing**: if a worker crashes right after a network accepted a post but before saving the result, the post may be published twice when the lease expires. This is rare and the trade-off for never losing a post.
+- **Idempotency** uses memory by default; set `REDIS_URL` when running more than one API instance (the database constraint still prevents duplicate posts).

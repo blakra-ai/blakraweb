@@ -3,7 +3,9 @@ import type { AccountsResponse, ConnectUrlResponse, Platform } from "@/shared/ap
 
 export const accountsApi = {
   list: (signal?: AbortSignal) => request<AccountsResponse>("/accounts", { signal }),
-  connectUrl: (redirectUrl?: string) =>
-    request<ConnectUrlResponse>("/accounts/connect-url", { query: { redirectUrl, origin: window.location.origin } }),
+  connectUrl: (platform: Platform, redirectUrl?: string) =>
+    request<ConnectUrlResponse>("/accounts/connect-url", {
+      query: { platform, redirectUrl, origin: window.location.origin },
+    }),
   unlink: (platform: Platform) => request<void>(`/accounts/${platform}`, { method: "DELETE" }),
 };

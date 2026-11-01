@@ -1,21 +1,22 @@
 import { useQueryClient } from "@tanstack/react-query";
 import { useCallback, useEffect, useRef, useState } from "react";
+import type { Platform } from "@/shared/api/types";
 import { accountsApi } from "../api/accountsApi";
 import { accountsKey } from "./useAccounts";
 
 const POPUP_FEATURES = "popup=yes,width=520,height=760,noopener=no";
 
-/** Opens the provider's hosted linking page (OAuth happens on each network's own site)
- *  in a popup, then refetches connected accounts when the popup closes. */
+/** Opens the network's own login and consent page in a popup (we never see the password),
+ *  then refetches connected accounts when the popup closes. */
 export function useConnectPopup() {
   const client = useQueryClient();
-  const [isOpen, setIsOpen] = useState(false);
+  const [openFor, setOpenFor] = useState<Platform | null>(null);
   const [error, setError] = useState<unknown>(null);
   const timer = useRef<number | undefined>(undefined);
 
   useEffect(() => () => window.clearInterval(timer.current), []);
 
-  const open = useCallback(async () => {
+  const open = useCallback(async (platform: Platform) => {
     setError(null);
     // Open synchronously so the browser treats it as user-initiated, then navigate it.
     const popup = window.open("about:blank", "blakra-connect", POPUP_FEATURES);
@@ -23,13 +24,13 @@ export function useConnectPopup() {
       setError(new Error("popup_blocked"));
       return;
     }
-    setIsOpen(true);
+    setOpenFor(platform);
     try {
-      const { url } = await accountsApi.connectUrl();
+      const { url } = await accountsApi.connectUrl(platform);
       popup.location.href = url;
     } catch (e) {
       popup.close();
-      setIsOpen(false);
+      setOpenFor(null);
       setError(e);
       return;
     }
@@ -37,11 +38,11 @@ export function useConnectPopup() {
     timer.current = window.setInterval(() => {
       if (popup.closed) {
         window.clearInterval(timer.current);
-        setIsOpen(false);
+        setOpenFor(null);
         void client.invalidateQueries({ queryKey: accountsKey });
       }
     }, 600);
   }, [client]);
 
-  return { open, isOpen, error };
+  return { open, isOpen: openFor !== null, openFor, error };
 }

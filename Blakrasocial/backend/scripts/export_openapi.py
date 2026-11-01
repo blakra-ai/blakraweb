@@ -19,6 +19,7 @@ def main() -> None:
     target = Path(sys.argv[1] if len(sys.argv) > 1 else "openapi.json")
     settings = Settings(
         environment="development",
+        publisher="ayrshare",  # the HTTP contract is the same in both modes; this avoids needing a database
         ayrshare_api_key=_PLACEHOLDER,  # type: ignore[arg-type]
         auth_jwt_secret=_PLACEHOLDER,  # type: ignore[arg-type]
         auth_jwt_algorithms=["HS256"],
