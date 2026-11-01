@@ -15,5 +15,8 @@ const el = p.locator('[data-window="hero"]')
 const box = await el.boundingBox()
 const png = await p.screenshot({ clip: { x: box.x + box.width / 2, y: box.y, width: box.width / 2, height: box.height } })
 await sharp(png).jpeg({ quality: 82, mozjpeg: true }).toFile(out)
+// The phone still: the ring and her bust from the same clean frame, the band's aspect (358 × 250), WebP under 120 KB.
+const phone = await p.screenshot({ clip: { x: 660, y: 215, width: 712, height: 497 } })
+await sharp(phone).webp({ quality: 78 }).toFile(out.replace('hero-still.jpg', 'hero-still-phone.webp'))
 console.log('still', box, (await sharp(out).metadata()).width, 'x', (await sharp(out).metadata()).height)
 await b.close()

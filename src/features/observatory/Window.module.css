@@ -88,14 +88,11 @@
   .window {
     background: var(--body);
   }
-  .stillImage {
-    display: none;
-  }
   .still {
     top: auto;
     height: var(--still-h, 260px);
   }
-  /* The still holds the ring and her; the whole band shows its middle (the ring left, her right). */
+  /* The phone still (the hero's bust crop: the ring left, her right) fills the band; a window without one keeps the CSS ring. */
   .stillImage {
     width: 100%;
     object-position: center center;

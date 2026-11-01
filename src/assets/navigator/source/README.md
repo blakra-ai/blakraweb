@@ -19,7 +19,8 @@ figure with six Biped-rigged arms, gold wire, floating shards and instruments, o
   the one body shell, the skeleton and the neck muscles between Spine1 and Head across the neck
   band (`--skin-head`, `--neck`), so the head turns at the neck under the gold wire,
 - keeps her own porcelain eyeballs as Eye_L/R, set upright so the gaze turns them about world
-  axes (`--upright`; the loader keeps a textured eye's material), adds empty lids (blink off),
+  axes (`--upright`; the loader keeps a textured eye's material), makes both identical with one
+  glass material (`--same-eyes`), caps the kept arm's open tube ends (`--cap`), adds empty lids (blink off),
   the jaw, the seven system lights (hidden in the Observatory) and the X-ray inner set,
 - moves the baked emissive maps into the base colour (`--bake-look`), drops transmission and
   clearcoat, warms the blue bake to porcelain and makes the organs and bones monochrome (`--tint`),
@@ -28,8 +29,8 @@ figure with six Biped-rigged arms, gold wire, floating shards and instruments, o
 ```bash
 node scripts/navigator-adopt.mjs ~/Downloads/astraia/scene.gltf src/assets/navigator/source/astraia.names.json \
   --drop '^(FOND ROND001|Main Low0|Fractures Dos_low|Object_2(48|49|51|52|54|55|57|58|60|61)|Group005|Circle00[345789]|Circle011)$' --yaw 62 --augment --head 0.017,0.22,0.05 --neck 0.16,0.27 \
-  --head-meshes '^(Cerveau Low|Bouche_low001|Eye_[LR])' --upright '^Eye_[LR]$' --skin-head '^(Face|Retopo 001|Crane Low uv|Muscles00[4-7])' \
-  --bake-look --tint '1.85,1.55,1.17:Body_Ext|Bras_Ext;grey:Organes|material|body_Int|Muscle_Int|Bras_Int' \
+  --head-meshes '^(Cerveau Low|Bouche_low001|Eye_[LR])' --upright '^Eye_[LR]$' --same-eyes --cap '^Object_26[34]$' --skin-head '^(Face|Retopo 001|Crane Low uv|Muscles00[4-7])' \
+  --bake-look --tint '2.03,1.7,1.29:Body_Ext|Bras_Ext;grey:Organes|material|body_Int|Muscle_Int|Bras_Int' \
   --webp 80 --tex-max 2048 --tex-hi 'Body_Ext' --optimize
 npx vitest run tests/navigator-contract.test.ts
 ```

@@ -7,6 +7,9 @@
  *
  * A Sketchfab-style scene (Astraía): --yaw turns the whole scene about Y so she faces +Z; with
  * --augment and no skeleton, --head x,y,z puts the Head pivot at a world point (the neck),
+ * --cap <regex> closes every open boundary loop of the matching meshes with a fan (a doll's arm
+ * segments with open tube ends; the fan takes the loop's own material, skinning and UVs); with
+ * --augment, --same-eyes gives Eye_R Eye_L's mesh and orientation so both eyes are identical.
  * --head-meshes limits which rigid nodes follow it (through bridge nodes, so their own animation
  * tracks keep working), --upright gives the matching nodes an identity world rotation (their
  * children compensate), so a model's own eyeballs mapped to Eye_L/R turn about world axes for the
@@ -49,7 +52,7 @@ import { CONTRACT, validateNames } from '../src/features/navigator/figure/names.
 import { CHAKRAS } from '../src/features/navigator/yantra.ts'
 
 const args = process.argv.slice(2)
-const WITH_VALUE = new Set(['--eyes', '--head', '--simplify', '--drop', '--webp', '--eye-forward', '--yaw', '--head-meshes', '--skin-head', '--neck', '--tint', '--tex-max', '--tex-hi', '--upright'])
+const WITH_VALUE = new Set(['--eyes', '--head', '--simplify', '--drop', '--webp', '--eye-forward', '--yaw', '--head-meshes', '--skin-head', '--neck', '--tint', '--tex-max', '--tex-hi', '--upright', '--cap'])
 const value = (flag) => args[args.indexOf(flag) + 1]
 const flags = new Set(args.filter((a) => a.startsWith('--')))
 const positional = args.filter((a, i) => !a.startsWith('--') && !(i > 0 && WITH_VALUE.has(args[i - 1])))
@@ -118,6 +121,70 @@ if (flags.has('--yaw')) {
     top.setTranslation(rotV(top.getTranslation()))
   }
   console.log(`yawed the scene by ${deg}°`)
+}
+
+// ---- Cap: close the open ends of the matching meshes ------------------------------------------
+if (flags.has('--cap')) {
+  const re = new RegExp(value('--cap'))
+  let caps = 0
+  for (const node of root.listNodes()) {
+    const mesh = node.getMesh()
+    if (!mesh || !re.test(node.getName())) continue
+    for (const prim of mesh.listPrimitives()) {
+      const idxAcc = prim.getIndices()
+      if (!idxAcc) continue
+      const idx = Array.from(idxAcc.getArray())
+      // Boundary edges: used by one triangle only, kept in their triangle's direction.
+      const count = new Map()
+      const key = (a, b) => (a < b ? `${a}_${b}` : `${b}_${a}`)
+      for (let i = 0; i < idx.length; i += 3) for (const [a, b] of [[idx[i], idx[i + 1]], [idx[i + 1], idx[i + 2]], [idx[i + 2], idx[i]]]) count.set(key(a, b), (count.get(key(a, b)) ?? 0) + 1)
+      const edges = []
+      for (let i = 0; i < idx.length; i += 3) for (const [a, b] of [[idx[i], idx[i + 1]], [idx[i + 1], idx[i + 2]], [idx[i + 2], idx[i]]]) if (count.get(key(a, b)) === 1) edges.push([a, b])
+      if (!edges.length) continue
+      // Loops: connected components of the boundary edges (union-find), one fan centre each.
+      const parent = new Map()
+      const find = (x) => { while (parent.get(x) !== x) { parent.set(x, parent.get(parent.get(x))); x = parent.get(x) } return x }
+      for (const [a, b] of edges) { if (!parent.has(a)) parent.set(a, a); if (!parent.has(b)) parent.set(b, b); parent.set(find(a), find(b)) }
+      const loops = new Map()
+      for (const [a, b] of edges) { const r = find(a); if (!loops.has(r)) loops.set(r, []); loops.get(r).push([a, b]) }
+      const attrs = prim.listSemantics().map((sem) => [sem, prim.getAttribute(sem)])
+      const base = prim.getAttribute('POSITION').getCount()
+      const extra = new Map(attrs.map(([sem]) => [sem, []]))
+      const newIdx = []
+      let c = base
+      for (const loop of loops.values()) {
+        if (loop.length < 3) continue
+        const verts = [...new Set(loop.flat())]
+        for (const [sem, acc] of attrs) {
+          const n = acc.getElementSize()
+          const sum = new Array(n).fill(0)
+          const v = []
+          for (const i of verts) { acc.getElement(i, v); for (let k = 0; k < n; k++) sum[k] += v[k] }
+          // Averaged for positions, UVs and normals; the first vertex's for joints and weights (a blend of indices is nonsense).
+          const el = /^(JOINTS|WEIGHTS)/.test(sem) ? acc.getElement(verts[0], []) : sum.map((x) => x / verts.length)
+          if (sem === 'NORMAL') { const l = Math.hypot(...el) || 1; for (let k = 0; k < 3; k++) el[k] /= l }
+          extra.get(sem).push(...el)
+        }
+        // The fan: each boundary edge reversed, so the cap faces the way the tube's wall does.
+        for (const [a, b] of loop) newIdx.push(b, a, c)
+        c++
+        caps++
+      }
+      if (c === base) continue
+      for (const [sem, acc] of attrs) {
+        const old = acc.getArray()
+        const add = extra.get(sem)
+        const out = new old.constructor(old.length + add.length)
+        out.set(old)
+        out.set(add.map((x) => (old instanceof Float32Array ? x : Math.round(x))), old.length)
+        acc.setArray(out)
+      }
+      const all = [...idx, ...newIdx]
+      idxAcc.setArray(c > 65535 ? new Uint32Array(all) : new Uint16Array(all))
+      prim.getMaterial()?.setDoubleSided(true)
+    }
+  }
+  console.log(`capped ${caps} open loop(s) on meshes matching ${re}`)
 }
 
 // ---- Augmentation: the parts a single-mesh model lacks --------------------------------------
@@ -464,6 +531,26 @@ if (flags.has('--augment')) {
   if (!byName('Eye_R')) addSphere('Eye_R', head, ER, er, white, { upright: true })
   // The model's own eyeballs mapped to Eye_L/R keep their look: the lids are empties (blink off).
   const ownEyes = byName('Eye_L') && byName('Eye_R') && !eyeWorld
+  if (ownEyes) {
+    const eL = byName('Eye_L'), eR = byName('Eye_R')
+    if (flags.has('--same-eyes')) {
+      // Eye_R takes Eye_L's child (mesh and orientation): two identical eyes, pupils where Eye_L's are.
+      for (const ch of eR.listChildren()) ch.dispose()
+      for (const ch of eL.listChildren()) {
+        const copy = doc.createNode(ch.getName() + '_R').setMesh(ch.getMesh()).setTranslation(ch.getTranslation()).setRotation(ch.getRotation()).setScale(ch.getScale())
+        eR.addChild(copy)
+      }
+      if (eR.getMesh()) eR.setMesh(eL.getMesh())
+      console.log('augment: Eye_R made identical to Eye_L')
+    }
+    // Glass: one material of their own, smooth enough for a faint highlight from the key light.
+    let glass = null
+    for (const eye of [eL, eR]) for (const holder of [eye, ...eye.listChildren()]) for (const prim of holder.getMesh()?.listPrimitives() ?? []) {
+      const src = prim.getMaterial()
+      if (!glass) glass = (src ? src.clone() : doc.createMaterial()).setName('Eye_Glass').setMetallicFactor(0).setRoughnessFactor(0.18)
+      prim.setMaterial(glass)
+    }
+  }
   if (!byName('Lid_L')) ownEyes ? addEmpty('Lid_L', head, worldPos(byName('Eye_L'))) : addSphere('Lid_L', head, EL, er * 1.12, lidMat, { half: true, upright: true, tiltX: -1.05 })
   if (!byName('Lid_R')) ownEyes ? addEmpty('Lid_R', head, worldPos(byName('Eye_R'))) : addSphere('Lid_R', head, ER, er * 1.12, lidMat, { half: true, upright: true, tiltX: -1.05 })
   if (!byName('Jaw')) {

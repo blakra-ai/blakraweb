@@ -1,5 +1,6 @@
 import { Voice } from '../features/observatory/Line'
 import heroStill from '../assets/observatory/hero-still.jpg'
+import heroStillPhone from '../assets/observatory/hero-still-phone.webp'
 import { Window } from '../features/observatory/Window'
 import { chip } from '../features/observatory/gauge'
 import { useI18n } from '../i18n'
@@ -11,7 +12,8 @@ import s from './Hero.module.css'
  * 01 Hero (storyboard d-01 / m-01): one framed window onto the world. Words in columns 1–6
  * (eyebrow, H1, lede, the call to action and the cue), the world in 7–12: the lensing ring at
  * columns 9–10 (painted by World.tsx), its line on the object's tangent, the facts in the foot.
- * The hole is the guide (art pass v1): no figure. All words are DOM; nothing but the world moves.
+ * The guide (Astraía) stands at the ring's lower-right edge, painted by the world; on phones the
+ * window's lower band shows her still (hero-still-phone.webp). All words are DOM; nothing but the world moves.
  */
 export function Hero() {
   const { t, locale } = useI18n()
@@ -20,7 +22,7 @@ export function Hero() {
 
   return (
     <Section id="top" beat="hero" surface="body" station={1} className={s.hero} aria-labelledby="title">
-      <Window id="hero" kind="hero" ring still={heroStill} className={s.window}>
+      <Window id="hero" kind="hero" ring still={heroStill} stillPhone={heroStillPhone} className={s.window}>
         <div className={s.inner}>
           <p className={`mono ${s.tag}`} aria-hidden="true">
             {chip(1)}

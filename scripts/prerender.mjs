@@ -21,7 +21,7 @@ const newsreader = assets.find((f) => f.startsWith('newsreader-latin-wght-italic
 const mono = assets.find((f) => f.startsWith('geist-mono-latin-wght-normal') && f.endsWith('.woff2'))
 const fontPreload = [geist, newsreader, mono].filter(Boolean).map((f) => `<link rel="preload" href="/assets/${f}" as="font" type="font/woff2" crossorigin>`)
 // The hero's phone still is the first screen's largest paint on phones: it starts with the HTML.
-const phoneStill = assets.find((f) => f.startsWith('hero-still-phone') && f.endsWith('.jpg'))
+const phoneStill = assets.find((f) => f.startsWith('hero-still-phone') && /\.(jpg|webp)$/.test(f))
 const stillPreload = phoneStill ? [`<link rel="preload" href="/assets/${phoneStill}" as="image" media="(max-width: 767px)">`] : []
 const preload = [...fontPreload, ...stillPreload].join('\n    ')
 

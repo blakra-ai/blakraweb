@@ -46,7 +46,7 @@ export interface Perf {
   band: number
 }
 
-export const EYE_LIMIT = 25
+export const EYE_LIMIT = 12
 export const DAMP = { eyes: 18, head: 6, body: 3 } as const
 export const BLINK = { close: 0.07, open: 0.12, slow: 0.4, min: 3, max: 6 } as const
 export const EAR = { k: 90, c: 11, prick: 6, turn: 4, flick: 0.18 } as const

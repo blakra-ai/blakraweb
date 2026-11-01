@@ -39,7 +39,7 @@ function run(seconds: number, base: LivingInput, state = createLivingState(7), t
 }
 
 describe('gaze', () => {
-  it('clamps the eyes at ±25° however far the cursor is', () => {
+  it('clamps the eyes at ±EYE_LIMIT (12°) however far the cursor is', () => {
     const { perf } = run(3, input({ pointer: { x: 9000, y: -9000, on: true } }))
     expect(perf.eyes.yaw).toBeLessThanOrEqual(EYE_LIMIT)
     expect(perf.eyes.yaw).toBeGreaterThan(EYE_LIMIT - 0.01)
@@ -48,16 +48,16 @@ describe('gaze', () => {
   })
 
   it('aims at the cursor through a focal length of 1.6 heads', () => {
-    // dx = 320 px over f = 320 px → 45°, clamped to 25; dx = 100 → atan(100/320) = 17.35°
-    const { perf } = run(4, input({ pointer: { x: 800, y: 400, on: true } }))
-    expect(perf.eyes.yaw).toBeCloseTo((Math.atan2(100, 320) * 180) / Math.PI, 1)
+    // dx = 320 px over f = 320 px → 45°, clamped to 12; dx = 60 → atan(60/320) = 10.62°
+    const { perf } = run(4, input({ pointer: { x: 760, y: 400, on: true } }))
+    expect(perf.eyes.yaw).toBeCloseTo((Math.atan2(60, 320) * 180) / Math.PI, 1)
     expect(perf.head.yaw).toBeCloseTo(perf.eyes.yaw / 3, 1)
     expect(perf.body.yaw).toBeCloseTo(perf.eyes.yaw / 10, 1)
   })
 
   it('eyes lead the head: after 100 ms the eyes are closer to their target', () => {
-    const { perf } = run(0.1, input({ pointer: { x: 800, y: 400, on: true } }))
-    const target = (Math.atan2(100, 320) * 180) / Math.PI
+    const { perf } = run(0.1, input({ pointer: { x: 760, y: 400, on: true } }))
+    const target = (Math.atan2(60, 320) * 180) / Math.PI
     const eyeFrac = perf.eyes.yaw / target
     const headFrac = perf.head.yaw / (target / 3)
     expect(eyeFrac).toBeGreaterThan(headFrac)
