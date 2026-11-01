@@ -24,6 +24,12 @@ import { usePublishPost } from "../hooks/usePublishPost";
 import { composerSchema, defaultComposerValues, type ComposerValues } from "../schema/composerSchema";
 import { validateDraft, type ClientIssue, type ClientMedia } from "../validation/clientValidator";
 
+/** The networks may still be processing the post ("pending"); say so instead of claiming it is live. */
+const SUCCESS_MESSAGE: Partial<Record<string, string>> = {
+  scheduled: "composer.scheduled",
+  pending: "composer.sending",
+};
+
 export default function ComposerPage() {
   const { t } = useTranslation();
   const rules = usePlatformRules();
@@ -87,7 +93,7 @@ export default function ComposerPage() {
       onSuccess: (result) => {
         const failed = result.results.filter((r) => r.state === "failed");
         if (failed.length) toast.warning(t("composer.partial", { count: failed.length }));
-        else toast.success(result.state === "scheduled" ? t("composer.scheduled") : t("composer.published"));
+        else toast.success(t(SUCCESS_MESSAGE[result.state] ?? "composer.published"));
         form.reset(defaultComposerValues());
         uploads.reset();
       },

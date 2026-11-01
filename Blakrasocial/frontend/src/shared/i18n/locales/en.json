@@ -103,6 +103,7 @@
     "scheduleCta": "Schedule post",
     "waitUploads": "Waiting for uploads…",
     "published": "Published! Track it on the Posts page.",
+    "sending": "Sent! The networks are publishing it now. Track it on the Posts page.",
     "scheduled": "Scheduled! You'll find it on the Posts page.",
     "partial_one": "Published, but {{count}} network failed. See Posts for details.",
     "partial_other": "Published, but {{count}} networks failed. See Posts for details.",
