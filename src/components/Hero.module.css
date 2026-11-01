@@ -146,65 +146,35 @@
 /* The drawn still: her face, framed as the world frames her so the GLB takes over in place. The
    head spans 120 of the 230 units (30svh), the eyes sit at (100, 90) → (70vw, 36svh). */
 .still {
-  --gold: #c9a24a;
   display: none;
   position: absolute;
-  left: calc(70vw - 25svh);
-  top: calc(36svh - 22.5svh);
-  width: 50svh;
+  /* The poster's crop: x 640…1440, y 72…900 of a 1440×900 hero, scaled with the viewport's width. */
+  left: 44.444vw;
+  top: var(--header-h, 72px);
+  width: 55.556vw;
+  aspect-ratio: 800 / 828;
+  overflow: hidden;
   pointer-events: none;
+  /* Behind the words, and feathered at its left and bottom edges so the paper has no seam. */
+  z-index: 0;
+  -webkit-mask-image: linear-gradient(to right, transparent, #000 18%), linear-gradient(to top, transparent, #000 14%);
+  mask-image: linear-gradient(to right, transparent, #000 18%), linear-gradient(to top, transparent, #000 14%);
+  -webkit-mask-composite: source-in;
+  mask-composite: intersect;
+}
+.lead,
+.title {
+  position: relative;
+  z-index: 1;
 }
 :global(html.gl-off) .still {
   display: block;
 }
-.stillFace {
+.stillImage {
+  display: block;
   width: 100%;
-  height: auto;
-}
-.stillHead {
-  fill: var(--paper);
-  stroke: var(--ink-0);
-  stroke-width: 1.4;
-}
-.stillEar {
-  fill: var(--paper);
-  stroke: var(--ink-0);
-  stroke-width: 1.4;
-  stroke-linejoin: round;
-}
-.stillCollar {
-  fill: none;
-  stroke: var(--ink-0);
-  stroke-width: 1.6;
-}
-.stillLine {
-  fill: none;
-  stroke: var(--ink-0);
-  stroke-width: 1.1;
-  stroke-linecap: round;
-  opacity: 0.7;
-}
-.stillWhite {
-  fill: var(--paper);
-  stroke: var(--ink-0);
-  stroke-width: 1;
-}
-.stillLimb {
-  fill: var(--ink-0);
-  stroke: var(--gold);
-  stroke-width: 0.6;
-}
-.stillBand {
-  fill: var(--ink-0);
-}
-.stillBandLight {
-  fill: var(--ink-2);
-}
-.stillPupil {
-  fill: #000;
-}
-.stillGlint {
-  fill: var(--paper);
+  height: 100%;
+  object-fit: cover;
 }
 
 /* Reduced motion: no reveals or hover moves; the still stays until the world (its still frame) is live. */
@@ -243,10 +213,9 @@
     max-width: none;
     text-align: left;
   }
-  /* Phones: head 24svh, centred at (50vw, 30svh), as the world's portrait pose. */
+  /* Phones: the poster centred, 92vw wide, under the header. */
   .still {
-    left: calc(50vw - 20svh);
-    top: calc(30svh - 18svh);
-    width: 40svh;
+    left: 4vw;
+    width: 92vw;
   }
 }

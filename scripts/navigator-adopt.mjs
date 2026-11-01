@@ -294,14 +294,14 @@ if (flags.has('--augment')) {
 
   const white = mat('Eye_White', [0.95, 0.95, 0.95])
   // Lids: porcelain on a porcelain figure; a skin tone over a textured face.
-  const lidMat = mat('Lid', hex(root.listTextures().length ? '#d9a68e' : '#e7e4de'), { rough: 0.7 })
+  const lidMat = mat('Lid', hex(root.listTextures().length ? '#c7906f' : '#e7e4de'), { rough: 0.7 })
   const graphite = mat('Inner', hex('#2a2a30'), { metal: 0.3, rough: 0.6 })
   const EL = eyeWorld ? eyeWorld.L : [H[0] - ex, H[1] + ey, H[2] + ez]
   const ER = eyeWorld ? eyeWorld.R : [H[0] + ex, H[1] + ey, H[2] + ez]
   if (!byName('Eye_L')) addSphere('Eye_L', head, EL, er, white, { upright: true })
   if (!byName('Eye_R')) addSphere('Eye_R', head, ER, er, white, { upright: true })
-  if (!byName('Lid_L')) addSphere('Lid_L', head, EL, er * 1.12, lidMat, { half: true, upright: true, tiltX: -0.55 })
-  if (!byName('Lid_R')) addSphere('Lid_R', head, ER, er * 1.12, lidMat, { half: true, upright: true, tiltX: -0.55 })
+  if (!byName('Lid_L')) addSphere('Lid_L', head, EL, er * 1.12, lidMat, { half: true, upright: true, tiltX: -1.05 })
+  if (!byName('Lid_R')) addSphere('Lid_R', head, ER, er * 1.12, lidMat, { half: true, upright: true, tiltX: -1.05 })
   if (!byName('Jaw')) {
     const jaw = addEmpty('Jaw', head, [H[0], H[1] + 0.2 * headLen, H[2] + 0.2 * headLen])
     if (!byName('Mouth')) addEmpty('Mouth', jaw, [H[0], H[1] + 0.18 * headLen, H[2] + 0.42 * headLen])
