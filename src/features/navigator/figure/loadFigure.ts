@@ -2,6 +2,7 @@ import {
   AdditiveBlending,
   Bone,
   Box3,
+  SkinnedMesh,
   Group,
   Material,
   Matrix4,
@@ -239,9 +240,21 @@ export async function loadFigure(url: string): Promise<LoadedFigure> {
 
   // Metrics, in world space with the root at rest (identity transform): nothing here is a constant.
   root.updateMatrixWorld(true)
-  const box = new Box3().setFromObject(root)
+  // A skinned mesh's bounds come from its bones, not its node: update the skeletons first and
+  // let Box3 use the skinned bounding boxes (precise), else a rigged model measures as its bind
+  // buffer in the exporter's units.
+  root.traverse((o) => {
+    const sk = o as SkinnedMesh
+    if (sk.isSkinnedMesh) {
+      sk.skeleton.update()
+      sk.computeBoundingBox()
+    }
+  })
+  const box = new Box3().setFromObject(root, true)
   const height = box.max.y - box.min.y
-  const headTop = new Box3().setFromObject(face).max.y
+  // The head's top includes the hair when the model names it: a face mesh often stops at the brow.
+  const hairNode = named.get('Hair')
+  const headTop = Math.max(new Box3().setFromObject(face, true).max.y, hairNode ? new Box3().setFromObject(hairNode, true).max.y : -Infinity)
   const headAt = bones.Head.getWorldPosition(new Vector3())
   // The Head bone sits at the skull's base (the jaw line), so base → top of the Face mesh is the head's height.
   const headHeight = Math.max(1e-3, headTop - headAt.y)
@@ -269,5 +282,6 @@ export async function loadFigure(url: string): Promise<LoadedFigure> {
     outer,
     inner,
   }
+  if (import.meta.env.DEV) (globalThis as Record<string, unknown>).__figure = figure
   return figure
 }

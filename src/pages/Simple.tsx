@@ -159,6 +159,15 @@ export function Legal() {
               {l.phoneLabel}: <a href={tel}>{company.phone}</a>
             </dd>
           </div>
+          <div>
+            <dt>{l.creditsTitle}</dt>
+            <dd>
+              {l.credits}{' '}
+              <a href="https://sketchfab.com/3d-models/cyber-girl-46640796f0dd4fbab5eba5262d542e25" rel="license noopener" target="_blank">
+                sketchfab.com
+              </a>
+            </dd>
+          </div>
         </dl>
       </div>
     </Section>

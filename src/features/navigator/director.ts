@@ -90,6 +90,12 @@ export function createDirector() {
     const text = contact ? [...contact.querySelectorAll('h1, h2, p, a')].filter((el) => !form?.contains(el) && el.getClientRects().length > 0) : []
     const paras = text.filter((el) => el.tagName === 'P')
     nav.contact = { form: form ? pageBox(form) : null, text: text.map(pageBox), lastPara: paras.length ? pageBox(paras[paras.length - 1]) : null }
+    const boxes: Record<string, Box[]> = {}
+    for (const sec of main.querySelectorAll<HTMLElement>('[data-beat]')) {
+      const beat = sec.dataset.beat ?? ''
+      boxes[beat] = [...sec.querySelectorAll('h1, h2, p, a, button, article, form, figure')].filter((el) => el.getClientRects().length > 0).map(pageBox)
+    }
+    nav.textBoxes = boxes
     const layers = [...main.querySelectorAll<HTMLElement>('[data-layer]')]
     targets = {
       layers,

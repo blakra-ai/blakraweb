@@ -180,8 +180,8 @@ void main() {
   vec3 e1 = vec3(1.0, 0.0, 0.0);
   vec3 e2 = cross(H, e1);
   float a = acos(clamp(dot(d, H), -1.0, 1.0));
-  // The iris spans about 35 degrees of the sphere: the hole's angles are scaled onto it.
-  float th = a * 2.2;
+  // The iris spans about 50 degrees of the sphere (a wide, elf-like eye): the hole's angles are scaled onto it.
+  float th = a * 1.7;
   vec3 side = d - H * cos(a);
   float sl = length(side);
   vec2 p = sl > 1e-5 ? vec2(dot(side, e1), dot(side, e2)) / sl * th : vec2(0.0);

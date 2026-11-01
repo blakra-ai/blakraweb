@@ -349,6 +349,8 @@ export const fr: Dict = {
     emailLabel: 'E-mail',
     phoneLabel: 'Téléphone',
     country: 'États-Unis',
+    creditsTitle: 'Crédits',
+    credits: 'La figure de la Navigatrice est adaptée de « Cyber Girl » de Rotmill (Sketchfab), sous licence CC BY 4.0.',
   },
   notFound: { eyebrow: '404', title: 'Cette page est tombée au-delà de l’horizon.', text: 'Elle n’existe pas, ou elle a déménagé.', back: 'Retour au début' },
 }

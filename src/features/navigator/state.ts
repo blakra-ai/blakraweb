@@ -69,6 +69,8 @@ export const nav = {
   scrollV: 0,
   /** Boxes the speech card keeps clear of in the contact beat, in page coordinates (measured on reflow by the director): the form, the section's text blocks, and the left column's last paragraph. */
   contact: { form: null as Box | null, text: [] as Box[], lastPara: null as Box | null },
+  /** Every section's words and cards, as page boxes by beat: the speech card keeps clear of them. */
+  textBoxes: {} as Record<string, Box[]>,
 }
 
 export interface Box {

@@ -63,6 +63,17 @@ function keepClear(place: { x: number; y: number }, mouth: { x: number; y: numbe
       else if (left >= CARD_MARGIN) x = left
       else y = clampY(head.y + head.h + GAP)
     }
+    // Nor over the section's words and cards: slide down below the lowest box it touches, then re-check the head.
+    const boxes = nav.textBoxes[nav.beat]
+    if (nav.beat !== 'contact' && boxes?.length) {
+      const words = boxes.map((b) => ({ x: b.x, y: b.y - window.scrollY, w: b.w, h: b.h }))
+      for (let pass = 0; pass < 3; pass++) {
+        const hit = words.filter((b) => overlaps({ x, y, w: card.w, h: card.h }, b))
+        if (!hit.length) break
+        y = clampY(Math.max(...hit.map((b) => b.y + b.h)) + GAP)
+      }
+      if (overlaps({ x, y, w: card.w, h: card.h }, head)) x = head.x + head.w + GAP <= maxX ? head.x + head.w + GAP : Math.max(CARD_MARGIN, head.x - GAP - card.w)
+    }
     if (nav.beat === 'contact') {
       // Never over the form or the section's words (measured on reflow by the director). First choice: under the
       // left column's last paragraph, left-aligned to it; else below the header on the right, above the form only

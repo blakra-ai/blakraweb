@@ -2,7 +2,12 @@
 /*
  * Adopt a delivered model as the Navigator.
  *
- *   node scripts/navigator-adopt.mjs <model.glb> [names.json] [--augment] [--eyes x,y,z,r] [--head y] [--simplify ratio] [--optimize] [--dry]
+ *   node scripts/navigator-adopt.mjs <model.glb> [names.json] [--augment] [--eyes x,y,z,r] [--head y] [--simplify ratio] [--drop regex] [--webp quality] [--optimize] [--dry]
+ *
+ * --drop <regex> removes every node whose name matches, with its subtree (a second copy of the
+ * figure, preview props); --webp <q> re-encodes textures as WebP at that quality (needs sharp).
+ * names.json may map the model's eye bones to EyeSocket_L / EyeSocket_R: the eye spheres then sit
+ * exactly on them instead of the estimate.
  *
  * --simplify 0.2 keeps 20% of the triangles (meshoptimizer, error-bounded), applied to the model's
  * own meshes before the injected parts; use it to bring a 500k-triangle sculpt under the 150k budget.
@@ -30,7 +35,7 @@ import { CONTRACT, validateNames } from '../src/features/navigator/figure/names.
 import { CHAKRAS } from '../src/features/navigator/yantra.ts'
 
 const args = process.argv.slice(2)
-const WITH_VALUE = new Set(['--eyes', '--head', '--simplify'])
+const WITH_VALUE = new Set(['--eyes', '--head', '--simplify', '--drop', '--webp', '--eye-forward'])
 const flags = new Set(args.filter((a) => a.startsWith('--')))
 const positional = args.filter((a, i) => !a.startsWith('--') && !(i > 0 && WITH_VALUE.has(args[i - 1])))
 const [input, namesPath] = positional
@@ -68,6 +73,17 @@ for (const node of root.listNodes()) {
     node.setName(bare)
     renamed++
   }
+}
+
+// ---- Drop: a second copy of the figure, preview props, anything named ------------------------
+if (flags.has('--drop')) {
+  const re = new RegExp(args[args.indexOf('--drop') + 1])
+  let dropped = 0
+  const victims = root.listNodes().filter((n) => re.test(n.getName()))
+  const disposeTree = (n) => { for (const c of n.listChildren()) disposeTree(c); n.dispose() }
+  for (const n of victims) { if (n.isDisposed?.() ) continue; disposeTree(n); dropped++ }
+  await doc.transform(prune())
+  console.log(`dropped ${dropped} node(s) matching ${re}; pruned unused meshes, skins, materials and textures`)
 }
 
 // ---- Augmentation: the parts a single-mesh model lacks --------------------------------------
@@ -109,7 +125,8 @@ function spherePrim(r, material, { half = false, seg = 20, ring = 14 } = {}) {
   }
   for (let i = 0; i < rings; i++) for (let j = 0; j < seg; j++) {
     const a = i * (seg + 1) + j, b = a + seg + 1
-    idx.push(a, b, a + 1, b, b + 1, a + 1)
+    // Counter-clockwise seen from outside, so the front faces survive culling.
+    idx.push(a, a + 1, b, b, a + 1, b + 1)
   }
   const prim = doc.createPrimitive().setMaterial(material)
   prim.setAttribute('POSITION', doc.createAccessor().setType('VEC3').setArray(new Float32Array(pos)).setBuffer(scratch))
@@ -117,13 +134,41 @@ function spherePrim(r, material, { half = false, seg = 20, ring = 14 } = {}) {
   prim.setIndices(doc.createAccessor().setType('SCALAR').setArray(new Uint16Array(idx)).setBuffer(scratch))
   return prim
 }
-/** A named sphere mesh node at a WORLD point, parented to `parent` (local transform derived). */
-function addSphere(name, parent, world, r, material, opts) {
+/** The rotation part of a world matrix as a quaternion [x, y, z, w] (scale removed). */
+function worldQuat(node) {
+  const m = node.getWorldMatrix()
+  const sx = Math.hypot(m[0], m[1], m[2]) || 1, sy = Math.hypot(m[4], m[5], m[6]) || 1, sz = Math.hypot(m[8], m[9], m[10]) || 1
+  const r00 = m[0] / sx, r01 = m[4] / sy, r02 = m[8] / sz, r10 = m[1] / sx, r11 = m[5] / sy, r12 = m[9] / sz, r20 = m[2] / sx, r21 = m[6] / sy, r22 = m[10] / sz
+  const t = r00 + r11 + r22
+  let x, y, z, w
+  if (t > 0) { const S = Math.sqrt(t + 1) * 2; w = S / 4; x = (r21 - r12) / S; y = (r02 - r20) / S; z = (r10 - r01) / S }
+  else if (r00 > r11 && r00 > r22) { const S = Math.sqrt(1 + r00 - r11 - r22) * 2; w = (r21 - r12) / S; x = S / 4; y = (r01 + r10) / S; z = (r02 + r20) / S }
+  else if (r11 > r22) { const S = Math.sqrt(1 + r11 - r00 - r22) * 2; w = (r02 - r20) / S; x = (r01 + r10) / S; y = S / 4; z = (r12 + r21) / S }
+  else { const S = Math.sqrt(1 + r22 - r00 - r11) * 2; w = (r10 - r01) / S; x = (r02 + r20) / S; y = (r12 + r21) / S; z = S / 4 }
+  return [x, y, z, w]
+}
+/**
+ * A named sphere mesh node at a WORLD point, parented to `parent` (local transform derived). With
+ * `upright`, the node's world rotation is identity, so its local +Z faces the viewer and its local
+ * X is horizontal: the eye shader's pupil and the lids' blink axis depend on it.
+ */
+function addSphere(name, parent, world, r, material, opts = {}) {
   const inv = mat4Invert(parent.getWorldMatrix())
   const local = inv ? xform(inv, world) : world
   const k = worldScale(parent) || 1
   const mesh = doc.createMesh(name).addPrimitive(spherePrim(r / k, material, opts))
   const node = doc.createNode(name).setMesh(mesh).setTranslation(local)
+  if (opts.upright) {
+    const [x, y, z, w] = worldQuat(parent)
+    let q = [-x, -y, -z, w] // the inverse of the parent's world rotation: identity in the world
+    if (opts.tiltX) {
+      // q × rotX(tiltX): the cap tilts back at rest, so an open eye shows the lid only as a rim.
+      const h = opts.tiltX / 2, bx = Math.sin(h), bw = Math.cos(h)
+      const [ax, ay, az, aw] = q
+      q = [aw * bx + ax * bw, ay * bw + az * bx, az * bw - ay * bx, aw * bw - ax * bx]
+    }
+    node.setRotation(q)
+  }
   parent.addChild(node)
   return node
 }
@@ -214,28 +259,49 @@ if (flags.has('--augment')) {
       if (!p) continue
       const v = []
       for (let i = 0; i < p.getCount(); i++) {
-        const w = node.getSkin() ? [...p.getElement(i, v)] : xform(m, p.getElement(i, v))
+        // Skinned or not, the bind pose lives in the mesh node's space: its world matrix maps it to metres.
+        const w = xform(m, p.getElement(i, v))
         if (w[1] > topY) topY = w[1]
         verts.push(w)
       }
     }
   }
-  const headLen = Math.max(0.12, topY - H[1]) // typical adult: 0.20–0.24 m
+  // A rigged model's bind pose is not readable from the mesh alone (skins fold the node transforms
+  // in), so the head length comes from the eye sockets when mapped (about 3.5 interpupillary
+  // distances), else from the mesh's top (a sculpt).
+  const _sL = byName('EyeSocket_L'), _sR = byName('EyeSocket_R')
+  const headLen = _sL && _sR ? Math.hypot(...worldPos(_sR).map((v, i) => v - worldPos(_sL)[i])) * 3.5 : Math.max(0.12, topY - H[1]) // typical adult: 0.20–0.24 m
   // Eye height band is 0.3–0.6 of a 0.24 m head above the bone; the face's front is the band's max z.
   let frontZ = -Infinity
   for (const w of verts) if (w[1] > H[1] + 0.3 * headLen && w[1] < H[1] + 0.6 * headLen && Math.abs(w[0] - H[0]) < 0.25 * headLen && w[2] > frontZ) frontZ = w[2]
   if (frontZ === -Infinity) frontZ = H[2] + 0.45 * headLen
   const defaultR = 0.11 * headLen
-  const [ex, ey, ez, er] = flags.has('--eyes') ? args[args.indexOf('--eyes') + 1].split(',').map(Number) : [0.19 * headLen, 0.45 * headLen, frontZ - H[2] - 0.35 * defaultR, defaultR]
+  let [ex, ey, ez, er] = flags.has('--eyes') ? args[args.indexOf('--eyes') + 1].split(',').map(Number) : [0.19 * headLen, 0.45 * headLen, frontZ - H[2] - 0.35 * defaultR, defaultR]
+  // Eye bones mapped as EyeSocket_L/R: the spheres sit on them (midpoint x, their y, their z plus a
+  // little forward so the shader's disk clears the model's own eyeball).
+  const sockL = byName('EyeSocket_L'), sockR = byName('EyeSocket_R')
+  let eyeWorld = null
+  if (sockL && sockR) {
+    const L = worldPos(sockL), R = worldPos(sockR)
+    const half = Math.abs(R[0] - L[0]) / 2
+    er = flags.has('--eyes') ? er : Math.min(defaultR, half * 0.45)
+    // Forward by most of a radius: the shader's disk must clear the model's own eyeball and lids.
+    const fwd = flags.has('--eye-forward') ? Number(args[args.indexOf('--eye-forward') + 1]) : 1.6
+    eyeWorld = { L: [L[0], L[1], L[2] + fwd * er], R: [R[0], R[1], R[2] + fwd * er] }
+    console.log(`augment: eye sockets found at ${L.map((v) => v.toFixed(3))} / ${R.map((v) => v.toFixed(3))}, r ${er.toFixed(3)}`)
+  }
   console.log(`augment: head bone at y=${H[1].toFixed(3)}, mesh top y=${topY.toFixed(3)}, head length ${headLen.toFixed(3)} m; eyes at ±${ex.toFixed(3)}, +${ey.toFixed(3)}, +${ez.toFixed(3)} r ${er.toFixed(3)}`)
 
   const white = mat('Eye_White', [0.95, 0.95, 0.95])
-  const lidMat = mat('Lid', hex('#e7e4de'), { rough: 0.6 })
+  // Lids: porcelain on a porcelain figure; a skin tone over a textured face.
+  const lidMat = mat('Lid', hex(root.listTextures().length ? '#d9a68e' : '#e7e4de'), { rough: 0.7 })
   const graphite = mat('Inner', hex('#2a2a30'), { metal: 0.3, rough: 0.6 })
-  if (!byName('Eye_L')) addSphere('Eye_L', head, [H[0] - ex, H[1] + ey, H[2] + ez], er, white)
-  if (!byName('Eye_R')) addSphere('Eye_R', head, [H[0] + ex, H[1] + ey, H[2] + ez], er, white)
-  if (!byName('Lid_L')) addSphere('Lid_L', head, [H[0] - ex, H[1] + ey, H[2] + ez], er * 1.12, lidMat, { half: true })
-  if (!byName('Lid_R')) addSphere('Lid_R', head, [H[0] + ex, H[1] + ey, H[2] + ez], er * 1.12, lidMat, { half: true })
+  const EL = eyeWorld ? eyeWorld.L : [H[0] - ex, H[1] + ey, H[2] + ez]
+  const ER = eyeWorld ? eyeWorld.R : [H[0] + ex, H[1] + ey, H[2] + ez]
+  if (!byName('Eye_L')) addSphere('Eye_L', head, EL, er, white, { upright: true })
+  if (!byName('Eye_R')) addSphere('Eye_R', head, ER, er, white, { upright: true })
+  if (!byName('Lid_L')) addSphere('Lid_L', head, EL, er * 1.12, lidMat, { half: true, upright: true, tiltX: -0.55 })
+  if (!byName('Lid_R')) addSphere('Lid_R', head, ER, er * 1.12, lidMat, { half: true, upright: true, tiltX: -0.55 })
   if (!byName('Jaw')) {
     const jaw = addEmpty('Jaw', head, [H[0], H[1] + 0.2 * headLen, H[2] + 0.2 * headLen])
     if (!byName('Mouth')) addEmpty('Mouth', jaw, [H[0], H[1] + 0.18 * headLen, H[2] + 0.42 * headLen])
@@ -259,6 +325,22 @@ if (flags.has('--augment')) {
     const c = hex(CHAKRAS[i].color)
     addSphere(name, bone, [p[0], p[1], z], 0.06 * headLen, mat(name, c, { emissive: c, rough: 0.4 }))
   })
+  // The figure stands on the origin: the loader and the poses assume the head is at x = z = 0, so
+  // the whole scene is shifted by the Head bone's world offset (a rigged model keeps its skin:
+  // the shift goes on the scene's top-level nodes, bones and meshes together).
+  {
+    const HW0 = worldPos(byName('Head'))
+    if (!flags.has('--no-centre') && (Math.abs(HW0[0]) > 0.005 || Math.abs(HW0[2]) > 0.005)) {
+      for (const scene of root.listScenes()) for (const top of scene.listChildren()) {
+        const t = top.getTranslation()
+        const k = worldScale(top) || 1
+        // top-level nodes have no parent transform: a world shift is a local shift.
+        top.setTranslation([t[0] - HW0[0], t[1], t[2] - HW0[2]])
+        void k
+      }
+      console.log(`augment: recentred the figure by (${(-HW0[0]).toFixed(3)}, 0, ${(-HW0[2]).toFixed(3)}) so the head stands on the origin`)
+    }
+  }
   // A sculpt without materials renders as porcelain: the brand's ceramic.
   let bare = 0
   const porcelain = () => mat('Porcelain', hex('#e7e4de'), { rough: 0.45 })
@@ -302,6 +384,14 @@ if (flags.has('--simplify')) {
   let after = 0
   for (const mesh of root.listMeshes()) for (const p of mesh.listPrimitives()) after += Math.floor((p.getIndices()?.getCount() ?? 0) / 3)
   console.log(`simplified to ratio ${ratio}: ${after} triangles`)
+}
+if (flags.has('--webp')) {
+  const q = Number(args[args.indexOf('--webp') + 1]) || 82
+  const sharp = (await import('sharp')).default
+  const before = root.listTextures().reduce((a, t) => a + (t.getImage()?.byteLength ?? 0), 0)
+  await doc.transform(textureCompress({ encoder: sharp, targetFormat: 'webp', quality: q, resize: [2048, 2048] }))
+  const after = root.listTextures().reduce((a, t) => a + (t.getImage()?.byteLength ?? 0), 0)
+  console.log(`textures → webp q${q}: ${(before / 1e6).toFixed(1)} MB → ${(after / 1e6).toFixed(1)} MB (${root.listTextures().length} textures)`)
 }
 if (flags.has('--optimize')) {
   await MeshoptEncoder.ready

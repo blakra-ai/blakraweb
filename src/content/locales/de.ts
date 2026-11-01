@@ -349,6 +349,8 @@ export const de: Dict = {
     emailLabel: 'E-Mail',
     phoneLabel: 'Telefon',
     country: 'USA',
+    creditsTitle: 'Nachweise',
+    credits: 'Die Figur des Navigators basiert auf „Cyber Girl“ von Rotmill (Sketchfab), lizenziert unter CC BY 4.0.',
   },
   notFound: { eyebrow: '404', title: 'Diese Seite ist hinter den Horizont gefallen.', text: 'Es gibt sie nicht, oder sie ist umgezogen.', back: 'Zurück zum Anfang' },
 }

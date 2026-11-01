@@ -46,9 +46,11 @@ const DOCKED: Place = { x: 0.08, y: 0.06, share: DOCK_SHARE, yaw: 0, look: 'visi
 const LANDSCAPE: Record<string, Place> = {
   hero: { x: 0.7, y: 0.36, share: 0.3, yaw: 0, look: 'visitor' },
   systems: { x: 0.76, y: 0.44, share: 0.24, yaw: -35, look: 'layers' },
-  proof: { x: 0.76, y: 0.5, share: 0.24, yaw: -20, look: 'patches' },
+  // Below the patch row, in the right column's free corner: the patches span the width.
+  proof: { x: 0.84, y: 0.7, share: 0.2, yaw: -20, look: 'patches' },
   // The capsule hangs in the right column too; her head sits under its box for the beat's second half.
-  payload: { x: 0.78, y: 0.56, share: 0.3, yaw: -80, look: 'capsule' },
+  // Under the product card, small and in profile toward it: the card owns columns 7–12 above her.
+  payload: { x: 0.86, y: 0.82, share: 0.18, yaw: -80, look: 'capsule' },
   // The form owns the right column; she stands in the left one below the intro's last paragraph and faces it.
   contact: { x: 0.22, y: 0.74, share: 0.24, yaw: 35, look: 'form' },
 }

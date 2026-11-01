@@ -1,0 +1,17 @@
+{
+ "prefix_pelvis_02": "Hips",
+ "prefix_spine_01_03": "Spine",
+ "prefix_spine_02_04": "Spine1",
+ "prefix_spine_03_05": "Spine2",
+ "prefix_neck_01_048": "Neck",
+ "prefix_head_049": "Head",
+ "prefix_unrealJaw_M_052": "Jaw",
+ "prefix_unrealEye_L_050": "EyeSocket_L",
+ "prefix_unrealEye_R_051": "EyeSocket_R",
+ "Object_106": "Face",
+ "Object_9": "Torso",
+ "Object_108": "Hair",
+ "Object_112": "Cloth",
+ "Object_110": "Neck_Mesh",
+ "Object_8": "Legs"
+}

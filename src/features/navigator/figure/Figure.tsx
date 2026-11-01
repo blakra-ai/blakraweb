@@ -237,10 +237,12 @@ export function Figure({ rig, variant }: { rig: FigureRig; variant: 'world' | 'd
     rig.assembled = Math.min(1, lit)
     const crown = Math.min(1, Math.max(0, (p.sys[6] - 0.3) / 0.6))
     show.current = still ? 1 : damp(show.current, crown, 6, dt)
-    figure.eyeMats[0].uniforms.uShow.value = show.current
-    figure.eyeMats[0].uniforms.uTime.value = t
-    figure.eyeMats[0].uniforms.uBright.value = p.bright
-    figure.eyeMats[0].uniforms.uBand.value = Math.round(p.band)
+    for (const m of figure.eyeMats) {
+      m.uniforms.uShow.value = show.current
+      m.uniforms.uTime.value = t
+      m.uniforms.uBright.value = p.bright
+      m.uniforms.uBand.value = Math.round(p.band)
+    }
 
     // Gaze: the eyes lead; head, neck and shoulders share the head's turn; the body turns the group.
     const set = (o: Object3D, r: { x: number; y: number; z: number }, yaw: number, pitch: number) => {

@@ -263,6 +263,9 @@ export interface Dict {
     emailLabel: string
     phoneLabel: string
     country: string
+    /** Third-party work used on the site, with its licence (the Navigator's model is CC BY). */
+    creditsTitle: string
+    credits: string
   }
   notFound: { eyebrow: string; title: string; text: string; back: string }
 }

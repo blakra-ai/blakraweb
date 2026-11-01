@@ -19,13 +19,13 @@ describe('poseFor', () => {
   it('follows the screenplay table for the other beats', () => {
     expect(poseFor('systems', ctx)).toMatchObject({ docked: false, look: 'layers' })
     expect(poseFor('systems', ctx).s * ctx.headHeight).toBeCloseTo(0.24 * ctx.vhUnits, 9)
-    expect(poseFor('proof', ctx)).toMatchObject({ x: 0.76, y: 0.5, docked: false, look: 'patches' })
-    expect(poseFor('proof', ctx).s * ctx.headHeight).toBeCloseTo(0.24 * ctx.vhUnits, 9)
+    expect(poseFor('proof', ctx)).toMatchObject({ x: 0.84, y: 0.7, docked: false, look: 'patches' })
+    expect(poseFor('proof', ctx).s * ctx.headHeight).toBeCloseTo(0.2 * ctx.vhUnits, 9)
     const payload = poseFor('payload', ctx)
     expect(payload.x).toBeGreaterThan(0.5)
     expect(Math.abs(payload.yaw)).toBeGreaterThanOrEqual(75)
     expect(payload.look).toBe('capsule')
-    expect(payload.s * ctx.headHeight).toBeCloseTo(0.3 * ctx.vhUnits, 9)
+    expect(payload.s * ctx.headHeight).toBeCloseTo(0.18 * ctx.vhUnits, 9)
     // Contact: she stands in the left column under the intro, facing right toward the form.
     const contact = poseFor('contact', ctx)
     expect(contact.x).toBeCloseTo(0.22, 9)
