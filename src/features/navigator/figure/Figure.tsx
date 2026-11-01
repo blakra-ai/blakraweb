@@ -1,6 +1,6 @@
 import { useFrame, useThree } from '@react-three/fiber'
 import { useEffect, useMemo, useRef, useState } from 'react'
-import { Bone, Group, Matrix4, MeshStandardMaterial, Object3D, Quaternion, Vector3 } from 'three'
+import { Bone, Euler, Group, Matrix4, MeshStandardMaterial, Object3D, Quaternion, Vector3 } from 'three'
 import { createHair, segmentQuaternion, stepHair, type HairState } from '../hair'
 import { nav } from '../state'
 import { CHAKRAS } from '../yantra'
@@ -44,6 +44,11 @@ const WIND_UP = 0.42
 const WIND_BACK = 0.75
 const PROFILE = typeof location !== 'undefined' && new URLSearchParams(location.search).has('profile')
 /** Dev only: ?hairdrop forces the six-chain path after the warm-up window, to test it. */
+const SW_PARENT = new Quaternion()
+const SW_REST = new Quaternion()
+const SW_DELTA = new Quaternion()
+const SW_EULER = new Euler()
+
 const FORCE_DROP = import.meta.env.DEV && typeof location !== 'undefined' && new URLSearchParams(location.search).has('hairdrop')
 
 interface HairRig {
@@ -169,6 +174,8 @@ export function Figure({ rig, variant }: { rig: FigureRig; variant: 'world' | 'd
   const show = useRef(0)
   const collarOffset = useRef(0)
   const hair = useRef<HairRig | null>(null)
+  /** Single hair bones (HairSway_n, a model's own dynamic-hair joints): a damped spring per bone that lags her turns. */
+  const sway = useRef<{ bones: Object3D[]; rest: Quaternion[]; ang: Float32Array; vel: Float32Array; last: { yaw: number; pitch: number } } | null>(null)
 
   useEffect(() => {
     let live = true
@@ -218,6 +225,14 @@ export function Figure({ rig, variant }: { rig: FigureRig; variant: 'world' | 'd
   // The hair's chains, world variant only (the dock's badge is still too small for it to read).
   useEffect(() => {
     hair.current = variant === 'world' && figure?.hair ? buildHair(figure, figure.hair.bones.map((_, i) => i)) : null
+    if (figure && variant === 'world') {
+      const bones: Object3D[] = []
+      for (let i = 1; i <= 16; i++) {
+        const b = figure.root.getObjectByName(`HairSway_${i}`)
+        if (b) bones.push(b)
+      }
+      sway.current = bones.length ? { bones, rest: bones.map((b) => b.quaternion.clone()), ang: new Float32Array(bones.length * 2), vel: new Float32Array(bones.length * 2), last: { yaw: 0, pitch: 0 } } : null
+    } else sway.current = null
   }, [figure, variant])
 
   useFrame((state, dt) => {
@@ -252,6 +267,34 @@ export function Figure({ rig, variant }: { rig: FigureRig; variant: 'world' | 'd
     set(figure.bones.Head, rest.head, p.head.yaw * SHARE.Head, p.head.pitch * SHARE.Head)
     set(figure.bones.Neck, rest.neck, p.head.yaw * SHARE.Neck, p.head.pitch * SHARE.Neck)
     set(figure.bones.Spine2, rest.spine2, p.head.yaw * SHARE.Spine2, p.head.pitch * SHARE.Spine2)
+    // Hair bones without chains: each one swings against the head's angular speed and lifts with the
+    // scroll, on a spring (k 35, c 6), applied in world space over the bone's rest so any rig works.
+    const sw = sway.current
+    if (sw) {
+      const step = Math.min(dt, 1 / 30)
+      const yawVel = (p.head.yaw - sw.last.yaw) / Math.max(step, 1e-3)
+      const pitchVel = (p.head.pitch - sw.last.pitch) / Math.max(step, 1e-3)
+      sw.last.yaw = p.head.yaw
+      sw.last.pitch = p.head.pitch
+      const lift = -7 * Math.min(Math.abs(nav.scrollV), 2)
+      sw.bones.forEach((b, i) => {
+        const k = 1 + 0.12 * i
+        const tYaw = nav.still ? 0 : Math.max(-20, Math.min(20, -0.5 * yawVel * k))
+        const tPitch = nav.still ? 0 : Math.max(-18, Math.min(18, -0.5 * pitchVel * k + lift))
+        for (const [j, target] of [[0, tYaw], [1, tPitch]] as const) {
+          const a = sw.ang[i * 2 + j]
+          const v = sw.vel[i * 2 + j]
+          const acc = 35 * (target - a) - 6 * v
+          sw.vel[i * 2 + j] = v + acc * step
+          sw.ang[i * 2 + j] = a + sw.vel[i * 2 + j] * step
+        }
+        if (!b.parent) return
+        b.parent.getWorldQuaternion(SW_PARENT)
+        SW_REST.copy(SW_PARENT).multiply(sw.rest[i])
+        SW_DELTA.setFromEuler(SW_EULER.set(sw.ang[i * 2 + 1] * DEG, sw.ang[i * 2] * DEG, 0))
+        b.quaternion.copy(SW_PARENT.invert()).multiply(SW_DELTA.multiply(SW_REST))
+      })
+    }
     g.rotation.y = p.body.yaw * DEG
 
     // Blink (closed until the eyes ignite), jaw, breath.

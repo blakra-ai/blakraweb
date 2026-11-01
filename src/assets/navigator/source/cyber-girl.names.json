@@ -13,5 +13,12 @@
  "Object_108": "Hair",
  "Object_112": "Cloth",
  "Object_110": "Neck_Mesh",
- "Object_8": "Legs"
+ "Object_8": "Legs",
+ "prefix_dyn_hair1_053": "HairSway_1",
+ "prefix_dyn_hair2_054": "HairSway_2",
+ "prefix_dyn_hair3_055": "HairSway_3",
+ "prefix_dyn_hair4_056": "HairSway_4",
+ "prefix_dyn_hair5_057": "HairSway_5",
+ "prefix_dyn_hair6_058": "HairSway_6",
+ "prefix_dyn_hair7_059": "HairSway_7"
 }
