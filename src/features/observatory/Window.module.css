@@ -81,6 +81,10 @@
 
 /* Phones: the still is the window's lower band (--still-h); without a still the CSS ring stands there. */
 @media (max-width: 767px) {
+  /* Phones draw the object in CSS (the ring below): the desktop still would only double it. */
+  .stillImage {
+    display: none;
+  }
   .still {
     top: auto;
     height: var(--still-h, 260px);

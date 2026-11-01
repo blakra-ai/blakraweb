@@ -15,6 +15,7 @@
   margin-bottom: 22px;
 }
 .title {
+  font-size: clamp(2rem, 0.5rem + 3.6vw, 3.75rem);
   outline: none;
 }
 .lede {
@@ -23,42 +24,39 @@
   font-size: 1rem;
 }
 
-/* The ring glyph and her line: columns 7–12, level with the head. */
-.ringline {
+/* The object and her line: columns 7–12, level with the head; the line on the orbit's tangent. */
+.object {
   grid-column: 7 / 13;
-  display: flex;
-  gap: 16px;
-  align-items: flex-start;
-  padding-top: 40px;
-  max-width: 480px;
+  display: grid;
+  grid-template-columns: 340px minmax(0, 1fr);
+  align-items: center;
+  column-gap: 20px;
+  margin-top: -24px;
 }
-.glyph {
-  flex: none;
-  width: 22px;
-  height: 22px;
-  margin-top: 28px;
-  border-radius: 50%;
-  background: var(--body);
-  box-shadow:
-    0 0 0 1px rgba(236, 233, 226, 0.9),
-    0 0 6px 1px rgba(var(--accent-rgb), 0.6);
+.orbitSvg {
+  width: 340px;
+  height: auto;
+  overflow: visible;
 }
-.voiceTag {
-  color: var(--grey);
-  margin-bottom: 10px;
+.point {
+  fill: var(--grey);
+  transition: fill 0.24s var(--ease), r 0.24s var(--ease);
 }
-.voiceTag b {
-  color: var(--porcelain);
-  font-weight: 600;
-}
-.ringline :global(.voice) {
-  font-size: 1.375rem;
+.proof[data-lit-0] .point[data-i='0'],
+.proof[data-lit-1] .point[data-i='1'],
+.proof[data-lit-2] .point[data-i='2'],
+.proof[data-lit-3] .point[data-i='3'],
+.proof[data-lit-4] .point[data-i='4'],
+:global(html.motion-off) .point {
+  fill: #f3e2b4;
+  r: 5;
+  filter: drop-shadow(0 0 6px rgba(217, 164, 65, 0.9));
 }
 
 /* Five hairline rows; the inner grid sits in a lensed arc (--arc), the hairlines stay straight. */
 .rows {
   grid-column: 1 / 13;
-  margin-top: 40px;
+  margin-top: 28px;
 }
 .row {
   position: relative;
@@ -70,10 +68,10 @@
 }
 .g {
   display: grid;
-  grid-template-columns: 198px minmax(0, 400px) minmax(0, 300px) 1fr;
+  grid-template-columns: 198px minmax(0, 440px) minmax(0, 300px) 1fr;
   column-gap: var(--gutter);
   align-items: start;
-  padding: 12px 0 10px;
+  padding: 16px 0 12px;
   transform: translateX(var(--arc, 0px));
   transition: transform 0.24s var(--ease);
 }
@@ -111,8 +109,8 @@
   background: var(--accent);
 }
 .moment {
-  font-size: 1.1875rem;
-  line-height: 1.25;
+  font-size: 1.25rem;
+  line-height: 1.3;
   letter-spacing: -0.015em;
   color: var(--porcelain);
 }
@@ -122,15 +120,10 @@
   color: var(--grey);
 }
 .uses {
-  display: block;
-  margin-top: 6px;
+  grid-column: 1 / -1;
+  margin-top: 8px;
+  color: var(--grey);
   letter-spacing: 0.06em;
-}
-.uses a {
-  color: var(--porcelain);
-  text-decoration: underline;
-  text-decoration-color: var(--hair);
-  text-underline-offset: 0.25em;
 }
 .out {
   display: flex;
@@ -150,22 +143,6 @@
   font-size: 0.8125rem;
   color: var(--grey);
   letter-spacing: 0;
-}
-.dots {
-  display: flex;
-  gap: 10px;
-  align-items: center;
-}
-.dots i {
-  width: 7px;
-  height: 7px;
-  border-radius: 50%;
-  background: var(--grey);
-}
-.row[data-lit] .dots i[data-on],
-:global(html.motion-off) .row .dots i[data-on] {
-  background: var(--chakra);
-  box-shadow: 0 0 8px var(--chakra);
 }
 .delivered .g {
   grid-template-columns: 198px 1fr minmax(0, 300px);
@@ -223,6 +200,14 @@
     padding-left: var(--inset);
     padding-right: var(--inset);
   }
+  .object {
+    grid-template-columns: 1fr;
+    row-gap: 8px;
+    margin-top: 0;
+  }
+  .orbitSvg {
+    width: 260px;
+  }
   .g {
     grid-template-columns: 150px minmax(0, 1fr) minmax(0, 220px) 140px;
   }
@@ -247,16 +232,16 @@
     margin-top: 12px;
     font-size: 0.9375rem;
   }
-  .ringline {
+  .object {
+    grid-template-columns: 1fr;
     margin-top: 14px;
-    padding-top: 0;
-    gap: 12px;
+    row-gap: 8px;
   }
-  .glyph {
-    margin-top: 3px;
+  .orbitSvg {
+    width: 220px;
   }
-  .ringline :global(.voice) {
-    font-size: 0.9375rem;
+  .object :global(.voice) {
+    font-size: 1.125rem;
     line-height: 1.3;
   }
   .voiceTag {

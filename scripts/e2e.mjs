@@ -278,14 +278,7 @@ try {
       return { top: Math.round(r.top), vh: innerHeight, near: row.hasAttribute('data-near'), focused: row.contains(document.activeElement) || row === document.activeElement }
     })
     check('F1', 'a link to a case lands on its row, stitched as nearest, focused', card.top >= 0 && card.top < card.vh && card.near && card.focused, JSON.stringify(card))
-    await page.evaluate(() => document.querySelector('#h17 a[href="#layer-data"]').click())
-    await page.waitForTimeout(3000)
-    const layer = await page.evaluate(() => {
-      const li = document.getElementById('layer-data')
-      const r = li.getBoundingClientRect()
-      return { focused: li === document.activeElement || li.contains(document.activeElement), top: Math.round(r.top), bottom: Math.round(r.bottom), vh: innerHeight, shown: getComputedStyle(li).clipPath === 'none' || !/100%/.test(getComputedStyle(li).clipPath) }
-    })
-    check('F5', 'a link to the Data layer lands on that row, shown, in view and focused', layer.focused && layer.top >= 0 && layer.bottom <= layer.vh && layer.shown, JSON.stringify(layer))
+    // F5 (a link from a case to a layer row) left with the layer rows: the stage names each layer once as its band forms (art pass v1).
     await own.close()
   }
 

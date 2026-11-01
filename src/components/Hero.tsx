@@ -1,6 +1,5 @@
 import { Voice } from '../features/observatory/Line'
 import heroStill from '../assets/observatory/hero-still.jpg'
-import heroStillPhone from '../assets/observatory/hero-still-phone.jpg'
 import { Window } from '../features/observatory/Window'
 import { chip } from '../features/observatory/gauge'
 import { useI18n } from '../i18n'
@@ -11,9 +10,8 @@ import s from './Hero.module.css'
 /**
  * 01 Hero (storyboard d-01 / m-01): one framed window onto the world. Words in columns 1–6
  * (eyebrow, H1, lede, the call to action and the cue), the world in 7–12: the lensing ring at
- * columns 9–10 and the guide at the lower-right rim (both painted by World.tsx at the anchors
- * `data-world-anchor`; her place is also published as `--guide-x` / `--guide-y` on the window, read
- * by windows.ts), her line under the ring in columns 7–9, the facts in the foot. No layer readout here (revision 1, item 7): layers appear only where they are the subject. All words are DOM; nothing but the world moves.
+ * columns 9–10 (painted by World.tsx), its line on the object's tangent, the facts in the foot.
+ * The hole is the guide (art pass v1): no figure. All words are DOM; nothing but the world moves.
  */
 export function Hero() {
   const { t, locale } = useI18n()
@@ -22,7 +20,7 @@ export function Hero() {
 
   return (
     <Section id="top" beat="hero" surface="body" station={1} className={s.hero} aria-labelledby="title">
-      <Window id="hero" kind="hero" ring still={heroStill} stillPhone={heroStillPhone} className={s.window}>
+      <Window id="hero" kind="hero" ring still={heroStill} className={s.window}>
         <div className={s.inner}>
           <p className={`mono ${s.tag}`} aria-hidden="true">
             {chip(1)}
@@ -45,17 +43,8 @@ export function Hero() {
             </div>
           </div>
 
-          {/* The world's places: the ring at columns 9–10 and the guide at the lower-right rim, cut by the frame. */}
-          <div className={s.world} aria-hidden="true">
-            <div className={s.ring} data-world-anchor="hero-ring" />
-            <div className={s.guide} data-world-anchor="hero-guide" />
-          </div>
-
-          {/* Her line: the full text in the DOM, revealed as typed (Line.tsx); labelled with her name. */}
+          {/* The hole is the guide: its line on the object's tangent, right of the ring, centred on it (Line.tsx). */}
           <div className={s.voice}>
-            <p className={`mono ${s.voiceTag}`}>
-              <b>{t.navigator.name}</b>
-            </p>
             <Voice text={t.navigator.lines.hero} />
           </div>
 

@@ -59,12 +59,12 @@ export function stickyViewY(st: Sticky, scrollY: number): number {
 
 /** The storyboard frame the radii were drawn at (1440 − 2 × 24 inset). */
 export const REF_WIDTH = 1392
-export const RING = { hero: 150, stage: 165, contact: 230 } as const
+export const RING = { hero: 180, stage: 165, contact: 230 } as const
 const SIGMA = { hero: 320, stage: 340, contact: 430 } as const
 const PULL = { hero: 0.66, stage: 0.66, contact: 0.7 } as const
 const FADE = { hero: 0.42, stage: 0.42, contact: 0.5 } as const
-/** The ring's centre: col 9–10 of twelve (x 986 of 1392), 41 % down the hero, 38 % in the contact window. */
-const RING_X = 986 / REF_WIDTH
+/** The ring's centre: 62 % across the hero, 58 % on the stage (its bands reach 1.6 r; the line stands on the tangent beyond them). */
+const RING_X = { hero: 0.62, stage: 0.58, contact: 0.74 } as const
 const RING_Y = { hero: 322 / 788, stage: 0.47, contact: 300 / 788 } as const
 /** The guide's head: 30 % of the window's height; the words own the left half. */
 export const HEAD_SHARE = 0.3
@@ -81,8 +81,15 @@ export const ringScale = (w: number) => Math.max(0.5, Math.min(1, w / REF_WIDTH)
  */
 export function frameWindow(kind: WindowKind, rect: Rect, hint?: { x: number; y: number } | null): Framing {
   const s = ringScale(rect.w)
-  const r = RING[kind] * s
-  const ring = { x: rect.w * RING_X, y: rect.h * RING_Y[kind], r }
+  let r = RING[kind] * s
+  const ring = { x: rect.w * RING_X[kind], y: rect.h * RING_Y[kind], r }
+  if (kind === 'contact') {
+    // The horizon: the disk fills the window's right half, its glow reaching the frame.
+    r = Math.min(rect.h * 0.42, rect.w * 0.24)
+    ring.x = rect.w * 0.74
+    ring.y = rect.h * 0.5
+    ring.r = r
+  }
   let guide: Framing['guide'] = null
   {
     // 30 % of the window's height, and never so large that she cannot fit in the right half.

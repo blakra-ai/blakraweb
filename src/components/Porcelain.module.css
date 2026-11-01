@@ -96,42 +96,32 @@
   top: calc(var(--header-h) + var(--inset));
   text-align: center;
 }
-.voice {
-  margin-bottom: 8px;
-}
-.voiceTag {
-  margin-bottom: 10px;
-}
-.voiceTag b {
-  color: var(--body);
-  font-weight: 600;
+.object {
+  grid-template-rows: auto auto auto;
+  justify-items: center;
+  row-gap: 22px;
 }
 .object :global(.voice) {
-  font-size: 1.375rem;
+  color: var(--body);
+  max-width: 420px;
+  text-align: center;
 }
 .ring {
-  width: 100%;
-  max-width: 576px;
-  height: auto;
-  margin: 0 auto;
-}
-.ringLabel {
-  font-family: var(--font-mono);
-  font-size: 12px;
-  letter-spacing: 1px;
+  width: 320px;
+  height: 320px;
 }
 .cap {
   color: var(--grey-on-light);
+  font-size: var(--body-size);
+  line-height: 1.5;
 }
-.cap b {
+.cap em {
   display: block;
-  margin-top: 6px;
+  font-family: var(--font-serif);
+  font-style: italic;
+  font-size: 1.375rem;
   color: var(--body);
-  font-family: var(--font-sans);
-  font-size: 0.9375rem;
-  font-weight: 500;
-  letter-spacing: 0;
-  text-transform: none;
+  margin-bottom: 4px;
 }
 .cap a {
   color: var(--body);
@@ -170,7 +160,8 @@
     margin-top: 36px;
   }
   .ring {
-    max-width: 340px;
+    width: 240px;
+    height: 240px;
   }
   .object :global(.voice) {
     font-size: 1.125rem;

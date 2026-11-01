@@ -2,38 +2,39 @@ import { PerformanceMonitor } from '@react-three/drei'
 import { Canvas, useFrame, useThree } from '@react-three/fiber'
 import { useEffect, useMemo, useRef, useState } from 'react'
 import { createPortal } from 'react-dom'
-import { Group, OrthographicCamera, PerspectiveCamera } from 'three'
+import { Group, OrthographicCamera } from 'three'
 import { useMotion } from '../../motion/MotionProvider'
+import { onPulse } from '../../motion/pulse'
 import { needs } from '../../content/shared'
 import { LAYERS, nav } from '../navigator/state'
+import { ORBIT_END } from './orbit'
 import { obs } from './state'
-import { createGuideHandle, fitGuideCamera, Guide, placeGuide } from './Guide'
 
 /** The picker's choice as her layers (indices 0 … 6), or null. */
 export const pickedLayers = () => (obs.picker ? (obs.picker === 'all' ? LAYERS : needs[obs.picker].layers).map((l) => LAYERS.indexOf(l)) : null)
 import { createRing, fitRing, glowAt } from './shaders/ring'
 import { createWell, fitWell } from './shaders/well'
-import { bendAt, FRAME_RADIUS, getWindows, GRID_CELL, guideInView, holeFor, onScreen, onWindows, toGl } from './windows'
+import { bendAt, FRAME_RADIUS, getWindows, GRID_CELL, holeFor, onScreen, onWindows, toGl } from './windows'
+import { LAYERS_N } from './orbit'
 
 /*
- * The Observatory's world: ONE fixed, full-viewport canvas behind the document, drawing the
- * warped grid, the lensing ring and the guide through every registered window (windows.ts).
- * Each window is rendered with gl viewport = the window's own rect (so its picture scrolls with
- * it) and gl scissor = the part of it on screen; an orthographic camera in the window's CSS px
- * draws the well and the ring, a perspective camera (world units = CSS px at z 0) draws her.
+ * The Observatory's world: ONE fixed, full-viewport canvas behind the document, drawing the one
+ * evolving object (the warped grid, the lensing ring and, on the stage, its seven bands) through
+ * every registered window (windows.ts). Each window is rendered with gl viewport = the window's
+ * own rect (so its picture scrolls with it) and gl scissor = the part of it on screen, through an
+ * orthographic camera in the window's CSS px. The hole is the guide (art pass v1): the figure
+ * pipeline (Guide.tsx, navigator/*) stays on disk but is not mounted, so no GLB is requested.
  *
- * frameloop="demand": a frame is drawn on scroll, pointer move, reflow and when the guide's
- * living step has something to move (a blink, a glance, the lights), otherwise nothing runs.
+ * frameloop="demand": a frame is drawn on scroll, reflow and while the load device or a pulse
+ * plays, otherwise nothing runs.
  * dpr 1 … 1.25, lowered to 1 by the PerformanceMonitor when continuous frames fall under 40 fps.
  * `?profile` logs the frame's CPU time every 2 s. Nothing here reads layout: the scroll is one
  * number per frame, the rects come from the registry.
  */
 
 const PROFILE = typeof location !== 'undefined' && new URLSearchParams(location.search).has('profile')
-/** Frames keep coming this long after the last input (the gaze and the hair settle). */
-const INPUT_HOLD_S = 1.2
-/** After an idle wake-up (a blink, a glance) she moves for about this long. */
-const WAKE_HOLD_S = 0.35
+/** Frames keep coming this long after the last input (the scroll's velocity settles). */
+const INPUT_HOLD_S = 0.4
 const SCROLL_V_DAMP = 8
 /** The dpr cap for discrete GPUs; integrated ones (Intel UHD/Iris, Mali, Adreno, Apple) start and stay at 1. */
 const DPR_MAX = 1.25
@@ -48,14 +49,13 @@ function rendererName(gl: { getContext(): WebGLRenderingContext | WebGL2Renderin
 /** Frames drawn so far (`?profile`: globalThis.__obsWorld.frames.n, for an idle-cost probe). */
 const frames = { n: 0, why: '' }
 
-function Passes({ handle }: { handle: ReturnType<typeof createGuideHandle> }) {
+function Passes() {
   const { gl, scene, size, invalidate } = useThree()
   const flat = useRef<Group>(null)
   const ortho = useMemo(() => new OrthographicCamera(0, 1, 0, 1, -10, 10), [])
-  const persp = useMemo(() => new PerspectiveCamera(30, 1, 1, 20000), [])
   const well = useMemo(createWell, [])
   const ring = useMemo(createRing, [])
-  const t = useRef({ last: 0, lastY: 0, bendStart: -1, inputAt: 0, wakeAt: 0, timer: 0, frames: 0, ms: 0, since: 0, raf: 0, guideShown: false, viewport: { w: 1, h: 1 } })
+  const t = useRef({ last: 0, lastY: 0, bendStart: -1, inputAt: 0, frames: 0, ms: 0, since: 0, raf: 0, viewport: { w: 1, h: 1 } })
 
   useEffect(() => {
     gl.autoClear = false
@@ -71,28 +71,22 @@ function Passes({ handle }: { handle: ReturnType<typeof createGuideHandle> }) {
         invalidate()
       })
     }
+    // The cursor is kept for the page (obs.pointer); the object does not follow it, so no frame is due.
     const move = (e: PointerEvent) => {
       obs.pointer.x = e.clientX
       obs.pointer.y = e.clientY
       obs.pointer.on = e.pointerType === 'mouse'
-      // The cursor moves only her gaze: without her on screen a move needs no frame.
-      if (s.guideShown) input()
-    }
-    const leave = () => {
-      obs.pointer.on = false
-      if (s.guideShown) input()
     }
     window.addEventListener('scroll', input, { passive: true })
     window.addEventListener('pointermove', move, { passive: true })
-    document.documentElement.addEventListener('pointerleave', leave)
     const offWindows = onWindows(input)
+    const offPulse = onPulse(input)
     invalidate()
     return () => {
       window.removeEventListener('scroll', input)
       window.removeEventListener('pointermove', move)
-      document.documentElement.removeEventListener('pointerleave', leave)
       offWindows()
-      clearTimeout(s.timer)
+      offPulse()
       cancelAnimationFrame(s.raf)
       s.raf = 0
     }
@@ -138,12 +132,16 @@ function Passes({ handle }: { handle: ReturnType<typeof createGuideHandle> }) {
     const glow = still ? 0 : glowAt(obs.clock, obs.glowAt)
     const hole = holeFor(obs.station)
 
+    // The stage's bands: the hold forms them one by one (LAYERS_N over ORBIT_END of the hold, inOrbit's
+    // count plus the fraction of the next); the picker keeps the chosen lit and dims the rest to 20 %.
+    const picked = pickedLayers()
+    const lit = ring.uniforms.uLit.value
+    for (let k = 0; k < LAYERS_N; k++) lit[k] = picked ? (picked.includes(k) ? 1 : 0.2) : 1
+    const bandsAt = still ? LAYERS_N : Math.min(LAYERS_N, obs.hold / ORBIT_END * LAYERS_N)
+
     gl.setScissorTest(false)
     gl.setViewport(0, 0, size.width, size.height)
     gl.clear(true, true, false)
-    let guideShown = false
-    const guide = handle.group
-    if (guide) guide.visible = false
     for (const w of windows) {
       const on = onScreen(w.rect, y, viewport, w.sticky)
       if (!on) continue
@@ -180,43 +178,18 @@ function Passes({ handle }: { handle: ReturnType<typeof createGuideHandle> }) {
       fitRing(ring.mesh, ring.uniforms, rx, ry, rr)
       ring.uniforms.uGlow.value = glow
       ring.uniforms.uTime.value = still ? 0 : obs.clock
+      ring.uniforms.uBands.value = w.kind === 'stage' ? bandsAt * (1 - hv) : 0
       if (flat.current) flat.current.visible = true
       gl.render(scene, ortho)
       if (flat.current) flat.current.visible = false
-
-      // The guide's pass: her at the rim, through the window's own perspective camera, only when the visible part touches her.
-      if (f.guide && guide && guideInView(f.guide, clip, view)) {
-        handle.systems(w.kind !== 'hero')
-        fitGuideCamera(persp, view.w, view.h)
-        if (placeGuide(handle, f, view, persp)) {
-          guide.visible = true
-          gl.clearDepth()
-          gl.render(scene, persp)
-          guide.visible = false
-          guideShown = true
-        }
-      }
     }
     gl.setScissorTest(false)
-    s.guideShown = guideShown
-    if (!guideShown) nav.anchor.on = false
 
-    // The next frame: while something moves, at once; else at her next blink or glance.
+    // The next frame: while something moves (the bend, a pulse, the scroll settling), at once; else none.
     const sinceInput = (now - s.inputAt) / 1000
-    const moving = !still && (bend < 1 || glow > 0 || Math.abs(nav.scrollV) > 0 || sinceInput < INPUT_HOLD_S || (guideShown && (handle.moving() || now < s.wakeAt)))
-    clearTimeout(s.timer)
-    if (PROFILE) frames.why = moving ? `bend${bend < 1 ? 1 : 0} glow${glow > 0 ? 1 : 0} scroll${nav.scrollV !== 0 ? 1 : 0} input${sinceInput < INPUT_HOLD_S ? 1 : 0} living${guideShown && handle.moving() ? 1 : 0} wake${now < s.wakeAt ? 1 : 0}` : 'idle'
+    const moving = !still && (bend < 1 || glow > 0 || Math.abs(nav.scrollV) > 0 || sinceInput < INPUT_HOLD_S)
+    if (PROFILE) frames.why = moving ? `bend${bend < 1 ? 1 : 0} glow${glow > 0 ? 1 : 0} scroll${nav.scrollV !== 0 ? 1 : 0} input${sinceInput < INPUT_HOLD_S ? 1 : 0}` : 'idle'
     if (moving) invalidate()
-    else if (guideShown) {
-        const next = handle.nextEvent()
-        if (Number.isFinite(next)) {
-          const ms = Math.max(16, (next - obs.clock) * 1000)
-          s.timer = window.setTimeout(() => {
-            s.wakeAt = performance.now() + WAKE_HOLD_S * 1000
-            invalidate()
-          }, ms)
-        }
-    }
 
     if (PROFILE) {
       s.ms += performance.now() - t0
@@ -249,15 +222,12 @@ function Governor({ burst, onDpr }: { burst: () => number; onDpr: (dpr: number) 
 
 export default function World() {
   const { enabled } = useMotion()
-  const handle = useMemo(createGuideHandle, [])
   const [dpr, setDpr] = useState<number | [number, number]>([1, DPR_MAX])
   const burstRef = useRef(0)
   useEffect(() => {
     obs.still = !enabled
   }, [enabled])
   useEffect(() => {
-    // The figure pipeline reads the cursor from nav: one object for both.
-    nav.pointer = obs.pointer
     document.documentElement.classList.add('gl-live')
     return () => document.documentElement.classList.remove('gl-live')
   }, [])
@@ -276,8 +246,7 @@ export default function World() {
         }}
       >
         <Governor burst={() => burstRef.current} onDpr={setDpr} />
-        <Guide handle={handle} />
-        <Passes handle={handle} />
+        <Passes />
         <Burst to={burstRef} />
       </Canvas>
     </div>,

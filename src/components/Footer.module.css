@@ -4,12 +4,7 @@
   padding: clamp(3rem, 6vw, 5rem) var(--margin) 2rem;
   border-top: var(--hairline);
 }
-/* The end card: the last screen of the film holds the calm, complete system above the words. */
-:global(html.gl-live) .footer[data-end] {
-  min-height: 100svh;
-  align-content: end;
-  border-top: 0;
-}
+/* The footer follows the contact window at once: no end-card screen (art pass v1, the dead space). */
 
 .top {
   display: flex;

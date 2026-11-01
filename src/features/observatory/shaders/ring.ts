@@ -26,9 +26,12 @@ uniform float uR;
 uniform float uGlow;
 uniform float uTime;
 uniform float uExtent;
+uniform float uBands;      // 0 … 7: how many of the seven layers' bands have formed (fractional: the last one forming)
+uniform float uLit[7];     // 0.2 … 1 per band: the picker keeps the chosen lit and dims the rest
 varying vec2 vUv;
 
 const vec3 GOLD = vec3(0.8510, 0.6431, 0.2549);      // #d9a441
+const vec3 LIMB = vec3(0.9529, 0.8863, 0.7059);      // #f3e2b4, the limb's hot tone
 const vec3 WARM = vec3(1.0, 0.9255, 0.7843);          // rgba(255,236,200)
 const vec3 PORCELAIN = vec3(0.9255, 0.9137, 0.8863);  // #ece9e2
 
@@ -48,12 +51,13 @@ void main() {
   col = mix(col, vec3(0.0), disk);
   a = max(a, disk);
 
-  // The porcelain edge, 1.5 px at 92 %.
-  float edge = exp(-pow((d - 1.0) / (1.6 * px), 2.0)) * 0.92;
-  // The accretion glow: 18 px spread at 55 % (+ the pulse), 70 px at 14 %.
+  // The limb: a 2 px hot edge in the pale gold, then the accretion glow two-toned from the limb's
+  // #f3e2b4 into #d9a441 over 22 px, and a wide halo at 16 %.
+  float edge = exp(-pow((d - 1.0) / (2.0 * px), 2.0)) * 0.95;
   float out1 = max(d - 1.0, 0.0);
-  float glow = exp(-out1 / (18.0 * px)) * (0.55 + 0.45 * uGlow) * step(1.0, d);
-  float halo = exp(-out1 / (70.0 * px)) * (0.14 + 0.1 * uGlow) * step(1.0, d);
+  float glow = exp(-out1 / (22.0 * px)) * (0.62 + 0.4 * uGlow) * step(1.0, d);
+  float halo = exp(-out1 / (80.0 * px)) * (0.16 + 0.1 * uGlow) * step(1.0, d);
+  vec3 glowTone = mix(LIMB, GOLD, smoothstep(0.0, 14.0 * px, out1));
   // The photon rings (inset −7 % → d 1.07 at 22 %, inset −16 % → d 1.16 at 8 %).
   float ph1 = exp(-pow((d - 1.07) / (0.9 * px), 2.0)) * 0.22;
   float ph2 = exp(-pow((d - 1.16) / (0.9 * px), 2.0)) * 0.08;
@@ -64,8 +68,30 @@ void main() {
   float band = exp(-pow((d - 1.05) / (2.5 * px), 2.0));
   vec3 crescent = mix(GOLD * 0.55, WARM * 0.35, warmth) * arc * band;
 
-  vec3 light = PORCELAIN * edge + GOLD * (glow + halo) + PORCELAIN * (ph1 + ph2) + crescent * (1.0 + 0.6 * uGlow);
-  float la = clamp(edge + glow + halo + ph1 + ph2 + arc * band * 0.6, 0.0, 1.0);
+  // The seven layers as concentric luminous bands outside the photon rings: thin to thick, inner
+  // (cloud) to outer (AI); each forms from nothing as uBands passes it; the picker dims by uLit.
+  vec3 bands = vec3(0.0);
+  float ba = 0.0;
+  float r0 = 1.22;
+  for (int k = 0; k < 7; k++) {
+    float wk = (0.02 + 0.005 * float(k));            // the band's width in d (thin to thick; the seven reach ~1.6 r)
+    float gap = 0.02;
+    float r1 = r0 + wk;
+    float form = clamp(uBands - float(k), 0.0, 1.0);
+    // The band forms by widening from its inner edge, softly.
+    float inner = smoothstep(r0 - 0.6 * px, r0 + 0.6 * px, d);
+    float outer = 1.0 - smoothstep(r0 + wk * form - 0.6 * px, r0 + wk * form + 0.6 * px, d);
+    float on = inner * outer * form;
+    float lit = uLit[k];
+    // Luminous: pale gold, brighter at the inner edge of each band.
+    float shade = 0.55 + 0.45 * (1.0 - smoothstep(r0, r1, d));
+    bands += mix(LIMB, GOLD, 0.35) * on * shade * (0.16 + 0.44 * lit);
+    ba += on * (0.3 + 0.5 * lit) * 0.6;
+    r0 = r1 + gap;
+  }
+
+  vec3 light = LIMB * edge + glowTone * glow + GOLD * halo + PORCELAIN * (ph1 + ph2) + crescent * (1.0 + 0.6 * uGlow) + bands;
+  float la = clamp(edge + glow + halo + ph1 + ph2 + arc * band * 0.6 + ba, 0.0, 1.0);
   // Premultiplied: the disk covers the well in black; outside it the light adds over the well.
   col = light * (1.0 - disk);
   a = max(a, la * (1.0 - disk));
@@ -79,13 +105,15 @@ export interface RingUniforms extends Record<string, { value: unknown }> {
   uGlow: { value: number }
   uTime: { value: number }
   uExtent: { value: number }
+  uBands: { value: number }
+  uLit: { value: Float32Array }
 }
 
-/** How far the quad reaches, in radii (the halo's 70 px tail at r 150 is well inside 2). */
-export const RING_EXTENT = 2.2
+/** How far the quad reaches, in radii: the seven bands end near 1.9 r, the halo's tail inside 2.4. */
+export const RING_EXTENT = 2.4
 
 export function createRing(): { mesh: Mesh; uniforms: RingUniforms } {
-  const uniforms: RingUniforms = { uCentre: { value: [0, 0] }, uR: { value: 150 }, uGlow: { value: 0 }, uTime: { value: 0 }, uExtent: { value: RING_EXTENT } }
+  const uniforms: RingUniforms = { uCentre: { value: [0, 0] }, uR: { value: 150 }, uGlow: { value: 0 }, uTime: { value: 0 }, uExtent: { value: RING_EXTENT }, uBands: { value: 0 }, uLit: { value: new Float32Array([1, 1, 1, 1, 1, 1, 1]) } }
   const mat = new ShaderMaterial({
     vertexShader: ringVertex,
     fragmentShader: ringFragment,

@@ -2,14 +2,11 @@
 .hero {
   padding-top: var(--header-h);
 }
-/* The ring's place (columns 9–10, 41 % down) and the guide's eyes (lower-right rim, a clear rim gap
-   between her hair and the ring): the world reads --guide-x/-y from this element (windows.ts). */
+/* The ring's place (62 % across, 41 % down): the CSS still and the tangent read these. */
 .window {
-  --ring-x: 70.8%;
+  --ring-x: 62%;
   --ring-y: 41%;
-  --ring-r: 150px;
-  --guide-x: 93%;
-  --guide-y: 74%;
+  --ring-r: 180px;
 }
 
 /* Inside the frame: 12 columns from 40 px in; rows: tag/readout, words + world, her line, the feet. */
@@ -63,46 +60,16 @@
   color: var(--porcelain);
 }
 
-/* The world's places, columns 7–12: the ring centred in 9–10, the guide at the lower-right rim. */
-.world {
-  grid-column: 7 / 13;
-  grid-row: 2 / 4;
-  position: relative;
-  min-height: 300px;
-  pointer-events: none;
-}
-.ring {
-  position: absolute;
-  left: 43%;
-  top: 36%;
-  width: 300px;
-  height: 300px;
-  transform: translate(-50%, -50%);
-}
-.guide {
-  position: absolute;
-  right: -40px;
-  bottom: -28px;
-  width: 44%;
-  height: 56%;
-}
 
-/* Her line: columns 7–9, under the ring, at most 380 px wide, clear of her chest. */
+/* The line on the object's tangent: right of the ring, vertically centred on it; the caret gold. */
 .voice {
-  grid-column: 7 / 10;
-  grid-row: 3;
-  position: relative;
+  position: absolute;
+  left: calc(var(--ring-x) + var(--ring-r) + 44px);
+  right: 40px;
+  top: var(--ring-y);
+  transform: translateY(-50%);
   z-index: 1;
-  max-width: 380px;
-  padding: 8px 48px 16px 0;
-}
-.voiceTag {
-  color: var(--grey);
-  margin-bottom: 10px;
-}
-.voiceTag b {
-  color: var(--porcelain);
-  font-weight: 600;
+  max-width: 420px;
 }
 
 /* The feet: the facts left, the descent cue right. */
@@ -121,20 +88,18 @@
   .words {
     grid-column: 1 / 8;
   }
-  .world {
-    grid-column: 8 / 13;
+  .window {
+    --ring-x: 64%;
+    --ring-y: 40%;
+    --ring-r: 140px;
   }
   .voice {
-    grid-column: 7 / 13;
-  }
-  .window {
-    --ring-x: 72%;
-    --ring-y: 40%;
-    --ring-r: 120px;
-  }
-  .ring {
-    width: 240px;
-    height: 240px;
+    left: auto;
+    right: 40px;
+    top: auto;
+    bottom: 40px;
+    width: 42%;
+    transform: none;
   }
 }
 
@@ -179,26 +144,20 @@
     margin-top: 20px;
   }
   .voice {
+    position: static;
+    transform: none;
     grid-column: 1;
     grid-row: 3;
     padding: 28px 0 0;
+    max-width: none;
+    width: auto;
   }
-  .world {
+  /* The lower third holds the ring (the CSS still): a spacer row. */
+  .inner::after {
+    content: '';
     grid-column: 1;
     grid-row: 4;
     min-height: 232px;
-  }
-  .ring {
-    left: 32%;
-    top: 55%;
-    width: 140px;
-    height: 140px;
-  }
-  .guide {
-    right: -20px;
-    bottom: -14px;
-    width: 52%;
-    height: 80%;
   }
   .foot {
     grid-column: 1;

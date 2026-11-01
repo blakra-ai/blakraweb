@@ -5,13 +5,13 @@ const desktop: Rect = { x: 24, y: 88, w: 1392, h: 788 }
 const phone: Rect = { x: 16, y: 80, w: 358, h: 232 }
 
 describe('window framing', () => {
-  it('puts the ring at col 9–10 with the storyboard radius at 1392 wide', () => {
+  it('puts the ring at 62 % across with the art-pass radius at 1392 wide', () => {
     const f = frameWindow('hero', desktop)
     expect(f.ring.r).toBe(RING.hero)
-    expect(f.ring.x).toBeCloseTo(986, 0)
+    expect(f.ring.x).toBeCloseTo(0.62 * 1392, 0)
     expect(f.ring.y).toBeCloseTo(322, 0)
     expect(frameWindow('stage', desktop).ring.r).toBe(165)
-    expect(frameWindow('contact', desktop).ring.r).toBe(230)
+    expect(frameWindow('contact', desktop).ring.r).toBeCloseTo(Math.min(788 * 0.42, 1392 * 0.24))
   })
 
   it('scales the ring with the width, never below half', () => {
@@ -19,7 +19,7 @@ describe('window framing', () => {
     expect(ringScale(2000)).toBe(1)
     expect(ringScale(696)).toBeCloseTo(0.5)
     expect(ringScale(200)).toBe(0.5)
-    expect(frameWindow('hero', phone).ring.r).toBe(75)
+    expect(frameWindow('hero', phone).ring.r).toBe(90)
   })
 
   it('gives every window a guide at the rim (she returns to the stage as in the hero)', () => {

@@ -52,12 +52,10 @@ function Field({ name, label, error, textarea, maxLength, ...input }: FieldProps
 }
 
 /**
- * 09 Contact, the closing stage (storyboard d-05-contact, d-05-form-states, m-05-contact): the
- * window with the hole already large at the upper right and the guide at the lower-right rim
- * facing the form (both painted by the world for kind "contact"); the form on a panel in columns
+ * 09 Contact, the closing stage (art pass v1): the window with the horizon, the disk grown to
+ * fill its right half (painted by the world for kind "contact"); the form on a panel in columns
  * 1–5: eyebrow, H2, lede, three doors as radios (a check mark on the chosen one), three fields,
- * Send in gold (one of the frame's three gold elements), the privacy line; her line in columns
- * 7–9; "Read by an engineer, not a sales team." in the foot. States: inline errors with a
+ * Send in gold (one of the frame's three gold elements), the privacy line; the line under the disk. States: inline errors with a
  * focused summary, sending (aria-busy, fields disabled, text kept), success as a static
  * role="status" that takes focus, failure as an alert that keeps every field's text. On phones
  * the window is a 232 px band with the hole and her line, and the form is plain DOM below it.
@@ -153,16 +151,12 @@ export function Contact() {
         <p className={`mono ${s.tag}`} aria-hidden="true">
           09 / 09
         </p>
-        {/* Her line: columns 7–9, under the hole, beside her. */}
+        {/* The horizon's line: under the disk, on its left, where the form ends. */}
         <div className={s.voice}>
-          <p className={`mono ${s.voiceTag}`}>
-            <b>{t.navigator.name}</b>
-          </p>
           <p className="voice" data-caret>
             {t.navigator.lines.contact}
           </p>
         </div>
-        <p className={`mono ${s.foot}`}>{c.horizon}</p>
       </Window>
 
       {/* The panel: over the window's left columns on desktop, plain DOM under the band on phones. */}
@@ -251,6 +245,7 @@ export function Contact() {
                 {c.privacy} <a href={`${locales[locale].prefix}/privacy/`}>{c.privacyLink}</a>
               </p>
             </div>
+            <p className={s.after}>{c.horizon}</p>
             <noscript>
               <p className={s.privacy}>
                 {c.noScript} {mail}

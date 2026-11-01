@@ -9,8 +9,8 @@ export const LAYERS_N = 7
 /** The orbits' tilt, degrees (the storyboard's rotate(-14)). */
 export const TILT = -14
 /** The hold: the layers leave the grid over its first part (stations 02–03), the picker closes it, the hand-over is its last tenth. */
-export const ORBIT_END = 0.6
-export const HANDOVER_START = 0.9
+export const ORBIT_END = 0.7
+export const HANDOVER_START = 0.95
 
 export interface Orbit {
   rx: number

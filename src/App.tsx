@@ -6,7 +6,6 @@ import type { PageId, Route } from './routes'
 import { MotionProvider } from './motion/MotionProvider'
 import { Header } from './components/Header'
 import { Footer } from './components/Footer'
-import { Cursor } from './features/experience/cursor/Cursor'
 import { ObservatoryStage } from './features/observatory/Stage'
 import { Home } from './pages/Home'
 import { Investors, Legal, NotFound, Privacy } from './pages/Simple'
@@ -34,7 +33,6 @@ export function App({ route, dict }: { route: Route; dict: Dict }) {
         </main>
         <Footer route={route} />
         {world && <ObservatoryStage />}
-        <Cursor />
       </MotionProvider>
     </I18nProvider>
   )

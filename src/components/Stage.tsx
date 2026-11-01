@@ -4,10 +4,9 @@ import type { LayerId } from '../content/types'
 import { useStation } from '../features/observatory/Gauge'
 import { chip } from '../features/observatory/gauge'
 import { Voice } from '../features/observatory/Line'
-import { handoverAt, holdAt, inOrbit, LAYERS_N, orbitsFor, TILT, type Orbit } from '../features/observatory/orbit'
+import { handoverAt, holdAt, inOrbit, LAYERS_N } from '../features/observatory/orbit'
 import { obs } from '../features/observatory/state'
 import { Window } from '../features/observatory/Window'
-import { frameWindow } from '../features/observatory/windows'
 import { useI18n } from '../i18n'
 import { useMotion } from '../motion/MotionProvider'
 import { getPulse, onPulse, setPulse, type PulseChoice } from '../motion/pulse'
@@ -17,49 +16,32 @@ import s from './Stage.module.css'
 
 /** The seven layers root to crown (the chakra order), by id. */
 const ROOT_TO_CROWN: readonly LayerId[] = ['cloud', 'data', 'automation', 'design', 'apps', 'growth', 'ai']
-const two = (n: number) => String(n).padStart(2, '0')
 
 /**
- * 02 · 03 · 04 The seven-layer stage (storyboard d-02, d-02b, d-03b; m-02 on phones): one
- * window held by `position: sticky` inside a section whose CSS height is three screens (two on
- * phones), no pins, the page height fixed from the start. The world paints the bent grid, the
- * ring and the guide through it; this file draws what the storyboard puts in the DOM: the
- * orbits and leaders (one static SVG, laid out by orbit.ts and re-measured on reflow only), the
- * seven labels with their dots (real text, lit by weight and dot), the counter, her line, and the
- * words that scroll over the window in the left columns: 02 why one team, 03 seven layers, 04 the
- * picker ("What do you need built?"), which lights the layers it takes on the orbits and in her
- * irises (obs.picker → the world) and points down to the proof. The hold's progress is one
- * number per scroll frame (obs.hold); the ring hands over to the gauge's marker across its last
- * tenth (obs.handover, scrubbed by the world). Reduced motion: everything in its final state, the
- * words in flow.
+ * 02 · 03 · 04 The seven-layer stage (art pass v1): one window held by `position: sticky` inside
+ * a section whose CSS height is three screens (two on phones), no pins. The world paints the one
+ * evolving object through it: as the hold scrubs, the seven layers form as concentric luminous
+ * bands around the disk (ring.ts, obs.hold), one every tenth of the hold; this file names each
+ * layer ONCE in large type at the moment its band forms (Geist 300, 40 px, the layer's colour as
+ * the 2 px line under the name, a 24 px transform on entry), keeps her line on the object's
+ * tangent, and lets the words scroll over the window in the left columns: 02 why one team,
+ * 03 seven layers, 04 the picker ("What do you need built?"), which keeps the chosen bands lit
+ * and dims the rest (obs.picker → the world). The hold's progress is one number per scroll frame
+ * (obs.hold); the ring hands over to the gauge's marker across the last tenth (obs.handover).
+ * Reduced motion: every band formed and every name shown, the words in flow.
  */
 export function Stage() {
   const { t } = useI18n()
   const { enabled } = useMotion()
   const station = useStation()
   const ref = useRef<HTMLElement>(null)
-  const [geom, setGeom] = useState<{ w: number; h: number; cx: number; cy: number; orbits: Orbit[] } | null>(null)
-  // All seven in orbit is the final state (prerendered, reduced motion); the scroll scrubs it back.
+  // All seven formed is the final state (prerendered, reduced motion); the scroll scrubs it back.
   const [orbit, setOrbit] = useState(LAYERS_N)
   const [choice, setChoice] = useState<PulseChoice>(null)
 
   useEffect(() => {
     setChoice(getPulse().choice)
     return onPulse(setChoice)
-  }, [])
-
-  // Geometry: the window's size and the orbits round the ring, measured on reflow only.
-  useEffect(() => {
-    const el = ref.current?.querySelector<HTMLElement>('[data-window="stage"]')
-    if (!el) return
-    const measure = () => {
-      const r = el.getBoundingClientRect()
-      const f = frameWindow('stage', { x: r.left, y: r.top + window.scrollY, w: r.width, h: r.height })
-      const phone = r.width < 600
-      setGeom({ w: r.width, h: r.height, cx: f.ring.x, cy: f.ring.y, orbits: orbitsFor(f.ring.x, f.ring.y, f.ring.r, phone ? 'left' : 'right') })
-    }
-    measure()
-    return onReflow(measure)
   }, [])
 
   // The hold: the scroll becomes obs.hold / obs.inOrbit / obs.handover, once per frame; the section's
@@ -124,7 +106,8 @@ export function Stage() {
   const chapter = proof ? chapters.find((c) => c.id === proof) : null
   const at = Math.min(4, Math.max(2, station))
   const line = at === 2 ? t.navigator.lines.manifesto : at === 3 ? t.navigator.lines.systems : t.navigator.lines.mission
-  const counterN = picked ? pickedIdx.length : orbit
+  // The layer named now: the last band that formed (none before the first); all seven without motion.
+  const current = orbit - 1
 
   return (
     <Section ref={ref} id="stage" beat="systems" surface="body" className={s.stage} aria-labelledby="stage-title">
@@ -133,63 +116,29 @@ export function Stage() {
           <p className={`mono ${s.tag}`} aria-hidden="true">
             {chip(at)}
           </p>
-          <p className={`mono ${s.counter}`} aria-live="off">
-            {picked ? t.engine.itTakes : t.engine.inOrbit} <b>{two(counterN)} / {two(LAYERS_N)}</b>
-          </p>
 
-          {/* The orbits: static SVG, one ellipse and leader per layer in orbit; a dashed grid line waits for the rest. */}
-          {geom && (
-            <svg className={s.orbits} viewBox={`0 0 ${geom.w} ${geom.h}`} width={geom.w} height={geom.h} aria-hidden="true">
-              {geom.orbits.map((o, k) => {
+          {/* The object's tangent: her line, then the layer forming now, named once, in large type. */}
+          <div className={s.tangent}>
+            <Voice text={line} delay={0} className={`voice ${s.voice}`} />
+            <ul className={s.layers} aria-label={t.engine.title}>
+              {ROOT_TO_CROWN.map((id, k) => {
                 const on = k < orbit
-                const left = o.label.x < geom.w / 2
+                const isPicked = picked ? picked.includes(id) : on
                 return (
-                  <g key={k} data-on={on || undefined}>
-                    {on ? (
-                      <>
-                        <ellipse className={s.orbit} cx={geom.cx} cy={geom.cy} rx={o.rx} ry={o.ry} transform={`rotate(${TILT} ${geom.cx} ${geom.cy})`} />
-                        <path className={s.leader} d={left ? `M${o.label.x + 80} ${o.label.y} L${o.dot.x} ${o.dot.y}` : `M${o.dot.x} ${o.dot.y} L${o.label.x - 8} ${o.label.y}`} />
-                      </>
-                    ) : (
-                      <path className={s.waiting} d={left ? `M0 ${o.label.y} L${o.label.x + 80} ${o.label.y}` : `M${o.label.x - 8} ${o.label.y} L${geom.w} ${o.label.y}`} />
-                    )}
-                  </g>
+                  <li
+                    key={id}
+                    id={`layer-${id}`}
+                    className={s.layer}
+                    data-on={on || undefined}
+                    data-now={(enabled && k === current) || undefined}
+                    data-picked={picked ? isPicked : undefined}
+                    style={{ '--chakra': chakraColors[chakraOf[id]] } as CSSProperties}
+                  >
+                    <span className={s.name}>{t.engine.layers[id].name}</span>
+                  </li>
                 )
               })}
-            </svg>
-          )}
-
-          {/* The seven layers: real text, each lit by its dot and weight once in orbit; the picker dims the rest. */}
-          <ul className={s.layers} aria-label={t.engine.title}>
-            {ROOT_TO_CROWN.map((id, k) => {
-              const o = geom?.orbits[k]
-              const on = k < orbit
-              const isPicked = picked ? picked.includes(id) : on
-              const dot = on && o ? { dx: o.dot.x - o.label.x, dy: o.dot.y - o.label.y } : null
-              return (
-                <li
-                  key={id}
-                  id={`layer-${id}`}
-                  tabIndex={-1}
-                  className={s.layer}
-                  data-on={on || undefined}
-                  data-picked={picked ? isPicked : undefined}
-                  style={{ '--chakra': chakraColors[chakraOf[id]], left: o ? `${o.label.x}px` : undefined, top: o ? `${o.label.y}px` : undefined } as CSSProperties}
-                >
-                  <i className={s.dot} aria-hidden="true" style={dot ? ({ '--dx': `${dot.dx}px`, '--dy': `${dot.dy}px` } as CSSProperties) : undefined} />
-                  <span className={s.name}>
-                    {two(k + 1)} {t.engine.layers[id].name}
-                  </span>
-                </li>
-              )
-            })}
-          </ul>
-
-          <div className={s.voice}>
-            <p className={`mono ${s.voiceTag}`}>
-              <b>{t.navigator.name}</b>
-            </p>
-            <Voice text={line} delay={0} />
+            </ul>
           </div>
         </Window>
       </div>
@@ -222,20 +171,14 @@ export function Stage() {
             ))}
           </div>
           <div className={s.takes} aria-live="polite">
-            <span className="mono">{t.pulse.takes}</span>
-            <span className={s.dots} aria-hidden="true">
-              {ROOT_TO_CROWN.map((id, k) => (
-                <i key={id} data-on={picked ? picked.includes(id) || undefined : undefined} style={{ '--chakra': chakraColors[k] } as CSSProperties} />
-              ))}
-            </span>
-            <span className={`mono ${s.uses}`}>{picked ? `${t.pulse.uses} ${pickedIdx.join(', ')}` : ''}</span>
+            {choice && <p className={`lede ${s.verdict}`}>{choice === 'all' ? t.pulse.verdictAll : t.pulse.verdict}</p>}
             {choice && (
-              <p className={`lede ${s.verdict}`}>{choice === 'all' ? t.pulse.verdictAll : t.pulse.verdict}</p>
-            )}
-            {choice && (
-              <a className={`mono ${s.proof}`} href={chapter ? `#${chapter.id}` : '#delivered'}>
-                {t.pulse.proof} <span aria-hidden="true">↓</span>
-              </a>
+              <p className={s.usesLine}>
+                {t.pulse.uses} {pickedIdx.join(', ')} ·{' '}
+                <a className={s.proof} href={chapter ? `#${chapter.id}` : '#delivered'}>
+                  {t.pulse.proof} <span aria-hidden="true">↓</span>
+                </a>
+              </p>
             )}
           </div>
         </div>

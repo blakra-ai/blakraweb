@@ -56,10 +56,10 @@ describe('the hold', () => {
     expect(inOrbit(ORBIT_END)).toBe(7)
     expect(inOrbit(1)).toBe(7)
   })
-  it('hands the ring over across the last tenth only', () => {
+  it('hands the ring over across the last twentieth only', () => {
     expect(handoverAt(0.5)).toBe(0)
-    expect(handoverAt(0.9)).toBe(0)
-    expect(handoverAt(0.95)).toBeCloseTo(0.5)
+    expect(handoverAt(0.95)).toBe(0)
+    expect(handoverAt(0.975)).toBeCloseTo(0.5)
     expect(handoverAt(1)).toBe(1)
   })
   it('measures the hold from the section against the viewport', () => {
