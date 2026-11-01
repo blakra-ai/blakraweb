@@ -53,10 +53,15 @@ React 19.3.1, Vite 8.3.5, TypeScript 7.0.2, three 0.186.1, postprocessing 6.39.5
 - SEO of a live domain: hreflang, sitemap, canonical.
 
 ## Project specialists
-None yet. The repo now has real code: run `/firm:start refresh` to create `proj-motion` (3D stage, scroll choreography, governor) and `proj-content` (facts register, four-language copy).
+Created 2026-11-01 (`/firm:start add`); they register natively in the next session. Consult before design, use as review lenses after building.
 
 | Agent | Expertise | Consult when | Last researched |
 |---|---|---|---|
+| proj-art-direction | Award-level art direction: type system, two-surface palette, grid and rhythm, story-first sections, hero/CTA craft, contrast and reduced motion | any visual, layout or copy change; src/components/*, src/styles/global.css, src/content | 2026-11-01 |
+| proj-motion-3d | GSAP 3.15, Lenis 1.3, three 0.186 + R3F 9.8, the Navigator GLB pipeline, scroll choreography, the Intel UHD frame budget | src/motion/*, src/features/navigator/*, src/features/experience/*, anything that moves | 2026-11-01 |
+| proj-frontend | React 19.3, Vite 8 (Rolldown), TypeScript 7, prerender in four languages, Vitest, Playwright e2e, nginx headers, fonts, Lighthouse | src/entry-*, scripts/*, tests/, deploy/, package.json, anything built or served | 2026-11-01 |
+
+Redesign programme (owner, 2026-11-01: Awwwards-level, concept before code): `.firm/runs/2026-11-01-redesign/`.
 
 ## Definition of Done additions
 - `npm test`, `npm run typecheck`, `npm run build`, `npm run e2e` all pass.
