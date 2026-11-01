@@ -17,6 +17,7 @@ export function useAdminActions() {
       mutationFn: ({ id, disabled }: { id: string; disabled: boolean }) => adminApi.setDisabled(id, disabled),
       onSuccess: refresh,
     }),
+    remove: useMutation({ mutationFn: (id: string) => adminApi.remove(id), onSuccess: refresh }),
     setWhatsApp: useMutation({ mutationFn: ({ id, body }: { id: string; body: WhatsAppNumber }) => adminApi.setWhatsApp(id, body) }),
   };
 }

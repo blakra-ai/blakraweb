@@ -7,6 +7,7 @@ from typing import TYPE_CHECKING
 
 import httpx
 
+from blakrasocial.application.accounts.deletion import DeleteAccount
 from blakrasocial.application.accounts.service import (
     AcceptInvite,
     AccountPolicy,
@@ -45,6 +46,8 @@ from blakrasocial.application.ports.accounts import (
     SessionRepository,
     UserRepository,
 )
+from blakrasocial.application.ports.direct_messenger import WhatsAppNumberVerifier
+from blakrasocial.application.ports.object_storage import ObjectStorage
 from blakrasocial.application.ports.platform_connector import CreatorInfoReader
 from blakrasocial.application.ports.repositories import (
     CredentialRepository,
@@ -105,6 +108,8 @@ class DirectServices:
     creator_info: CreatorInfoReader | None = None
     receipts: DeletionReceiptRepository | None = None
     signed_requests: dict[Platform, SignedRequestVerifier] = field(default_factory=dict)
+    storage: ObjectStorage | None = None
+    whatsapp_verifier: WhatsAppNumberVerifier | None = None
 
 
 @dataclass
@@ -263,7 +268,14 @@ class Container:
 
     def setup_whatsapp(self) -> SetupWhatsApp:
         direct = self.require_direct()
-        return SetupWhatsApp(direct.profiles, direct.credentials)
+        return SetupWhatsApp(direct.profiles, direct.credentials, direct.whatsapp_verifier)
+
+    def delete_account(self) -> DeleteAccount:
+        a = self.require_accounts()
+        direct = self.require_direct()
+        if direct.storage is None:
+            raise RuntimeError("Storage is not configured.")
+        return DeleteAccount(a.users, a.sessions, direct.profiles, direct.storage)
 
     async def aclose(self) -> None:
         for resource in self.closers:
@@ -432,6 +444,10 @@ def _build_direct(settings: Settings) -> Container:
             creator_info=creator_info,
             receipts=SqlDeletionReceiptRepository(sessions),
             signed_requests=signed_requests,
+            storage=storage,
+            whatsapp_verifier=whatsapp.CloudApiNumberVerifier(
+                NetworkApi(resilient, "WhatsApp", graph.translate), settings.meta_graph_version
+            ),
         ),
     )
 

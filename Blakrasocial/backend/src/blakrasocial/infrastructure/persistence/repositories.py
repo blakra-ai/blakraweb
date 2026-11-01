@@ -51,6 +51,11 @@ class SqlProfileRepository:
         async with self._sessions() as session:
             return await session.get(ProfileRow, profile_id) is not None
 
+    async def delete(self, profile_id: ProfileId) -> None:
+        # Credentials, posts, targets and pending authorizations cascade in the database.
+        async with self._sessions.begin() as session:
+            await session.execute(delete(ProfileRow).where(ProfileRow.id == profile_id))
+
 
 class SqlCredentialRepository:
     def __init__(self, sessions: Sessions, cipher: SecretCipher, clock: Clock) -> None:

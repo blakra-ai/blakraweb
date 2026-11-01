@@ -68,6 +68,10 @@ class UserRepository(Protocol):
 
     async def count_admins(self) -> int: ...
 
+    async def delete(self, user_id: str) -> None:
+        """Removes the user with its sessions and links."""
+        ...
+
 
 class SessionRepository(Protocol):
     async def add(self, token_hash: str, session: RefreshSession) -> None: ...

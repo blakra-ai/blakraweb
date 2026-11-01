@@ -93,6 +93,10 @@ class ProfileRepository(Protocol):
 
     async def exists(self, profile_id: ProfileId) -> bool: ...
 
+    async def delete(self, profile_id: ProfileId) -> None:
+        """Removes the profile with its credentials, posts and pending authorizations."""
+        ...
+
 
 class CredentialRepository(Protocol):
     async def get(self, profile_id: ProfileId, platform: Platform) -> OAuthCredential | None: ...

@@ -68,6 +68,17 @@ async def enable(user_id: str, admin: AdminDep, container: ContainerDep) -> Admi
     return AdminUserOut.from_domain(await container.manage_customers().set_disabled(admin.subject, user_id, False))
 
 
+@router.delete(
+    "/users/{user_id}",
+    status_code=status.HTTP_204_NO_CONTENT,
+    dependencies=[Csrf],
+    summary="Delete the account with its connections, posts and media (cannot be undone)",
+)
+async def delete_user(user_id: str, admin: AdminDep, container: ContainerDep) -> Response:
+    await container.delete_account().execute(admin.subject, user_id)
+    return Response(status_code=status.HTTP_204_NO_CONTENT)
+
+
 @router.put(
     "/users/{user_id}/whatsapp",
     status_code=status.HTTP_204_NO_CONTENT,

@@ -532,3 +532,20 @@ async def test_whatsapp_not_set_up() -> None:
     messenger = whatsapp.CloudApiMessenger(None, _Credentials(None), V)  # type: ignore[arg-type]
     result = await messenger.send(ProfileKey("pk_customer_0001"), PhoneNumber("989121234567"), "Hi", [])
     assert not result.succeeded and "isn't set up" in (result.error or "")
+
+
+@respx.mock
+async def test_whatsapp_number_verifier_reads_number_and_maps_bad_token(http: httpx.AsyncClient) -> None:
+    verifier = whatsapp.CloudApiNumberVerifier(api(http, "WhatsApp", graph.translate), "v26.0")
+    route = respx.get("https://graph.facebook.com/v26.0/1234567").respond(
+        json={"id": "1234567", "display_phone_number": "+1 555-0100", "verified_name": "Cafe"}
+    )
+    info = await verifier.verify("1234567", "good")
+    assert info.display_phone_number == "+1 555-0100" and info.verified_name == "Cafe"
+    assert route.calls[0].request.headers["authorization"] == "Bearer good"
+
+    respx.get("https://graph.facebook.com/v26.0/1234567").respond(
+        400, json={"error": {"message": "Invalid OAuth access token.", "type": "OAuthException", "code": 190}}
+    )
+    with pytest.raises(ProviderAuthError):
+        await verifier.verify("1234567", "bad")

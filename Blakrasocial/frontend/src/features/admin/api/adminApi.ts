@@ -10,6 +10,7 @@ export const adminApi = {
   newLink: (id: string) => request<InviteLinkResponse>(`/admin/users/${encodeURIComponent(id)}/link`, { method: "POST" }),
   setDisabled: (id: string, disabled: boolean) =>
     request<AdminUser>(`/admin/users/${encodeURIComponent(id)}/${disabled ? "disable" : "enable"}`, { method: "POST" }),
+  remove: (id: string) => request<void>(`/admin/users/${encodeURIComponent(id)}`, { method: "DELETE" }),
   setWhatsApp: (id: string, body: WhatsAppNumber) =>
     request<void>(`/admin/users/${encodeURIComponent(id)}/whatsapp`, { method: "PUT", body }),
 };

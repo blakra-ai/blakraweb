@@ -87,6 +87,9 @@ class FakeConnector:
 
 
 class FakeStorage:
+    def __init__(self) -> None:
+        self.deleted_prefixes: list[str] = []
+
     async def presign_upload(self, key: str, content_type: str, size_bytes: int) -> MediaUploadTicket:
         return MediaUploadTicket(f"https://upload.test/{key}?sig=1", self.public_url(key), content_type, None)
 
@@ -95,6 +98,10 @@ class FakeStorage:
 
     async def delete(self, key: str) -> None:
         return None
+
+    async def delete_prefix(self, prefix: str) -> int:
+        self.deleted_prefixes.append(prefix)
+        return 0
 
 
 @dataclass

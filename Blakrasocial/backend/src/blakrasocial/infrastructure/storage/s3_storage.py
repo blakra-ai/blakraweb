@@ -74,3 +74,17 @@ class S3ObjectStorage:
     async def delete(self, key: str) -> None:
         async with self._client() as s3:
             await s3.delete_object(Bucket=self._bucket, Key=key)
+
+    async def delete_prefix(self, prefix: str) -> int:
+        if not prefix or not prefix.endswith("/"):
+            raise ValueError("prefix must be a folder ending in '/'")  # never wipe the whole bucket
+        removed = 0
+        async with self._client() as s3:
+            paginator = s3.get_paginator("list_objects_v2")
+            async for page in paginator.paginate(Bucket=self._bucket, Prefix=prefix):
+                keys = [{"Key": item["Key"]} for item in page.get("Contents", [])]
+                # One key at a time: works on every S3-compatible service (some lack DeleteObjects).
+                for key in keys:
+                    await s3.delete_object(Bucket=self._bucket, Key=key["Key"])
+                removed += len(keys)
+        return removed

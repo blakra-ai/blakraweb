@@ -1,4 +1,4 @@
-import { KeyRound, Lock, LockOpen } from "lucide-react";
+import { KeyRound, Lock, LockOpen, Trash2 } from "lucide-react";
 import { useState } from "react";
 import { useTranslation } from "react-i18next";
 import { toast } from "sonner";
@@ -14,7 +14,7 @@ import { useAdminActions, useAdminUsers } from "../hooks/useAdminUsers";
 
 function UserRow({ user, self, onLink }: { user: AdminUser; self: boolean; onLink: (invite: InviteLinkResponse) => void }) {
   const { t, i18n } = useTranslation();
-  const { newLink, setDisabled } = useAdminActions();
+  const { newLink, setDisabled, remove } = useAdminActions();
   const status = user.disabled ? "disabled" : user.passwordSet ? "active" : "invited";
   const tone = { active: "success", invited: "warning", disabled: "danger" } as const;
 
@@ -63,6 +63,26 @@ function UserRow({ user, self, onLink }: { user: AdminUser; self: boolean; onLin
               onConfirm={() => setDisabled.mutate({ id: user.id, disabled: true })}
             />
           ))}
+        {!self && (
+          <ConfirmDialog
+            trigger={
+              <Button size="sm" variant="ghost" className="text-danger" disabled={remove.isPending}>
+                <Trash2 /> {t("admin.delete")}
+              </Button>
+            }
+            title={t("admin.deleteTitle", { name: user.title })}
+            description={t("admin.deleteHelp")}
+            confirmLabel={t("admin.deleteConfirm")}
+            cancelLabel={t("common.cancel")}
+            destructive
+            onConfirm={() =>
+              remove.mutate(user.id, {
+                onSuccess: () => toast.success(t("admin.deleted", { name: user.title })),
+                onError: () => toast.error(t("errors.generic")),
+              })
+            }
+          />
+        )}
       </div>
     </li>
   );

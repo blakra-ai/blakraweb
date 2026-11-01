@@ -16,6 +16,8 @@ import jwt
 import pytest
 from fastapi.testclient import TestClient
 
+from blakrasocial.application.errors import ProviderAuthError
+from blakrasocial.application.ports.direct_messenger import WhatsAppNumberInfo
 from blakrasocial.application.ports.repositories import profile_id_of
 from blakrasocial.container import AccountServices, Container, DirectServices
 from blakrasocial.domain.entities import OAuthCredential, TikTokCreatorInfo
@@ -42,7 +44,7 @@ from blakrasocial.infrastructure.persistence.models import Base
 from blakrasocial.infrastructure.security import HmacMediaSigner, JwtCallerAuthenticator, ServiceKeyVerifier
 from blakrasocial.main import create_app
 from tests.api.test_api import JWT_SECRET, SERVICE_KEY, settings
-from tests.direct_fakes import credential
+from tests.direct_fakes import FakeStorage, credential
 from tests.fakes import FakeInspector, FakeMessenger, FixedClock, RecordingSink
 from tests.integration.test_direct_mode import DB_URL, World
 
@@ -81,8 +83,16 @@ def signed_request(payload: dict[str, object], secret: str = META_SECRET) -> str
     return f"{b64(hmac.new(secret.encode(), body.encode(), hashlib.sha256).digest())}.{body}"
 
 
+class FakeWhatsAppVerifier:
+    async def verify(self, phone_number_id: str, access_token: str) -> WhatsAppNumberInfo:
+        if access_token == "bad-token":
+            raise ProviderAuthError("Invalid OAuth access token.")
+        return WhatsAppNumberInfo(phone_number_id, "+1 555-0100", "Cafe")
+
+
 class Holder:
     world: World
+    storage: FakeStorage
 
 
 @pytest.fixture
@@ -100,6 +110,7 @@ def client() -> Iterator[tuple[TestClient, Holder]]:
         engine = create_engine(DB_URL)
         world = World(session_factory(engine), FixedClock())
         holder.world = world
+        holder.storage = FakeStorage()
         return Container(
             settings=s,
             publisher=world.publisher,
@@ -137,6 +148,8 @@ def client() -> Iterator[tuple[TestClient, Holder]]:
                 creator_info=FakeCreatorInfo(),
                 receipts=SqlDeletionReceiptRepository(session_factory(engine)),
                 signed_requests={Platform.FACEBOOK: SignedRequestVerifier(META_SECRET)},
+                storage=holder.storage,
+                whatsapp_verifier=FakeWhatsAppVerifier(),
             ),
         )
 
@@ -400,3 +413,47 @@ def test_login_errors_are_generic_and_throttled(client: tuple[TestClient, Holder
     reset = http.portal.call(container.bootstrap_admin().execute, "boss@blakra.com", "Blakra")  # forgot password
     assert http.get(f"/auth/invites/{link.token}").status_code == 404  # older link no longer works
     assert http.get(f"/auth/invites/{reset.token}").json()["passwordSet"] is True
+
+
+def test_admin_whatsapp_is_verified_and_account_deletion_removes_everything(client: tuple[TestClient, Holder]) -> None:
+    http, holder = client
+    container = http.app.state.container  # type: ignore[attr-defined]
+    owner = http.portal.call(container.bootstrap_admin().execute, "owner@blakra.com", "Blakra")
+    admin = http.post(f"/auth/invites/{owner.token}", json={"password": "Str0ng-pass!"}, headers=CSRF).json()
+    created = http.post(
+        "/admin/users", json={"email": "cafe@example.com", "title": "Cafe"}, headers=_bearer(admin) | CSRF
+    ).json()
+    cafe_id = created["user"]["id"]
+    wa = {"phoneNumberId": "1234567890", "displayName": "Cafe"}
+
+    bad = http.put(
+        f"/admin/users/{cafe_id}/whatsapp", json=wa | {"accessToken": "bad-token"}, headers=_bearer(admin) | CSRF
+    )
+    assert bad.status_code == 422
+    good = http.put(
+        f"/admin/users/{cafe_id}/whatsapp", json=wa | {"accessToken": "good-token"}, headers=_bearer(admin) | CSRF
+    )
+    assert good.status_code == 204
+
+    http.cookies.clear()
+    customer = http.post(
+        f"/auth/invites/{_token(created['link'])}", json={"password": "Open-daily-24h!"}, headers=CSRF
+    ).json()
+    accounts = http.get("/accounts", headers=_bearer(customer)).json()["accounts"]
+    whatsapp = next(a for a in accounts if a["platform"] == "whatsapp")
+    assert whatsapp["username"] == "+1 555-0100"  # filled in from Meta's answer
+    profile_id = profile_id_of(ProfileKey(customer["user"]["profileKey"]))
+
+    assert http.delete(f"/admin/users/{admin['user']['id']}", headers=_bearer(admin) | CSRF).status_code == 403
+    assert http.delete(f"/admin/users/{cafe_id}", headers=_bearer(admin)).status_code == 403  # CSRF header required
+    assert http.delete(f"/admin/users/{cafe_id}", headers=_bearer(admin) | CSRF).status_code == 204
+
+    assert holder.storage.deleted_prefixes == [f"u/{profile_id[:24]}/"]
+    assert not http.portal.call(holder.world.profiles.exists, profile_id)
+    assert http.portal.call(holder.world.credentials.for_profile, profile_id) == []
+    assert http.post("/auth/refresh", headers=CSRF).status_code == 401  # the customer's sign-in is gone
+    login = http.post("/auth/login", json={"email": "cafe@example.com", "password": "Open-daily-24h!"}, headers=CSRF)
+    assert login.status_code == 401
+    users = http.get("/admin/users", headers=_bearer(admin)).json()["users"]
+    assert [u["email"] for u in users] == ["owner@blakra.com"]
+    assert http.delete(f"/admin/users/{cafe_id}", headers=_bearer(admin) | CSRF).status_code == 404

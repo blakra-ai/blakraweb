@@ -6,6 +6,7 @@ from collections.abc import Sequence
 
 from blakrasocial.application.dto import DirectMessageResult
 from blakrasocial.application.errors import ApplicationError
+from blakrasocial.application.ports.direct_messenger import WhatsAppNumberInfo
 from blakrasocial.application.ports.repositories import CredentialRepository, profile_id_of
 from blakrasocial.domain.enums import Platform
 from blakrasocial.domain.value_objects import PhoneNumber, ProfileKey
@@ -51,6 +52,28 @@ class CloudApiMessenger:
                 )
             return DirectMessageResult(recipient.digits, False, error=exc.message)
         return DirectMessageResult(recipient.digits, True, message_id=last_id)
+
+
+class CloudApiNumberVerifier:
+    """`WhatsAppNumberVerifier`: reads the number's public details with the token being saved."""
+
+    def __init__(self, api: NetworkApi, version: str) -> None:
+        self._api = api
+        self._base = f"{GRAPH}/{version}"
+
+    async def verify(self, phone_number_id: str, access_token: str) -> WhatsAppNumberInfo:
+        response = await self._api.call(
+            "GET",
+            f"{self._base}/{phone_number_id}",
+            headers={"Authorization": f"Bearer {access_token}"},
+            params={"fields": "display_phone_number,verified_name"},
+        )
+        body = response.body
+        return WhatsAppNumberInfo(
+            phone_number_id=str(body.get("id") or phone_number_id),
+            display_phone_number=str(body.get("display_phone_number") or ""),
+            verified_name=str(body.get("verified_name") or ""),
+        )
 
 
 def _messages(to: str, text: str, media_urls: Sequence[str]) -> list[dict[str, object]]:

@@ -86,6 +86,10 @@ class SqlUserRepository:
         async with self._sessions() as session:
             return int(await session.scalar(select(func.count()).where(UserRow.role == UserRole.ADMIN.value)) or 0)
 
+    async def delete(self, user_id: str) -> None:
+        async with self._sessions.begin() as session:  # sessions and invites go with it (ON DELETE CASCADE)
+            await session.execute(delete(UserRow).where(UserRow.id == user_id))
+
 
 class SqlSessionRepository:
     def __init__(self, sessions: Sessions) -> None:

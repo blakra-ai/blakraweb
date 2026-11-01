@@ -309,7 +309,12 @@
     "whatsappName": "Display name",
     "whatsappPhone": "Phone number (optional, for display)",
     "whatsappSaved": "WhatsApp number saved and verified.",
-    "save": "Save"
+    "save": "Save",
+    "delete": "Delete",
+    "deleteTitle": "Delete {{name}} permanently?",
+    "deleteHelp": "This removes the account, its connected social accounts, scheduled and past posts, and uploaded files. Posts already published on the networks stay there. This cannot be undone.",
+    "deleteConfirm": "Delete permanently",
+    "deleted": "{{name}} was deleted."
   },
   "legal": {
     "updated": "Last updated",
