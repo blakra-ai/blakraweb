@@ -1,0 +1,53 @@
+@import "tailwindcss";
+@import "@fontsource-variable/vazirmatn";
+
+@custom-variant dark (@media (prefers-color-scheme: dark));
+
+@theme {
+  --font-sans: "Vazirmatn Variable", ui-sans-serif, system-ui, -apple-system, "Segoe UI", sans-serif;
+
+  --color-background: oklch(0.985 0.002 260);
+  --color-foreground: oklch(0.21 0.02 265);
+  --color-card: oklch(1 0 0);
+  --color-muted: oklch(0.96 0.005 260);
+  --color-muted-foreground: oklch(0.52 0.02 260);
+  --color-border: oklch(0.91 0.006 260);
+  --color-primary: oklch(0.55 0.22 285);
+  --color-primary-foreground: oklch(0.99 0 0);
+  --color-success: oklch(0.62 0.16 150);
+  --color-warning: oklch(0.75 0.16 75);
+  --color-danger: oklch(0.6 0.21 25);
+  --color-ring: oklch(0.55 0.22 285 / 0.45);
+
+  --radius-xl: 1rem;
+  --shadow-card: 0 1px 2px oklch(0 0 0 / 0.04), 0 8px 24px -12px oklch(0 0 0 / 0.12);
+
+  --animate-fade-up: fade-up 0.35s cubic-bezier(0.2, 0.8, 0.2, 1) both;
+  @keyframes fade-up {
+    from { opacity: 0; transform: translateY(8px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+}
+
+@layer base {
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --color-background: oklch(0.16 0.015 265);
+      --color-foreground: oklch(0.96 0.005 260);
+      --color-card: oklch(0.2 0.018 265);
+      --color-muted: oklch(0.25 0.018 265);
+      --color-muted-foreground: oklch(0.72 0.02 260);
+      --color-border: oklch(0.3 0.02 265);
+    }
+  }
+
+  html { -webkit-text-size-adjust: 100%; }
+  body {
+    @apply bg-background text-foreground font-sans antialiased;
+  }
+  :focus-visible { @apply outline-none ring-2 ring-ring ring-offset-2 ring-offset-background; }
+
+  @media (prefers-reduced-motion: reduce) {
+    *, *::before, *::after { animation-duration: 0.01ms !important; transition-duration: 0.01ms !important; }
+  }
+}

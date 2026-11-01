@@ -1,0 +1,189 @@
+{
+  "common": { "cancel": "Cancel", "retry": "Try again", "remove": "Remove" },
+  "nav": {
+    "main": "Main navigation",
+    "skip": "Skip to content",
+    "compose": "Create post",
+    "connections": "Connections",
+    "posts": "Posts",
+    "language": "Change language"
+  },
+  "errors": {
+    "title": "Something went wrong",
+    "generic": "Something went wrong. Please try again.",
+    "session": "Your session has expired. Sign in again from the main platform.",
+    "network": "Can't reach the server. Check your connection."
+  },
+  "connections": {
+    "title": "Connected accounts",
+    "description": "Connect your social accounts once. You log in on each network's own page and approve access; we never see your password.",
+    "connected": "Connected",
+    "notConnected": "Not connected",
+    "needsReconnect": "Reconnect needed",
+    "reconnect": "Reconnect",
+    "connect": "Connect",
+    "disconnect": "Disconnect",
+    "disconnectTitle": "Disconnect {{name}}?",
+    "disconnectBody": "You can connect it again at any time. Scheduled posts for this network may fail.",
+    "disconnected": "Account disconnected",
+    "popupBlocked": "Your browser blocked the window. Allow pop-ups for this site and try again.",
+    "popupOpen": "Finish connecting in the window that opened. This page updates when you close it."
+  },
+  "platforms": {
+    "instagram": {
+      "requirement": "Business or Creator account linked to a Facebook Page.",
+      "rules": "Feed (4:5 to 1.91:1), Reels and Stories in 9:16. Reels 3s to 15min, Stories up to 60s. Max 2,200 characters, 5 hashtags, 3 mentions. Stories need a Business account."
+    },
+    "facebook": {
+      "requirement": "A Facebook Page you manage.",
+      "rules": "Posts with up to 10 images or one video. Reels: 9:16, 3 to 90s. Stories: 9:16, video up to 60s."
+    },
+    "tiktok": {
+      "requirement": "Personal or business TikTok account. Re-authorize once a year.",
+      "rules": "One 9:16 video (3s to 10min) or up to 35 JPG photos. Max 2,200 characters. Choose who can see the post."
+    },
+    "linkedin": {
+      "requirement": "Personal profile or a company page where you are an admin.",
+      "rules": "Text, up to 9 images, or one video. Max 3,000 characters. 'Connections only' works on personal profiles."
+    },
+    "whatsapp": {
+      "requirement": "WhatsApp Business number. Messages to contacts only.",
+      "setup": "WhatsApp is set up by our team after Meta approves your business number.",
+      "rules": "Send a message with optional photos or videos to specific contacts.",
+      "noticeTitle": "How WhatsApp works here",
+      "noStatus": "WhatsApp Status can't be published. WhatsApp doesn't allow it through its API.",
+      "window": "A contact gets your message only if they wrote to you in the last 24 hours.",
+      "noSchedule": "Messages are sent right away and can't be scheduled."
+    }
+  },
+  "contentTypes": {
+    "post": "Post",
+    "reel": "Reel",
+    "story": "Story",
+    "carousel": "Carousel",
+    "video": "Video",
+    "photo": "Photo post",
+    "document": "Document",
+    "message": "Message"
+  },
+  "media": {
+    "choose": "Choose images or videos",
+    "drop": "Drag photos and videos here, or click to choose",
+    "dropNow": "Drop to upload",
+    "hint": "JPG, PNG, MP4 or MOV. Files go straight to secure storage.",
+    "rejected_one": "{{count}} file was skipped (unsupported type or too large).",
+    "rejected_other": "{{count}} files were skipped (unsupported type or too large).",
+    "listLabel": "Uploaded files",
+    "uploading": "Uploading",
+    "uploaded": "Uploaded",
+    "failed": "Upload failed",
+    "moveUp": "Move up",
+    "moveDown": "Move down"
+  },
+  "composer": {
+    "title": "Create a post",
+    "description": "Write once, publish to every network, and see how it will look before it goes live.",
+    "content": "Content",
+    "caption": "Caption",
+    "captionPlaceholder": "What do you want to share?",
+    "where": "Where to publish",
+    "networks": "Networks",
+    "contentType": "Content type",
+    "connectFirst": "Some selected networks aren't connected yet.",
+    "preview": "Preview",
+    "checks": "Checks",
+    "allGood": "Everything looks good.",
+    "when": "When to publish",
+    "publishNow": "Now",
+    "schedule": "Schedule",
+    "scheduleAt": "Date and time",
+    "scheduleHelp": "Time zone: {{tz}}",
+    "publishCta": "Publish now",
+    "scheduleCta": "Schedule post",
+    "waitUploads": "Waiting for uploads…",
+    "published": "Published! Track it on the Posts page.",
+    "scheduled": "Scheduled! You'll find it on the Posts page.",
+    "partial_one": "Published, but {{count}} network failed. See Posts for details.",
+    "partial_other": "Published, but {{count}} networks failed. See Posts for details.",
+    "errors": {
+      "noTargets": "Choose at least one network.",
+      "scheduleFuture": "Pick a time at least {{minutes}} minutes from now.",
+      "recipients": "Enter phone numbers with country code, e.g. +989121234567."
+    }
+  },
+  "options": {
+    "shareReelsToFeed": "Also show the Reel in the main feed",
+    "videoTitle": "Video title (optional)",
+    "privacy": "Who can see this",
+    "tiktokVisibility": { "public": "Everyone", "friends": "Friends", "followers": "Followers (private accounts)", "private": "Only me" },
+    "disableComments": "Turn off comments",
+    "disableDuet": "Turn off Duet",
+    "disableStitch": "Turn off Stitch",
+    "aiGenerated": "Label as AI-generated",
+    "brandedContent": "Paid partnership",
+    "brandOrganic": "Promoting my own brand",
+    "visibility": "Visibility",
+    "linkedinVisibility": { "public": "Anyone", "connections": "Connections only", "loggedin": "LinkedIn members" },
+    "recipients": "Recipients",
+    "recipientsHelp": "Phone numbers with country code, separated by commas or new lines."
+  },
+  "preview": {
+    "mediaAlt": "Preview of the first file",
+    "noMedia": "Your photo or video shows here",
+    "pickNetwork": "Choose a network to see the preview."
+  },
+  "issues": {
+    "content_type_unsupported": "This network doesn't support '{{contentType}}'.",
+    "whatsapp_status_unsupported": "WhatsApp Status can't be published. Use 'Message' to send to contacts.",
+    "account_not_connected": "Account isn't connected.",
+    "account_type_unsupported": "Needs a {{expected}} account (yours: {{actual}}).",
+    "media_required": "Add at least one photo or video.",
+    "media_count": "Allows {{min}} to {{max}} files (you have {{actual}}).",
+    "media_mixed_kinds": "Can't mix photos and videos.",
+    "media_kind": "File {{index}}: {{kind}} isn't accepted here.",
+    "media_format": "File {{index}}: .{{actual}} isn't accepted. Use {{allowed}}.",
+    "file_too_large": "File {{index}} is {{actualMb}} MB; the limit is {{maxMb}} MB.",
+    "duration_too_short": "Video {{index}} is {{actual}}s; it must be at least {{min}}s.",
+    "duration_too_long": "Video {{index}} is {{actual}}s; the limit is {{max}}s.",
+    "duration_unknown": "Couldn't read the video length.",
+    "aspect_ratio": "File {{index}} must be {{expected}} (yours: {{actual}}).",
+    "resolution_too_low": "File {{index}} is {{actual}}; minimum is {{min}}.",
+    "caption_too_long": "Caption is {{actual}} characters; the limit is {{max}}.",
+    "caption_required": "Write some text or add a file.",
+    "caption_ignored": "Captions aren't shown on this format; the text will be skipped.",
+    "too_many_hashtags": "Use at most {{max}} hashtags (you have {{actual}}).",
+    "too_many_mentions": "Use at most {{max}} @mentions (you have {{actual}}).",
+    "recipients_required": "Add at least one recipient.",
+    "schedule_unsupported": "Can't be scheduled; it's sent right away.",
+    "schedule_in_past": "Pick a time at least {{minMinutes}} minutes from now.",
+    "option_invalid": "{{detail}}",
+    "media_rejected": "A file couldn't be used. Upload it again.",
+    "invalid_value": "Please check this value.",
+    "invalid_request": "Please check this value."
+  },
+  "states": {
+    "published": "Published",
+    "failed": "Failed",
+    "pending": "Processing",
+    "scheduled": "Scheduled",
+    "partial": "Partly failed",
+    "deleted": "Deleted"
+  },
+  "posts": {
+    "title": "Posts",
+    "description": "Status of every post on each network. Processing posts refresh automatically.",
+    "network": "Network",
+    "allNetworks": "All networks",
+    "period": "Period",
+    "lastDays_one": "Last {{count}} day",
+    "lastDays_other": "Last {{count}} days",
+    "empty": "No posts in this period yet.",
+    "noCaption": "No caption",
+    "viewLive": "View",
+    "delete": "Delete",
+    "deleteTitle": "Delete this post?",
+    "cancelTitle": "Cancel this scheduled post?",
+    "deleteBody": "It will be removed from the networks where that's possible. Instagram and TikTok don't allow deleting published posts through the API.",
+    "deleted": "Post deleted"
+  }
+}
