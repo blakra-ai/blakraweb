@@ -34,6 +34,7 @@ export function buildPublishRequest(values: ComposerValues, media: UploadItem[])
 }
 
 function tiktokOptions(v: ComposerValues["tiktok"]) {
+  if (v.delivery === "inbox") return { sendToInbox: true };
   return {
     visibility: v.visibility || null,
     disableComments: !v.allowComments,

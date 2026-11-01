@@ -57,7 +57,8 @@ class FacebookOptionsIn(CamelModel):
 
 
 class TikTokOptionsIn(CamelModel):
-    visibility: TikTokVisibility | None = Field(None, description="Required: TikTok has no default audience")
+    visibility: TikTokVisibility | None = Field(None, description="Required for direct posts: no default audience")
+    send_to_inbox: bool = Field(False, description="Send to the creator's TikTok inbox to finish in the TikTok app")
     disable_comments: bool = False
     disable_duet: bool = False
     disable_stitch: bool = False

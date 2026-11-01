@@ -247,7 +247,7 @@ async def tt_token(request: Request) -> Any:
     if form.get("grant_type") == "authorization_code" and not str(form.get("code", "")).startswith("tt-code-"):
         return JSONResponse({"error": "invalid_grant", "error_description": "Authorization code is expired."}, 400)
     return {"access_token": "TT-access", "refresh_token": "TT-refresh", "open_id": "tt-open-1", "expires_in": 86400,
-            "refresh_expires_in": 31536000, "scope": "user.info.basic,video.publish", "token_type": "Bearer"}
+            "refresh_expires_in": 31536000, "scope": "user.info.basic,video.publish,video.upload", "token_type": "Bearer"}
 
 
 @app.get("/open.tiktokapis.com/v2/user/info/")
@@ -279,6 +279,19 @@ async def tt_init(request: Request) -> Any:
     return _tt({"publish_id": pid, "upload_url": f"https://open-upload.tiktokapis.com/video/?upload_id={pid}"})
 
 
+@app.post("/open.tiktokapis.com/v2/post/publish/inbox/video/init/")
+async def tt_inbox_init(request: Request) -> Any:
+    # Upload to the creator's inbox: needs video.upload, takes no post_info (the creator finishes in TikTok).
+    if (denied := _tt_auth(request)) is not None:
+        return denied
+    body = await request.json()
+    if "post_info" in body:
+        return _tt(code="invalid_params", message="post_info is not accepted for inbox uploads", status=400)
+    pid = "v_inbox_" + secrets.token_hex(5)
+    tiktok_posts[pid] = {"inbox": True, "source_info": body["source_info"], "received": 0, "polls": 0}
+    return _tt({"publish_id": pid, "upload_url": f"https://open-upload.tiktokapis.com/video/?upload_id={pid}"})
+
+
 @app.put("/open-upload.tiktokapis.com/video/")
 async def tt_upload(upload_id: str, request: Request) -> Response:
     post = tiktok_posts[upload_id]
@@ -304,6 +317,8 @@ async def tt_status(request: Request) -> Any:
         return _tt({"status": "PROCESSING_UPLOAD"})
     if post["polls"] < 2:
         return _tt({"status": "PROCESSING_DOWNLOAD"})
+    if post.get("inbox"):
+        return _tt({"status": "SEND_TO_USER_INBOX"})
     return _tt({"status": "PUBLISH_COMPLETE", "publicaly_available_post_id": [7300000000000000001]})
 
 

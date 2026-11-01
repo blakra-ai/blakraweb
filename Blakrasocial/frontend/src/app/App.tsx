@@ -30,7 +30,7 @@ export function App() {
       <AuthProvider session={builtinSession}>
         <RouterProvider router={router} />
       </AuthProvider>
-      <Toaster richColors closeButton position="top-center" dir={i18n.dir()} />
+      <Toaster richColors closeButton position="bottom-center" dir={i18n.dir()} />
     </QueryClientProvider>
   );
 }

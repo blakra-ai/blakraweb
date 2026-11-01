@@ -32,7 +32,7 @@ node run_scenario.cjs
 
 ## Direct mode (free official APIs)
 
-`run_direct_scenario.cjs` drives 17 steps in a real Chromium against the real backend, worker and
+`run_direct_scenario.cjs` drives 18 steps in a real Chromium against the real backend, worker and
 PostgreSQL, starting from an empty database:
 
 1. `create-admin` prints the owner's link; signed-out visitors land on the sign-in page.
@@ -47,6 +47,8 @@ PostgreSQL, starting from an empty database:
    published by the worker (a double-click still makes one post).
 10. The TikTok form follows TikTok's audit rules (creator name, no default privacy, Duet locked,
     commercial-content labels, consent text) and the post reaches TikTok with those settings.
+10b. TikTok "send to inbox" (works before TikTok's audit): no audience is asked, the video is
+    uploaded to the creator's TikTok inbox and the post says to finish in the TikTok app.
 11. A JPEG goes to LinkedIn (image upload, then post) and Instagram.
 12. A scheduled post waits, then is published when due (the test moves its due time to now).
 13. A scheduled post that is deleted never reaches the network.

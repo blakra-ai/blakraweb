@@ -431,6 +431,29 @@ async def test_tiktok_video_upload_and_status(http: httpx.AsyncClient) -> None:
     assert "daily post limit" in ((await connector.poll(cred, "pub1")).error or "")
 
 
+@respx.mock
+async def test_tiktok_send_to_inbox_skips_direct_post_rules(http: httpx.AsyncClient) -> None:
+    connector = tiktok.TikTokConnector(api(http, "TikTok", tiktok.translate), MediaSource(http))
+    creator = respx.post(f"{tiktok.API}/post/publish/creator_info/query/")
+    init = respx.post(f"{tiktok.API}/post/publish/inbox/video/init/").respond(
+        json={"data": {"publish_id": "inb1", "upload_url": "https://upload.tiktok.test/i"}, "error": {"code": "ok"}}
+    )
+    respx.get(f"{CDN}/clip.mp4").respond(content=b"0123456789AB")
+    put = respx.put("https://upload.tiktok.test/i").respond(201)
+    cred = credential(Platform.TIKTOK, "o1")
+    target = PostTarget(Platform.TIKTOK, ContentType.VIDEO, TikTokOptions(send_to_inbox=True))
+    result = await connector.publish(cred, "Tik", target, [VIDEO])
+    assert json.loads(init.calls[0].request.content) == {
+        "source_info": {"source": "FILE_UPLOAD", "video_size": 12, "chunk_size": 12, "total_chunk_count": 1}
+    }
+    assert put.called and not creator.called and result.poll_handle == "inb1"
+    respx.post(f"{tiktok.API}/post/publish/status/fetch/").respond(
+        json={"data": {"status": "SEND_TO_USER_INBOX"}, "error": {"code": "ok"}}
+    )
+    done = await connector.poll(cred, "inb1")
+    assert done.state is ConnectorState.PUBLISHED and done.url is None
+
+
 def test_tiktok_chunk_plan() -> None:
     mb = 1024 * 1024
     assert tiktok.chunk_plan(3 * mb) == (3 * mb, 1)

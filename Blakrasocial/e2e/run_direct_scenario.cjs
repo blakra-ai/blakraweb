@@ -289,10 +289,36 @@ function signedRequest(payload, secret) {
     await page.getByText(fa.composer.sending).waitFor({ timeout: 30_000 });
     await goTo(fa.nav.posts, fa.posts.title);
     await waitForPost("تیک‌تاک مستقیم");
-    const [tt] = Object.values((await debug()).tiktok);
+    const [tt] = Object.values((await debug()).tiktok).filter((t) => !t.inbox);
     const info = tt.post_info;
     check(info.privacy_level === "PUBLIC_TO_EVERYONE" && info.disable_comment === false && info.disable_duet === true, JSON.stringify(info));
     check(info.brand_content_toggle === false && tt.received === tt.source_info.video_size, JSON.stringify(tt));
+  });
+
+  await step("10b", "TikTok inbox upload: no audience asked, video lands in the creator's TikTok inbox", async () => {
+    await compose("تیک‌تاک صندوق", [["TikTok", null]]);
+    await upload("vertical.mp4");
+    await page.getByText("Blakra TikTok").first().waitFor({ timeout: 10_000 });
+    await page.getByRole("radio", { name: fa.tiktok.deliveryMode.inbox }).click();
+    await page.getByText(fa.tiktok.inboxNotice).waitFor();
+    check((await page.locator("#tt-visibility").count()) === 0, "audience still asked in inbox mode");
+    check((await page.getByTestId("tiktok-consent").count()) === 0, "direct-post consent shown in inbox mode");
+    await page.getByText(fa.composer.allGood).waitFor();
+    await shot("10b-tiktok-inbox");
+    await page.getByRole("button", { name: fa.composer.publishCta }).click();
+    await page.getByText(fa.composer.sending).waitFor({ timeout: 30_000 });
+    await goTo(fa.nav.posts, fa.posts.title);
+    const deadline = Date.now() + 60_000;
+    for (;;) {
+      await page.reload();
+      const row = page.getByRole("article").filter({ hasText: "تیک‌تاک صندوق" }).first();
+      await row.waitFor({ timeout: 15_000 });
+      if (await row.getByText(fa.posts.tiktokInbox).count()) break;
+      if (Date.now() > deadline) throw new Error("inbox notice never shown on the post");
+      await page.waitForTimeout(3_000);
+    }
+    const inbox = Object.values((await debug()).tiktok).filter((t) => t.inbox);
+    check(inbox.length === 1 && inbox[0].received === inbox[0].source_info.video_size, JSON.stringify(inbox));
   });
 
   await step(11, "Photo to LinkedIn + Instagram (JPEG): image uploaded to LinkedIn first, then posted", async () => {

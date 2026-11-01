@@ -207,7 +207,8 @@
     "deleteTitle": "Delete this post?",
     "cancelTitle": "Cancel this scheduled post?",
     "deleteBody": "It will be removed from the networks where that's possible. Instagram and TikTok don't allow deleting published posts through the API.",
-    "deleted": "Post deleted"
+    "deleted": "Post deleted",
+    "tiktokInbox": "In your TikTok inbox: post it from the TikTok app"
   },
   "tiktok": {
     "loadingCreator": "Checking your TikTok account…",
@@ -236,7 +237,17 @@
     "and": "and",
     "consentSuffix": ".",
     "musicUsage": "Music Usage Confirmation",
-    "brandedPolicy": "Branded Content Policy"
+    "brandedPolicy": "Branded Content Policy",
+    "delivery": "How to post on TikTok",
+    "deliveryMode": {
+      "direct": "Post directly",
+      "inbox": "Send to TikTok inbox"
+    },
+    "deliveryHelp": {
+      "direct": "Posted straight to the profile. Until TikTok completes its review of our app, only as \"Only me\".",
+      "inbox": "The video goes to your TikTok app. You get a notification and post it with one tap, to any audience."
+    },
+    "inboxNotice": "After sending, open the \"video is ready\" notification in the TikTok app. Choose the caption, audience and promotional label there, then post."
   },
   "auth": {
     "signInTitle": "Sign in",

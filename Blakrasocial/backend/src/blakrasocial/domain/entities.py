@@ -65,6 +65,9 @@ class FacebookOptions(PlatformOptions):
 @dataclass(frozen=True, slots=True)
 class TikTokOptions(PlatformOptions):
     visibility: TikTokVisibility | None = None  # TikTok rules: the user must choose; there is no default
+    # Upload to the creator's TikTok inbox: they finish (caption, audience) and post in the TikTok app.
+    # Works before TikTok's Direct Post audit, when direct posts are forced to "Only me".
+    send_to_inbox: bool = False
     disable_comments: bool = False
     disable_duet: bool = False
     disable_stitch: bool = False

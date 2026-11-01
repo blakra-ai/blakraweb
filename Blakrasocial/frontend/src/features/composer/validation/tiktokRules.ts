@@ -14,11 +14,6 @@ export function validateTikTok(input: {
   const issues: ClientIssue[] = [];
   const err = (code: string, params?: ClientIssue["params"]) => issues.push({ platform: "tiktok", code, severity: "error", params });
 
-  if (creator && !creator.canPost) err("tiktok_cannot_post", { reason: creator.reason ?? "" });
-  if (!values.visibility) err("privacy_required", { platform: "TikTok" });
-  else if (creator && creator.privacyLevels.length && !creator.privacyLevels.includes(values.visibility)) err("tiktok_privacy_unavailable");
-  if (values.discloseCommercial && !values.isBrandedContent && !values.isBrandOrganic) err("tiktok_disclosure_choice");
-  if (values.discloseCommercial && values.isBrandedContent && values.visibility === "private") err("branded_content_private");
   const max = creator?.maxVideoSeconds;
   if (max && input.contentType === "video") {
     input.media.forEach((m, i) => {
@@ -27,6 +22,12 @@ export function validateTikTok(input: {
       }
     });
   }
+  if (values.delivery === "inbox") return issues; // audience and labels are chosen in the TikTok app
+  if (creator && !creator.canPost) err("tiktok_cannot_post", { reason: creator.reason ?? "" });
+  if (!values.visibility) err("privacy_required", { platform: "TikTok" });
+  else if (creator && creator.privacyLevels.length && !creator.privacyLevels.includes(values.visibility)) err("tiktok_privacy_unavailable");
+  if (values.discloseCommercial && !values.isBrandedContent && !values.isBrandOrganic) err("tiktok_disclosure_choice");
+  if (values.discloseCommercial && values.isBrandedContent && values.visibility === "private") err("branded_content_private");
   return issues;
 }
 

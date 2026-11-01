@@ -858,8 +858,14 @@ export interface components {
         };
         /** TikTokOptionsIn */
         TikTokOptionsIn: {
-            /** @description Required: TikTok has no default audience */
+            /** @description Required for direct posts: no default audience */
             visibility?: components["schemas"]["TikTokVisibility"] | null;
+            /**
+             * Sendtoinbox
+             * @description Send to the creator's TikTok inbox to finish in the TikTok app
+             * @default false
+             */
+            sendToInbox?: boolean;
             /**
              * Disablecomments
              * @default false

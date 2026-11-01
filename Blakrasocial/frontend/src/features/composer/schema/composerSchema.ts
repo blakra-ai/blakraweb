@@ -19,6 +19,9 @@ export const composerSchema = z
     // TikTok UX rules: no default audience, interactions off until the user turns them on,
     // and a commercial-content disclosure that needs at least one choice when switched on.
     tiktok: z.object({
+      // "direct": posted by us (public only after TikTok's audit). "inbox": sent to the creator's TikTok
+      // inbox; they finish and post it in the TikTok app with any audience.
+      delivery: z.enum(["direct", "inbox"]),
       visibility: z.union([z.enum(TIKTOK_VISIBILITIES), z.literal("")]),
       allowComments: z.boolean(),
       allowDuet: z.boolean(),
@@ -80,6 +83,7 @@ export function defaultComposerValues(): ComposerValues {
     instagram: { shareReelsToFeed: true },
     facebook: { title: "" },
     tiktok: {
+      delivery: "direct",
       visibility: "",
       allowComments: false,
       allowDuet: false,

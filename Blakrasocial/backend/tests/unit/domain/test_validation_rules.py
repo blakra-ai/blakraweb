@@ -136,6 +136,8 @@ def test_tiktok_branded_content_cannot_be_private(registry) -> None:  # type: ig
 def test_tiktok_audience_must_be_chosen(registry) -> None:  # type: ignore[no-untyped-def]
     unset = PostTarget(Platform.TIKTOK, ContentType.VIDEO, TikTokOptions())
     assert IssueCode.PRIVACY_REQUIRED in codes(registry, unset, [video()])
+    inbox = PostTarget(Platform.TIKTOK, ContentType.VIDEO, TikTokOptions(send_to_inbox=True))
+    assert IssueCode.PRIVACY_REQUIRED not in codes(registry, inbox, [video()])  # chosen in the TikTok app
 
 
 def test_linkedin_text_post_document_and_visibility(registry) -> None:  # type: ignore[no-untyped-def]

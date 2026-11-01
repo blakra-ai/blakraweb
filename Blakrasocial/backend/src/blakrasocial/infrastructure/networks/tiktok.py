@@ -1,7 +1,8 @@
-"""TikTok Login Kit + Content Posting API (Direct Post).
+"""TikTok Login Kit + Content Posting API: Direct Post, or Upload to the creator's inbox.
 
-Until TikTok audits the app, every post is forced to "Only me" by TikTok itself; we say so clearly
-instead of failing with TikTok's raw error code.
+Until TikTok audits the app, direct posts are forced to "Only me" by TikTok itself; we say so clearly
+instead of failing with TikTok's raw error code. Inbox uploads are not restricted that way: the creator
+gets a notification and posts from the TikTok app with the audience they choose.
 """
 
 from __future__ import annotations
@@ -33,7 +34,7 @@ from blakrasocial.infrastructure.networks.http import MediaSource, NetworkApi, d
 
 AUTHORIZE_URL = "https://www.tiktok.com/v2/auth/authorize/"
 API = "https://open.tiktokapis.com/v2"
-SCOPES = ("user.info.basic", "video.publish")
+SCOPES = ("user.info.basic", "video.publish", "video.upload")
 MIN_CHUNK = 5 * 1024 * 1024
 CHUNK = 10 * 1024 * 1024
 
@@ -162,6 +163,8 @@ class TikTokConnector:
         self, credential: OAuthCredential, caption: str, target: PostTarget, media: Sequence[MediaAsset]
     ) -> ConnectorResult:
         options = target.options if isinstance(target.options, TikTokOptions) else TikTokOptions()
+        if options.send_to_inbox:
+            return await self._to_inbox(credential, caption, target, media, options)
         if options.visibility is None:
             raise ProviderRejected("Choose who can see this TikTok post.")
         creator = await self._creator(credential)  # read fresh before every post (TikTok rules)
@@ -232,6 +235,47 @@ class TikTokConnector:
         await self._upload(data["upload_url"], video, chunk_size, count)
         return ConnectorResult.processing(str(data["publish_id"]), timedelta(seconds=15))
 
+    async def _to_inbox(
+        self,
+        credential: OAuthCredential,
+        caption: str,
+        target: PostTarget,
+        media: Sequence[MediaAsset],
+        options: TikTokOptions,
+    ) -> ConnectorResult:
+        if target.content_type is ContentType.PHOTO:
+            body = {
+                "post_info": {"title": (options.title or "")[:90], "description": caption[:4000]},
+                "source_info": {
+                    "source": "PULL_FROM_URL",
+                    "photo_cover_index": options.cover_index,
+                    "photo_images": [m.url.value for m in media if m.kind is MediaKind.IMAGE],
+                },
+                "post_mode": "MEDIA_UPLOAD",
+                "media_type": "PHOTO",
+            }
+            created = await self._call(credential, "/post/publish/content/init/", body)
+            return ConnectorResult.processing(str(created["data"]["publish_id"]), timedelta(seconds=10))
+        video = next((m for m in media if m.kind is MediaKind.VIDEO), None)
+        if video is None:
+            raise ProviderRejected("TikTok needs one video (or choose a photo post).")
+        chunk_size, count = chunk_plan(video.size_bytes)
+        created = await self._call(
+            credential,
+            "/post/publish/inbox/video/init/",
+            {
+                "source_info": {
+                    "source": "FILE_UPLOAD",
+                    "video_size": video.size_bytes,
+                    "chunk_size": chunk_size,
+                    "total_chunk_count": count,
+                }
+            },
+        )
+        data = created["data"]
+        await self._upload(data["upload_url"], video, chunk_size, count)
+        return ConnectorResult.processing(str(data["publish_id"]), timedelta(seconds=15))
+
     async def creator_info(self, credential: OAuthCredential) -> TikTokCreatorInfo:
         creator = await self._creator(credential)
         can_post = bool(creator.get("can_post", True))
@@ -269,6 +313,8 @@ class TikTokConnector:
             ids = found.get("publicaly_available_post_id") or found.get("publicly_available_post_id") or []
             post_id = str(ids[0]) if ids else handle
             return ConnectorResult.published(post_id, f"https://www.tiktok.com/video/{ids[0]}" if ids else None)
+        if status == "SEND_TO_USER_INBOX":  # done on our side; the creator posts it from the TikTok app
+            return ConnectorResult.published(handle, None)
         if status == "FAILED":
             reason = str(found.get("fail_reason") or "unknown")
             return ConnectorResult.failed(_FRIENDLY.get(reason, f"TikTok couldn't publish the post ({reason})."))

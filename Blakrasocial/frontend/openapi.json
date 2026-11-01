@@ -3230,7 +3230,13 @@
                 "type": "null"
               }
             ],
-            "description": "Required: TikTok has no default audience"
+            "description": "Required for direct posts: no default audience"
+          },
+          "sendToInbox": {
+            "type": "boolean",
+            "title": "Sendtoinbox",
+            "description": "Send to the creator's TikTok inbox to finish in the TikTok app",
+            "default": false
           },
           "disableComments": {
             "type": "boolean",

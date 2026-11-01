@@ -62,4 +62,15 @@ describe("TikTok Direct Post rules", () => {
       isBrandOrganic: false,
     });
   });
+
+  it("inbox delivery leaves audience and labels to the TikTok app but still checks length", () => {
+    expect(codes(tiktok({ delivery: "inbox" }))).toEqual([]);
+    expect(codes(tiktok({ delivery: "inbox" }), { ...creator, canPost: false, reason: "limit" })).toEqual([]);
+    expect(codes(tiktok({ delivery: "inbox" }), creator, 90)).toContain("duration_too_long");
+    const values = defaultComposerValues();
+    values.targets.tiktok = { enabled: true, contentType: "video" };
+    values.tiktok = tiktok({ delivery: "inbox", visibility: "public" });
+    const [target] = buildPublishRequest(values, []).targets;
+    expect(target!.options).toEqual({ sendToInbox: true });
+  });
 });

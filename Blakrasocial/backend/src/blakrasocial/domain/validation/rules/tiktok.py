@@ -61,7 +61,9 @@ class TikTokRule(PlatformRule):
         if not isinstance(options, TikTokOptions):
             return []
         issues: list[ValidationIssue] = []
-        if options.visibility is None:
+        if options.send_to_inbox:
+            pass  # the creator picks the audience in the TikTok app
+        elif options.visibility is None:
             issues.append(self._issue(IssueCode.PRIVACY_REQUIRED, "options.visibility", target))
         elif options.is_branded_content and options.visibility is TikTokVisibility.PRIVATE:
             issues.append(self._issue(IssueCode.BRANDED_CONTENT_PRIVATE, "options.visibility", target))

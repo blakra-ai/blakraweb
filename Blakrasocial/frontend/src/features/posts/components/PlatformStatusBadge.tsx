@@ -26,6 +26,9 @@ export function PlatformStatusBadge({ result }: { result: PlatformResult }) {
             <Icon className={result.state === "pending" ? "animate-spin" : undefined} />
             {t(`states.${result.state}`)}
           </Badge>
+          {!result.liveUrl && result.platform === "tiktok" && result.state === "published" && (
+            <span className="text-xs text-muted-foreground">{t("posts.tiktokInbox")}</span>
+          )}
           {result.liveUrl && (
             <a
               href={result.liveUrl}
