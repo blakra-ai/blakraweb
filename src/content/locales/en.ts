@@ -70,6 +70,8 @@ export const en: Dict = {
     everyProject: 'For clients under NDA: see Also delivered.',
     tell: 'Tell us about it',
     uses: 'Uses layers',
+    nearest: 'Nearest your choice',
+    remembered: 'Your choice, remembered',
   },
 
   day: {

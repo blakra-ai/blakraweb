@@ -1,0 +1,365 @@
+/* 05 Proof: a document screen on the body, 12 columns from the 64 px margin. */
+.proof {
+  position: relative;
+  display: grid;
+  grid-template-columns: repeat(12, minmax(0, 1fr));
+  column-gap: var(--gutter);
+  padding: calc(var(--header-h) + 40px) 64px 48px;
+  max-width: var(--max-w);
+  margin: 0 auto;
+}
+.head {
+  grid-column: 1 / 6;
+}
+.head :global(.eyebrow) {
+  margin-bottom: 22px;
+}
+.title {
+  outline: none;
+}
+.lede {
+  margin-top: 18px;
+  max-width: 520px;
+  font-size: 1rem;
+}
+
+/* The ring glyph and her line: columns 7–12, level with the head. */
+.ringline {
+  grid-column: 7 / 13;
+  display: flex;
+  gap: 16px;
+  align-items: flex-start;
+  padding-top: 40px;
+  max-width: 480px;
+}
+.glyph {
+  flex: none;
+  width: 22px;
+  height: 22px;
+  margin-top: 28px;
+  border-radius: 50%;
+  background: var(--body);
+  box-shadow:
+    0 0 0 1px rgba(236, 233, 226, 0.9),
+    0 0 6px 1px rgba(var(--accent-rgb), 0.6);
+}
+.voiceTag {
+  color: var(--grey);
+  margin-bottom: 10px;
+}
+.voiceTag b {
+  color: var(--porcelain);
+  font-weight: 600;
+}
+.ringline :global(.voice) {
+  font-size: 1.375rem;
+}
+
+/* Five hairline rows; the inner grid sits in a lensed arc (--arc), the hairlines stay straight. */
+.rows {
+  grid-column: 1 / 13;
+  margin-top: 40px;
+}
+.row {
+  position: relative;
+  border-top: 1px solid var(--hair);
+  outline: none;
+}
+.row:last-child {
+  border-bottom: 1px solid var(--hair);
+}
+.g {
+  display: grid;
+  grid-template-columns: 198px minmax(0, 400px) minmax(0, 300px) 1fr;
+  column-gap: var(--gutter);
+  align-items: start;
+  padding: 12px 0 10px;
+  transform: translateX(var(--arc, 0px));
+  transition: transform 0.24s var(--ease);
+}
+/* Lit by the marker: the grid lifts 4 px and the dots light. Without motion every row is lit. */
+.row[data-lit] .g,
+:global(html.motion-off) .row .g {
+  transform: translate(var(--arc, 0px), -4px);
+}
+.ind {
+  color: var(--porcelain);
+}
+.ind small {
+  display: block;
+  margin-top: 4px;
+  color: var(--grey);
+  font-size: 0.75rem;
+  letter-spacing: 0.04em;
+  text-transform: none;
+}
+/* The stitch: the gold word of this screen (one of its ≤ 3 accent elements) and the 2 px rim. */
+.near {
+  display: block;
+  margin-top: 4px;
+  color: var(--accent);
+  font-size: 0.75rem;
+  letter-spacing: 0.06em;
+}
+.row[data-near]::before {
+  content: '';
+  position: absolute;
+  left: -24px;
+  top: -1px;
+  bottom: -1px;
+  width: 2px;
+  background: var(--accent);
+}
+.moment {
+  font-size: 1.1875rem;
+  line-height: 1.25;
+  letter-spacing: -0.015em;
+  color: var(--porcelain);
+}
+.sys {
+  font-size: 0.9375rem;
+  line-height: 1.45;
+  color: var(--grey);
+}
+.uses {
+  display: block;
+  margin-top: 6px;
+  letter-spacing: 0.06em;
+}
+.uses a {
+  color: var(--porcelain);
+  text-decoration: underline;
+  text-decoration-color: var(--hair);
+  text-underline-offset: 0.25em;
+}
+.out {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 8px;
+  text-align: right;
+}
+.out b {
+  font-weight: 400;
+  color: var(--porcelain);
+  font-size: 1.3125rem;
+  letter-spacing: -0.015em;
+  line-height: 1;
+}
+.out b span {
+  font-size: 0.8125rem;
+  color: var(--grey);
+  letter-spacing: 0;
+}
+.dots {
+  display: flex;
+  gap: 10px;
+  align-items: center;
+}
+.dots i {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: var(--grey);
+}
+.row[data-lit] .dots i[data-on],
+:global(html.motion-off) .row .dots i[data-on] {
+  background: var(--chakra);
+  box-shadow: 0 0 8px var(--chakra);
+}
+.delivered .g {
+  grid-template-columns: 198px 1fr minmax(0, 300px);
+  transform: none;
+}
+.deliveredList {
+  font-size: 0.9375rem;
+  line-height: 1.5;
+  color: var(--porcelain);
+}
+
+/* 06 How we work: the strip that closes the screen. */
+.process {
+  grid-column: 1 / 13;
+  display: grid;
+  grid-template-columns: minmax(0, 530px) 1fr;
+  column-gap: 136px;
+  align-items: start;
+  margin-top: 48px;
+}
+.processTitle {
+  margin-top: 8px;
+  outline: none;
+}
+.stepsShort {
+  display: none;
+  color: var(--grey);
+  margin-top: 8px;
+}
+.steps {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  column-gap: var(--gutter);
+  margin-top: 8px;
+}
+.steps li {
+  border-top: 1px solid var(--hair);
+  padding-top: 12px;
+}
+.steps b {
+  display: block;
+  font-weight: 500;
+  font-size: 0.9375rem;
+  margin-bottom: 6px;
+}
+.steps span {
+  display: block;
+  color: var(--grey);
+  font-size: 0.8125rem;
+  line-height: 1.45;
+}
+
+@media (max-width: 1099px) {
+  .proof {
+    padding-left: var(--inset);
+    padding-right: var(--inset);
+  }
+  .g {
+    grid-template-columns: 150px minmax(0, 1fr) minmax(0, 220px) 140px;
+  }
+  .process {
+    column-gap: 48px;
+  }
+}
+
+/* Phones (m-03): the rows stack, "Layers 3 2 5" replaces the dots, the steps become one mono line. */
+@media (max-width: 767px) {
+  .proof {
+    display: block;
+    padding: calc(var(--header-h) + 14px) var(--inset) 32px;
+  }
+  .head :global(.eyebrow) {
+    margin-bottom: 14px;
+  }
+  .title {
+    font-size: 1.6875rem;
+  }
+  .lede {
+    margin-top: 12px;
+    font-size: 0.9375rem;
+  }
+  .ringline {
+    margin-top: 14px;
+    padding-top: 0;
+    gap: 12px;
+  }
+  .glyph {
+    margin-top: 3px;
+  }
+  .ringline :global(.voice) {
+    font-size: 0.9375rem;
+    line-height: 1.3;
+  }
+  .voiceTag {
+    display: none;
+  }
+  .rows {
+    margin-top: 12px;
+  }
+  .g,
+  .delivered .g {
+    grid-template-columns: 1fr 112px;
+    column-gap: 12px;
+    padding: 9px 0 8px;
+    transform: none;
+  }
+  .row[data-lit] .g,
+  :global(html.motion-off) .row .g {
+    transform: none;
+  }
+  .ind {
+    color: var(--grey);
+    font-size: 0.6875rem;
+    letter-spacing: 0.06em;
+  }
+  .ind small {
+    display: inline;
+    margin: 0;
+    font-size: inherit;
+    letter-spacing: inherit;
+    text-transform: inherit;
+  }
+  .ind small::before {
+    content: ' · ';
+  }
+  .moment {
+    margin-top: 4px;
+    font-size: 0.875rem;
+    line-height: 1.3;
+    letter-spacing: -0.01em;
+  }
+  .sys {
+    grid-column: 1;
+    font-size: 0.8125rem;
+  }
+  .out {
+    grid-column: 2;
+    grid-row: 1 / 4;
+    gap: 4px;
+  }
+  .out b {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+    gap: 4px;
+    font-size: 1.125rem;
+    letter-spacing: -0.01em;
+    margin-top: 4px;
+  }
+  .out b span {
+    font-size: 0.6875rem;
+    line-height: 1.3;
+  }
+  .dots {
+    display: none;
+  }
+  .row[data-near]::before {
+    left: -12px;
+  }
+  .deliveredList {
+    grid-column: 1;
+    font-size: 0.8125rem;
+  }
+  .process {
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    gap: 12px;
+    margin-top: 10px;
+    border-top: 1px solid var(--hair);
+    padding-top: 12px;
+  }
+  .process :global(.eyebrow) {
+    display: none;
+  }
+  .processTitle {
+    font-size: 1.125rem;
+    margin: 0;
+  }
+  .stepsShort {
+    display: block;
+    margin: 0;
+    font-size: 0.6875rem;
+    letter-spacing: 0.06em;
+  }
+  .process > div {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: baseline;
+    gap: 12px;
+    width: 100%;
+    justify-content: space-between;
+  }
+  .steps {
+    display: none;
+  }
+}

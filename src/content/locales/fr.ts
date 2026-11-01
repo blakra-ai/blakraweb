@@ -67,6 +67,8 @@ export const fr: Dict = {
     everyProject: 'Clients sous NDA : voir « Autres réalisations ».',
     tell: 'Parlez-nous-en',
     uses: 'Utilise les couches',
+    nearest: 'Le plus proche de votre choix',
+    remembered: 'Votre choix, retenu',
   },
 
   day: {

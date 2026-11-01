@@ -132,6 +132,10 @@ export interface Dict {
     tell: string
     /** The dots' text twin on the stage: "Uses layers 1, 2, 3, 7". */
     uses: string
+    /** The proof row mapped to the picked need (the gold stitch): "Nearest your choice". */
+    nearest: string
+    /** The porcelain screen's ring caption: "Your choice, remembered". */
+    remembered: string
   }
   day: {
     srTitle: string

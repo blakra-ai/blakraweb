@@ -111,7 +111,7 @@ export function Gauge({ labels }: { labels?: Partial<Record<number, string>> }) 
 
   return (
     <>
-      <div className={s.gauge} aria-hidden="true" data-mounted={mounted || undefined}>
+      <div className={s.gauge} aria-hidden="true" data-mounted={mounted || undefined} data-light={station === 7 || station === 8 || undefined}>
         {ticks.map((t, i) => (
           <i key={i} className={t.major ? s.major : s.tick} style={{ top: `${t.y}%` }} />
         ))}
@@ -121,7 +121,7 @@ export function Gauge({ labels }: { labels?: Partial<Record<number, string>> }) 
           {labels?.[station] && <> · {labels[station]}</>}
         </span>
       </div>
-      <div className={s.rule} aria-hidden="true">
+      <div className={s.rule} aria-hidden="true" data-light={station === 7 || station === 8 || undefined}>
         <i ref={rule} className={s.ruleFill} />
       </div>
     </>

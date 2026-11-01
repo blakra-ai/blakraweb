@@ -45,11 +45,12 @@ try {
     const p = prefix(code)
     expected[`${p}/`] = [
       t.prologue.title.before, t.prologue.lede, t.prologue.facts, t.pulse.title, ...Object.values(t.pulse.needs).map((n) => n.label),
-      ...Object.values(t.chapters).flatMap((c) => [c.moment, c.before, c.now, ...c.outcomes]), ...t.day.delivered.items,
+      // The proof's five rows (WP-E): sector, the one-line story, the system and the outcome; before/now left the page with the storyboard.
+      ...Object.values(t.chapters).flatMap((c) => [c.sector, c.moment, c.system, ...c.outcomes]), ...t.day.delivered.items,
       // The stage (WP-D) names the seven layers; their one-line texts left the page with the old Engine section.
       t.engine.title, ...Object.values(t.engine.layers).map((l) => l.name), t.engine.crownTitle,
       t.products.title, ...Object.values(t.products.items).flatMap((i) => [i.line, i.offer]), t.products.more,
-      t.process.title, ...t.process.terms, t.people.title, ...t.people.roles.map((r) => r.ask), t.contact.title, t.contact.horizon,
+      t.process.title, ...t.process.steps.map((s) => s.name), t.people.title, ...t.people.roles.map((r) => r.ask), t.contact.title, t.contact.horizon,
     ]
     expected[`${p}/investors/`] = [t.investors.title, ...t.investors.thesis, t.investors.ask, t.investors.ndaTitle, t.investors.deck, t.investors.disclaimer]
     expected[`${p}/privacy/`] = [t.privacy.title, t.privacy.who, ...t.privacy.sections.map((x) => x.text)]
@@ -271,12 +272,12 @@ try {
     await page.evaluate(() => document.querySelector('#pulse [aria-live] a[href="#h17"]').click())
     await page.waitForTimeout(3000)
     const card = await page.evaluate(() => {
-      const panel = document.getElementById('day-case')
-      const r = panel.getBoundingClientRect()
-      return { top: Math.round(r.top), vh: innerHeight, selected: document.getElementById('h17-tab')?.getAttribute('aria-selected'), focused: panel.contains(document.activeElement) || panel === document.activeElement }
+      const row = document.getElementById('h17')
+      const r = row.getBoundingClientRect()
+      return { top: Math.round(r.top), vh: innerHeight, near: row.hasAttribute('data-near'), focused: row.contains(document.activeElement) || row === document.activeElement }
     })
-    check('F1', 'a link to a case opens its patch and lands on the case, focused', card.top >= 0 && card.top < card.vh && card.selected === 'true' && card.focused, JSON.stringify(card))
-    await page.evaluate(() => document.querySelector('#day-case a[href="#layer-data"]').click())
+    check('F1', 'a link to a case lands on its row, stitched as nearest, focused', card.top >= 0 && card.top < card.vh && card.near && card.focused, JSON.stringify(card))
+    await page.evaluate(() => document.querySelector('#h17 a[href="#layer-data"]').click())
     await page.waitForTimeout(3000)
     const layer = await page.evaluate(() => {
       const li = document.getElementById('layer-data')
@@ -335,9 +336,9 @@ try {
       const el = document.getElementById('day')
       window.scrollTo({ top: el.getBoundingClientRect().top + scrollY, behavior: 'instant' })
       await new Promise((r) => setTimeout(r, 1400))
-      return { tabs: el.querySelectorAll('[role="tab"]').length, selected: el.querySelectorAll('[role="tab"][aria-selected="true"]').length, panel: !!document.getElementById('day-case') }
+      return { rows: el.querySelectorAll('li[id^="h"]').length, lit: el.querySelectorAll('li[id^="h"][data-lit]').length }
     })
-    check('S1', 'the proof shows five patches and one open case', proof.tabs === 5 && proof.selected === 1 && proof.panel, JSON.stringify(proof))
+    check('S1', 'the proof shows five rows and the marker has lit the ones it passed', proof.rows === 5 && proof.lit >= 1, JSON.stringify(proof))
     await own.close()
   }
 

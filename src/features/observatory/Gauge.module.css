@@ -110,3 +110,27 @@
     transition: none;
   }
 }
+
+/* Over the porcelain screen (stations 07 and 08) the gauge turns ink: ticks, readout and the marker. */
+.gauge[data-light] .tick {
+  background: var(--hair-ink);
+}
+.gauge[data-light] .major {
+  background: var(--grey-on-light);
+}
+.gauge[data-light] .read {
+  color: var(--grey-on-light);
+}
+.gauge[data-light] .read b {
+  color: var(--body);
+}
+.gauge[data-light] .marker {
+  background: var(--body);
+  box-shadow: none;
+}
+.rule[data-light] {
+  background: var(--hair-ink);
+}
+.rule[data-light] .ruleFill {
+  background: var(--body);
+}

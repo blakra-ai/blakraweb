@@ -1,0 +1,178 @@
+/* The porcelain screen: the light surface from hairline to hairline; 12 columns from the 64 px margin. */
+.porcelain {
+  position: relative;
+  display: grid;
+  grid-template-columns: repeat(12, minmax(0, 1fr));
+  column-gap: var(--gutter);
+  padding: calc(var(--header-h) + 44px) 64px 56px;
+  border-top: 1px solid var(--hair-ink);
+}
+.col {
+  grid-column: 1 / 7;
+  display: grid;
+  gap: 44px;
+  max-width: 642px;
+}
+.block :global(.eyebrow) {
+  margin-bottom: 16px;
+}
+.h {
+  font-size: 1.875rem;
+  letter-spacing: -0.02em;
+  line-height: 1.15;
+  outline: none;
+}
+.lede {
+  margin-top: 12px;
+  font-size: 1rem;
+  max-width: 560px;
+}
+.rows {
+  margin-top: 18px;
+}
+.r {
+  display: grid;
+  grid-template-columns: 230px 1fr;
+  column-gap: var(--gutter);
+  padding: 14px 0;
+  border-top: 1px solid var(--hair-ink);
+}
+.r:last-child {
+  border-bottom: 1px solid var(--hair-ink);
+}
+.r b {
+  display: block;
+  font-weight: 500;
+  font-size: 0.9375rem;
+  line-height: 1.35;
+}
+.r span {
+  display: block;
+  font-size: 0.875rem;
+  line-height: 1.45;
+  color: var(--grey-on-light);
+}
+.r em {
+  display: block;
+  font-style: normal;
+  font-size: 0.8125rem;
+  color: var(--body);
+  margin-top: 5px;
+}
+.stage,
+.uses {
+  margin-top: 6px;
+  letter-spacing: 0.06em;
+}
+.more,
+.bench {
+  margin-top: 14px;
+  font-size: 0.875rem;
+  line-height: 1.45;
+  color: var(--grey-on-light);
+}
+.link {
+  display: inline-block;
+  margin-top: 14px;
+  padding-bottom: 2px;
+  border-bottom: 1px solid var(--ctrl-light);
+  color: var(--body);
+  font-size: 0.875rem;
+  transition: border-color 0.2s var(--ease);
+}
+.link:hover {
+  border-color: var(--body);
+}
+
+/* The one large object: columns 8–12. */
+.object {
+  grid-column: 8 / 13;
+  position: relative;
+  display: grid;
+  grid-template-rows: auto 1fr auto;
+  align-self: start;
+  /* Held beside the rows while they scroll (static under reduced motion: global [data-hold]). */
+  position: sticky;
+  top: calc(var(--header-h) + var(--inset));
+  text-align: center;
+}
+.voice {
+  margin-bottom: 8px;
+}
+.voiceTag {
+  margin-bottom: 10px;
+}
+.voiceTag b {
+  color: var(--body);
+  font-weight: 600;
+}
+.object :global(.voice) {
+  font-size: 1.375rem;
+}
+.ring {
+  width: 100%;
+  max-width: 576px;
+  height: auto;
+  margin: 0 auto;
+}
+.ringLabel {
+  font-family: var(--font-mono);
+  font-size: 12px;
+  letter-spacing: 1px;
+}
+.cap {
+  color: var(--grey-on-light);
+}
+.cap b {
+  display: block;
+  margin-top: 6px;
+  color: var(--body);
+  font-family: var(--font-sans);
+  font-size: 0.9375rem;
+  font-weight: 500;
+  letter-spacing: 0;
+  text-transform: none;
+}
+.cap a {
+  color: var(--body);
+  text-decoration: underline;
+  text-underline-offset: 0.3em;
+}
+
+@media (max-width: 1099px) {
+  .porcelain {
+    padding-left: var(--inset);
+    padding-right: var(--inset);
+  }
+  .r {
+    grid-template-columns: 180px 1fr;
+  }
+}
+/* Phones: one column, the object after the products (a reflow of the same DOM). */
+@media (max-width: 767px) {
+  .porcelain {
+    display: block;
+    padding: calc(var(--header-h) + 24px) var(--inset) 40px;
+  }
+  .col {
+    gap: 36px;
+    max-width: none;
+  }
+  .h {
+    font-size: 1.5rem;
+  }
+  .r {
+    grid-template-columns: 1fr;
+    row-gap: 6px;
+  }
+  .object {
+    position: static;
+    margin-top: 36px;
+  }
+  .ring {
+    max-width: 340px;
+  }
+  .object :global(.voice) {
+    font-size: 1.125rem;
+  }
+}
