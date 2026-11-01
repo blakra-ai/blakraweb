@@ -246,3 +246,17 @@ def test_settings_refuse_insecure_config() -> None:
             auth_jwt_audience="a",
             media_signing_secret="m" * 40,  # type: ignore[arg-type]
         )
+
+
+def test_env_example_loads_as_is(monkeypatch: pytest.MonkeyPatch, tmp_path) -> None:  # type: ignore[no-untyped-def]
+    """The documented .env.example must start the app without edits (empty values = unset)."""
+    from pathlib import Path
+
+    example = Path(__file__).resolve().parents[2] / ".env.example"
+    (tmp_path / ".env").write_text(example.read_text(encoding="utf-8"), encoding="utf-8")
+    monkeypatch.chdir(tmp_path)
+    loaded = Settings()  # type: ignore[call-arg]
+    assert loaded.environment == "development"
+    assert loaded.redis_url is None and loaded.public_webhook_url is None
+    assert loaded.auth_jwt_algorithms == ["HS256"]
+    assert loaded.allowed_origins == frozenset({"http://localhost:5173"})
