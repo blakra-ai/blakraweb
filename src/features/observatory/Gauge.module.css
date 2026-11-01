@@ -89,6 +89,9 @@
   letter-spacing: 0.08em;
   white-space: nowrap;
 }
+:global([data-surface='light']) .chipDot {
+  background: var(--body);
+}
 .chipDot {
   width: 6px;
   height: 6px;

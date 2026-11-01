@@ -1,9 +1,10 @@
-import { useEffect, useRef, useState, type FormEvent } from 'react'
+import { useEffect, useRef, useState, type FormEvent, type KeyboardEvent } from 'react'
 import { company } from '../content/shared'
 import type { Intent } from '../content/types'
+import { Window } from '../features/observatory/Window'
+import { obs } from '../features/observatory/state'
 import { locales, useI18n } from '../i18n'
 import { intents, limits, sendContact, validate, type ContactFields, type FieldErrors } from '../lib/contact'
-import { obs } from '../features/observatory/state'
 import { onPulse } from '../motion/pulse'
 import { Section } from './Section'
 import s from './Contact.module.css'
@@ -22,6 +23,7 @@ interface FieldProps {
   maxLength: number
 }
 
+/** One field: its label, the control (≥ 3 : 1 border), and its inline error, tied by aria-describedby. */
 function Field({ name, label, error, textarea, maxLength, ...input }: FieldProps) {
   const id = `contact-${name}`
   const props = {
@@ -36,10 +38,10 @@ function Field({ name, label, error, textarea, maxLength, ...input }: FieldProps
   }
   return (
     <div className={s.field} data-invalid={error ? '' : undefined}>
-      <label htmlFor={id} className={s.label}>
+      <label htmlFor={id} className={`mono ${s.label}`}>
         {label}
       </label>
-      {textarea ? <textarea rows={4} {...props} /> : <input {...props} />}
+      {textarea ? <textarea rows={3} {...props} /> : <input {...props} />}
       {error && (
         <p id={`${id}-error`} className={s.error}>
           {error}
@@ -50,10 +52,15 @@ function Field({ name, label, error, textarea, maxLength, ...input }: FieldProps
 }
 
 /**
- * Act VII of the film, the resolution: the camera pulls back to the opening framing and the same
- * space now holds a calm, complete system, the visitor's need waiting in front of it. Three
- * doors, one short form that speaks to whoever walked through; the need chosen in Act III is
- * already written in it.
+ * 09 Contact, the closing stage (storyboard d-05-contact, d-05-form-states, m-05-contact): the
+ * window with the hole already large at the upper right and the guide at the lower-right rim
+ * facing the form (both painted by the world for kind "contact"); the form on a panel in columns
+ * 1–5: eyebrow, H2, lede, three doors as radios (a check mark on the chosen one), three fields,
+ * Send in gold (one of the frame's three gold elements), the privacy line; her line in columns
+ * 7–9; "Read by an engineer, not a sales team." in the foot. States: inline errors with a
+ * focused summary, sending (aria-busy, fields disabled, text kept), success as a static
+ * role="status" that takes focus, failure as an alert that keeps every field's text. On phones
+ * the window is a 232 px band with the hole and her line, and the form is plain DOM below it.
  */
 export function Contact() {
   const { t, locale } = useI18n()
@@ -61,18 +68,20 @@ export function Contact() {
   const ref = useRef<HTMLElement>(null)
   const formRef = useRef<HTMLFormElement>(null)
   const doneRef = useRef<HTMLDivElement>(null)
+  const summaryRef = useRef<HTMLDivElement>(null)
   const [hydrated, setHydrated] = useState(false)
   const [intent, setIntent] = useState<Intent>('commission')
   const [status, setStatus] = useState<Status>('idle')
   const [errors, setErrors] = useState<FieldErrors>({})
   const door = c.doors[intent]
+  const errorKeys = Object.keys(errors) as (keyof FieldErrors)[]
 
   useEffect(() => {
     // A link such as /?intent=invest#contact (from the investors page) opens the right door.
     const asked = new URLSearchParams(location.search).get('intent') as Intent | null
     if (asked && intents.includes(asked)) setIntent(asked)
     setHydrated(true)
-    // In-page links such as the hero's "partner" and "invest" open their door without a reload.
+    // In-page links such as the menu's "partner" and "invest" open their door without a reload.
     const onIntent = (e: Event) => {
       const next = (e as CustomEvent<string>).detail as Intent
       if (intents.includes(next)) setIntent(next)
@@ -85,7 +94,7 @@ export function Contact() {
     if (status === 'sent') doneRef.current?.focus()
   }, [status])
 
-  // The pulse answer starts the message while the field is empty or still holds an earlier answer.
+  // The picker's answer starts the message while the field is empty or still holds an earlier answer.
   useEffect(() => {
     let filled = ''
     return onPulse((choice) => {
@@ -103,9 +112,9 @@ export function Contact() {
     const fields: ContactFields = { intent, org: String(data.get('org') ?? ''), email: String(data.get('email') ?? ''), msg: String(data.get('msg') ?? '') }
     const found = validate(fields)
     setErrors(found)
-    const first = (Object.keys(found) as (keyof FieldErrors)[])[0]
-    if (first) {
-      formRef.current?.querySelector<HTMLElement>(`[name="${first}"]`)?.focus()
+    if (Object.keys(found).length) {
+      // The summary is read first; its links lead to each field.
+      requestAnimationFrame(() => summaryRef.current?.focus())
       return
     }
     setStatus('sending')
@@ -116,8 +125,18 @@ export function Contact() {
       lang: locales[locale].lang,
     })
     setStatus(result === 'failed' ? 'failed' : 'sent')
-    // The reply signal goes out: the Navigator answers it.
+    // The reply signal goes out: the ring pulses from it (World.tsx) and she blinks once.
     if (result !== 'failed') obs.transmitAt = obs.clock
+  }
+
+  // The doors: a radio group of buttons; arrows move the choice and the focus.
+  const onDoorKey = (e: KeyboardEvent<HTMLButtonElement>, k: number) => {
+    const step = e.key === 'ArrowRight' || e.key === 'ArrowDown' ? 1 : e.key === 'ArrowLeft' || e.key === 'ArrowUp' ? -1 : 0
+    if (!step) return
+    e.preventDefault()
+    const next = intents[(k + step + intents.length) % intents.length]
+    setIntent(next)
+    formRef.current?.querySelector<HTMLElement>(`[role="radio"][value="${next}"]`)?.focus()
   }
 
   const mail = (
@@ -126,81 +145,120 @@ export function Contact() {
     </a>
   )
   const err = (field: keyof FieldErrors) => (errors[field] ? c.errors[errors[field]!] : undefined)
+  const sending = status === 'sending'
 
   return (
-    <Section ref={ref} id="contact" beat="contact" surface="ink" className={s.contact} aria-labelledby="contact-title">
-      <div className={s.intro}>
-        <p className={s.eyebrow}>
-          {c.eyebrow}
+    <Section ref={ref} id="contact" beat="contact" surface="body" station={9} className={s.contact} aria-labelledby="contact-title">
+      <Window id="contact" kind="contact" ring className={s.window}>
+        <p className={`mono ${s.tag}`} aria-hidden="true">
+          09 / 09
         </p>
-        <h2 id="contact-title" className={s.title} data-focus tabIndex={-1}>
-          {c.title}
-        </h2>
-        <p className={s.lede}>
-          {c.lede}
-        </p>
-        <p className={s.direct}>
-          {c.direct} {mail}
-        </p>
-      </div>
-
-      {status === 'sent' ? (
-        <div ref={doneRef} className={s.done} role="status" tabIndex={-1}>
-          <p>{c.success}</p>
-        </div>
-      ) : !endpoint ? (
-        <div className={s.done}>
-          <p>
-            {c.direct} {mail}
+        {/* Her line: columns 7–9, under the hole, beside her. */}
+        <div className={s.voice}>
+          <p className={`mono ${s.voiceTag}`}>
+            <b>{t.navigator.name}</b>
+          </p>
+          <p className="voice" data-caret>
+            {t.navigator.lines.contact}
           </p>
         </div>
-      ) : (
-        <form ref={formRef} className={s.form} method="post" noValidate onSubmit={onSubmit} aria-describedby="contact-privacy">
-          <fieldset className={s.doors}>
-            <legend className={s.label}>{c.doorsLabel}</legend>
-            {intents.map((id) => (
-              <label key={id} className={s.door} data-checked={intent === id ? '' : undefined}>
-                <input type="radio" name="intent" value={id} checked={intent === id} onChange={() => setIntent(id)} className={s.radio} />
-                <span className={s.doorLabel}>{c.doors[id].label}</span>
-                <span className={s.doorHint}>{c.doors[id].hint}</span>
-              </label>
-            ))}
-          </fieldset>
-          <Field name="org" label={door.org} autoComplete="organization" error={err('org')} maxLength={limits.org} />
-          <Field name="email" label={c.email} type="email" autoComplete="email" error={err('email')} maxLength={limits.email} />
-          <Field name="msg" label={door.msg} placeholder={door.placeholder} textarea error={err('msg')} maxLength={limits.msg} />
-          <div className={s.trap} aria-hidden="true">
-            <label>
-              Website
-              <input name="website" type="text" tabIndex={-1} autoComplete="off" />
-            </label>
-          </div>
-          <div className={s.submitRow}>
-            <button type="submit" className={s.submit} disabled={!hydrated || status === 'sending'}>
-              {status === 'sending' ? c.submitting : door.submit}
-              <span className={s.arrow} aria-hidden="true">
-                →
-              </span>
-            </button>
-            <p id="contact-privacy" className={s.privacy}>
-              {c.privacy} <a href={`${locales[locale].prefix}/privacy/`}>{c.privacyLink}</a>
+        <p className={`mono ${s.foot}`}>{c.horizon}</p>
+      </Window>
+
+      {/* The panel: over the window's left columns on desktop, plain DOM under the band on phones. */}
+      <div className={s.panel}>
+        <p className="eyebrow mono">{c.eyebrow}</p>
+        <h2 id="contact-title" className={`h2 ${s.title}`} data-focus tabIndex={-1}>
+          {c.title}
+        </h2>
+        <p className={`lede ${s.lede}`}>{c.lede}</p>
+
+        {status === 'sent' ? (
+          <>
+            <div ref={doneRef} className={s.done} role="status" tabIndex={-1}>
+              <p>{c.success}</p>
+            </div>
+            <p className={s.after}>{c.horizon}</p>
+            <p className={s.after}>
+              {c.direct} {mail}
             </p>
-          </div>
-          <p className={s.horizon}>{c.horizon}</p>
-          <div role="alert" className={s.failure}>
-            {status === 'failed' && (
-              <p>
-                {c.failure} {mail}
-              </p>
+          </>
+        ) : !endpoint ? (
+          <p className={s.after}>
+            {c.direct} {mail}
+          </p>
+        ) : (
+          <form ref={formRef} className={s.form} method="post" noValidate onSubmit={onSubmit} aria-describedby="contact-privacy" aria-busy={sending || undefined}>
+            {errorKeys.length > 0 && (
+              <div ref={summaryRef} className={s.summary} role="alert" tabIndex={-1}>
+                <b>{c.errorsTitle}</b>
+                {errorKeys.map((k) => (
+                  <a key={k} href={`#contact-${k}`} onClick={(e) => { e.preventDefault(); formRef.current?.querySelector<HTMLElement>(`[name="${k}"]`)?.focus() }}>
+                    {c.errors[errors[k]!]}
+                  </a>
+                ))}
+              </div>
             )}
-          </div>
-          <noscript>
-            <p className={s.privacy}>
-              {c.noScript} {mail}
-            </p>
-          </noscript>
-        </form>
-      )}
+            <fieldset className={s.doors} disabled={sending}>
+              <legend className={`mono ${s.label}`} id="contact-doors">
+                {c.doorsLabel}
+              </legend>
+              <div className={s.pills} role="radiogroup" aria-labelledby="contact-doors">
+                {intents.map((id, k) => (
+                  <button
+                    key={id}
+                    type="button"
+                    role="radio"
+                    name="intent"
+                    value={id}
+                    aria-checked={intent === id}
+                    tabIndex={intent === id ? 0 : -1}
+                    className={`pill ${s.door}`}
+                    onClick={() => setIntent(id)}
+                    onKeyDown={(e) => onDoorKey(e, k)}
+                  >
+                    {c.doors[id].label}
+                  </button>
+                ))}
+              </div>
+              <p className={s.hint}>{door.hint}</p>
+            </fieldset>
+            <fieldset className={s.fields} disabled={sending}>
+              <Field name="org" label={door.org} autoComplete="organization" error={err('org')} maxLength={limits.org} />
+              <Field name="email" label={c.email} type="email" autoComplete="email" error={err('email')} maxLength={limits.email} />
+              <Field name="msg" label={door.msg} placeholder={door.placeholder} textarea error={err('msg')} maxLength={limits.msg} />
+            </fieldset>
+            {/* The honeypot: hidden from everyone and every reader; a bot that fills it sends nothing. */}
+            <div className={s.trap} aria-hidden="true">
+              <label>
+                Website
+                <input name="website" type="text" tabIndex={-1} autoComplete="off" />
+              </label>
+            </div>
+            <div role="alert" className={s.failure}>
+              {status === 'failed' && (
+                <p>
+                  {c.failure} {mail}
+                </p>
+              )}
+            </div>
+            <div className={s.send}>
+              <button type="submit" className={`pill ${s.submit}`} data-solid disabled={!hydrated || sending} aria-disabled={sending || undefined}>
+                {sending && <i className={s.spin} aria-hidden="true" />}
+                {sending ? c.submitting : door.submit}
+              </button>
+              <p id="contact-privacy" className={s.privacy}>
+                {c.privacy} <a href={`${locales[locale].prefix}/privacy/`}>{c.privacyLink}</a>
+              </p>
+            </div>
+            <noscript>
+              <p className={s.privacy}>
+                {c.noScript} {mail}
+              </p>
+            </noscript>
+          </form>
+        )}
+      </div>
     </Section>
   )
 }

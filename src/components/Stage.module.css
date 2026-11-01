@@ -280,8 +280,17 @@
 /* Phone (m-02): the hold is two screens; no WebGL (the CSS ring and these SVG orbits are the stage);
    labels at the left edge; the words in an opaque band so they never sit on the grid. */
 @media (max-width: 767px) {
+  /* The hold is two screens, but the words may run longer: the section grows with them (never over the proof). */
   .stage {
-    height: calc(2 * 100svh);
+    height: auto;
+    min-height: calc(2 * 100svh);
+  }
+  /* The words flow after the held window (starting over its lower part) instead of filling the
+     section absolutely, so the section is as tall as its words and the picker ends before the proof. */
+  .words {
+    position: relative;
+    inset: auto;
+    margin-top: -60svh;
   }
   .window {
     --ring-x: 70.8%;

@@ -107,30 +107,17 @@
 }
 
 /*
- * Legacy tokens for the sections not yet rebuilt on the storyboard (WP-D … WP-G rebuild them and
- * WP-H deletes this block). They map the paper world's names onto the Observatory's values so the
- * old components stay legible, not on-system.
+ * Legacy tokens for the plain pages (src/pages/Simple.tsx) and the footer, which still read the
+ * paper world's names; they map onto the Observatory's values until those pages are restyled.
  */
 :root {
-  --paper: var(--porcelain);
-  --paper-2: #e3e0d8;
-  --ink-0: var(--body);
   --cta-bg: var(--porcelain);
   --cta-ink: var(--body);
-  --page: var(--body);
-  --label-size: var(--mono-size);
-  --label-track: var(--mono-track);
   --step--1: 0.875rem;
   --step-0: var(--body-size);
   --step-1: var(--lead);
   --step-2: 1.5rem;
-  --step-3: 2rem;
   --step-4: var(--h2);
-  --step-5: var(--h1);
-  --h2-short: 2rem;
-  --sheet: linear-gradient(90deg, rgba(236, 233, 226, 0.9) calc(100% - 8rem), rgba(236, 233, 226, 0));
-  --sheet-mask: linear-gradient(transparent, #000 3rem, #000 calc(100% - 3rem), transparent);
-  --sheet-inset: -3rem -8rem -3rem calc(-1 * var(--margin));
 }
 [data-tone] {
   --ink: var(--tone-ink);
@@ -465,22 +452,6 @@ canvas {
 }
 .skip:focus-visible {
   transform: none;
-}
-
-/* The film's world of the previous design (src/features/experience), kept until WP-H removes it. */
-.film-stage {
-  position: fixed;
-  inset: 0;
-  z-index: 0;
-  pointer-events: none;
-  opacity: 0;
-  transition: opacity 1.2s var(--ease);
-}
-html.gl-live .film-stage {
-  opacity: 1;
-}
-.film-stage canvas {
-  display: block;
 }
 
 /* The custom cursor (mouse, motion on): a porcelain dot on the pointer and a trailing ring, each

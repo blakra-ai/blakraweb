@@ -134,8 +134,9 @@ try {
 
     await submit.click()
     const invalid = await page.locator('#contact [aria-invalid="true"]').count()
-    const focused = await page.evaluate(() => document.activeElement?.getAttribute('name'))
-    check('AC5', 'invalid input: inline errors, focus on the first field, nothing sent', invalid === 3 && focused === 'org' && posts.length === 0, `${invalid} invalid, focus ${focused}`)
+    // The error summary (role="alert") takes focus first; each of its links leads to a field (d-05-form-states).
+    const focused = await page.evaluate(() => ({ role: document.activeElement?.getAttribute('role'), links: document.querySelectorAll('#contact [role="alert"] a[href^="#contact-"]').length }))
+    check('AC5', 'invalid input: inline errors, focus on the error summary with a link per field, nothing sent', invalid === 3 && focused.role === 'alert' && focused.links === 3 && posts.length === 0, `${invalid} invalid, focus ${JSON.stringify(focused)}`)
 
     await page.fill('#contact-org', 'Northwind Retail')
     await page.fill('#contact-email', 'ops@northwind.example')

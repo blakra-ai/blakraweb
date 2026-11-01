@@ -1,270 +1,356 @@
+/* 09 Contact: the window and the panel share one grid cell; the panel stands over the window's left columns. */
 .contact {
-  display: grid;
-  gap: clamp(2rem, 5vw, 4rem);
-  min-height: 100svh;
-  align-content: center;
-  padding: calc(var(--header-h) + 2rem) var(--margin) clamp(3rem, 6vw, 4.5rem);
-  color: var(--ink);
-}
-@media (min-width: 1000px) {
-  .contact {
-    grid-template-columns: minmax(0, 5fr) minmax(0, 6fr);
-    align-items: start;
-  }
-}
-
-.intro {
   position: relative;
   display: grid;
-  gap: 1.5rem;
-  align-content: start;
+  grid-template-columns: minmax(0, 1fr);
+  padding-top: var(--inset);
 }
-/* On ink: the words in the ink's light; the form is the transmission panel, a sheet of paper. */
-.eyebrow {
-  composes: label from global;
+.window {
+  grid-area: 1 / 1;
+  --ring-x: 72.5%;
+  --ring-y: 38%;
+  --ring-r: 230px;
+  --guide-x: 86%;
+  --guide-y: 76%;
+}
+.tag {
+  position: absolute;
+  right: 40px;
+  top: 28px;
+  color: var(--grey);
+}
+.voice {
+  position: absolute;
+  left: 49%;
+  top: 68%;
+  width: 330px;
+  max-width: 40%;
+}
+.voiceTag {
+  color: var(--grey);
+  margin-bottom: 10px;
+}
+.voiceTag b {
+  color: var(--porcelain);
+  font-weight: 600;
+}
+.voice :global(.voice) {
+  font-size: 1.5rem;
+}
+.foot {
+  position: absolute;
+  left: 46%;
+  bottom: 28px;
+  color: var(--grey);
+}
+
+/* The panel: #121216, a hairline, 14 px radius; 556 px wide at 40 px in. */
+.panel {
+  grid-area: 1 / 1;
+  z-index: 2;
+  display: flex;
+  flex-direction: column;
+  width: 556px;
+  max-width: calc(100% - 2 * var(--inset) - 80px);
+  margin: calc(var(--inset) + 44px) 0 calc(var(--inset) + 44px) calc(var(--inset) + 40px);
+  padding: 30px 32px;
+  border: 1px solid var(--hair);
+  border-radius: var(--r-card);
+  background: var(--panel);
+}
+.panel :global(.eyebrow) {
+  margin-bottom: 18px;
 }
 .title {
-  font-size: var(--h2);
-  font-weight: 800;
-  line-height: 0.95;
-  letter-spacing: -0.045em;
-  text-transform: uppercase;
-  max-width: 13ch;
+  font-size: clamp(1.75rem, 1rem + 2vw, 2.75rem);
   outline: none;
 }
 .lede {
-  max-width: 44ch;
-  font-size: var(--step-1);
-  line-height: 1.45;
-  color: var(--ink-2);
+  margin-top: 14px;
+  font-size: 0.9375rem;
+  max-width: 480px;
 }
-.direct {
-  color: var(--ink-2);
-}
-.mail {
-  color: var(--ink);
-  border-bottom: var(--hairline);
-  transition: border-color 0.3s;
-}
-.mail:hover {
-  border-color: var(--ink);
-}
-
 .form {
-  position: relative;
-  display: grid;
-  gap: 1.5rem;
-  padding: clamp(1.25rem, 2.5vw, 2rem);
-  border-radius: var(--r-card);
-  background: var(--paper);
-  --ink: #111317;
-  --ink-2: #494d56;
-  --line: var(--hair);
-  color: var(--ink-0);
-  border: var(--hairline);
-  box-shadow: 0 40px 80px -40px rgba(0, 0, 0, 0.7);
-}
-.field {
-  display: grid;
-  gap: 0.5rem;
-}
-.label {
-  font-size: var(--step--1);
-  font-weight: 500;
-}
-.control {
-  width: 100%;
-  min-height: 3rem;
-  padding: 0.75rem 0.9rem;
-  border: var(--hairline);
-  border-radius: var(--r-tag);
-  background: rgba(255, 255, 255, 0.6);
-  font-size: var(--step-0);
-  line-height: 1.4;
-  transition: border-color 0.3s;
-  resize: vertical;
-}
-.control::placeholder {
-  color: var(--ink-2);
-  opacity: 0.8;
-  font-size: var(--step--1);
-}
-.control:hover {
-  border-color: var(--ink-2);
-}
-.control:focus-visible {
-  outline: 2px solid var(--signal);
-  outline-offset: 1px;
-  border-color: var(--signal);
-}
-[data-invalid] .control {
-  border-color: var(--signal);
-}
-.error {
-  font-size: var(--step--1);
-  color: var(--ink);
-}
-.error::before {
-  content: '';
-  display: inline-block;
-  width: 0.5em;
-  height: 0.5em;
-  margin-right: 0.5em;
-  border-radius: 50%;
-  background: var(--signal);
-  vertical-align: 0.05em;
-}
-
-.trap {
-  position: absolute;
-  left: -10000px;
-  width: 1px;
-  height: 1px;
-  overflow: hidden;
-}
-
-.submitRow {
   display: flex;
-  flex-wrap: wrap;
-  align-items: center;
-  gap: 1rem 1.5rem;
+  flex-direction: column;
+  flex: 1;
 }
-.submit {
-  display: inline-flex;
-  align-items: center;
-  gap: 0.75rem;
-  height: 3.25rem;
-  padding: 0 1.6rem;
-  border: 0;
-  border-radius: var(--r-pill);
-  background: var(--cta-bg);
-  color: var(--cta-ink);
-  font-weight: 500;
-  cursor: pointer;
-  transition: background-color 0.3s, transform 0.3s var(--ease-out);
-}
-.submit:hover:not(:disabled) {
-  background: #26262e;
-}
-.submit:active:not(:disabled) {
-  transform: scale(0.98);
-}
-.submit:disabled {
-  cursor: progress;
-  opacity: 0.7;
-}
-.arrow {
-  transition: transform 0.4s var(--ease-out);
-}
-.submit:hover .arrow {
-  transform: translateX(4px);
-}
-.privacy {
-  font-size: var(--step--1);
-  color: var(--ink-2);
-}
-.privacy a {
-  color: var(--ink);
-  border-bottom: var(--hairline);
-}
-.failure:empty {
-  display: none;
-}
-.failure p {
-  padding: 1rem 1.25rem;
-  border-left: 3px solid var(--signal);
-  background: var(--surface);
-}
-
-.done {
-  align-self: center;
-  padding: 2rem;
-  border-radius: var(--r-card);
-  background: var(--paper);
-  --ink: #111317;
-  --ink-2: #494d56;
-  color: var(--ink-0);
-  border-left: 3px solid var(--accent);
-  font-size: var(--step-1);
-  outline: none;
-}
-
-/* Three doors: native radios, drawn as cards. Choosing one is the visitor's first, easy yes. */
-.doors {
-  display: grid;
-  gap: 0.6rem;
+.form fieldset {
   margin: 0;
   padding: 0;
   border: 0;
   min-width: 0;
 }
-.doors legend {
-  margin-bottom: 0.6rem;
-  padding: 0;
+
+/* The error summary: focused on submit; each line leads to its field. */
+.summary {
+  margin-top: 18px;
+  padding: 12px 14px;
+  border: 1px solid var(--porcelain);
+  border-radius: var(--r-tag);
+  font-size: 0.875rem;
+  line-height: 1.45;
+}
+.summary b {
+  display: block;
+  font-weight: 500;
+  margin-bottom: 4px;
+}
+.summary a {
+  display: block;
+  color: var(--porcelain);
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+
+/* The doors: a radio group of pills; the chosen one carries a check mark, never colour alone. */
+.doors {
+  margin-top: 22px;
+}
+.label {
+  display: block;
+  color: var(--grey);
+  margin-bottom: 10px;
+}
+.pills {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
 }
 .door {
-  position: relative;
-  display: grid;
-  gap: 0.2rem;
-  padding: 0.9rem 1rem 0.9rem 2.75rem;
-  border: var(--hairline);
-  border-radius: var(--r-card);
-  cursor: pointer;
-  transition: border-color 0.3s, background-color 0.3s;
+  height: 36px;
+  padding: 0 14px;
+  font-size: 0.8125rem;
 }
-.door:hover {
-  border-color: var(--ink-2);
+.door[aria-checked='true'] {
+  border-color: var(--porcelain);
+  box-shadow: inset 0 0 0 1px var(--porcelain);
 }
-.door[data-checked] {
-  border-color: var(--ink-0);
-  background: rgba(255, 255, 255, 0.6);
-}
-.door::before {
+.door[aria-checked='true']::before {
   content: '';
-  position: absolute;
-  left: 1rem;
-  top: 1.15rem;
-  width: 0.9rem;
-  height: 0.9rem;
-  border: 1.5px solid var(--ink-2);
+  width: 6px;
+  height: 11px;
+  margin-right: 10px;
+  border-right: 1.5px solid var(--porcelain);
+  border-bottom: 1.5px solid var(--porcelain);
+  transform: rotate(45deg) translate(-1px, -2px);
+}
+.hint {
+  margin-top: 10px;
+  font-size: 0.8125rem;
+  color: var(--grey);
+}
+
+/* The fields: 44 px controls with #6b6963 borders (3.58 : 1 on the body, 3.40 on the panel). */
+.field {
+  margin-top: 16px;
+}
+.field .label {
+  margin-bottom: 6px;
+}
+.control {
+  display: block;
+  width: 100%;
+  min-height: 44px;
+  padding: 10px 12px;
+  border: 1px solid var(--ctrl);
+  border-radius: var(--r-tag);
+  background: transparent;
+  color: var(--porcelain);
+  font-size: 0.9375rem;
+  line-height: 1.4;
+  transition: border-color 0.2s var(--ease);
+}
+textarea.control {
+  min-height: 76px;
+  resize: vertical;
+}
+.control::placeholder {
+  color: var(--grey);
+}
+.control:hover {
+  border-color: var(--porcelain);
+}
+.control:focus-visible {
+  border-color: var(--porcelain);
+  outline: 2px solid var(--porcelain);
+  outline-offset: 2px;
+  border-radius: var(--r-tag);
+}
+.field[data-invalid] .control {
+  border-color: var(--porcelain);
+  box-shadow: inset 0 0 0 1px var(--porcelain);
+}
+.error {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+  margin-top: 6px;
+  font-size: 0.8125rem;
+  color: var(--porcelain);
+}
+.error::before {
+  content: '!';
+  display: inline-flex;
+  flex: none;
+  width: 14px;
+  height: 14px;
+  align-items: center;
+  justify-content: center;
+  border: 1px solid var(--porcelain);
   border-radius: 50%;
-  transition: border-color 0.3s, box-shadow 0.3s;
+  font-size: 10px;
+  font-weight: 600;
 }
-.door[data-checked]::before {
-  border-color: var(--ink-0);
-  box-shadow: inset 0 0 0 3px var(--paper), inset 0 0 0 10px var(--ink-0);
+.form[aria-busy] .control {
+  color: var(--grey);
 }
-.door:has(.radio:focus-visible) {
-  outline: 2px solid var(--signal);
-  outline-offset: 3px;
+.trap {
+  display: none;
 }
-.radio {
-  position: absolute;
-  opacity: 0;
-  inset: 0;
-  margin: 0;
-  cursor: pointer;
+
+/* Send: gold (one of the three gold elements), the privacy line beside it. */
+.send {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 16px;
+  margin-top: auto;
+  padding-top: 22px;
 }
-.doorLabel {
-  font-weight: 500;
+.submit {
+  gap: 10px;
 }
-.doorHint {
-  font-size: var(--step--1);
-  color: var(--ink-2);
+.submit:disabled {
+  cursor: default;
 }
-@media (min-width: 1300px) {
-  .doors {
-    grid-template-columns: repeat(3, minmax(0, 1fr));
+.spin {
+  width: 12px;
+  height: 12px;
+  border: 1.5px solid rgba(11, 11, 13, 0.35);
+  border-top-color: var(--body);
+  border-radius: 50%;
+  animation: spin 0.9s linear infinite;
+}
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
   }
-  .doors legend {
-    grid-column: 1 / -1;
+}
+.privacy {
+  font-size: 0.75rem;
+  color: var(--grey);
+}
+.privacy a {
+  color: var(--porcelain);
+  border-bottom: 1px solid var(--hair);
+}
+.mail {
+  color: var(--porcelain);
+  border-bottom: 1px solid var(--ctrl);
+}
+.failure:not(:empty) {
+  margin-top: 16px;
+  font-size: 0.875rem;
+  color: var(--porcelain);
+}
+
+/* Success: a static status line that takes focus; the text stays printed. */
+.done {
+  margin-top: 22px;
+  padding: 14px 16px;
+  border: 1px solid var(--ctrl);
+  border-radius: var(--r-tag);
+  background: var(--body);
+  font-size: 0.9375rem;
+  line-height: 1.45;
+}
+.done:focus-visible {
+  outline: 2px solid var(--porcelain);
+  outline-offset: 2px;
+}
+.after {
+  margin-top: 14px;
+  max-width: 380px;
+  font-size: 0.9375rem;
+  color: var(--grey);
+}
+
+@media (max-width: 1099px) {
+  .panel {
+    width: 480px;
+    margin-left: calc(var(--inset) + 24px);
+  }
+  .voice {
+    left: 52%;
+    top: 62%;
   }
 }
 
-/* The event horizon, written under the form. */
-.horizon {
-  font-size: var(--step--1);
-  color: var(--ink-2);
-  border-top: var(--hairline);
-  padding-top: 1rem;
+/* Phones (m-05): a 232 px band holds the hole and her line; the form is plain DOM below it. */
+@media (max-width: 767px) {
+  .contact {
+    display: block;
+  }
+  .window {
+    --ring-x: 80%;
+    --ring-y: 51%;
+    --ring-r: 60px;
+    --still-h: 232px;
+    min-height: 0;
+    height: 232px;
+  }
+  .tag {
+    left: 20px;
+    right: auto;
+    top: 16px;
+  }
+  .voice {
+    left: 20px;
+    top: 50px;
+    width: 178px;
+    max-width: none;
+  }
+  .voiceTag {
+    margin-bottom: 6px;
+  }
+  .voice :global(.voice) {
+    font-size: 1rem;
+    line-height: 1.3;
+  }
+  .foot {
+    display: none;
+  }
+  .panel {
+    width: auto;
+    max-width: none;
+    margin: 16px var(--inset) 0;
+    padding: 0;
+    border: 0;
+    border-radius: 0;
+    background: transparent;
+  }
+  .lede {
+    margin-top: 10px;
+    font-size: 0.8125rem;
+    line-height: 1.4;
+  }
+  .doors {
+    margin-top: 14px;
+  }
+  .door {
+    height: 32px;
+    padding: 0 12px;
+    font-size: 0.75rem;
+  }
+  .field {
+    margin-top: 8px;
+  }
+  .send {
+    gap: 12px;
+    padding-top: 12px;
+  }
+  .send::after {
+    content: attr(data-foot);
+  }
 }

@@ -281,6 +281,7 @@ export const fr: Dict = {
     horizon: 'Lu par un ingénieur, pas par un commercial.',
     noScript: 'Ce formulaire nécessite JavaScript. Vous pouvez aussi nous écrire directement.',
     direct: 'Vous préférez l’e-mail ?',
+    errorsTitle: 'Avant que nous puissions répondre',
     errors: {
       org: 'Indiquez votre nom ou celui de votre entreprise.',
       email: 'Saisissez une adresse e-mail à laquelle vous répondre.',

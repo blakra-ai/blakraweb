@@ -229,6 +229,43 @@
   text-align: center;
 }
 
+/* Over the porcelain screen (stations 07 and 08) the bar is light: ink text, ink hairline, ink controls. */
+.bar[data-surface='light'] {
+  background: var(--porcelain);
+  color: var(--body);
+  color-scheme: light;
+}
+.bar[data-surface='light']::after {
+  background: var(--hair-ink);
+}
+.bar[data-surface='light'] .nav {
+  color: var(--grey-on-light);
+}
+.bar[data-surface='light'] .nav a:hover,
+.bar[data-surface='light'] .nav a[aria-current] {
+  color: var(--body);
+}
+.bar[data-surface='light'] :global(.pill),
+.bar[data-surface='light'] .burger,
+.bar[data-surface='light'] .chip {
+  border-color: var(--ctrl-light);
+  color: var(--body);
+}
+.bar[data-surface='light'] .cta,
+.bar[data-surface='light'] :global(.pill):hover,
+.bar[data-surface='light'] .burger:hover {
+  border-color: var(--body);
+}
+.bar[data-surface='light'] .toggleDot {
+  background: var(--body);
+}
+.bar[data-surface='light'] .lang button {
+  color: var(--grey-on-light);
+}
+.bar[data-surface='light'] :focus-visible {
+  outline-color: var(--body);
+}
+
 /* Tablet (768–1100): the links go into the panel; the bar keeps the chip, the switch and the call to action. */
 @media (max-width: 1099px) {
   .nav {

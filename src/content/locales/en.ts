@@ -284,6 +284,7 @@ export const en: Dict = {
     horizon: 'Read by an engineer, not a sales team.',
     noScript: 'This form needs JavaScript. You can write to us directly instead.',
     direct: 'Prefer email?',
+    errorsTitle: 'Before we can reply',
     errors: {
       org: 'Tell us your name or your company’s name.',
       email: 'Enter an email address we can reply to.',

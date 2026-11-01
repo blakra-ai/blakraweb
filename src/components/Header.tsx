@@ -1,6 +1,6 @@
 import { useEffect, useId, useRef, useState } from 'react'
 import { company } from '../content/shared'
-import { GaugeChip } from '../features/observatory/Gauge'
+import { GaugeChip, useStation } from '../features/observatory/Gauge'
 import { availableLocales, locales, useI18n } from '../i18n'
 import { useMotion } from '../motion/MotionProvider'
 import { pathFor, translatePath, type Route } from '../routes'
@@ -44,6 +44,8 @@ export function Header({ route }: { route: Route }) {
   const home = route.id === 'home'
   const { systemReduced } = useMotion()
   const [open, setOpen] = useState(false)
+  const station = useStation()
+  const light = home && (station === 7 || station === 8)
   const panelRef = useRef<HTMLDivElement>(null)
   const burgerRef = useRef<HTMLButtonElement>(null)
   const panelId = useId()
@@ -101,7 +103,7 @@ export function Header({ route }: { route: Route }) {
 
   return (
     <header className={s.header}>
-      <div className={s.bar}>
+      <div className={s.bar} data-surface={light ? 'light' : undefined}>
         <a href={homePath} className={s.brand} aria-label={`${company.name}, ${t.ui.home}`}>
           <Mark className={s.mark} />
           <span className={s.word}>{company.name}</span>

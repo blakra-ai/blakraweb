@@ -214,6 +214,8 @@ export interface Dict {
     horizon: string
     noScript: string
     direct: string
+    /** The error summary's title above the form (d-05-form-states). */
+    errorsTitle: string
     errors: { org: string; email: string; emailFormat: string; msg: string; msgLong: string }
   }
   /**
