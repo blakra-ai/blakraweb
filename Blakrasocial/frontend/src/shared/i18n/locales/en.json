@@ -278,7 +278,14 @@
     "profile": "Profile",
     "changePassword": "Change password",
     "changePasswordHelp": "Other devices will be signed out.",
-    "passwordChanged": "Password changed."
+    "passwordChanged": "Password changed.",
+    "about": {
+      "title": "What is Blakrasocial?",
+      "body": "Blakrasocial, by {{company}}, lets businesses write a post once and publish or schedule it to their own Instagram professional account, Facebook Page, TikTok account and LinkedIn profile.",
+      "control": "Each account is connected through the network's own sign-in page and can be disconnected at any time. Nothing is posted unless the user presses Publish or schedules the post.",
+      "access": "Accounts are created by invitation for our customers.",
+      "contact": "Questions or access requests:"
+    }
   },
   "admin": {
     "title": "Customers",

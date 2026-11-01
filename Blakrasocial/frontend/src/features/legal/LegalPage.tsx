@@ -3,6 +3,7 @@ import { useEffect } from "react";
 import { useTranslation } from "react-i18next";
 import { Link } from "react-router-dom";
 import { LANGUAGES } from "@/shared/i18n";
+import { site } from "@/shared/lib/site";
 import { legalText, type LegalDoc } from "./content";
 
 const UPDATED = "2026-11-01";
@@ -11,8 +12,8 @@ export function LegalPage({ doc }: { doc: LegalDoc }) {
   const { t, i18n } = useTranslation();
   const next = LANGUAGES.find((l) => !i18n.language.startsWith(l.code)) ?? LANGUAGES[0];
   const vars = {
-    company: import.meta.env.VITE_COMPANY_NAME || "Blakra",
-    email: import.meta.env.VITE_CONTACT_EMAIL || "—",
+    company: site.company,
+    email: site.contactEmail || "—",
     site: window.location.host,
   };
   const text = legalText(doc, i18n.language, vars);

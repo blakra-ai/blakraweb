@@ -408,8 +408,12 @@ function signedRequest(payload, secret) {
     await card("Facebook").getByText(fa.connections.notConnected, { exact: true }).waitFor({ timeout: 10_000 });
   });
 
-  await step(16, "Privacy, terms and data-deletion pages are public and show the contact email", async () => {
+  await step(16, "Sign-in page explains the app; privacy, terms and data-deletion pages are public", async () => {
     const p2 = await browser.newPage({ locale: "en-US" });
+    await p2.goto(`${APP}/login`);
+    await p2.getByRole("heading", { name: "What is Blakrasocial?" }).waitFor();
+    await p2.getByRole("link", { name: "privacy@blakra.example" }).waitFor();
+    for (const name of ["Privacy policy", "Terms of service", "Data deletion"]) await p2.getByRole("link", { name }).waitFor();
     for (const [route, heading] of [["/privacy", "Privacy policy"], ["/terms", "Terms of service"], ["/data-deletion", "Data deletion"]]) {
       await p2.goto(`${APP}${route}`);
       await p2.getByRole("heading", { name: heading, level: 1 }).waitFor();

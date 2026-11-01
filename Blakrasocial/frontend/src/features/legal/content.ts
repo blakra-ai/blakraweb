@@ -65,7 +65,7 @@ const en: Record<LegalDoc, Builder> = {
       {
         heading: "Your rights and choices",
         paragraphs: [
-          `You can disconnect any social account at any time on the Connections page. You can ask us for a copy of your data, a correction or deletion by writing to ${email}. You can also remove the app from your Facebook, Instagram, TikTok or LinkedIn settings; we then delete the related data automatically (see the data deletion page).`,
+          `You can disconnect any social account at any time on the Connections page. You can ask us for a copy of your data, a correction or deletion by writing to ${email}. You can also remove the app in your Facebook or Instagram settings, and Meta tells us to delete the related data, which we do automatically. If you remove it in TikTok or LinkedIn, the stored token stops working at once; disconnect it here as well to delete it (see the data deletion page).`,
         ],
       },
       {
@@ -179,7 +179,7 @@ const fa: Record<LegalDoc, Builder> = {
           "عکس‌ها و ویدئوهای بارگذاری‌شده ۳۰ روز پس از بارگذاری خودکار از فضای ذخیره‌سازی ما پاک می‌شوند (شبکه‌ای که آن‌ها را منتشر کرده نسخهٔ خودش را دارد). تاریخچهٔ پست‌ها تا زمانی که حساب باز است نگه داشته می‌شود و با بستن حساب حذف می‌شود. نشست‌های ورود پس از ۳۰ روز منقضی می‌شوند.",
         ],
       },
-      { heading: "حقوق و انتخاب‌های شما", paragraphs: [`هر زمان می‌توانید از صفحهٔ «اتصال حساب‌ها» اتصال را قطع کنید. برای دریافت نسخه‌ای از اطلاعات، اصلاح یا حذف آن به ${email} بنویسید. همچنین می‌توانید برنامه را از تنظیمات فیس‌بوک، اینستاگرام، تیک‌تاک یا لینکدین حذف کنید؛ در این صورت اطلاعات مربوط به‌طور خودکار پاک می‌شود (صفحهٔ حذف اطلاعات را ببینید).`] },
+      { heading: "حقوق و انتخاب‌های شما", paragraphs: [`هر زمان می‌توانید از صفحهٔ «اتصال حساب‌ها» اتصال را قطع کنید. برای دریافت نسخه‌ای از اطلاعات، اصلاح یا حذف آن به ${email} بنویسید. همچنین می‌توانید برنامه را از تنظیمات فیس‌بوک یا اینستاگرام حذف کنید؛ متا به ما خبر می‌دهد و اطلاعات مربوط خودکار پاک می‌شود. اگر آن را از تیک‌تاک یا لینکدین حذف کنید، توکن ذخیره‌شده همان لحظه از کار می‌افتد؛ برای پاک شدنش، اتصال را اینجا هم قطع کنید (صفحهٔ حذف اطلاعات را ببینید).`] },
       { heading: "امنیت", paragraphs: ["ارتباط با HTTPS رمزنگاری می‌شود. رمزها با Argon2id هش می‌شوند، توکن‌ها رمزنگاری‌شده ذخیره می‌شوند، نشست‌ها از کوکی امن HttpOnly استفاده می‌کنند و دسترسی فقط برای صاحب حساب است."] },
       { heading: "تغییرات", paragraphs: ["اگر این سیاست تغییر کند همین صفحه به‌روز می‌شود و برای تغییرات مهم به شما ایمیل می‌زنیم."] },
     ],

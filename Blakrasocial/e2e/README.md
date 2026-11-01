@@ -56,7 +56,8 @@ PostgreSQL, starting from an empty database:
     asks to reconnect.
 15. Meta's signed data-deletion request removes the Facebook connection and returns a status page;
     a request with a wrong signature is refused.
-16. The privacy, terms and data-deletion pages are public and show the contact email.
+16. The sign-in page explains what the app does and links the legal pages; the privacy, terms and
+    data-deletion pages are public and show the contact email.
 17. The admin deletes the customer: sign-in, connections, posts and uploaded files are gone.
 
 `fake_networks.py` stands in for the networks' login pages and APIs (same paths, documented

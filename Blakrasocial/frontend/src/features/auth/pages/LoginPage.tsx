@@ -3,6 +3,7 @@ import { useState, type FormEvent } from "react";
 import { useTranslation } from "react-i18next";
 import { Navigate, useNavigate, useSearchParams } from "react-router-dom";
 import { Alert, Button, Input, Label } from "@/shared/ui";
+import { AboutApp } from "../components/AboutApp";
 import { AuthLayout } from "../components/AuthLayout";
 import { authErrorMessage } from "../components/authError";
 import { safeNext } from "../components/RequireAuth";
@@ -37,7 +38,7 @@ export default function LoginPage() {
   }
 
   return (
-    <AuthLayout title={t("auth.signInTitle")} description={t("auth.signInDescription")}>
+    <AuthLayout title={t("auth.signInTitle")} description={t("auth.signInDescription")} aside={<AboutApp />}>
       <form className="space-y-4" onSubmit={(e) => void submit(e)} noValidate={false}>
         {error && <Alert tone="danger">{error}</Alert>}
         <div className="space-y-1.5">
