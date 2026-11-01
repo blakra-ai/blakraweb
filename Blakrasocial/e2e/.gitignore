@@ -2,3 +2,4 @@
 shots/
 media/
 node_modules/
+__pycache__/
