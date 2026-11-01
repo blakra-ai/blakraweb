@@ -29,9 +29,20 @@ export function MediaList({ items, onRemove, onRetry, onMove }: Props) {
           <div className="min-w-0 flex-1 space-y-1">
             <p className="truncate text-sm font-medium" dir="auto">{item.file.name}</p>
             <p className="text-xs text-muted-foreground">
-              {formatBytes(item.file.size, i18n.language)}
-              {item.probe && ` · ${ratioLabel(item.probe.width, item.probe.height)} · ${item.probe.width}×${item.probe.height}`}
-              {item.probe?.durationSeconds != null && ` · ${formatDuration(item.probe.durationSeconds, i18n.language)}`}
+              {/* <bdi> isolates each mixed-direction value (e.g. "۳٫۸ MB") so RTL layout can't reorder its parts. */}
+              {[
+                formatBytes(item.file.size, i18n.language),
+                item.probe && ratioLabel(item.probe.width, item.probe.height),
+                item.probe && `${item.probe.width}×${item.probe.height}`,
+                item.probe?.durationSeconds != null && formatDuration(item.probe.durationSeconds, i18n.language),
+              ]
+                .filter(Boolean)
+                .map((part, i) => (
+                  <span key={i}>
+                    {i > 0 && " · "}
+                    <bdi>{part}</bdi>
+                  </span>
+                ))}
             </p>
             {item.status === "uploading" && <Progress value={item.progress} label={t("media.uploading")} />}
             {item.status === "error" && (

@@ -24,8 +24,9 @@ export interface ButtonProps extends ButtonHTMLAttributes<HTMLButtonElement>, Va
   asChild?: boolean;
 }
 
-export const Button = forwardRef<HTMLButtonElement, ButtonProps>(({ className, variant, size, asChild, ...props }, ref) => {
-  const Comp = asChild ? Slot : "button";
-  return <Comp ref={ref} className={cn(buttonVariants({ variant, size }), className)} {...props} />;
+/** Defaults to type="button" so a button inside a form never submits it by accident; pass type="submit" explicitly. */
+export const Button = forwardRef<HTMLButtonElement, ButtonProps>(({ className, variant, size, asChild, type, ...props }, ref) => {
+  if (asChild) return <Slot ref={ref} className={cn(buttonVariants({ variant, size }), className)} {...props} />;
+  return <button ref={ref} type={type ?? "button"} className={cn(buttonVariants({ variant, size }), className)} {...props} />;
 });
 Button.displayName = "Button";
