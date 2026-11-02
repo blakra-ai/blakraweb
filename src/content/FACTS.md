@@ -15,7 +15,7 @@ badge on any product marked `draft: true` in `shared.ts`.
 |---|---|---|---|
 | Legal entity, still missing: state of organization, entity (file) number, the manager or managing member who represents it; an EU representative (GDPR Art. 27) if one is needed; the hosting provider's name and address (France, LCEN) | Legal notice, Privacy | owner; a lawyer confirms which apply | Legal notice shows name, address, email and phone only |
 | Server log retention: 14 days | Privacy | set it on the server (logrotate, see deploy/nginx.conf.example) and confirm | shown as written (default, 2026-10-27) |
-| The skin-analysis AI's product name and platforms | Products, Sponsors and buyers, structured data | the real name; the platforms it runs on | descriptive name "Skin analysis AI"; the Platforms row is hidden |
+| The skin-analysis AI's product name and platforms | Products, Sponsors and buyers, structured data | LIOXSA, iOS, lioxsa.com (owner, 2026-11-02) | — |
 | What a party receives under NDA: live demo, architecture walkthrough, code review | Products card, Sponsors and buyers, contact door | confirm all three exist (owner confirmed the product is working and ready) | shown as written (writer default, 2026-10-27) |
 | Enquiry retention: 12 months after the last exchange | Privacy | confirm the period | shown as written (default) |
 | Case sources: year, duration, BLAKRA's role, how each number was measured | Proof | optional; raises credibility | cards show the confirmed numbers without them |

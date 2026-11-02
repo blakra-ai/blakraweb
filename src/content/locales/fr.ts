@@ -217,7 +217,7 @@ export const fr: Dict = {
     stage: { working: 'Fonctionnel · ouvert aux offres' },
     items: {
       skin: {
-        line: 'Une IA qui analyse la peau du visage et recommande des produits professionnels.',
+        line: 'LIOXSA lit une seule photo du visage pour le teint, la texture, les rougeurs et les pores, explique le résultat en termes simples et recommande des produits professionnels. Conseil cosmétique, pas un diagnostic médical.',
         detail: 'Écrite à partir de zéro, sans dépendance tierce. Les images ne sont jamais envoyées à des services externes. Démo sous NDA.',
         offer: 'Financement, licence ou cession complète avec code source et PI',
       },

@@ -97,10 +97,9 @@ export interface ProductFacts {
   draft: boolean
 }
 
-// The owner's own products (2026-10-27). The name is descriptive until the owner gives the
-// product's real name; platforms are hidden until supplied (an empty list hides the row).
+// The owner's own products. LIOXSA named by the owner 2026-11-02 (app screens + lioxsa.com privacy policy).
 export const products: readonly ProductFacts[] = [
-  { id: 'skin', name: 'Skin analysis AI', stage: 'working', platforms: [], layers: ['ai', 'data', 'apps'], href: '', draft: false },
+  { id: 'skin', name: 'LIOXSA', stage: 'working', platforms: ['iOS'], layers: ['ai', 'data', 'apps'], href: 'https://lioxsa.com', draft: false },
 ]
 
 export interface PersonFacts {

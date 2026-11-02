@@ -217,7 +217,7 @@ export const de: Dict = {
     stage: { working: 'Lauffähig · offen für Angebote' },
     items: {
       skin: {
-        line: 'Eine KI, die Gesichtshaut analysiert und professionelle Produkte empfiehlt.',
+        line: 'LIOXSA liest aus einem Foto des Gesichts Hautton, Textur, Rötungen und Poren, erklärt das Ergebnis in klaren Worten und empfiehlt professionelle Produkte. Kosmetische Orientierung, keine medizinische Diagnose.',
         detail: 'Von Grund auf selbst geschrieben, ohne Abhängigkeiten von Drittanbietern. Bilder werden nie an externe Dienste gesendet. Demo unter NDA.',
         offer: 'Sponsoring, Lizenz oder Komplettverkauf mit Quellcode und IP-Rechten',
       },

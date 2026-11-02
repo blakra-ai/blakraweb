@@ -220,7 +220,7 @@ export const en: Dict = {
     stage: { working: 'Working · open to offers' },
     items: {
       skin: {
-        line: 'An AI that analyzes facial skin and recommends professional products.',
+        line: 'LIOXSA reads one photo of the face for tone, texture, redness and pores, explains the result in plain words and recommends professional products. Cosmetic guidance, not a medical diagnosis.',
         detail: 'Written from scratch, with no third-party dependencies. Images are never sent to outside services. Demo under NDA.',
         offer: 'Sponsorship, a license, or outright sale with source code and IP',
       },
