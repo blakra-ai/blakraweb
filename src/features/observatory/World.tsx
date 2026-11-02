@@ -218,6 +218,10 @@ function Passes({ handle }: { handle: ReturnType<typeof createGuideHandle> }) {
       well.uniforms.uFade.value = f.fade
       well.uniforms.uRadius.value = FRAME_RADIUS
       well.uniforms.uCell.value = GRID_CELL
+      // The sky behind her (hero, contact): stars and planets lensed by the hole, the infall, the grid's breath.
+      well.uniforms.uSky.value = w.kind === 'stage' ? 0 : 1
+      well.uniforms.uRing.value = rr
+      well.uniforms.uTime.value = still ? 0 : obs.clock
       fitRing(ring.mesh, ring.uniforms, rx, ry, rr)
       ring.uniforms.uGlow.value = glow
       ring.uniforms.uTime.value = still ? 0 : obs.clock
@@ -247,7 +251,8 @@ function Passes({ handle }: { handle: ReturnType<typeof createGuideHandle> }) {
     // The next frame: while something moves (the bend, a pulse, the scroll settling, her clip and her life while she shows), at once; else none.
     const sinceInput = (now - s.inputAt) / 1000
     const alive = guideShown && (handle.moving() || handle.rig.metrics !== null)
-    const moving = !still && (bend < 1 || glow > 0 || Math.abs(nav.scrollV) > 0 || sinceInput < INPUT_HOLD_S || alive || journeyMoving(journey, target))
+    const sky = windows.some((w) => w.kind !== 'stage' && onScreen(w.rect, y, viewport, w.sticky))
+    const moving = !still && (bend < 1 || glow > 0 || Math.abs(nav.scrollV) > 0 || sinceInput < INPUT_HOLD_S || alive || sky || journeyMoving(journey, target))
     if (PROFILE) frames.why = moving ? `bend${bend < 1 ? 1 : 0} glow${glow > 0 ? 1 : 0} scroll${nav.scrollV !== 0 ? 1 : 0} input${sinceInput < INPUT_HOLD_S ? 1 : 0} guide${alive ? 1 : 0}` : 'idle'
     if (moving) invalidate()
 
