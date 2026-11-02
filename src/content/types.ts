@@ -51,6 +51,8 @@ export interface Dict {
     skip: string
     home: string
     nav: { work: string; engine: string; products: string; people: string; about: string }
+    /** The breadcrumb trail on inner pages: its landmark name and the first crumb. */
+    crumbs: { label: string; home: string }
     cta: string
     pauseMotion: string
     /** The header's menu button (below 1100 px). */
@@ -125,6 +127,9 @@ export interface Dict {
     engagement: string
     screens: string
     next: string
+    /** Links from a project page to how we engage (About) and, for AI projects, to the AI section. */
+    engageLink: string
+    aiLink: string
     projects: Record<WorkSlug, WorkText>
   }
   /** AI on the home page, after the seven layers (run 2026-11-02-company-content). */

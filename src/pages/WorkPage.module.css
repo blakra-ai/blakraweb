@@ -11,12 +11,23 @@
 .page > * {
   grid-column: 1 / -1;
 }
-.back a {
-  color: var(--grey);
-  text-decoration: none;
-}
 .back a:hover {
   color: var(--porcelain);
+}
+.related {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px 28px;
+  margin-top: clamp(2.5rem, 5vw, 4rem);
+}
+.related a {
+  color: inherit;
+  text-decoration: underline;
+  text-decoration-thickness: 1px;
+  text-underline-offset: 5px;
+}
+.related a:hover {
+  color: var(--accent, inherit);
 }
 .head {
   grid-column: 1 / 8;

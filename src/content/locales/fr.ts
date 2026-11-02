@@ -22,6 +22,7 @@ export const fr: Dict = {
     skip: 'Aller au contenu',
     home: 'accueil',
     nav: { work: 'Réalisations', engine: 'Expertises', products: 'Produits', people: 'Équipe', about: 'À propos' },
+    crumbs: { label: 'Fil d’Ariane', home: 'Accueil' },
     cta: 'Lancer un projet',
     pauseMotion: 'Mettre les animations en pause',
     menu: 'Menu',
@@ -92,6 +93,8 @@ export const fr: Dict = {
     engagement: 'Mission',
     screens: 'Écrans',
     next: 'Projet suivant',
+    engageLink: 'Comment nous travaillons avec vous',
+    aiLink: 'Comment nous construisons l’IA',
     projects: {
       'vitrin-app': {
         category: 'Application boutique et réserve',

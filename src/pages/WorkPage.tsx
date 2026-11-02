@@ -1,6 +1,7 @@
-import { shotUrl, work, type WorkProject, type WorkShot } from '../content/work'
+import { shotUrl, work, type WorkProject, type WorkShot, type WorkSlug } from '../content/work'
 import { useI18n } from '../i18n'
 import { Section } from '../components/Section'
+import { Breadcrumbs } from '../components/Breadcrumbs'
 import { pathFor, workPath } from '../routes'
 import s from './WorkPage.module.css'
 
@@ -52,6 +53,9 @@ function Screens({ project, from, to }: { project: WorkProject; from: number; to
   )
 }
 
+/** Projects whose page also links to the AI section. */
+const aiProjects = new Set<WorkSlug>(['helya-ai', 'nuvoq-vision'])
+
 /** One project of the selected client work: its screens large, the problem, the decisions, the next project. */
 export function WorkPage({ slug }: { slug: string }) {
   const { t, locale } = useI18n()
@@ -65,12 +69,7 @@ export function WorkPage({ slug }: { slug: string }) {
 
   return (
     <Section className={s.page} surface="body" aria-labelledby="page-title">
-      <p className={s.back}>
-        <a className="mono" href={`${pathFor('home', locale)}#work`}>
-          <span aria-hidden="true">← </span>
-          {w.all}
-        </a>
-      </p>
+      <Breadcrumbs id="work" slug={project.slug} className={s.back} />
 
       <header className={s.head}>
         <p className="eyebrow mono">{tx.category}</p>
@@ -125,6 +124,11 @@ export function WorkPage({ slug }: { slug: string }) {
           <Screens project={project} from={firstGroupEnd} to={project.shots.length} />
         </section>
       )}
+
+      <p className={s.related}>
+        <a href={pathFor('about', locale, '#about-engage')}>{w.engageLink}</a>
+        {aiProjects.has(project.slug) && <a href={pathFor('home', locale, '#ai')}>{w.aiLink}</a>}
+      </p>
 
       <nav className={s.next} aria-label={w.next}>
         <a href={workPath(next.slug, locale)}>

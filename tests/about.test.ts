@@ -23,9 +23,10 @@ describe('the About page', () => {
       expect(t.meta.aboutTitle).not.toBe(t.meta.homeTitle)
       expect(head).toContain('hreflang="x-default" href="https://blakra.us/about/"')
       const ld = JSON.parse(head.match(/<script type="application\/ld\+json">(.*?)<\/script>/)![1])
-      expect(ld['@type']).toBe('FAQPage')
-      expect(ld.mainEntity).toHaveLength(t.about.faq.length)
-      expect(ld.mainEntity[0].acceptedAnswer.text).toBe(t.about.faq[0].a)
+      const faq = ld['@graph'].find((n: { '@type': string | string[] }) => [n['@type']].flat().includes('FAQPage'))
+      expect([faq['@type']].flat()).toEqual(['AboutPage', 'FAQPage'])
+      expect(faq.mainEntity).toHaveLength(t.about.faq.length)
+      expect(faq.mainEntity[0].acceptedAnswer.text).toBe(t.about.faq[0].a)
     })
   }
 })

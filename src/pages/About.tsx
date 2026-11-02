@@ -1,6 +1,7 @@
 import { company } from '../content/shared'
 import { useI18n } from '../i18n'
 import { Section } from '../components/Section'
+import { Breadcrumbs } from '../components/Breadcrumbs'
 import { pathFor } from '../routes'
 import s from './About.module.css'
 
@@ -32,6 +33,7 @@ export function About() {
   )
   return (
     <Section className={s.page} aria-labelledby="page-title">
+      <Breadcrumbs id="about" className={s.crumbs} />
       <header className={s.intro}>
         <p className="eyebrow mono">{a.eyebrow}</p>
         <h1 id="page-title" className={`h2 ${s.title}`}>

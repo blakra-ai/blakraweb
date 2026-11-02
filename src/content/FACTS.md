@@ -56,6 +56,22 @@ badge on any product marked `draft: true` in `shared.ts`.
 | FAQ defaults: daily time-zone overlap fixed at kickoff; English or another agreed language; access limited to those who need it | About (FAQ) | draft defaults accepted by owner 2026-11-02 | [DEFAULT]/[CONFIRM] |
 | Google LLC takes part in the EU-U.S. Data Privacy Framework (incl. UK and Swiss extensions) | Privacy (transfers) | dataprivacyframework.gov listing; re-check before launch | needs lawyer review with the rest of the Privacy text |
 
+## Search and AI (run 2026-11-03-seo)
+
+Structured data (src/head.ts), llms.txt / llms-full.txt (src/llms.ts) and the social previews
+(public/og, `npm run og:pages` after `npm run build`) repeat only claims listed above. No ratings,
+reviews, prices, phone or people are marked up. robots.txt allows every crawler, AI search and
+training bots included (owner goal: be found and cited).
+
+| Owner action | How | Until then |
+|---|---|---|
+| Google Search Console ownership | Add the property, choose "HTML tag", build with `VITE_GOOGLE_SITE_VERIFICATION=<token>` (or verify by DNS TXT, preferred) and submit https://blakra.us/sitemap.xml | no tag is emitted (no placeholder token ships) |
+| Bing Webmaster Tools ownership | "Import from Google Search Console", or build with `VITE_BING_SITE_VERIFICATION=<token>` (msvalidate.01) | no tag |
+| IndexNow (Bing, Yandex, Seznam, Naver) | Generate a key, put `public/<key>.txt` containing the key, ping https://api.indexnow.org/indexnow after each deploy | not set up |
+| Google Business Profile | Only if BLAKRA serves customers at an address; the Sacramento address is a registered office, so a service-area profile with a hidden address is the only accurate option | not created |
+| Social accounts | Create them, add to `company.social`; they become `sameAs` | no sameAs |
+| OG images | Re-run `npm run build && npm run og:pages` after changing a page's headline or description, commit public/og | images match the copy as of 2026-11-03 |
+
 ## Illustrations
 Scene labels ("Store 04", "Line 3 · machine 4 stopped", the inbox messages) are illustrative
 and carry no claims. The only numbers in scenes are the confirmed outcomes ("65%") and

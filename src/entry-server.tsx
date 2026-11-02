@@ -3,6 +3,7 @@ import { StrictMode } from 'react'
 import { App } from './App'
 import type { Dict } from './content/types'
 import { renderHead } from './head'
+import { renderLlms } from './llms'
 import { locales } from './i18n'
 import { resolveRoute, routes } from './routes'
 
@@ -19,4 +20,9 @@ export function render(path: string): { html: string; head: string; lang: string
     </StrictMode>,
   )
   return { html, head: renderHead(route, dict), lang: locales[route.locale].lang, locale: route.locale }
+}
+
+/** llms.txt (index) and llms-full.txt (full text), from the English dictionary. */
+export function llms(full: boolean): string {
+  return renderLlms(dicts['./content/locales/en.ts'].en, full)
 }

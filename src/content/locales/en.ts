@@ -25,6 +25,7 @@ export const en: Dict = {
     skip: 'Skip to content',
     home: 'home',
     nav: { work: 'Work', engine: 'Capabilities', products: 'Products', people: 'People', about: 'About' },
+    crumbs: { label: 'Breadcrumb', home: 'Home' },
     cta: 'Start a project',
     pauseMotion: 'Pause motion',
     menu: 'Menu',
@@ -95,6 +96,8 @@ export const en: Dict = {
     engagement: 'Engagement',
     screens: 'Screens',
     next: 'Next project',
+    engageLink: 'How we engage',
+    aiLink: 'How we build AI',
     projects: {
       'vitrin-app': {
         category: 'Storefront and stockroom app',

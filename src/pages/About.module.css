@@ -4,6 +4,9 @@
   margin: 0 auto;
   padding: calc(var(--header-h) + clamp(4rem, 10vh, 7rem)) 64px clamp(5rem, 10vw, 8rem);
 }
+.crumbs {
+  margin-bottom: 32px;
+}
 .intro {
   display: grid;
   gap: 24px;

@@ -16,6 +16,7 @@ React 19.3.1, Vite 8.3.5, TypeScript 7.0.2, three 0.186.1, postprocessing 6.39.5
 | typecheck | `npm run typecheck` | ✓ 2026-10-26: clean |
 | e2e | `npm run e2e` (after build; spawns preview on 4174) | ✓ 2026-10-27: 106/106 |
 | og image | `npm run og` | ✓ |
+| per-page og images | `npm run og:pages` (after build) | ✓ 2026-11-03: 44 JPEGs, ≤ 60 kB |
 | lint | none configured | — |
 
 ## Architecture map

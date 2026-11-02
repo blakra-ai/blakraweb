@@ -22,6 +22,7 @@ export const de: Dict = {
     skip: 'Zum Inhalt springen',
     home: 'Startseite',
     nav: { work: 'Projekte', engine: 'Leistungen', products: 'Produkte', people: 'Team', about: 'Über uns' },
+    crumbs: { label: 'Brotkrümelnavigation', home: 'Startseite' },
     cta: 'Projekt starten',
     pauseMotion: 'Animationen anhalten',
     menu: 'Menü',
@@ -92,6 +93,8 @@ export const de: Dict = {
     engagement: 'Auftrag',
     screens: 'Bildschirme',
     next: 'Nächstes Projekt',
+    engageLink: 'So arbeiten wir mit Ihnen',
+    aiLink: 'So bauen wir KI',
     projects: {
       'vitrin-app': {
         category: 'Shop- und Lager-App',
