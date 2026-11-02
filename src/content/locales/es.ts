@@ -48,7 +48,7 @@ export const es: Dict = {
   pulse: {
     eyebrow: 'Por qué un solo equipo',
     title: 'Un producto es tan fuerte como su traspaso más débil.',
-    body: 'El diseño de una agencia, la app de otra, el backend de un freelance y la IA de un consultor. Cada traspaso pierde algo, y cuando algo falla, cada proveedor señala al siguiente. Con nosotros hay un solo contrato, un solo equipo y un responsable designado para todo.',
+    body: 'LIOXSA lo construyó un solo equipo, de principio a fin, y así construimos para nuestros clientes. Lo habitual es repartirlo: el diseño de una agencia, la app de otra, el backend de un freelance y la IA de un consultor. Cada traspaso pierde algo, y cuando algo falla, cada proveedor señala al siguiente. Con nosotros hay un solo contrato, un solo equipo y un responsable designado para todo.',
     ask: '¿Qué necesita construir?',
     needs: {
       panel: { label: 'Un panel de administración para gestionar nuestras operaciones.', tag: 'Panel de administración' },
@@ -73,7 +73,7 @@ export const es: Dict = {
   work: {
     eyebrow: 'Proyectos seleccionados para clientes',
     title: 'Productos que diseñamos y construimos para clientes privados.',
-    lede: 'Aplicaciones, plataformas de operaciones y herramientas de IA, cada una entregada a un cliente que es su propietario. Aquí, una pantalla por proyecto; abra uno para ver el problema, las decisiones y más pantallas.',
+    lede: 'El mismo equipo y el mismo método, al servicio de clientes: aplicaciones, plataformas de operaciones y herramientas de IA, cada una propiedad del cliente para el que se construyó. Aquí, una pantalla por proyecto; abra uno para ver el problema, las decisiones y más pantallas.',
     note: 'Realizado para un cliente privado. El producto es propiedad del cliente; los detalles están sujetos a un acuerdo de confidencialidad. Las pantallas mostradas son representativas.',
     also: 'También hemos entregado en finanzas, salud, robótica y más, la mayor parte confidencial bajo NDA.',
     noteTitle: 'Encargo',
@@ -223,7 +223,7 @@ export const es: Dict = {
     },
   },
   ai: {
-    eyebrow: 'IA',
+    eyebrow: 'La IA en la cima',
     title: 'IA que hace trabajo real, con sus datos, en sus condiciones.',
     lede: 'Construimos herramientas de IA de principio a fin, desde los datos que leen hasta la pantalla que usan las personas. Los modelos de código abierto funcionan en nuestros servidores o en los suyos, para que los datos sensibles se queden en casa. Las plataformas comerciales le llevan a producción lo más rápido. Elegimos la opción adecuada para cada proyecto.',
     blocks: {
@@ -245,7 +245,7 @@ export const es: Dict = {
   engine: {
     eyebrow: 'Capacidades',
     title: 'Siete capas. Un equipo.',
-    lede: 'Muchas organizaciones contratan un proveedor distinto para cada una. Nosotros cubrimos las siete y las construimos en orden, desde los cimientos, porque cada capa depende de la que tiene debajo.',
+    lede: 'Un solo equipo significa dominar cada capa. Muchas organizaciones contratan un proveedor distinto para cada una; nosotros cubrimos las siete y las construimos en orden, desde los cimientos, porque cada capa depende de la que tiene debajo.',
     layers: {
       ai: { name: 'IA', text: 'Asistentes de IA que leen, responden y actúan dentro de su trabajo, sobre sus propios datos y con una persona a un paso.' },
       growth: { name: 'Lanzamiento y SEO', text: 'SEO técnico, contenido y medios de lanzamiento, para que el público de un producto pueda encontrarlo.' },
@@ -267,7 +267,7 @@ export const es: Dict = {
   process: {
     eyebrow: 'Cómo trabajamos',
     title: 'Exacto antes que caro.',
-    lede: 'El software excede su presupuesto cuando el gasto empieza antes de que el problema sea exacto. Nosotros primero lo hacemos exacto.',
+    lede: 'Sea lo que sea que necesite construir, IA incluida, empieza igual: hacemos exacto el problema antes de que empiece el gasto.',
     steps: [
       { name: 'Acotar el problema', text: 'Recorremos el trabajo con las personas que lo hacen e identificamos el proceso que más le cuesta. La primera conversación y la evaluación técnica son gratuitas.' },
       { name: 'Construir el primer sistema', text: 'Un alcance fijo, un precio fijo y un criterio de «terminado» acordado. Software que funciona cada dos semanas, para que juzgue el avance usándolo.' },
@@ -280,8 +280,8 @@ export const es: Dict = {
 
   products: {
     eyebrow: 'Nuestros productos',
-    title: 'También construimos productos propios.',
-    lede: 'El mismo equipo directivo que dirige el trabajo para clientes desarrolla productos propios. Cada uno está abierto a un patrocinador o a un comprador.',
+    title: 'La prueba empieza por un producto propio.',
+    lede: 'Antes de construir para usted, construimos para nosotros: el mismo equipo directivo que dirige el trabajo para clientes diseña, desarrolla y opera productos propios. Cada uno está abierto a un patrocinador o a un comprador.',
     stage: { working: 'Operativo · abierto a ofertas' },
     items: {
       skin: {
@@ -302,7 +302,7 @@ export const es: Dict = {
   people: {
     eyebrow: 'Nuestra dirección, nuestros equipos',
     title: 'Las personas que conoce son las que construyen.',
-    lede: 'Nuestro equipo directivo define el alcance de cada proyecto y sigue implicado hasta que funciona en producción.',
+    lede: 'Detrás de cada paso está nuestro equipo directivo. Define el alcance de cada proyecto y sigue implicado hasta que funciona en producción.',
     roles: [
       { role: 'Fundador y director de tecnología (CTO)', owns: 'Estrategia de IA y arquitectura de sistemas, del primer diagrama a producción.', ask: 'Pregunte por: si la IA tiene realmente sitio en su proceso.' },
       { role: 'Ingeniero full-stack sénior y responsable de backend', owns: 'La base de cada sistema: backends, plataformas de datos y fiabilidad.', ask: 'Pregunte por: datos fiables y sistemas que no se caen.' },

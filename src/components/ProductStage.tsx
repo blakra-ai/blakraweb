@@ -8,7 +8,7 @@ const ORDER = ['cloud', 'data', 'automation', 'design', 'apps', 'growth', 'ai'] 
 const APP_UI = { cta: 'Read my skin', steps: ['Photo', 'Read', 'Routine'], reads: ['Tone', 'Texture', 'Redness', 'Pores'] }
 
 /**
- * 08 Our products, the product stage (owner brief 2026-11-02): one full-width ink window. Left:
+ * 02 Our products, the product stage (owner brief 2026-11-02): one full-width ink window. Left:
  * the head, the status chip, the product's name and two value lines, the offer strip
  * (sponsor · license · acquire) and the call to action that opens the contact form on
  * "Sponsor or buy a product". Right: the gold ring and its black hole, with a phone drawn in
@@ -24,7 +24,7 @@ export function ProductStage() {
   return (
     <div className={`dark ${s.stage}`}>
       <div className={s.copy}>
-        <p className="eyebrow mono">08 / 10 &nbsp;·&nbsp; {t.products.eyebrow}</p>
+        <p className="eyebrow mono">02 / 10 &nbsp;·&nbsp; {t.products.eyebrow}</p>
         <h2 id="products-title" className={`h3 ${s.h}`} data-focus tabIndex={-1}>
           {t.products.title}
         </h2>

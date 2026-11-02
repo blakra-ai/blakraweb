@@ -89,7 +89,7 @@ try {
       }
     })
     const state = await page.evaluate(() => {
-      const acts = ['#top', '#stage', '#ai', '#work', '#products', '#approach', '#people', '#contact']
+      const acts = ['#top', '#products', '#stage', '#ai', '#approach', '#people', '#work', '#contact']
       // Screen-reader-only text (1 px, clipped on purpose) is not hidden text.
       const text = [...document.querySelectorAll(acts.map((a) => `${a} *`).join(','))].filter((el) => el.children.length === 0 && el.textContent.trim() && el.getBoundingClientRect().width > 1)
       const day = document.getElementById('work').getBoundingClientRect()

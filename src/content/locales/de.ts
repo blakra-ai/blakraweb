@@ -48,7 +48,7 @@ export const de: Dict = {
   pulse: {
     eyebrow: 'Warum ein Team',
     title: 'Ein Produkt ist nur so stark wie seine schwächste Übergabe.',
-    body: 'Das Design von einer Agentur, die App von einer zweiten, das Backend von einem Freelancer und die KI von einem Berater. Bei jeder Übergabe geht etwas verloren, und wenn etwas ausfällt, zeigt jeder Anbieter auf den nächsten. Bei uns gibt es für alles einen Vertrag, ein Team und eine verantwortliche Projektleitung.',
+    body: 'LIOXSA hat ein einziges Team gebaut, vollständig, und genau so bauen wir für unsere Kunden. Üblich ist die Aufteilung: das Design von einer Agentur, die App von einer zweiten, das Backend von einem Freelancer und die KI von einem Berater. Bei jeder Übergabe geht etwas verloren, und wenn etwas ausfällt, zeigt jeder Anbieter auf den nächsten. Bei uns gibt es für alles einen Vertrag, ein Team und eine verantwortliche Projektleitung.',
     ask: 'Was sollen wir für Sie bauen?',
     needs: {
       panel: { label: 'Ein Admin-Panel für unseren Betrieb.', tag: 'Admin-Panel' },
@@ -73,7 +73,7 @@ export const de: Dict = {
   work: {
     eyebrow: 'Ausgewählte Kundenprojekte',
     title: 'Produkte, die wir für private Kunden entworfen und gebaut haben.',
-    lede: 'Apps, Betriebsplattformen und KI-Werkzeuge, jeweils an einen Kunden übergeben, dem das Produkt gehört. Hier ein Bildschirm pro Projekt; öffnen Sie eines für das Problem, die Entscheidungen und weitere Bildschirme.',
+    lede: 'Dasselbe Team, dieselbe Methode, für Kunden umgesetzt: Apps, Betriebsplattformen und KI-Werkzeuge, jeweils im Besitz des Kunden, für den sie entstanden sind. Hier ein Bildschirm pro Projekt; öffnen Sie eines für das Problem, die Entscheidungen und weitere Bildschirme.',
     note: 'Für einen privaten Kunden umgesetzt. Das Produkt gehört dem Kunden; Einzelheiten unterliegen einer Geheimhaltungsvereinbarung. Die gezeigten Bildschirme sind repräsentativ.',
     also: 'Weitere Projekte im Finanzwesen, im Gesundheitswesen, in der Robotik und mehr, die meisten vertraulich unter NDA.',
     noteTitle: 'Auftrag',
@@ -223,7 +223,7 @@ export const de: Dict = {
     },
   },
   ai: {
-    eyebrow: 'KI',
+    eyebrow: 'KI an der Spitze',
     title: 'KI, die echte Arbeit leistet, mit Ihren Daten, zu Ihren Bedingungen.',
     lede: 'Wir bauen KI-Werkzeuge vollständig, von den Daten, die sie lesen, bis zum Bildschirm, den Menschen nutzen. Open-Source-Modelle laufen auf unseren Servern oder Ihren, damit sensible Daten in Ihrem Haus bleiben. Kommerzielle Plattformen bringen Sie am schnellsten in den Produktivbetrieb. Wir wählen für jedes Projekt das Passende.',
     blocks: {
@@ -245,7 +245,7 @@ export const de: Dict = {
   engine: {
     eyebrow: 'Leistungen',
     title: 'Sieben Ebenen. Ein Team.',
-    lede: 'Viele Organisationen beauftragen für jede davon einen eigenen Anbieter. Wir decken alle sieben ab und bauen sie der Reihe nach, vom Fundament aufwärts, denn jede Ebene hängt von der darunter ab.',
+    lede: 'Ein Team heißt: Jede Ebene liegt in einer Hand. Viele Organisationen beauftragen für jede davon einen eigenen Anbieter; wir decken alle sieben ab und bauen sie der Reihe nach, vom Fundament aufwärts, denn jede Ebene hängt von der darunter ab.',
     layers: {
       ai: { name: 'KI', text: 'KI-Assistenten, die in Ihrer Arbeit lesen, antworten und handeln, mit Ihren eigenen Daten und einem Menschen in Reichweite.' },
       growth: { name: 'Launch und Suche', text: 'Technisches SEO, Inhalte und Medien zum Launch, damit die Zielgruppe ein Produkt auch findet.' },
@@ -267,7 +267,7 @@ export const de: Dict = {
   process: {
     eyebrow: 'Wie wir arbeiten',
     title: 'Genau, bevor es teuer wird.',
-    lede: 'Software wird teurer als geplant, wenn Geld fließt, bevor das Problem genau gefasst ist. Wir fassen es zuerst genau.',
+    lede: 'Was Sie auch bauen lassen, KI eingeschlossen, es beginnt immer gleich: Wir fassen das Problem genau, bevor Geld fließt.',
     steps: [
       { name: 'Das Problem eingrenzen', text: 'Wir gehen die Arbeit mit den Menschen durch, die sie erledigen, und benennen den Prozess, der Sie am meisten kostet. Das erste Gespräch und die technische Einschätzung sind kostenlos.' },
       { name: 'Das erste System bauen', text: 'Fester Umfang, fester Preis und eine vereinbarte Messlatte für „fertig“. Alle zwei Wochen funktionierende Software, damit Sie den Fortschritt im Gebrauch beurteilen.' },
@@ -280,8 +280,8 @@ export const de: Dict = {
 
   products: {
     eyebrow: 'Unsere Produkte',
-    title: 'Wir entwickeln auch eigene Produkte.',
-    lede: 'Dasselbe Leitungsteam, das die Kundenprojekte führt, entwickelt eigene Produkte. Jedes steht einem Sponsor oder einem Käufer offen.',
+    title: 'Der Beweis beginnt mit einem eigenen Produkt.',
+    lede: 'Bevor wir für Sie bauen, bauen wir für uns selbst: Dasselbe Leitungsteam, das die Kundenprojekte führt, entwirft, entwickelt und betreibt eigene Produkte. Jedes steht einem Sponsor oder einem Käufer offen.',
     stage: { working: 'Lauffähig · offen für Angebote' },
     items: {
       skin: {
@@ -302,7 +302,7 @@ export const de: Dict = {
   people: {
     eyebrow: 'Unsere Leitung, unsere Teams',
     title: 'Die Menschen, die Sie treffen, sind die, die bauen.',
-    lede: 'Unser Leitungsteam definiert jedes Projekt und bleibt selbst eingebunden, bis es im Produktivbetrieb läuft.',
+    lede: 'Hinter jedem Schritt steht unser Leitungsteam. Es definiert jedes Projekt und bleibt selbst eingebunden, bis es im Produktivbetrieb läuft.',
     roles: [
       { role: 'Gründer und Chief Technology Officer', owns: 'KI-Strategie und Systemarchitektur, vom ersten Diagramm bis zum Produktivbetrieb.', ask: 'Fragen Sie nach: ob KI überhaupt in Ihren Prozess gehört.' },
       { role: 'Senior Full-Stack Engineer und Leitung Backend', owns: 'Das Fundament jedes Systems: Backends, Datenplattformen und Zuverlässigkeit.', ask: 'Fragen Sie nach: Daten, denen man trauen kann, und Systemen, die laufen.' },

@@ -45,7 +45,7 @@ export function Header({ route }: { route: Route }) {
   const { systemReduced } = useMotion()
   const [open, setOpen] = useState(false)
   const station = useStation()
-  const light = home && (station === 8 || station === 9)
+  const light = home && (station === 2 || station === 8)
   const panelRef = useRef<HTMLDivElement>(null)
   const burgerRef = useRef<HTMLButtonElement>(null)
   const panelId = useId()
@@ -53,10 +53,10 @@ export function Header({ route }: { route: Route }) {
   const homePath = pathFor('home', locale)
   // Each link carries the station it lands on (the gauge's numbers), see storyboard.md.
   const nav = [
-    { label: t.ui.nav.work, href: `${homePath}#work`, station: '06' },
-    { label: t.ui.nav.engine, href: `${homePath}#stage`, station: '03' },
-    { label: t.ui.nav.products, href: `${homePath}#products`, station: '08' },
-    { label: t.ui.nav.people, href: `${homePath}#people`, station: '09' },
+    { label: t.ui.nav.products, href: `${homePath}#products`, station: '02' },
+    { label: t.ui.nav.engine, href: `${homePath}#stage`, station: '04' },
+    { label: t.ui.nav.people, href: `${homePath}#people`, station: '08' },
+    { label: t.ui.nav.work, href: `${homePath}#work`, station: '09' },
     { label: t.ui.nav.about, href: pathFor('about', locale), station: '' },
   ]
 

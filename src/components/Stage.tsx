@@ -17,14 +17,14 @@ import s from './Stage.module.css'
 const ROOT_TO_CROWN: readonly LayerId[] = ['cloud', 'data', 'automation', 'design', 'apps', 'growth', 'ai']
 
 /**
- * 02 · 03 · 04 The seven-layer stage (art pass v2, on paper): the object held by `position: sticky`
+ * 03 · 04 · 05 The seven-layer stage (art pass v2, on paper): the object held by `position: sticky`
  * inside a section whose CSS height is 2.4 screens, no pins. The page's grid bends into a small ink
  * well (Well.tsx, static SVG); as the hold scrubs, the seven layers draw themselves round it as
  * hairline rings, inner to outer, one every tenth of the hold; this file names each
  * layer ONCE in large type at the moment its band forms (Geist 300, 40 px, the layer's colour as
  * the 2 px line under the name, a 24 px transform on entry), keeps her line on the object's
- * tangent, and lets the words scroll over the window in the left columns: 02 why one team,
- * 03 seven layers, 04 the picker ("What do you need built?"), which keeps the chosen bands lit
+ * tangent, and lets the words scroll over the window in the left columns: 03 why one team,
+ * 04 seven layers, 05 the picker ("What do you need built?"), which keeps the chosen bands lit
  * and dims the rest (obs.picker → the world). The hold's progress is one number per scroll frame
  * (obs.hold); the ring hands over to the gauge's marker across the last tenth (obs.handover).
  * Reduced motion: every band formed and every name shown, the words in flow.
@@ -107,7 +107,7 @@ export function Stage() {
   const picked: readonly LayerId[] | null = choice === 'all' ? ROOT_TO_CROWN : choice ? needs[choice].layers : null
   const pickedIdx = picked ? ROOT_TO_CROWN.map((l, i) => (picked.includes(l) ? i + 1 : 0)).filter(Boolean) : []
   const nearWork = choice && choice !== 'all' ? needs[choice].work : null
-  const at = Math.min(4, Math.max(2, station))
+  const at = Math.min(5, Math.max(3, station))
   // The layer named now: the last band that formed (none before the first); all seven without motion.
   const current = orbit - 1
 
@@ -151,12 +151,12 @@ export function Stage() {
 
       {/* The words scroll over the held window: one block per station, columns 1–5 (an opaque band on phones). */}
       <div className={s.words}>
-        <div className={s.block} data-station={2}>
+        <div className={s.block} data-station={3}>
           <p className="eyebrow mono">{t.pulse.eyebrow}</p>
           <h2 className={`h2 ${s.h2}`}>{t.pulse.title}</h2>
           <p className={`lede ${s.lede}`}>{t.pulse.body}</p>
         </div>
-        <div className={s.block} data-station={3}>
+        <div className={s.block} data-station={4}>
           <p className="eyebrow mono">{t.engine.eyebrow}</p>
           <h2 id="stage-title" className={`h2 ${s.h2}`} data-focus tabIndex={-1}>
             {t.engine.title}
@@ -164,7 +164,7 @@ export function Stage() {
           <p className={`lede ${s.lede}`}>{t.engine.lede}</p>
           <p className={`lede ${s.crown}`}>{t.engine.crownTitle}</p>
         </div>
-        <div className={`${s.block} ${s.picker}`} data-station={4} id="pulse">
+        <div className={`${s.block} ${s.picker}`} data-station={5} id="pulse">
           <h2 id="pulse-title" className={`h2 ${s.ask}`} data-focus tabIndex={-1}>
             {t.pulse.ask}
           </h2>

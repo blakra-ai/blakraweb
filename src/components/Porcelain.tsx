@@ -13,14 +13,26 @@ const num = (id: LayerId) => ORDER.indexOf(id) + 1
 const two = (n: number) => String(n).padStart(2, '0')
 
 /**
- * 08 Products + 09 People, the porcelain screen (storyboard d-04-porcelain): the light surface,
+ * 02 Our products and 08 People, two porcelain screens (storyboard d-04-porcelain): the light surface,
  * ink text and grey-on-light secondary (5.50 : 1); gold never as text here. Columns 1–6: the
  * products as hairline rows (eyebrow, H3, lede, the skin-analysis product with "Uses layers",
  * the investors link), then the three people as hairline rows. Columns 8–12: the one large
  * object, the ring drawn in ink with the picked layers lit and "Your choice, remembered". No
  * guide here: the ring glyph is the object. No motion beyond hover.
  */
-export function Porcelain() {
+export function Products() {
+  return (
+    <Section id="products" beat="payload" surface="porcelain" station={2} className={`${s.porcelain} ${s.products}`} aria-labelledby="products-title">
+      <ProductStage />
+    </Section>
+  )
+}
+
+/**
+ * 08 Leadership and teams on the porcelain screen: the people as hairline rows in columns 1–6, the
+ * ink well in columns 8–12 with the picker's remembered layers as ticks on its rim.
+ */
+export function People() {
   const { t } = useI18n()
   const [choice, setChoice] = useState<PulseChoice>(null)
   useEffect(() => {
@@ -32,14 +44,13 @@ export function Porcelain() {
   const tag = choice ? (choice === 'all' ? t.pulse.allTag : t.pulse.needs[choice].tag) : null
 
   return (
-    <Section id="products" beat="payload" surface="porcelain" station={8} className={s.porcelain} aria-labelledby="products-title">
+    <Section id="people" beat="crew" surface="porcelain" station={8} className={s.porcelain} aria-labelledby="people-title">
       {/* The page's grid bends into the well here too (static SVG under the content). */}
       <WellGrid cx={0.76} cy={0.1} sigma={300} pull={0.64} className={s.grid} />
-      <ProductStage />
       <div className={s.col}>
-        <div className={s.block} id="people" data-station={9}>
+        <div className={s.block}>
           <p className="eyebrow mono">
-            {two(9)} / 10 &nbsp;·&nbsp; {t.people.eyebrow}
+            {two(8)} / 10 &nbsp;·&nbsp; {t.people.eyebrow}
           </p>
           <h2 id="people-title" className={`h3 ${s.h}`} data-focus tabIndex={-1}>
             {t.people.title}

@@ -135,19 +135,19 @@ export function springStep(x: number, v: number, target: number, omega: number, 
 export function sectionLook(station: number): { yaw: number; pitch: number } {
   switch (station) {
     case 2:
+      return { yaw: -14, pitch: 6 }
     case 3:
     case 4:
-      return { yaw: -13, pitch: 5 }
     case 5:
-      return { yaw: -12, pitch: 5 }
+      return { yaw: -13, pitch: 5 }
     case 6:
-      return { yaw: -14, pitch: 6 }
+      return { yaw: -12, pitch: 5 }
     case 7:
       return { yaw: -12, pitch: 4 }
     case 8:
-      return { yaw: -14, pitch: 6 }
-    case 9:
       return { yaw: -12, pitch: 3 }
+    case 9:
+      return { yaw: -14, pitch: 6 }
     default:
       return { yaw: -10, pitch: 2 }
   }

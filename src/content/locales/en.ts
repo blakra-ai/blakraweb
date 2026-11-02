@@ -51,7 +51,7 @@ export const en: Dict = {
   pulse: {
     eyebrow: 'Why one team',
     title: 'A product is only as strong as its weakest hand-off.',
-    body: 'Design from one agency, the app from another, the backend from a freelancer and the AI from a consultant. Each hand-off loses something, and when it breaks, each vendor points at the next. With us it is one contract, one team and one accountable lead for all of it.',
+    body: 'LIOXSA was built by one team, end to end, and that is how we build for clients. The usual way splits it up: design from one agency, the app from another, the backend from a freelancer and the AI from a consultant. Each hand-off loses something, and when it breaks, each vendor points at the next. With us it is one contract, one team and one accountable lead for all of it.',
     ask: 'What do you need built?',
     needs: {
       panel: { label: 'An admin panel to run our operations.', tag: 'Admin panel' },
@@ -76,7 +76,7 @@ export const en: Dict = {
   work: {
     eyebrow: 'Selected client work',
     title: 'Products we designed and built for private clients.',
-    lede: 'Apps, operations platforms and AI tools, each delivered to a client who owns it. One screen per project here; open one for the problem, the decisions and more screens.',
+    lede: 'The same team and the same method, delivered for clients: apps, operations platforms and AI tools, each owned by the client it was built for. One screen per project here; open one for the problem, the decisions and more screens.',
     note: 'Delivered for a private client. The client owns the product; details under NDA. Screens shown are representative.',
     also: 'Also delivered in finance, healthcare, robotics and more, most of it confidential under NDA.',
     noteTitle: 'Engagement',
@@ -226,7 +226,7 @@ export const en: Dict = {
     },
   },
   ai: {
-    eyebrow: 'AI',
+    eyebrow: 'AI at the crown',
     title: 'AI that does real work, on your data, on your terms.',
     lede: 'We build AI tools end to end, from the data they read to the screen people use. Open-source models run on our servers or yours, so sensitive data stays inside your walls. Commercial platforms take you to production fastest. We choose the right one for each project.',
     blocks: {
@@ -248,7 +248,7 @@ export const en: Dict = {
   engine: {
     eyebrow: 'Capabilities',
     title: 'Seven layers. One team.',
-    lede: 'Many organizations hire a separate vendor for each of these. We cover all seven and build them in order, from the foundation up, because each layer depends on the one beneath it.',
+    lede: 'One team means owning every layer. Many organizations hire a separate vendor for each of these; we cover all seven and build them in order, from the foundation up, because each layer depends on the one beneath it.',
     layers: {
       ai: { name: 'AI', text: 'AI assistants that read, answer and act inside your work, on your own data, with a person one step away.' },
       growth: { name: 'Launch and search', text: 'Technical SEO, content and media for launch, so the people a product is for can find it.' },
@@ -270,7 +270,7 @@ export const en: Dict = {
   process: {
     eyebrow: 'How we work',
     title: 'Exact before expensive.',
-    lede: 'Software runs over budget when the spending starts before the problem is exact. We make it exact first.',
+    lede: 'Whatever you need built, AI included, it starts the same way: we make the problem exact before the spending starts.',
     steps: [
       { name: 'Scope the problem', text: 'We walk through the work with the people who do it, and name the process that costs you most. The first conversation and the technical assessment are free.' },
       { name: 'Build the first system', text: 'A fixed scope, a fixed price and an agreed bar for done. Working software every two weeks, so you judge progress by using it.' },
@@ -283,8 +283,8 @@ export const en: Dict = {
 
   products: {
     eyebrow: 'Our products',
-    title: 'We also build products of our own.',
-    lede: 'The same leadership team that runs client work builds products of our own. Each is open to a sponsor or a buyer.',
+    title: 'Proof starts with a product of our own.',
+    lede: 'Before we build for you, we build for ourselves: the same leadership team that leads client work designs, engineers and runs products of our own. Each is open to a sponsor or a buyer.',
     stage: { working: 'Working · open to offers' },
     items: {
       skin: {
@@ -305,7 +305,7 @@ export const en: Dict = {
   people: {
     eyebrow: 'Our leadership, our teams',
     title: 'The people you meet are the people who build.',
-    lede: 'Our leadership team scopes every project and stays hands-on until it runs in production.',
+    lede: 'Behind every step is our leadership team. It scopes each project and stays hands-on until it runs in production.',
     roles: [
       { role: 'Founder and Chief Technology Officer', owns: 'AI strategy and systems architecture, from the first diagram to production.', ask: 'Ask about: whether AI belongs in your process at all.' },
       { role: 'Senior Full-Stack Engineer and Backend Lead', owns: 'The foundation of each system: backends, data platforms and reliability.', ask: 'Ask about: data you can trust and systems that stay up.' },

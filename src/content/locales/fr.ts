@@ -48,7 +48,7 @@ export const fr: Dict = {
   pulse: {
     eyebrow: 'Pourquoi une seule équipe',
     title: 'Un produit ne vaut que son passage de relais le plus faible.',
-    body: 'Le design chez une agence, l’application chez une autre, le backend chez un freelance et l’IA chez un consultant. Chaque passage de relais perd quelque chose, et en cas de problème, les prestataires se renvoient la balle. Avec nous, un seul contrat, une seule équipe et un responsable désigné pour l’ensemble.',
+    body: 'LIOXSA a été construit par une seule équipe, de bout en bout, et c’est ainsi que nous construisons pour nos clients. D’habitude, tout est morcelé : le design chez une agence, l’application chez une autre, le backend chez un freelance et l’IA chez un consultant. Chaque passage de relais perd quelque chose, et en cas de problème, les prestataires se renvoient la balle. Avec nous, un seul contrat, une seule équipe et un responsable désigné pour l’ensemble.',
     ask: 'De quoi avez-vous besoin ?',
     needs: {
       panel: { label: 'Un back-office pour piloter nos opérations.', tag: 'Back-office' },
@@ -73,7 +73,7 @@ export const fr: Dict = {
   work: {
     eyebrow: 'Réalisations clients choisies',
     title: 'Des produits que nous avons conçus et construits pour des clients privés.',
-    lede: 'Applications, plateformes d’exploitation et outils d’IA, chacun livré à un client qui en est propriétaire. Un écran par projet ici ; ouvrez-en un pour le problème, les décisions et d’autres écrans.',
+    lede: 'La même équipe et la même méthode, au service de nos clients : applications, plateformes d’exploitation et outils d’IA, chacun propriété du client pour qui il a été construit. Un écran par projet ici ; ouvrez-en un pour le problème, les décisions et d’autres écrans.',
     note: 'Réalisé pour un client privé. Le produit appartient au client ; les détails sont couverts par un accord de confidentialité. Les écrans présentés sont représentatifs.',
     also: 'Également livré dans la finance, la santé, la robotique et d’autres secteurs, le plus souvent sous accord de confidentialité.',
     noteTitle: 'Mission',
@@ -223,7 +223,7 @@ export const fr: Dict = {
     },
   },
   ai: {
-    eyebrow: 'IA',
+    eyebrow: 'L’IA au sommet',
     title: 'Une IA qui fait un vrai travail, sur vos données, selon vos conditions.',
     lede: 'Nous construisons des outils d’IA de bout en bout, des données qu’ils lisent à l’écran qu’utilisent vos équipes. Les modèles open source tournent sur nos serveurs ou les vôtres, pour que les données sensibles restent chez vous. Les plateformes commerciales mènent le plus vite en production. Nous choisissons la bonne option pour chaque projet.',
     blocks: {
@@ -245,7 +245,7 @@ export const fr: Dict = {
   engine: {
     eyebrow: 'Expertises',
     title: 'Sept couches. Une seule équipe.',
-    lede: 'Beaucoup d’organisations font appel à un prestataire différent pour chacune. Nous couvrons les sept et les construisons dans l’ordre, en partant des fondations, car chaque couche dépend de celle qui la porte.',
+    lede: 'Une seule équipe, c’est maîtriser chaque couche. Beaucoup d’organisations font appel à un prestataire différent pour chacune ; nous couvrons les sept et les construisons dans l’ordre, en partant des fondations, car chaque couche dépend de celle qui la porte.',
     layers: {
       ai: { name: 'IA', text: 'Assistants IA qui lisent, répondent et agissent au cœur de votre travail, sur vos propres données, avec une personne à un pas.' },
       growth: { name: 'Lancement et SEO', text: 'SEO technique, contenus et médias de lancement, pour que ceux à qui le produit s’adresse le trouvent.' },
@@ -267,7 +267,7 @@ export const fr: Dict = {
   process: {
     eyebrow: 'Notre méthode',
     title: 'Précis avant d’être coûteux.',
-    lede: 'Un logiciel dépasse son budget quand les dépenses commencent avant que le problème soit précis. Nous le rendons d’abord précis.',
+    lede: 'Quoi que vous fassiez construire, IA comprise, tout commence de la même façon : nous rendons le problème précis avant d’engager la dépense.',
     steps: [
       { name: 'Cadrer le problème', text: 'Nous passons en revue le travail avec ceux qui le font, et identifions le processus qui vous coûte le plus. Le premier échange et l’évaluation technique sont gratuits.' },
       { name: 'Construire le premier système', text: 'Un périmètre fixe, un prix fixe et un critère de « terminé » convenu ensemble. Un logiciel qui fonctionne toutes les deux semaines, pour juger l’avancement à l’usage.' },
@@ -280,8 +280,8 @@ export const fr: Dict = {
 
   products: {
     eyebrow: 'Nos produits',
-    title: 'Nous développons aussi nos propres produits.',
-    lede: 'La même direction qui mène les projets clients développe nos propres produits. Chacun est ouvert à un financeur ou à un acquéreur.',
+    title: 'La preuve commence par un produit à nous.',
+    lede: 'Avant de construire pour vous, nous construisons pour nous : la même direction qui mène les projets clients conçoit, développe et exploite nos propres produits. Chacun est ouvert à un financeur ou à un acquéreur.',
     stage: { working: 'Fonctionnel · ouvert aux offres' },
     items: {
       skin: {
@@ -302,7 +302,7 @@ export const fr: Dict = {
   people: {
     eyebrow: 'Notre direction, nos équipes',
     title: 'Les personnes que vous rencontrez sont celles qui construisent.',
-    lede: 'Notre direction cadre chaque projet et reste impliquée jusqu’à sa mise en production.',
+    lede: 'Derrière chaque étape, il y a notre direction. Elle cadre chaque projet et reste impliquée jusqu’à sa mise en production.',
     roles: [
       { role: 'Fondateur et directeur technique (CTO)', owns: 'Stratégie IA et architecture des systèmes, du premier schéma à la production.', ask: 'À aborder : la place de l’IA dans votre processus, si elle en a une.' },
       { role: 'Ingénieur full-stack senior et responsable backend', owns: 'Le socle de chaque système : backends, plateformes de données et fiabilité.', ask: 'À aborder : des données fiables et des systèmes qui tiennent.' },

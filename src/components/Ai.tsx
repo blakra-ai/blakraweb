@@ -26,10 +26,10 @@ export function Ai() {
     ],
   }
   return (
-    <Section id="ai" beat="ai" surface="body" station={5} className={s.ai} aria-labelledby="ai-title">
+    <Section id="ai" beat="ai" surface="body" station={6} className={s.ai} aria-labelledby="ai-title">
       <div className={s.head}>
         <p className="eyebrow mono">
-          {two(5)} / 10 &nbsp;·&nbsp; {a.eyebrow}
+          {two(6)} / 10 &nbsp;·&nbsp; {a.eyebrow}
         </p>
         <h2 id="ai-title" className={`h2 ${s.title}`} data-focus tabIndex={-1}>
           {a.title}

@@ -319,10 +319,10 @@ function Passes({ handle }: { handle: ReturnType<typeof createGuideHandle> }) {
       // The flat pass: the well and the ring in window px (y down).
       const f = w.framing
       // The stage's close: across the hold's last tenth the ring shrinks toward the gauge's marker at the
-      // window's left edge (station 04 is 3/8 down the rule); the well's centre travels with it.
+      // window's left edge (station 05, the picker, is 4/9 down the rule); the well's centre travels with it.
       const hv = w.kind === 'stage' ? obs.handover : 0
       const rx = f.ring.x + (6 - f.ring.x) * hv
-      const ry = f.ring.y + (on.view.h * 0.375 - f.ring.y) * hv
+      const ry = f.ring.y + (on.view.h * (4 / 9) - f.ring.y) * hv
       const rr = f.ring.r * (1 - 0.96 * hv)
       ortho.left = 0
       ortho.right = on.view.w
@@ -532,7 +532,7 @@ function Passes({ handle }: { handle: ReturnType<typeof createGuideHandle> }) {
       i.nodAt = s.read.nodAt
       i.sentAt = obs.transmitAt
       // The strips: the band forming on the stage (root → crown), warm gold elsewhere on the paper, as authored in the windows.
-      const stage = obs.station >= 2 && obs.station <= 4
+      const stage = obs.station >= 3 && obs.station <= 5
       const c = stage ? TINT.set(CHAKRAS[Math.min(6, Math.floor(bandsAt))].color) : TINT.setRGB(GOLD[0], GOLD[1], GOLD[2])
       i.tint[0] = c.r
       i.tint[1] = c.g

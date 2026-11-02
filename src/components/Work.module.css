@@ -228,3 +228,13 @@
     transform: none;
   }
 }
+
+/* 07 How we work as its own station: the strip on the paper, without the grid's top margin. */
+.processSection .process {
+  margin-top: 0;
+}
+.processLede {
+  margin-top: 14px;
+  max-width: 460px;
+  font-size: 1rem;
+}

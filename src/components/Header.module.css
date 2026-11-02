@@ -229,7 +229,7 @@
   text-align: center;
 }
 
-/* Over the porcelain screen (stations 07 and 08) the bar is light: ink text, ink hairline, ink controls. */
+/* Over the porcelain screen (stations 02 and 08) the bar is light: ink text, ink hairline, ink controls. */
 .bar[data-surface='light'] {
   background: var(--porcelain);
   color: var(--body);
