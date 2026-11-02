@@ -295,6 +295,8 @@ export const de: Dict = {
     more: 'Weitere eigene Produkte sind in Entwicklung. Darüber sprechen wir unter NDA.',
     open: 'Ansehen',
     investorsLink: 'Für Sponsoren und Käufer: was wir anbieten',
+    offers: ['Sponsoring', 'Lizenz', 'Übernahme'],
+    mockAlt: 'Illustration der LIOXSA-App: ein Gesichtsumriss beim Scan, eine Schaltfläche „Read my skin“ und ein Ergebnis in drei Schritten.',
   },
 
   people: {

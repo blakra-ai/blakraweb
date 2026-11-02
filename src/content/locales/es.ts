@@ -295,6 +295,8 @@ export const es: Dict = {
     more: 'Tenemos otros productos propios en desarrollo. Los comentamos bajo NDA.',
     open: 'Visitar',
     investorsLink: 'Para patrocinadores y compradores: lo que ofrecemos',
+    offers: ['Patrocinar', 'Licenciar', 'Adquirir'],
+    mockAlt: 'Ilustración de la app LIOXSA: el contorno de un rostro en análisis, un botón «Read my skin» y un resultado en tres pasos.',
   },
 
   people: {

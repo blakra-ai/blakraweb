@@ -1,10 +1,10 @@
 import { useEffect, useState } from 'react'
-import { needs, products } from '../content/shared'
+import { needs } from '../content/shared'
 import type { LayerId } from '../content/types'
 import { useI18n } from '../i18n'
 import { getPulse, onPulse, type PulseChoice } from '../motion/pulse'
-import { pathFor } from '../routes'
 import { InkWell, WellGrid } from '../features/observatory/Well'
+import { ProductStage } from './ProductStage'
 import { Section } from './Section'
 import s from './Porcelain.module.css'
 
@@ -21,7 +21,7 @@ const two = (n: number) => String(n).padStart(2, '0')
  * guide here: the ring glyph is the object. No motion beyond hover.
  */
 export function Porcelain() {
-  const { t, locale } = useI18n()
+  const { t } = useI18n()
   const [choice, setChoice] = useState<PulseChoice>(null)
   useEffect(() => {
     setChoice(getPulse().choice)
@@ -35,44 +35,8 @@ export function Porcelain() {
     <Section id="products" beat="payload" surface="porcelain" station={8} className={s.porcelain} aria-labelledby="products-title">
       {/* The page's grid bends into the well here too (static SVG under the content). */}
       <WellGrid cx={0.76} cy={0.1} sigma={300} pull={0.64} className={s.grid} />
+      <ProductStage />
       <div className={s.col}>
-        <div className={s.block}>
-          <p className="eyebrow mono">
-            {two(8)} / 10 &nbsp;·&nbsp; {t.products.eyebrow}
-          </p>
-          <h2 id="products-title" className={`h3 ${s.h}`} data-focus tabIndex={-1}>
-            {t.products.title}
-          </h2>
-          <p className={`lede ${s.lede}`}>{t.products.lede}</p>
-          <ul className={s.rows}>
-            {products.map((p) => {
-              const tx = t.products.items[p.id]
-              const uses = p.layers.map(num).sort((a, b) => a - b)
-              return (
-                <li key={p.id} className={s.r}>
-                  <div>
-                    <b>{tx.line}</b>
-                    <span className={`mono ${s.stage}`}>{t.products.stage[p.stage]}</span>
-                  </div>
-                  <div>
-                    <span>{tx.detail}</span>
-                    <em>
-                      {t.products.offer}: {tx.offer}
-                    </em>
-                    <span className={`mono ${s.uses}`}>
-                      {t.pulse.uses} {uses.join(', ')}
-                    </span>
-                  </div>
-                </li>
-              )
-            })}
-          </ul>
-          <p className={s.more}>{t.products.more}</p>
-          <a className={s.link} href={pathFor('investors', locale)}>
-            {t.products.investorsLink} <span aria-hidden="true">→</span>
-          </a>
-        </div>
-
         <div className={s.block} id="people" data-station={9}>
           <p className="eyebrow mono">
             {two(9)} / 10 &nbsp;·&nbsp; {t.people.eyebrow}

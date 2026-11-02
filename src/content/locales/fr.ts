@@ -295,6 +295,8 @@ export const fr: Dict = {
     more: 'D’autres produits maison sont en développement. Nous en parlons sous NDA.',
     open: 'Découvrir',
     investorsLink: 'Financeurs et acquéreurs : ce que nous proposons',
+    offers: ['Financer', 'Licencier', 'Acquérir'],
+    mockAlt: 'Illustration de l’application LIOXSA : un contour de visage en cours d’analyse, un bouton « Read my skin » et un résultat en trois étapes.',
   },
 
   people: {

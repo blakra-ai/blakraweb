@@ -172,6 +172,10 @@ export interface Dict {
     more: string
     open: string
     investorsLink: string
+    /** The product stage's offer strip: sponsor, license, acquire. */
+    offers: [string, string, string]
+    /** The drawn phone's text alternative. */
+    mockAlt: string
   }
   people: {
     eyebrow: string

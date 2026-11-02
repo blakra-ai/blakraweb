@@ -298,6 +298,8 @@ export const en: Dict = {
     more: 'Other products of our own are in development. We discuss them under NDA.',
     open: 'Visit',
     investorsLink: 'For sponsors and buyers: what is on offer',
+    offers: ['Sponsor', 'License', 'Acquire'],
+    mockAlt: 'An illustration of the LIOXSA app: a face outline being scanned, a “Read my skin” button and a three-step result.',
   },
 
   people: {
