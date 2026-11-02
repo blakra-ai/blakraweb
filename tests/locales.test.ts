@@ -16,19 +16,9 @@ function shape(value: unknown, path = ''): string[] {
   return [`${path}:${typeof value}`]
 }
 
-// Character budgets for text that sits in fixed SVG boxes (see the comments in types.ts).
+// Character budgets for text in fixed-width controls.
 const budgets = (t: Dict): [string, string, number][] => {
-  const s = t.scenes
   return [
-    ['stock.title', s.stock.title, 24], ['stock.store', s.stock.store, 8], ['stock.chip', s.stock.chip, 26], ['stock.chipSub', s.stock.chipSub, 40],
-    ['routes.live', s.routes.live, 20], ['routes.delivered', s.routes.delivered, 14], ['routes.proof', s.routes.proof, 22], ['routes.sheet', s.routes.sheet, 18],
-    ...s.routes.calls.map((c, i): [string, string, number] => [`routes.calls[${i}]`, c, 22]),
-    ['documents.title', s.documents.title, 20], ['documents.sub', s.documents.sub, 34],
-    ...s.documents.rows.flatMap((r, i): [string, string, number][] => [[`documents.rows[${i}].title`, r.title, 22], [`documents.rows[${i}].sub`, r.sub, 24]]),
-    ['line.line', s.line.line, 8], ['line.alert', s.line.alert, 32], ['line.now', s.line.now, 8], ['line.report', s.line.report, 22], ['line.reportNote', s.line.reportNote, 34],
-    ['queue.title', s.queue.title, 20], ['queue.sub', s.queue.sub, 16], ['queue.auto', s.queue.auto, 28],
-    ...s.queue.messages.map((m, i): [string, string, number] => [`queue.messages[${i}]`, m, 28]),
-    ['queue.answered', s.queue.answered, 14], ['queue.returned', s.queue.returned, 14], ['queue.person', s.queue.person, 13],
     ['ui.cta', t.ui.cta, 22],
     ...Object.entries(t.contact.doors).map(([k, d]): [string, string, number] => [`contact.doors.${k}.label`, d.label, 30]),
   ]
@@ -50,7 +40,7 @@ describe('locales', () => {
       expect(empty.filter((p) => !String(get(t, p)).trim())).toEqual([])
     })
 
-    it(`${code}: scene labels fit their boxes`, () => {
+    it(`${code}: labels fit their controls`, () => {
       const over = budgets(t).filter(([, text, max]) => text.length > max).map(([k, text, max]) => `${k} (${text.length}/${max}): ${text}`)
       expect(over).toEqual([])
     })

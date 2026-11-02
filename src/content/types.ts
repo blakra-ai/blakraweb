@@ -1,3 +1,4 @@
+import type { WorkSlug } from './work'
 /**
  * The shape of one language. Every locale file (src/content/locales/*.ts) must
  * satisfy it, so a missing or extra line is a type error, not a silent gap.
@@ -8,65 +9,26 @@
 
 /** The seven layers of a complete product, root to crown: everything BLAKRA builds. */
 export type LayerId = 'cloud' | 'data' | 'automation' | 'design' | 'apps' | 'growth' | 'ai'
-export type ChapterId = 'h06' | 'h09' | 'h13' | 'h17' | 'h22'
 /** What a visitor can say they need, in the work types BLAKRA delivers. */
 export type NeedId = 'panel' | 'shop' | 'assistant' | 'aidata' | 'app' | 'warehouse' | 'bots'
 export type ProductId = 'skin'
 export type StageId = 'working'
 export type Intent = 'commission' | 'partner' | 'invest'
 
-export interface ChapterText {
-  /** One word for the business, on the card and on the track's index. */
-  industry: string
-  sector: string
-  system: string
-  moment: string
-  before: string
-  now: string
-  /** Labels for the outcome values in shared.ts, same order. */
-  outcomes: string[]
-}
-
-export interface SceneText {
-  stock: {
-    /** ≤ 24 chars */ title: string
-    /** ≤ 8 chars, followed by a two-digit number */ store: string
-    /** ≤ 26 chars */ chip: string
-    /** ≤ 40 chars */ chipSub: string
-  }
-  routes: {
-    /** ≤ 20 chars */ live: string
-    /** ≤ 14 chars */ delivered: string
-    /** ≤ 22 chars */ proof: string
-    /** ≤ 18 chars */ sheet: string
-    /** three phone calls, ≤ 22 chars each */ calls: [string, string, string]
-  }
-  documents: {
-    /** ≤ 20 chars */ title: string
-    /** ≤ 34 chars */ sub: string
-    /** five rows: title ≤ 22, sub ≤ 24 */ rows: [Row, Row, Row, Row, Row]
-  }
-  line: {
-    /** ≤ 8 chars, followed by a number */ line: string
-    /** ≤ 32 chars */ alert: string
-    /** ≤ 8 chars */ now: string
-    /** ≤ 22 chars */ report: string
-    /** ≤ 34 chars */ reportNote: string
-  }
-  queue: {
-    /** ≤ 20 chars */ title: string
-    /** ≤ 16 chars */ sub: string
-    /** ≤ 28 chars */ auto: string
-    /** six customer messages, ≤ 28 chars each */ messages: [string, string, string, string, string, string]
-    /** ≤ 14 chars */ answered: string
-    /** ≤ 14 chars */ returned: string
-    /** ≤ 13 chars */ person: string
-  }
-}
-
-interface Row {
-  title: string
-  sub: string
+/** One project of the selected client work: descriptive copy only, no figures (run 2026-11-02-portfolio). */
+export interface WorkText {
+  /** What kind of system it is, a few words (card and page eyebrow). */
+  category: string
+  /** The one-line subtitle under the name. */
+  line: string
+  /** Who it is for and what it does, two sentences. */
+  about: string
+  platforms: string
+  problem: string
+  /** The design decisions, one sentence each. */
+  design: string[]
+  /** One caption per screen, in the order of `shots` in work.ts; also the image's alt text. */
+  shots: string[]
 }
 
 export interface Dict {
@@ -128,26 +90,30 @@ export interface Dict {
     verdict: string
     verdictAll: string
     proof: string
-    everyProject: string
     tell: string
     /** The dots' text twin on the stage: "Uses layers 1, 2, 3, 7". */
     uses: string
-    /** The proof row mapped to the picked need (the gold stitch): "Nearest your choice". */
-    nearest: string
     /** The porcelain screen's ring caption: "Your choice, remembered". */
     remembered: string
   }
-  day: {
-    srTitle: string
+  work: {
     eyebrow: string
     title: string
     lede: string
-    hint: string
-    /** Client work that can be described but not shown: one short line each, no numbers. */
-    delivered: { title: string; note: string; items: string[] }
+    /** The private-client framing, shown on the section and on every project page. */
+    note: string
+    noteTitle: string
+    /** Page title suffix and description lead for a project page. */
+    metaSuffix: string
+    all: string
+    problem: string
+    design: string
+    platforms: string
+    engagement: string
+    screens: string
+    next: string
+    projects: Record<WorkSlug, WorkText>
   }
-  chapters: Record<ChapterId, ChapterText>
-  scenes: SceneText
   engine: {
     eyebrow: string
     title: string
@@ -156,7 +122,6 @@ export interface Dict {
     /** The one place the name is explained: black hole and chakra. */
     symbol: string
     usedAt: string
-    everywhere: string
     crownTitle: string
     crownText: string
     crownSource: string

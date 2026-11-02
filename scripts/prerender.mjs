@@ -43,10 +43,12 @@ for (const route of routes) {
 // Sitemap with every language version of each page linked as alternates.
 const site = 'https://blakra.us'
 const pages = routes.filter((r) => r.indexable)
-const byPage = Map.groupBy ? Map.groupBy(pages, (r) => r.id) : new Map([...new Set(pages.map((r) => r.id))].map((id) => [id, pages.filter((r) => r.id === id)]))
+// One page = one id (and, for client work, one project slug) across its languages.
+const pageKey = (r) => `${r.id}:${r.slug ?? ''}`
+const byPage = Map.groupBy(pages, pageKey)
 const today = new Date().toISOString().slice(0, 10)
 const urls = pages.map((r) => {
-  const alternates = byPage.get(r.id).map((a) => `    <xhtml:link rel="alternate" hreflang="${a.locale}" href="${site}${a.path}"/>`).join('\n')
+  const alternates = byPage.get(pageKey(r)).map((a) => `    <xhtml:link rel="alternate" hreflang="${a.locale}" href="${site}${a.path}"/>`).join('\n')
   return `  <url>\n    <loc>${site}${r.path}</loc>\n    <lastmod>${today}</lastmod>\n${alternates}\n  </url>`
 })
 await writeFile(join(dist, 'sitemap.xml'), `<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9" xmlns:xhtml="http://www.w3.org/1999/xhtml">\n${urls.join('\n')}\n</urlset>\n`)

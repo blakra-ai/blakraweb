@@ -53,7 +53,7 @@ export function Header({ route }: { route: Route }) {
   const homePath = pathFor('home', locale)
   // Each link carries the station it lands on (the gauge's numbers), see storyboard.md.
   const nav = [
-    { label: t.ui.nav.work, href: `${homePath}#day`, station: '04' },
+    { label: t.ui.nav.work, href: `${homePath}#work`, station: '04' },
     { label: t.ui.nav.engine, href: `${homePath}#engine`, station: '03' },
     { label: t.ui.nav.products, href: `${homePath}#products`, station: '07' },
     { label: t.ui.nav.people, href: `${homePath}#people`, station: '08' },

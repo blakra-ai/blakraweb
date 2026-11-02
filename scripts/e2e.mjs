@@ -45,13 +45,14 @@ try {
     const p = prefix(code)
     expected[`${p}/`] = [
       t.prologue.title.before, t.prologue.lede, t.prologue.facts, t.pulse.title, ...Object.values(t.pulse.needs).map((n) => n.label),
-      // The proof's five rows (WP-E): sector, the one-line story, the system and the outcome; before/now left the page with the storyboard.
-      ...Object.values(t.chapters).flatMap((c) => [c.sector, c.moment, c.system, ...c.outcomes]), ...t.day.delivered.items,
       // The stage (WP-D) names the seven layers; their one-line texts left the page with the old Engine section.
       t.engine.title, ...Object.values(t.engine.layers).map((l) => l.name), t.engine.crownTitle,
       t.products.title, ...Object.values(t.products.items).flatMap((i) => [i.line, i.offer]), t.products.more,
       t.process.title, ...t.process.steps.map((s) => s.name), t.people.title, ...t.people.roles.map((r) => r.ask), t.contact.title, t.contact.horizon,
     ]
+    // Selected client work (run 2026-11-02-portfolio): the section on home, and one page per project.
+    expected[`${p}/`].push(t.work.title, t.work.note, ...Object.values(t.work.projects).map((w) => w.category))
+    for (const [slug, w] of Object.entries(t.work.projects)) expected[`${p}/work/${slug}/`] = [w.line, w.about, w.problem, ...w.design, w.platforms, t.work.note, t.work.next]
     expected[`${p}/investors/`] = [t.investors.title, ...t.investors.thesis, t.investors.ask, t.investors.ndaTitle, t.investors.deck, t.investors.disclaimer]
     expected[`${p}/privacy/`] = [t.privacy.title, t.privacy.who, ...t.privacy.sections.map((x) => x.text)]
     expected[`${p}/legal/`] = [t.legal.title, t.legal.providerTitle, 'BLAKRA LLC', '901 H St Ste 120']
@@ -85,10 +86,10 @@ try {
       }
     })
     const state = await page.evaluate(() => {
-      const acts = ['#top', '#stage', '#day', '#products', '#approach', '#people', '#contact']
+      const acts = ['#top', '#stage', '#work', '#products', '#approach', '#people', '#contact']
       // Screen-reader-only text (1 px, clipped on purpose) is not hidden text.
       const text = [...document.querySelectorAll(acts.map((a) => `${a} *`).join(','))].filter((el) => el.children.length === 0 && el.textContent.trim() && el.getBoundingClientRect().width > 1)
-      const day = document.getElementById('day').getBoundingClientRect()
+      const day = document.getElementById('work').getBoundingClientRect()
       return {
         pins: document.querySelectorAll('.pin-spacer').length,
         lenis: document.documentElement.classList.contains('lenis'),
@@ -98,7 +99,7 @@ try {
           return Number(cs.opacity) < 1 || cs.visibility === 'hidden' || (cs.clipPath !== 'none' && cs.clipPath !== '')
         }).length,
         details: [...document.querySelectorAll('#stage li')].every((li) => li.lastElementChild.getBoundingClientRect().height > 10),
-        casesInside: [...document.querySelectorAll('#day li[id^="h"]')].every((c) => {
+        casesInside: [...document.querySelectorAll('#work li[id^="work-"]')].every((c) => {
           const r = c.getBoundingClientRect()
           return r.top >= day.top - 1 && r.bottom <= day.bottom + 1 && getComputedStyle(c).visibility === 'visible'
         }),
@@ -108,7 +109,7 @@ try {
     check('AC2', 'reduced motion: no smooth scrolling', !state.lenis)
     check('AC2', 'reduced motion: no act holds the screen; every section reads top to bottom', state.held.length === 0, state.held.join(' '))
     check('AC2', 'reduced motion: all text of every act visible, nothing faded or clipped', state.hidden === 0 && state.details, `${state.hidden} hidden, details ${state.details}`)
-    check('AC2', 'reduced motion: all five cases visible inside the proof section', state.casesInside)
+    check('AC2', 'reduced motion: every client-work card visible inside its section', state.casesInside)
     await page.screenshot({ path: join(shots, 'reduced-motion-full.png'), fullPage: true })
     await page.close()
   }
@@ -267,17 +268,17 @@ try {
     const page = await own.newPage()
     await page.goto(BASE + '/')
     await page.waitForTimeout(3000)
-    // From the pulse: the admin-panel answer points to the manufacturing case.
+    // From the pulse: the admin-panel answer points to the store-operations dashboard's card.
     await page.locator('#pulse button', { hasText: dicts.en.pulse.needs.panel.label }).click()
     await page.waitForTimeout(300)
-    await page.evaluate(() => document.querySelector('#pulse [aria-live] a[href="#h17"]').click())
+    await page.evaluate(() => document.querySelector('#pulse [aria-live] a[href="#work-vitrin-console"]').click())
     await page.waitForTimeout(3000)
     const card = await page.evaluate(() => {
-      const row = document.getElementById('h17')
+      const row = document.getElementById('work-vitrin-console')
       const r = row.getBoundingClientRect()
-      return { top: Math.round(r.top), vh: innerHeight, near: row.hasAttribute('data-near'), focused: row.contains(document.activeElement) || row === document.activeElement }
+      return { top: Math.round(r.top), bottom: Math.round(r.bottom), vh: innerHeight }
     })
-    check('F1', 'a link to a case lands on its row, stitched as nearest, focused', card.top >= 0 && card.top < card.vh && card.near && card.focused, JSON.stringify(card))
+    check('F1', 'a link from the pulse lands on the nearest client-work card', card.bottom > 0 && card.top < card.vh, JSON.stringify(card))
     // F5 (a link from a case to a layer row) left with the layer rows: the stage names each layer once as its band forms (art pass v1).
     await own.close()
   }
@@ -294,13 +295,13 @@ try {
     const res = await page.evaluate(() => ({
       pressed: document.querySelector('#pulse [role="radio"][aria-checked="true"]')?.textContent ?? '',
       verdict: document.querySelector('#pulse [aria-live]')?.textContent ?? '',
-      proof: document.querySelector('#pulse [aria-live] a[href^="#h"]')?.getAttribute('href') ?? '',
+      proof: document.querySelector('#pulse [aria-live] a[href^="#work-"]')?.getAttribute('href') ?? '',
       msg: document.querySelector('#contact-msg')?.value ?? '',
       // The stage's layers: the ones the answer takes are picked (AI among them), the others not.
       lit: [...document.querySelectorAll('#stage li[id^="layer-"]')].filter((li) => li.dataset.picked === 'true').map((li) => li.id),
       uses: document.querySelector('#pulse [aria-live]')?.textContent.includes('1, 2, 3, 5, 7'),
     }))
-    check('P1', 'the pulse answer lights its layers, links its proof and starts the message', res.pressed.includes(need) && res.verdict.includes(dicts.en.pulse.verdict) && res.proof === '#h22' && res.msg.startsWith(need) && res.lit.includes('layer-ai') && !res.lit.includes('layer-design') && res.uses, JSON.stringify({ ...res, verdict: res.verdict.slice(0, 60) }))
+    check('P1', 'the pulse answer lights its layers, links its proof and starts the message', res.pressed.includes(need) && res.verdict.includes(dicts.en.pulse.verdict) && res.proof === '#work-helya-ai' && res.msg.startsWith(need) && res.lit.includes('layer-ai') && !res.lit.includes('layer-design') && res.uses, JSON.stringify({ ...res, verdict: res.verdict.slice(0, 60) }))
     await page.close()
   }
 
@@ -325,14 +326,15 @@ try {
       return { held: w.top >= 0 && w.bottom <= innerHeight + 1, p: Number(el.style.getPropertyValue('--hold')), orbit: el.querySelectorAll('#stage li[data-on]').length }
     })
     check('S1', 'the stage holds the screen and the scroll brings the layers into orbit', engine.held && engine.p > 0.3 && engine.p < 0.9 && engine.orbit === 7, JSON.stringify(engine))
-    // The proof: five patches, one open case.
+    // Selected client work: one card per project, each with its screen loaded at its final size.
     const proof = await page.evaluate(async () => {
-      const el = document.getElementById('day')
+      const el = document.getElementById('work')
       window.scrollTo({ top: el.getBoundingClientRect().top + scrollY, behavior: 'instant' })
       await new Promise((r) => setTimeout(r, 1400))
-      return { rows: el.querySelectorAll('li[id^="h"]').length, lit: el.querySelectorAll('li[id^="h"][data-lit]').length }
+      const cards = [...el.querySelectorAll('li[id^="work-"]')]
+      return { cards: cards.length, sized: cards.every((c) => c.querySelector('img').getBoundingClientRect().height > 50) }
     })
-    check('S1', 'the proof shows five rows and the marker has lit the ones it passed', proof.rows === 5 && proof.lit >= 1, JSON.stringify(proof))
+    check('S1', 'the client-work grid shows every project card with its screen', proof.cards === 8 && proof.sized, JSON.stringify(proof))
     await own.close()
   }
 
@@ -343,14 +345,14 @@ try {
     await page.goto(BASE + '/')
     await page.waitForTimeout(2500)
     const res = await page.evaluate(() => {
-      const day = document.getElementById('day').getBoundingClientRect()
-      const cases = [...document.querySelectorAll('#day li[id^="h"]')]
+      const day = document.getElementById('work').getBoundingClientRect()
+      const cases = [...document.querySelectorAll('#work li[id^="work-"]')]
       return {
         visible: cases.every((c) => getComputedStyle(c).visibility === 'visible'),
         inside: cases.map((c) => c.getBoundingClientRect()).every((r) => r.left >= 0 && r.right <= innerWidth && r.top >= day.top - 1 && r.bottom <= day.bottom + 1),
       }
     })
-    check('S2', '1366×650 with motion on: the proof reads top to bottom, every case reachable', res.visible && res.inside, JSON.stringify(res))
+    check('S2', '1366×650 with motion on: client work reads top to bottom, every card reachable', res.visible && res.inside, JSON.stringify(res))
     await short.close()
   }
 

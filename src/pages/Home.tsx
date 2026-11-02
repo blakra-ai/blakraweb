@@ -1,7 +1,7 @@
 import { Suspense } from 'react'
 import { Hero } from '../components/Hero'
 import { Stage } from '../components/Stage'
-import { Proof } from '../components/Proof'
+import { Work } from '../components/Work'
 import { Porcelain } from '../components/Porcelain'
 import { Contact } from '../components/Contact'
 import { Gauge } from '../features/observatory/Gauge'
@@ -24,7 +24,7 @@ export function Home() {
         <Stage />
       </Suspense>
       <Suspense fallback={null}>
-        <Proof />
+        <Work />
       </Suspense>
       <Suspense fallback={null}>
         <Porcelain />

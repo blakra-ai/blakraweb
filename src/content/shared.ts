@@ -1,4 +1,5 @@
-import type { ChapterId, LayerId, NeedId, ProductId, StageId } from './types'
+import type { LayerId, NeedId, ProductId, StageId } from './types'
+import type { WorkSlug } from './work'
 
 /**
  * Facts that are the same in every language: names, numbers, platforms, links.
@@ -26,24 +27,6 @@ export const company = {
   social: [] as readonly { label: string; href: string }[],
 } as const
 
-export interface ChapterFacts {
-  id: ChapterId
-  /** Outcome values; their labels are translated in each locale. */
-  outcomes: readonly string[]
-  stack: readonly string[]
-  /** Engine layers this system runs on. */
-  layers: readonly LayerId[]
-}
-
-// The five systems, in the order they launch in the film. Source for every number: src/content/FACTS.md.
-export const chapters: readonly ChapterFacts[] = [
-  { id: 'h06', outcomes: ['40%', '3 h'], stack: ['React', 'Node.js', 'PostgreSQL', 'POS + QuickBooks'], layers: ['automation', 'data', 'apps'] },
-  { id: 'h09', outcomes: ['20%'], stack: ['React', 'Mapbox', 'Node.js routing', 'React Native'], layers: ['automation', 'data', 'apps'] },
-  { id: 'h13', outcomes: ['24/7'], stack: ['Python OCR', 'React', 'AWS S3', 'SendGrid'], layers: ['ai', 'data', 'apps'] },
-  { id: 'h17', outcomes: ['Live'], stack: ['MQTT', 'TimescaleDB', 'React', 'WebSockets'], layers: ['data', 'apps'] },
-  { id: 'h22', outcomes: ['65%'], stack: ['LLM', 'Order API', 'Context routing', 'Slack'], layers: ['ai', 'automation', 'data'] },
-]
-
 /** Top to bottom, the way the column is drawn: crown (AI) down to root (cloud and backend). */
 export const layerOrder: readonly LayerId[] = ['ai', 'growth', 'apps', 'design', 'automation', 'data', 'cloud']
 
@@ -66,18 +49,17 @@ export const layerTech: Record<LayerId, readonly string[]> = {
 }
 
 /**
- * The pulse: what each need takes, root to crown, and the case study that shows it
- * (null: only client work under NDA, listed under "Also delivered"). Each proof case
- * runs on the need's top layer, so the lit column and the card agree.
+ * The pulse: what each need takes, root to crown, and the client project nearest to it in
+ * "Selected client work" (src/content/work.ts); the picker links to that project's card.
  */
-export const needs: Record<NeedId, { layers: readonly LayerId[]; proof: ChapterId | null }> = {
-  panel: { layers: ['cloud', 'data', 'design', 'apps'], proof: 'h17' },
-  shop: { layers: ['cloud', 'data', 'automation', 'design', 'apps', 'growth'], proof: null },
-  assistant: { layers: ['cloud', 'data', 'automation', 'apps', 'ai'], proof: 'h22' },
-  aidata: { layers: ['cloud', 'data', 'automation', 'ai'], proof: 'h13' },
-  app: { layers: ['cloud', 'data', 'design', 'apps'], proof: 'h09' },
-  warehouse: { layers: ['cloud', 'data', 'automation', 'apps'], proof: 'h06' },
-  bots: { layers: ['cloud', 'data', 'automation'], proof: 'h22' },
+export const needs: Record<NeedId, { layers: readonly LayerId[]; work: WorkSlug }> = {
+  panel: { layers: ['cloud', 'data', 'design', 'apps'], work: 'vitrin-console' },
+  shop: { layers: ['cloud', 'data', 'automation', 'design', 'apps', 'growth'], work: 'vitrin-app' },
+  assistant: { layers: ['cloud', 'data', 'automation', 'apps', 'ai'], work: 'helya-ai' },
+  aidata: { layers: ['cloud', 'data', 'automation', 'ai'], work: 'nuvoq-vision' },
+  app: { layers: ['cloud', 'data', 'design', 'apps'], work: 'veyra-money' },
+  warehouse: { layers: ['cloud', 'data', 'automation', 'apps'], work: 'vitrin-app' },
+  bots: { layers: ['cloud', 'data', 'automation'], work: 'flowline-automation' },
 }
 
 /** The needs in the order they are offered. */

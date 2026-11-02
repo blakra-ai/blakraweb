@@ -1,7 +1,8 @@
-import { chapters, company, people, products } from './content/shared'
+import { company, people, products } from './content/shared'
 import type { Dict } from './content/types'
+import { work } from './content/work'
 import { availableLocales, locales } from './i18n'
-import { translatePath, type Route } from './routes'
+import { translatePath, workPath, type Route } from './routes'
 
 const esc = (s: string) => s.replace(/&/g, '&amp;').replace(/"/g, '&quot;').replace(/</g, '&lt;')
 
@@ -16,6 +17,11 @@ function titleFor(route: Route, t: Dict) {
       return { title: m.privacyTitle, description: m.privacyDescription }
     case 'legal':
       return { title: m.legalTitle, description: m.legalDescription }
+    case 'work': {
+      const project = work.find((p) => p.slug === route.slug)!
+      const w = t.work.projects[project.slug]
+      return { title: `${project.name}: ${w.category} — ${t.work.metaSuffix}`, description: w.about }
+    }
     default:
       return { title: m.notFoundTitle, description: m.homeDescription }
   }
@@ -79,7 +85,7 @@ function organization(route: Route, t: Dict) {
     ...(company.social.length ? { sameAs: company.social.map((s) => s.href) } : {}),
     founder: { '@type': 'Person', name: people[0].name, alternateName: people[0].known, jobTitle: t.people.roles[0].role },
     knowsAbout: Object.values(t.engine.layers).map((l) => l.name),
-    subjectOf: chapters.map((c) => ({ '@type': 'CreativeWork', name: t.chapters[c.id].system, about: t.chapters[c.id].sector })),
+    subjectOf: work.map((p) => ({ '@type': 'CreativeWork', name: p.name, about: t.work.projects[p.slug].category, url: `${company.url}${workPath(p.slug, route.locale)}` })),
     // Products are listed once they are real (draft: false in shared.ts).
     makesOffer: products.filter((p) => !p.draft).map((p) => ({ '@type': 'Offer', itemOffered: { '@type': 'SoftwareApplication', name: p.name } })),
   }

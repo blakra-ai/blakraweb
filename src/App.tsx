@@ -9,13 +9,15 @@ import { Footer } from './components/Footer'
 import { ObservatoryStage } from './features/observatory/Stage'
 import { Home } from './pages/Home'
 import { Investors, Legal, NotFound, Privacy } from './pages/Simple'
+import { WorkPage } from './pages/WorkPage'
 
-const pages: Record<PageId, { Page: () => JSX.Element; world?: boolean }> = {
+const pages: Record<PageId, { Page: (props: { slug: string }) => JSX.Element; world?: boolean }> = {
   // The home page is the Observatory: its world (src/features/observatory) mounts once behind it; the others are plain.
   home: { Page: Home, world: true },
   investors: { Page: Investors },
   privacy: { Page: Privacy },
   legal: { Page: Legal },
+  work: { Page: WorkPage },
   notFound: { Page: NotFound },
 }
 
@@ -29,7 +31,7 @@ export function App({ route, dict }: { route: Route; dict: Dict }) {
         </a>
         <Header route={route} />
         <main id="main" tabIndex={-1}>
-          <Page />
+          <Page slug={route.slug ?? ''} />
         </main>
         <Footer route={route} />
         {world && <ObservatoryStage />}

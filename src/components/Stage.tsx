@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState, type CSSProperties } from 'react'
-import { chakraColors, chakraOf, chapters, needOrder, needs } from '../content/shared'
+import { chakraColors, chakraOf, needOrder, needs } from '../content/shared'
 import type { LayerId } from '../content/types'
 import { useStation } from '../features/observatory/Gauge'
 import { chip } from '../features/observatory/gauge'
@@ -107,8 +107,7 @@ export function Stage() {
 
   const picked: readonly LayerId[] | null = choice === 'all' ? ROOT_TO_CROWN : choice ? needs[choice].layers : null
   const pickedIdx = picked ? ROOT_TO_CROWN.map((l, i) => (picked.includes(l) ? i + 1 : 0)).filter(Boolean) : []
-  const proof = choice && choice !== 'all' ? needs[choice].proof : null
-  const chapter = proof ? chapters.find((c) => c.id === proof) : null
+  const nearWork = choice && choice !== 'all' ? needs[choice].work : null
   const at = Math.min(4, Math.max(2, station))
   const line = at === 2 ? t.navigator.lines.manifesto : at === 3 ? t.navigator.lines.systems : t.navigator.lines.mission
   // The layer named now: the last band that formed (none before the first); all seven without motion.
@@ -185,7 +184,7 @@ export function Stage() {
             {choice && (
               <p className={s.usesLine}>
                 {t.pulse.uses} {pickedIdx.join(', ')} ·{' '}
-                <a className={s.proof} href={chapter ? `#${chapter.id}` : '#delivered'}>
+                <a className={s.proof} href={nearWork ? `#work-${nearWork}` : '#work'}>
                   {t.pulse.proof} <span aria-hidden="true">↓</span>
                 </a>
               </p>

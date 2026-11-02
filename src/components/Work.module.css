@@ -1,0 +1,221 @@
+/* Selected client work: paper, the proof's 64 px margin; each card an ink window with one screen. */
+.work {
+  position: relative;
+  background: var(--body);
+  max-width: var(--max-w);
+  margin: 0 auto;
+  padding: 96px 64px 112px;
+}
+.head {
+  display: grid;
+  gap: 18px;
+  max-width: 760px;
+}
+.title {
+  font-size: clamp(2rem, 0.5rem + 3.6vw, 3.75rem);
+}
+.lede {
+  max-width: 560px;
+  font-size: 1rem;
+}
+/* The private-client note: one quiet line with the orange thread before it. */
+.note {
+  position: relative;
+  max-width: 560px;
+  padding-left: 16px;
+  font-size: 0.875rem;
+  line-height: 1.5;
+  color: var(--grey);
+}
+.note::before {
+  content: '';
+  position: absolute;
+  left: 0;
+  top: 0.2em;
+  bottom: 0.2em;
+  width: 2px;
+  background: var(--accent);
+}
+
+.grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 56px var(--gutter);
+  margin-top: 56px;
+  padding-top: 32px;
+  border-top: 1px solid var(--hair);
+}
+.card {
+  display: grid;
+  gap: 8px;
+  color: var(--porcelain);
+  text-decoration: none;
+  border-radius: var(--r-window);
+}
+.card:focus-visible {
+  outline: 2px solid var(--porcelain);
+  outline-offset: 6px;
+}
+/* The window: a fixed 4 : 3 ink frame, so nothing shifts while the screen loads. */
+.window {
+  position: relative;
+  display: block;
+  aspect-ratio: 4 / 3;
+  margin-bottom: 10px;
+  overflow: hidden;
+  border-radius: var(--r-window);
+  background: var(--body);
+}
+.window img {
+  position: absolute;
+  left: 50%;
+  height: auto;
+  transform: translateX(-50%);
+  transition: transform 0.5s var(--ease);
+}
+/* A phone stands in the window, cut by its lower edge; a browser sits low and wide, cut the same way. */
+.window[data-frame='phone'] img {
+  top: 9%;
+  width: 46%;
+}
+.window[data-frame='browser'] img {
+  top: 14%;
+  width: 92%;
+  left: 12%;
+  transform: none;
+}
+.card:hover .window[data-frame='phone'] img {
+  transform: translate(-50%, -6px);
+}
+.card:hover .window[data-frame='browser'] img {
+  transform: translateY(-6px);
+}
+.cat {
+  color: var(--grey);
+}
+.name {
+  font-weight: 400;
+}
+.line {
+  max-width: 40ch;
+  font-size: 0.9375rem;
+  line-height: 1.45;
+  color: var(--grey);
+}
+.card:hover .name {
+  text-decoration: underline;
+  text-decoration-thickness: 1px;
+  text-underline-offset: 4px;
+}
+
+/* Only the wide desktop card shows more than one phone. */
+.window[data-row] img:not([data-k='0']) {
+  display: none;
+}
+/* Desktop: the first card is wide (a 2 + 1, 3, 3 rhythm for eight), its screen set at the same scale. */
+@media (min-width: 1100px) {
+  .item:first-child {
+    grid-column: span 2;
+  }
+  /* Same height as its neighbours' 4 : 3 windows: (2 w + gutter) / 0.75 w. */
+  .item:first-child .window {
+    aspect-ratio: 2.7 / 1;
+  }
+  .item:first-child .window[data-frame='phone'] img {
+    width: 21%;
+    top: 9%;
+  }
+  .item:first-child .window[data-row] img[data-k='0'] {
+    left: 26%;
+  }
+  .item:first-child .window[data-row] img[data-k='2'] {
+    left: 74%;
+  }
+  .window[data-row] img:not([data-k='0']) {
+    display: block;
+  }
+}
+.item {
+  outline: none;
+}
+
+/* 06 How we work: the strip that closes the screen. */
+.process {
+  display: grid;
+  grid-template-columns: minmax(0, 530px) 1fr;
+  column-gap: 136px;
+  align-items: start;
+  margin-top: 96px;
+}
+.processTitle {
+  margin-top: 8px;
+  outline: none;
+}
+.steps {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  column-gap: var(--gutter);
+  margin-top: 8px;
+}
+.steps li {
+  border-top: 1px solid var(--hair);
+  padding-top: 12px;
+}
+.steps b {
+  display: block;
+  font-weight: 500;
+  font-size: 0.9375rem;
+  margin-bottom: 6px;
+}
+.steps span {
+  display: block;
+  color: var(--grey);
+  font-size: 0.8125rem;
+  line-height: 1.45;
+}
+/* The porthole's margin (≥ 1200 px with the world running): the right column stops short of it. */
+:global(html.porthole-margin) .work {
+  padding-right: var(--porthole-pad, 64px);
+}
+
+@media (max-width: 1099px) {
+  .process {
+    column-gap: 48px;
+  }
+  .work {
+    padding: 80px var(--inset) 96px;
+  }
+  .grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+@media (max-width: 699px) {
+  .work {
+    padding: 64px var(--inset) 72px;
+  }
+  .grid {
+    grid-template-columns: minmax(0, 1fr);
+    gap: 44px;
+    margin-top: 40px;
+  }
+  .process {
+    grid-template-columns: minmax(0, 1fr);
+    row-gap: 20px;
+    margin-top: 64px;
+  }
+  .steps {
+    grid-template-columns: minmax(0, 1fr);
+    row-gap: 16px;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .window img {
+    transition: none;
+  }
+  .card:hover .window[data-frame='phone'] img {
+    transform: translateX(-50%);
+  }
+  .card:hover .window[data-frame='browser'] img {
+    transform: none;
+  }
+}
