@@ -295,7 +295,7 @@ export const en: Dict = {
     roles: [
       { role: 'Founder and Chief Technology Officer', owns: 'AI strategy and systems architecture, from the first diagram to production.', ask: 'Ask about: whether AI belongs in your process at all.' },
       { role: 'Senior Full-Stack Engineer and Backend Lead', owns: 'The foundation of each system: backends, data platforms and reliability.', ask: 'Ask about: data you can trust and systems that stay up.' },
-      { role: 'Head of Operations and Corporate Compliance, United States', owns: 'Corporate governance, compliance and vendors, so the business side runs as cleanly as the code.', ask: 'Ask about: contracts, NDAs and data protection.' },
+      { role: 'Head of Operations and Corporate Compliance', owns: 'Corporate governance, compliance and vendors, so the business side runs as cleanly as the code.', ask: 'Ask about: contracts, NDAs and data protection.' },
     ],
     bench: 'The three principals lead each project. Specialists join the projects they fit, under our lead and our contract, so the team grows or shrinks with the work. The whole team works remotely.',
   },

@@ -1,4 +1,4 @@
-import { company, people, products } from './content/shared'
+import { company, products } from './content/shared'
 import type { Dict } from './content/types'
 import { work } from './content/work'
 import { availableLocales, locales } from './i18n'
@@ -69,7 +69,6 @@ function organization(route: Route, t: Dict) {
     legalName: company.legalName,
     url: company.url,
     email: company.email,
-    telephone: company.phone.replace(/[^+\d]/g, ''),
     address: {
       '@type': 'PostalAddress',
       streetAddress: company.address.street,
@@ -83,7 +82,6 @@ function organization(route: Route, t: Dict) {
     description: t.meta.homeDescription,
     inLanguage: locales[route.locale].lang,
     ...(company.social.length ? { sameAs: company.social.map((s) => s.href) } : {}),
-    founder: { '@type': 'Person', name: people[0].name, alternateName: people[0].known, jobTitle: t.people.roles[0].role },
     knowsAbout: Object.values(t.engine.layers).map((l) => l.name),
     subjectOf: work.map((p) => ({ '@type': 'CreativeWork', name: p.name, about: t.work.projects[p.slug].category, url: `${company.url}${workPath(p.slug, route.locale)}` })),
     // Products are listed once they are real (draft: false in shared.ts).

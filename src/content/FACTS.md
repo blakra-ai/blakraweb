@@ -13,7 +13,7 @@ badge on any product marked `draft: true` in `shared.ts`.
 
 | Item | Where | What to supply | Until then |
 |---|---|---|---|
-| Legal entity, still missing: state of organization, entity (file) number, the manager or managing member who represents it; an EU representative (GDPR Art. 27) if one is needed; the hosting provider's name and address (France, LCEN) | Legal notice, Privacy | owner; a lawyer confirms which apply | Legal notice shows name, address, email and phone only |
+| Legal entity, still missing: state of organization, entity (file) number, the manager or managing member who represents it; an EU representative (GDPR Art. 27) if one is needed; the hosting provider's name and address (France, LCEN) | Legal notice, Privacy | owner; a lawyer confirms which apply | Legal notice shows name, address and email only (phone removed by owner 2026-11-02) |
 | Server log retention: 14 days | Privacy | set it on the server (logrotate, see deploy/nginx.conf.example) and confirm | shown as written (default, 2026-10-27) |
 | The skin-analysis AI's product name and platforms | Products, Sponsors and buyers, structured data | LIOXSA, iOS, lioxsa.com (owner, 2026-11-02) | — |
 | What a party receives under NDA: live demo, architecture walkthrough, code review | Products card, Sponsors and buyers, contact door | confirm all three exist (owner confirmed the product is working and ready) | shown as written (writer default, 2026-10-27) |
@@ -34,7 +34,7 @@ badge on any product marked `draft: true` in `shared.ts`.
 | Gartner expects over 40% of agentic AI projects to be canceled by the end of 2027, because of escalating costs, unclear business value or inadequate risk controls | Seven layers (crown) | Gartner press release, 25 June 2025 (checked 2026-10-27) | sourced |
 | References on request | (not on the site) | blueprint default: only if at least two clients agree | omitted until confirmed |
 | Reply within 24 hours, from an engineer who would build it | Contact, How we work | live site ("We'll respond within 24 hours"); owner chose 24 hours, 2026-10-26 | confirmed |
-| Contact: hello@blakra.us on the site; postal address and phone on the Legal notice and Privacy pages and in the structured data | Contact, footer, Legal notice, Privacy, structured data | owner, 2026-10-26 (email) and 2026-10-27 (address, phone) | confirmed |
+| Contact: hello@blakra.us on the site; postal address on the Legal notice and Privacy pages and in the structured data | Contact, footer, Legal notice, Privacy, structured data | owner, 2026-10-26 (email) and 2026-10-27 (address, phone) | confirmed |
 | Legal entity: BLAKRA LLC, 901 H St Ste 120, Sacramento, CA 95814-1817, USA; phone +1 (279) 300-9011 | Footer, Legal notice, Privacy ("Who we are"), structured data | owner, 2026-10-27 | confirmed |
 | Founded in 2024 (footer years, structured data foundingDate) | Footer, structured data | owner, 2026-10-26 (the live site says 2024 in its timeline and 2019 in its structured data) | confirmed |
 | Social links: none | Footer, structured data | checked 2026-10-27: github.com/blakra is an unrelated personal account ("Blaž", one 2018 repo); linkedin.com/company/blakra and x.com/blakra do not exist | removed (the old site's links were wrong) |

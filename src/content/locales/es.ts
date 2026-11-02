@@ -292,7 +292,7 @@ export const es: Dict = {
     roles: [
       { role: 'Fundador y director de tecnología (CTO)', owns: 'Estrategia de IA y arquitectura de sistemas, del primer diagrama a producción.', ask: 'Pregunte por: si la IA tiene realmente sitio en su proceso.' },
       { role: 'Ingeniero full-stack sénior y responsable de backend', owns: 'La base de cada sistema: backends, plataformas de datos y fiabilidad.', ask: 'Pregunte por: datos fiables y sistemas que no se caen.' },
-      { role: 'Responsable de operaciones y cumplimiento corporativo, Estados Unidos', owns: 'Gobierno corporativo, cumplimiento y proveedores, para que el lado del negocio funcione tan limpio como el código.', ask: 'Pregunte por: contratos, NDA y protección de datos.' },
+      { role: 'Responsable de operaciones y cumplimiento corporativo', owns: 'Gobierno corporativo, cumplimiento y proveedores, para que el lado del negocio funcione tan limpio como el código.', ask: 'Pregunte por: contratos, NDA y protección de datos.' },
     ],
     bench: 'Los tres responsables dirigen cada proyecto. Los especialistas se suman a los proyectos que encajan con su perfil, bajo nuestra dirección y nuestro contrato, de modo que el equipo crece o se reduce según el trabajo. Todo el equipo trabaja de forma remota.',
   },

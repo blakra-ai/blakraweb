@@ -292,7 +292,7 @@ export const de: Dict = {
     roles: [
       { role: 'Gründer und Chief Technology Officer', owns: 'KI-Strategie und Systemarchitektur, vom ersten Diagramm bis zum Produktivbetrieb.', ask: 'Fragen Sie nach: ob KI überhaupt in Ihren Prozess gehört.' },
       { role: 'Senior Full-Stack Engineer und Leitung Backend', owns: 'Das Fundament jedes Systems: Backends, Datenplattformen und Zuverlässigkeit.', ask: 'Fragen Sie nach: Daten, denen man trauen kann, und Systemen, die laufen.' },
-      { role: 'Leitung Betrieb und Corporate Compliance, USA', owns: 'Unternehmensführung, Compliance und Dienstleister, damit die geschäftliche Seite so sauber läuft wie der Code.', ask: 'Fragen Sie nach: Verträgen, NDAs und Datenschutz.' },
+      { role: 'Leitung Betrieb und Corporate Compliance', owns: 'Unternehmensführung, Compliance und Dienstleister, damit die geschäftliche Seite so sauber läuft wie der Code.', ask: 'Fragen Sie nach: Verträgen, NDAs und Datenschutz.' },
     ],
     bench: 'Die drei Verantwortlichen leiten jedes Projekt. Fachleute kommen hinzu, wo sie passen, unter unserer Leitung und über unseren Vertrag. So wächst oder schrumpft das Team mit der Arbeit. Das gesamte Team arbeitet remote.',
   },

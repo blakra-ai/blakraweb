@@ -97,7 +97,6 @@ function Address({ country }: { country: string }) {
   )
 }
 
-const tel = `tel:${company.phone.replace(/[^+\d]/g, '')}`
 
 export function Privacy() {
   const { t } = useI18n()
@@ -155,8 +154,6 @@ export function Legal() {
             <dt>{l.contactTitle}</dt>
             <dd>
               {l.emailLabel}: <a href={`mailto:${company.email}`}>{company.email}</a>
-              <br />
-              {l.phoneLabel}: <a href={tel}>{company.phone}</a>
             </dd>
           </div>
           <div>

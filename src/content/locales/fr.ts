@@ -292,7 +292,7 @@ export const fr: Dict = {
     roles: [
       { role: 'Fondateur et directeur technique (CTO)', owns: 'Stratégie IA et architecture des systèmes, du premier schéma à la production.', ask: 'À aborder : la place de l’IA dans votre processus, si elle en a une.' },
       { role: 'Ingénieur full-stack senior et responsable backend', owns: 'Le socle de chaque système : backends, plateformes de données et fiabilité.', ask: 'À aborder : des données fiables et des systèmes qui tiennent.' },
-      { role: 'Responsable des opérations et de la conformité, États-Unis', owns: 'Gouvernance d’entreprise, conformité et fournisseurs, pour que la gestion tourne aussi proprement que le code.', ask: 'À aborder : contrats, NDA et protection des données.' },
+      { role: 'Responsable des opérations et de la conformité', owns: 'Gouvernance d’entreprise, conformité et fournisseurs, pour que la gestion tourne aussi proprement que le code.', ask: 'À aborder : contrats, NDA et protection des données.' },
     ],
     bench: 'Les trois dirigeants mènent chaque projet. Des spécialistes rejoignent ceux qui correspondent à leur profil, sous notre direction et notre contrat : l’équipe s’ajuste ainsi au volume de travail. Toute l’équipe travaille à distance.',
   },
