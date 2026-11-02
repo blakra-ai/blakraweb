@@ -1,4 +1,5 @@
 import type { NeedId } from '../../content/types'
+import { createJourney, type JourneyAnchors } from './journey'
 
 /** A page-space box in CSS pixels (document coordinates: y includes the scroll). */
 export interface PageRect {
@@ -41,6 +42,10 @@ export const obs = {
   handover: 0,
   /** When the ring last had an event (the picker, Send), on the clock: the glow pulses once from it; 0 = never. */
   glowAt: 0,
+  /** The guide's journey over the page (journey.ts): stepped by the world each frame, drawn by the window she is in or the paper overlay (`journeyOwner`). */
+  journey: createJourney(),
+  journeyOwner: 'hero' as string,
+  journeyAnchors: { text: [], rows: [], nearest: null, well: null, stage: null } as JourneyAnchors,
 }
 
 // Dev only: the headless probes read obs (station, progress, windows) while scrubbing.

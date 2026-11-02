@@ -346,6 +346,20 @@ footer {
 .obs-world canvas {
   display: block;
 }
+/* The journey's overlay: a box that rides with her (Journey.tsx moves it by transform), above the paper (z 2, under the header); journey.ts keeps her clear of the words. */
+.obs-journey {
+  position: fixed;
+  left: 0;
+  top: 0;
+  width: 50vh;
+  height: 45vh;
+  z-index: 2;
+  pointer-events: none;
+  will-change: transform;
+}
+.obs-journey canvas {
+  display: block;
+}
 
 h1,
 h2,

@@ -239,8 +239,8 @@ function guideHint(el: HTMLElement): { x: number; y: number } | null {
   return Number.isFinite(x) && Number.isFinite(y) ? { x, y } : null
 }
 
-/** The nearest sticky ancestor of the window (its hold), read on reflow only. */
-function stickyOf(el: HTMLElement): Sticky | null {
+/** The nearest sticky ancestor of an element (its hold), read on reflow only. */
+export function stickyOf(el: HTMLElement): Sticky | null {
   for (let p = el.parentElement; p && p !== document.body; p = p.parentElement) {
     const cs = getComputedStyle(p)
     if (cs.position !== 'sticky') continue

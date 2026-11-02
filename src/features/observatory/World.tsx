@@ -10,12 +10,14 @@ import { LAYERS, nav } from '../navigator/state'
 import { ORBIT_END } from './orbit'
 import { obs } from './state'
 import { createGuideHandle, fitGuideCamera, Guide, placeGuide } from './Guide'
+import { journeyMoving, journeyOwner, journeyTarget, stepJourney, type JourneyInput } from './journey'
+import Journey from './Journey'
 
 /** The picker's choice as her layers (indices 0 … 6), or null. */
 export const pickedLayers = () => (obs.picker ? (obs.picker === 'all' ? LAYERS : needs[obs.picker].layers).map((l) => LAYERS.indexOf(l)) : null)
 import { createRing, fitRing, glowAt } from './shaders/ring'
 import { createWell, fitWell } from './shaders/well'
-import { bendAt, FRAME_RADIUS, getWindows, GRID_CELL, guideInView, holeFor, onScreen, onWindows, toGl } from './windows'
+import { bendAt, FRAME_RADIUS, getWindows, GRID_CELL, holeFor, onScreen, onWindows, toGl, type Rect } from './windows'
 import { LAYERS_N } from './orbit'
 
 /*
@@ -50,6 +52,11 @@ function rendererName(gl: { getContext(): WebGLRenderingContext | WebGL2Renderin
 }
 /** Frames drawn so far (`?profile`: globalThis.__obsWorld.frames.n, for an idle-cost probe). */
 const frames = { n: 0, why: '' }
+/** The journey's input, reused per frame (no allocation), and the windows on screen for the owner test. */
+const journeyInput: JourneyInput = { station: 1, scrollY: 0, viewport: { w: 1, h: 1 }, clock: 0, hero: null, stage: null, contact: null, anchors: { text: [], rows: [], nearest: null, well: null, stage: null } }
+const onViews: { id: string; view: Rect }[] = []
+/** A window's viewport rect at this scroll even when off screen (the target she travels toward). */
+const restView = (rect: Rect, scrollY: number): Rect => ({ x: rect.x, y: rect.y - scrollY, w: rect.w, h: rect.h })
 
 function Passes({ handle }: { handle: ReturnType<typeof createGuideHandle> }) {
   const { gl, scene, size, invalidate } = useThree()
@@ -149,6 +156,29 @@ function Passes({ handle }: { handle: ReturnType<typeof createGuideHandle> }) {
     for (let k = 0; k < LAYERS_N; k++) lit[k] = picked ? (picked.includes(k) ? 1 : 0.2) : 1
     const bandsAt = still ? LAYERS_N : Math.min(LAYERS_N, obs.hold / ORBIT_END * LAYERS_N)
 
+    // The journey: her target for this scroll from the windows on screen and the paper's anchors, the spring stepped once.
+    const ji = journeyInput
+    ji.station = obs.station
+    ji.scrollY = y
+    ji.viewport = viewport
+    ji.clock = obs.clock
+    ji.hero = ji.stage = ji.contact = null
+    ji.anchors = obs.journeyAnchors
+    onViews.length = 0
+    for (const w of windows) {
+      const on = onScreen(w.rect, y, viewport, w.sticky)
+      const g = w.framing.guide
+      if (w.kind === 'hero' && g) ji.hero = { view: on?.view ?? restView(w.rect, y), eyes: { x: g.x, y: g.y }, figurePx: g.figurePx }
+      if (w.kind === 'contact' && g) ji.contact = { view: on?.view ?? restView(w.rect, y), eyes: { x: g.x, y: g.y }, figurePx: g.figurePx }
+      if (w.kind === 'stage') ji.stage = { view: on?.view ?? restView(w.rect, y), ring: w.framing.ring }
+      if (on) onViews.push({ id: w.id, view: on.view })
+    }
+    const target = journeyTarget(ji)
+    const journey = obs.journey
+    stepJourney(journey, target, dt, obs.clock, still)
+    // Reduced motion: she stays in the hero (the still's final state).
+    obs.journeyOwner = journey.mode === 'paper' && !still ? 'paper' : still && ji.hero ? 'hero' : journeyOwner(journey, onViews)
+
     gl.setScissorTest(false)
     gl.setViewport(0, 0, size.width, size.height)
     gl.clear(true, true, false)
@@ -196,11 +226,12 @@ function Passes({ handle }: { handle: ReturnType<typeof createGuideHandle> }) {
       gl.render(scene, ortho)
       if (flat.current) flat.current.visible = false
 
-      // The guide's pass: her in front of the ring, through the window's own perspective camera, only when the visible part touches her.
-      if (f.guide && guide && guideInView(f.guide, clip, view)) {
+      // The guide's pass: her inside this window (the journey says which), through the window's own perspective camera.
+      if (guide && obs.journeyOwner === w.id) {
         handle.systems(false)
         fitGuideCamera(persp, view.w, view.h)
-        if (placeGuide(handle, f, view, persp)) {
+        const place = { x: journey.x, y: journey.y + journey.hover, figurePx: journey.figurePx, bank: journey.bank, pitch: journey.pitch, facing: journey.facing, key: -1 as const }
+        if (placeGuide(handle, place, view, persp)) {
           guide.visible = true
           gl.clearDepth()
           gl.render(scene, persp)
@@ -216,7 +247,7 @@ function Passes({ handle }: { handle: ReturnType<typeof createGuideHandle> }) {
     // The next frame: while something moves (the bend, a pulse, the scroll settling, her clip and her life while she shows), at once; else none.
     const sinceInput = (now - s.inputAt) / 1000
     const alive = guideShown && (handle.moving() || handle.rig.metrics !== null)
-    const moving = !still && (bend < 1 || glow > 0 || Math.abs(nav.scrollV) > 0 || sinceInput < INPUT_HOLD_S || alive)
+    const moving = !still && (bend < 1 || glow > 0 || Math.abs(nav.scrollV) > 0 || sinceInput < INPUT_HOLD_S || alive || journeyMoving(journey, target))
     if (PROFILE) frames.why = moving ? `bend${bend < 1 ? 1 : 0} glow${glow > 0 ? 1 : 0} scroll${nav.scrollV !== 0 ? 1 : 0} input${sinceInput < INPUT_HOLD_S ? 1 : 0} guide${alive ? 1 : 0}` : 'idle'
     if (moving) invalidate()
 
@@ -282,6 +313,7 @@ export default function World() {
         <Passes handle={handle} />
         <Burst to={burstRef} />
       </Canvas>
+      <Journey />
     </div>,
     document.body,
   )

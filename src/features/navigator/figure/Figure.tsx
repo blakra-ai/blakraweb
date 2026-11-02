@@ -3,6 +3,7 @@ import { useEffect, useMemo, useRef, useState } from 'react'
 import { Bone, Euler, Group, Matrix4, MeshStandardMaterial, Object3D, Quaternion, Vector3 } from 'three'
 import { createHair, segmentQuaternion, stepHair, type HairState } from '../hair'
 import { nav } from '../state'
+import { createDrive, stepDrive, stepDriveHead, type BodyOut, type Drive } from './drive'
 import { CHAKRAS } from '../yantra'
 import { GLB_URL, HAIR_BONES, type Figure as FigureData } from './contract'
 import { loadFigure, type LoadedFigure } from './loadFigure'
@@ -21,7 +22,19 @@ export interface FigureRig {
   assembled: number
   /** Her slow float (world units), for whoever places her. */
   float: number
+  /** The ground the journey has her walk: the page px covered so far (monotonic), model units per px at her drawn size, and whether she walks. */
+  gait: Gait
 }
+
+export interface Gait {
+  ground: number
+  unitsPerPx: number
+  moving: boolean
+}
+
+/** Dev only: ?gait=off keeps the rest pose (no procedural walk), to tell the rig from the gait. */
+const NO_GAIT = import.meta.env.DEV && typeof location !== 'undefined' && new URLSearchParams(location.search).get('gait') === 'off'
+const BODY: BodyOut = { bob: 0, sway: 0, roll: 0, pitch: 0 }
 
 const DEG = Math.PI / 180
 /** How the head's turn is shared down the neck: Head, Neck, Spine2. */
@@ -165,7 +178,7 @@ const damp = (from: number, to: number, l: number, dt: number) => from + (to - f
  * bones and materials. The world's variant also tells the page where her eyes and mouth are
  * (`nav.anchor`). Where she stands is the poser's business: this group is placed from outside.
  */
-export function Figure({ rig, variant }: { rig: FigureRig; variant: 'world' | 'dock' }) {
+export function Figure({ rig, variant }: { rig: FigureRig; variant: 'world' | 'dock' | 'journey' }) {
   const group = useRef<Group>(null)
   const [figure, setFigure] = useState<LoadedFigure | null>(null)
   const { camera, size } = useThree()
@@ -174,6 +187,7 @@ export function Figure({ rig, variant }: { rig: FigureRig; variant: 'world' | 'd
   const show = useRef(0)
   const collarOffset = useRef(0)
   const hair = useRef<HairRig | null>(null)
+  const drive = useRef<Drive | null>(null)
   /** Single hair bones (HairSway_n, a model's own dynamic-hair joints): a damped spring per bone that lags her turns. */
   const sway = useRef<{ bones: Object3D[]; rest: Quaternion[]; ang: Float32Array; vel: Float32Array; last: { yaw: number; pitch: number } } | null>(null)
 
@@ -222,10 +236,15 @@ export function Figure({ rig, variant }: { rig: FigureRig; variant: 'world' | 'd
     }
   }, [figure])
 
+  // Her walk: the procedural gait drives the legs, neck, head, ears, plates and jets (models without legs keep their rest).
+  useEffect(() => {
+    drive.current = figure && !NO_GAIT && variant !== 'dock' ? createDrive(figure.root) : null
+  }, [figure, variant])
+
   // The hair's chains, world variant only (the dock's badge is still too small for it to read).
   useEffect(() => {
-    hair.current = variant === 'world' && figure?.hair ? buildHair(figure, figure.hair.bones.map((_, i) => i)) : null
-    if (figure && variant === 'world') {
+    hair.current = variant !== 'dock' && figure?.hair ? buildHair(figure, figure.hair.bones.map((_, i) => i)) : null
+    if (figure && variant !== 'dock') {
       const bones: Object3D[] = []
       for (let i = 1; i <= 16; i++) {
         const b = figure.root.getObjectByName(`HairSway_${i}`)
@@ -258,6 +277,10 @@ export function Figure({ rig, variant }: { rig: FigureRig; variant: 'world' | 'd
       m.uniforms.uBright.value = p.bright
       m.uniforms.uBand.value = Math.round(p.band)
     }
+
+    // The gait: the legs for this frame (the body's bob, sway, roll and pitch go on the group below).
+    const dv = drive.current
+    if (dv) stepDrive(dv, { ground: rig.gait.ground, unitsPerPx: rig.gait.unitsPerPx, moving: rig.gait.moving, dt: Math.min(dt, 0.1), clock: t, still }, BODY)
 
     // Gaze: the eyes lead; head, neck and shoulders share the head's turn; the body turns the group.
     const set = (o: Object3D, r: { x: number; y: number; z: number }, yaw: number, pitch: number) => {
@@ -307,6 +330,14 @@ export function Figure({ rig, variant }: { rig: FigureRig; variant: 'world' | 'd
     const earR = figure.bones.Ear_R
     if (earL && rest.earL) earL.rotation.set(rest.earL.x, rest.earL.y + (p.ears.turn < 0 ? -p.ears.turn * DEG : 0), rest.earL.z - p.ears.prick * DEG)
     if (earR && rest.earR) earR.rotation.set(rest.earR.x, rest.earR.y + (p.ears.turn > 0 ? -p.ears.turn * DEG : 0), rest.earR.z + p.ears.prick * DEG)
+    // The nod, its counter and the ear flicks compose on the gaze; the body rides the stride.
+    if (dv) {
+      stepDriveHead(dv)
+      const k = figure.root.scale.x
+      g.position.set(0, BODY.bob * k, BODY.sway * k)
+      g.rotation.x = BODY.roll * DEG
+      g.rotation.z = BODY.pitch * DEG
+    }
     for (const m of rest.earMats) m.emissiveIntensity = 1.2 * p.ears.glow
 
     // The seven systems' light; the throat (Sys_05) also carries the ears' glow.
@@ -367,7 +398,7 @@ export function Figure({ rig, variant }: { rig: FigureRig; variant: 'world' | 'd
     // writes it (the dock's while she rests at the dock, the world's otherwise).
     const writes = variant === 'dock' ? nav.atDock : !nav.atDock && g.visible
     if (!writes) {
-      if (variant === 'world' && !nav.atDock) nav.anchor.on = false
+      if (variant !== 'dock' && !nav.atDock) nav.anchor.on = false
       return
     }
     // The dock's canvas is centred on the header's slot; its pixels are offset by its own corner.

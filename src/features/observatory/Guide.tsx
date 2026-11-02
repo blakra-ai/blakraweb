@@ -1,6 +1,6 @@
 import { useFrame, useThree } from '@react-three/fiber'
 import { useEffect, useMemo, useRef } from 'react'
-import { type DirectionalLight, Group, MeshStandardMaterial, type Object3D, PerspectiveCamera, Vector3 } from 'three'
+import { type DirectionalLight, Group, type Object3D, PerspectiveCamera, Vector3 } from 'three'
 import { Studio } from '../experience/objects/Studio'
 import { Figure, type FigureRig } from '../navigator/figure/Figure'
 import { createLivingState, IGNITION_GAP, stepLiving, type LivingInput, type LivingState } from '../navigator/living'
@@ -8,7 +8,7 @@ import { pickedLayers } from './World'
 import { jawOpen } from '../navigator/speech'
 import { nav } from '../navigator/state'
 import { obs } from './state'
-import type { Framing, Rect } from './windows'
+import type { Rect } from './windows'
 
 /*
  * The guide: the Navigator's figure from the navigator pipeline (loadFigure + Figure, variant
@@ -20,10 +20,11 @@ import type { Framing, Rect } from './windows'
  *
  * She is the Mecha roe deer (Osho, CC BY 4.0; src/assets/navigator/source/README.md), adopted as
  * src/assets/navigator/navigator.glb: a silver mecha standing full-length, her head cut from the
- * body at the neck so it turns toward the cursor, her light strips gold. Her idle here: the slow
- * float placeGuide applies, the head's turn (HEAD_REST_YAW keeps her face a slight three-quarter
+ * rigged in Blender (scripts/navigator-rig-deer.py: spine, neck, head, ears, jets, plates, four
+ * legs) with her "Walk" and "Idle" clips, her colours as the artist authored them. Her head turns
+ * toward the cursor and the journey's item (HEAD_REST_YAW keeps her face a slight three-quarter
  * toward the words; HEAD_GAIN widens the living step's share to ±10°, since her lenses cannot
- * move on their own) and the strips' pulse (STRIP_PULSE).
+ * move on their own); the ears follow the cursor through living.ts; the gait comes from journey.ts.
  */
 
 export interface GuideHandle {
@@ -33,9 +34,8 @@ export interface GuideHandle {
   living: LivingState | null
   /** Her eye nodes, found once under the loaded figure. */
   eyes: [Object3D, Object3D] | null
-  /** The key light (from the ring's side) and the gold rim behind her: placeGuide turns them to the window's side. */
+  /** The key light (from the ring's side): placeGuide turns it to the window's side. */
   key: DirectionalLight | null
-  rim: DirectionalLight | null
   /** Show or hide her seven systems' lights (the chakra dots show only where layers are the subject: never in these windows). */
   systems: (on: boolean) => void
   /** The living step's wake-up times (clock s): the next blink and the next idle glance. */
@@ -46,12 +46,11 @@ export interface GuideHandle {
 
 export function createGuideHandle(): GuideHandle {
   const h: GuideHandle = {
-    rig: { group: null, systems: [], metrics: null, explode: 0, assembled: 0, float: 0 },
+    rig: { group: null, systems: [], metrics: null, explode: 0, assembled: 0, float: 0, gait: { ground: 0, unitsPerPx: 0, moving: false } },
     group: null,
     living: null,
     eyes: null,
     key: null,
-    rim: null,
     systems: () => {},
     nextEvent: () => Infinity,
     moving: () => false,
@@ -90,10 +89,6 @@ const DEG = Math.PI / 180
 const HEAD_GAIN = 2.5
 /** Her head's rest turn (degrees, negative toward the words): never dead frontal. */
 const HEAD_REST_YAW = -15
-/** Her light strips breathe about their rest intensity by this share, at this rate (Hz). */
-const STRIP_PULSE = 0.1
-const STRIP_HZ = 0.25
-const STRIP_MATERIAL = /^(E_|Material\.002)/
 /** The key light's stand-off on x (its side flips per window) and the fill's: world units are px here, the lights are directional. */
 const KEY_X = 3
 
@@ -112,26 +107,43 @@ export function fitGuideCamera(camera: PerspectiveCamera, w: number, h: number) 
 const EYE = new Vector3()
 const EYE2 = new Vector3()
 
+/** Where she is drawn this frame: her eyes in viewport px, her height, her bank and pitch (degrees), the key light's side. */
+export interface GuidePlace {
+  x: number
+  y: number
+  figurePx: number
+  bank: number
+  pitch: number
+  /** Her facing about the vertical (degrees: 0 faces the words, 90 the right). */
+  facing: number
+  key: -1 | 1
+}
+
 /**
- * Put her at the window's framing: eyes at (guide.x, guide.y) window-local px, the head
- * `guide.headPx` tall. Writes where her eyes are on screen (`nav.anchor`, viewport px) for the
- * gaze, given the window's viewport rect. Returns false when she is not ready.
+ * Put her at `place` (viewport px) through a camera that draws the viewport rect `view` with
+ * world units = CSS px: her eyes at (x, y), her whole height `figurePx`, banked and pitched.
+ * Writes where her eyes are on screen (`nav.anchor`) for the gaze. Returns false when she is not ready.
  */
-export function placeGuide(h: GuideHandle, framing: Framing, view: Rect, camera: PerspectiveCamera): boolean {
+export function placeGuide(h: GuideHandle, place: GuidePlace, view: Rect, camera: PerspectiveCamera): boolean {
   const g = h.group
   const m = h.rig.metrics
-  const place = framing.guide
-  if (!g || !m || !place) return false
-  // Her whole height fills `figurePx` (a full-length figure); the head's share is the fallback.
-  const s = place.figurePx ? place.figurePx / m.height : place.headPx / m.headHeight
-  const x = place.x - view.w / 2
-  const y = view.h / 2 - place.y
-  g.position.set(x, y - s * m.eyeY + h.rig.float * s, -s * m.headZ)
+  if (!g || !m) return false
+  const s = place.figurePx / m.height
+  const x = place.x - view.x - view.w / 2
+  const y = view.h / 2 - (place.y - view.y)
+  // The group turns about her eyes: the figure is offset so the eyes sit on the group's origin.
+  g.position.set(x, y + h.rig.float * s, 0)
   g.scale.setScalar(s)
+  g.rotation.set(place.pitch * DEG, place.facing * DEG, place.bank * DEG)
+  const inner = g.children[0]
+  if (inner) inner.position.set(0, -m.eyeY, -m.headZ)
   g.updateMatrixWorld(true)
   // The key light comes from the ring's side of this window.
   if (h.key) h.key.position.x = KEY_X * place.key
-  if (h.rim) h.rim.position.x = KEY_X * place.key
+  // The gait the journey asks for.
+  h.rig.gait.ground = obs.journey.ground
+  h.rig.gait.unitsPerPx = 1 / s
+  h.rig.gait.moving = obs.journey.walking
   // Her eyes on screen: the midpoint projected through the window's camera into viewport px.
   if (!h.eyes) {
     const l = g.getObjectByName('Eye_L')
@@ -144,7 +156,7 @@ export function placeGuide(h: GuideHandle, framing: Framing, view: Rect, camera:
     EYE.add(EYE2).multiplyScalar(0.5).project(camera)
     nav.anchor.eyes.x = view.x + ((EYE.x + 1) / 2) * view.w
     nav.anchor.eyes.y = view.y + ((1 - EYE.y) / 2) * view.h
-    nav.anchor.headPx = place.headPx
+    nav.anchor.headPx = 0.25 * place.figurePx
     nav.anchor.on = true
   }
   return true
@@ -154,7 +166,7 @@ export function placeGuide(h: GuideHandle, framing: Framing, view: Rect, camera:
  * Mounts the figure and steps her living systems before the frame is drawn (priority −1, so
  * Figure's own useFrame applies this frame's performance).
  */
-export function Guide({ handle }: { handle: GuideHandle }) {
+export function Guide({ handle, variant = 'world' }: { handle: GuideHandle; variant?: 'world' | 'journey' }) {
   const group = useRef<Group>(null)
   const { size, invalidate } = useThree()
 
@@ -187,12 +199,8 @@ export function Guide({ handle }: { handle: GuideHandle }) {
   )
 
   const key = useRef<DirectionalLight>(null)
-  const rim = useRef<DirectionalLight>(null)
-  /** Her strips' materials (cloned per mesh by the loader) and their rest intensity, found once she is mounted. */
-  const strips = useRef<{ mats: MeshStandardMaterial[]; rest: number[] } | null>(null)
   useEffect(() => {
     handle.key = key.current
-    handle.rim = rim.current
     // The world's figure never docks here: Figure then leaves the anchor to placeGuide.
     nav.atDock = true
     return () => {
@@ -204,6 +212,7 @@ export function Guide({ handle }: { handle: GuideHandle }) {
   useFrame((_, dt) => {
     handle.group = group.current
     if (!handle.rig.metrics) return
+    if (variant === 'journey') return
     if (!handle.living) handle.living = createLivingState(1, obs.clock + 0.3)
     input.viewport.w = size.width
     input.viewport.h = size.height
@@ -221,36 +230,25 @@ export function Guide({ handle }: { handle: GuideHandle }) {
     input.clock = obs.clock
     input.dt = Math.min(0.1, dt)
     stepLiving(handle.living, input, nav.perf)
-    nav.perf.head.yaw = nav.perf.head.yaw * HEAD_GAIN + HEAD_REST_YAW
-    nav.perf.head.pitch *= HEAD_GAIN
+    // The head: her rest turn, the journey's look (ahead, or at the item) and the cursor's share (full in the windows, a third on the paper).
+    const j = obs.journey
+    const cursor = j.mode === 'paper' ? 0.35 : 1
+    nav.perf.head.yaw = nav.perf.head.yaw * HEAD_GAIN * cursor + HEAD_REST_YAW + j.headYaw
+    nav.perf.head.pitch = nav.perf.head.pitch * HEAD_GAIN * cursor + j.headPitch
     nav.perf.jaw = nav.still ? 0 : jawOpen(obs.line.text, obs.line.typed, obs.clock, obs.line.from)
-    // The strips' pulse: every emissive material of hers, about its rest (the still keeps the rest).
-    if (!strips.current && group.current) {
-      const mats: MeshStandardMaterial[] = []
-      group.current.traverse((o) => {
-        const m = (o as { material?: unknown }).material
-        if (m instanceof MeshStandardMaterial && STRIP_MATERIAL.test(m.name) && !mats.includes(m)) mats.push(m)
-      })
-      strips.current = { mats, rest: mats.map((m) => m.emissiveIntensity) }
-    }
-    const st = strips.current
-    if (st) {
-      const k = nav.still ? 1 : 1 + STRIP_PULSE * Math.sin(obs.clock * STRIP_HZ * Math.PI * 2)
-      st.mats.forEach((m, i) => (m.emissiveIntensity = st.rest[i] * k))
-    }
   }, -1)
 
   return (
     <>
-      {/* The key from the ring's side (warm; placeGuide flips its side per window), a cool fill from the other front quarter, a near-neutral environment so her brushed metal reads silver, not gold or blue: no shadows. The lights stay outside her placed group. */}
-      <Studio warm="#c9ab7a" cool="#8e98a6" base="#17171c" />
-      <directionalLight ref={key} position={[-KEY_X, 2, 2]} intensity={2.2} color="#e9c98f" />
-      {/* The faint gold rim from behind, the ring's side: her silhouette separates from the ink. */}
-      <directionalLight ref={rim} position={[-KEY_X, 1, -3]} intensity={1.4} color="#d9a441" />
-      <directionalLight position={[2, 2.5, 4]} intensity={1.0} color="#aebbd0" />
-      <ambientLight intensity={0.3} color="#e4e2dc" />
+      {/* Neutral studio light (a white key from the ring's side, a soft fill, a dim grey environment): her own colours as the artist authored them, her violet strips and lenses self-lit. No shadows. The lights stay outside her placed group. */}
+      <Studio warm="#efe9df" cool="#dde2ea" base="#15151a" />
+      <directionalLight ref={key} position={[-KEY_X, 2, 2]} intensity={2.0} color="#fff6e8" />
+      <directionalLight position={[2, 2.5, 4]} intensity={0.9} color="#e6ebf2" />
+      <ambientLight intensity={0.35} color="#ffffff" />
       <group ref={group}>
-        <Figure rig={handle.rig} variant="world" />
+        <group>
+          <Figure rig={handle.rig} variant={variant} />
+        </group>
       </group>
     </>
   )

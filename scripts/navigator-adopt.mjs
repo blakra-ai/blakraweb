@@ -799,7 +799,8 @@ if (flags.has('--webp')) {
   // Textures are named after their material and slot, so --tex-hi can pick them by pattern.
   for (const m of root.listMaterials()) for (const slot of ['BaseColor', 'Normal', 'MetallicRoughness', 'Emissive', 'Occlusion']) {
     const t = m[`get${slot}Texture`]()
-    if (t && !t.getName()) t.setName(`${m.getName()}:${slot}`)
+    // A map shared by several materials takes the --tex-hi material's name when one matches, else the first's.
+    if (t && (!/:/.test(t.getName()) || (flags.has('--tex-hi') && new RegExp(`^(${value('--tex-hi')})$`).test(m.getName())))) t.setName(`${m.getName()}:${slot}`)
     // The pattern below tests the URI first: a .gltf delivery's file names would hide the slot names.
     if (t) t.setURI('')
   }
