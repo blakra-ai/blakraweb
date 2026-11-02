@@ -12,6 +12,8 @@ export const fr: Dict = {
     privacyDescription: 'Ce que BLAKRA collecte via ce site, pourquoi, et ce qu’il en advient.',
     legalTitle: 'Mentions légales — BLAKRA',
     legalDescription: 'Qui édite blakra.us : BLAKRA LLC, son adresse et comment la joindre.',
+    aboutTitle: 'À propos de BLAKRA — Pôles, engagements, secteurs et FAQ',
+    aboutDescription: 'BLAKRA LLC, fondée en 2024 : cinq pôles, un seul contrat et une équipe responsable. Nos engagements, notre façon de travailler, les secteurs servis et les réponses aux questions fréquentes.',
     notFoundTitle: 'Page introuvable — BLAKRA',
     ogAlt: 'BLAKRA : du logiciel qui a de la gravité.',
   },
@@ -19,7 +21,7 @@ export const fr: Dict = {
   ui: {
     skip: 'Aller au contenu',
     home: 'accueil',
-    nav: { work: 'Réalisations', engine: 'Expertises', products: 'Produits', people: 'Équipe' },
+    nav: { work: 'Réalisations', engine: 'Expertises', products: 'Produits', people: 'Équipe', about: 'À propos' },
     cta: 'Lancer un projet',
     pauseMotion: 'Mettre les animations en pause',
     menu: 'Menu',
@@ -37,16 +39,16 @@ export const fr: Dict = {
   prologue: {
     eyebrow: 'BLAKRA — Du logiciel qui a de la gravité.',
     title: { before: 'Nous bâtissons', human: 'vos logiciels métier', after: '.' },
-    lede: 'Nous concevons, développons et exploitons des systèmes de gestion et de stocks, des back-offices et boutiques en ligne, des applications web et mobiles, des bots, et de l’IA sur vos propres données. Trois dirigeants mènent chaque projet, du cadrage à la production.',
+    lede: 'Nous concevons, développons et exploitons des systèmes de gestion et de stocks, des back-offices et boutiques en ligne, des applications web et mobiles, des bots, et de l’IA sur vos propres données. Notre direction mène chaque projet, impliquée du cadrage à la production.',
     cue: 'De quoi avez-vous besoin ?',
     also: 'Autres façons de collaborer :',
-    facts: 'Fondée en 2024 · 100 % à distance · Réponse sous 24 heures',
+    facts: 'Fondée en 2024 · Équipes remote-first · Réponse sous 24 heures',
   },
 
   pulse: {
     eyebrow: 'Pourquoi une seule équipe',
     title: 'Un produit ne vaut que son passage de relais le plus faible.',
-    body: 'Le design chez une agence, l’application chez une autre, le backend chez un freelance et l’IA chez un consultant. Chaque passage de relais perd quelque chose, et en cas de problème, les prestataires se renvoient la balle. Avec nous, c’est un seul contrat et une seule équipe, menée par les trois mêmes dirigeants, qui répond de tout.',
+    body: 'Le design chez une agence, l’application chez une autre, le backend chez un freelance et l’IA chez un consultant. Chaque passage de relais perd quelque chose, et en cas de problème, les prestataires se renvoient la balle. Avec nous, un seul contrat, une seule équipe et un responsable désigné pour l’ensemble.',
     ask: 'De quoi avez-vous besoin ?',
     needs: {
       panel: { label: 'Un back-office pour piloter nos opérations.', tag: 'Back-office' },
@@ -73,6 +75,7 @@ export const fr: Dict = {
     title: 'Des produits que nous avons conçus et construits pour des clients privés.',
     lede: 'Applications, plateformes d’exploitation et outils d’IA, chacun livré à un client qui en est propriétaire. Un écran par projet ici ; ouvrez-en un pour le problème, les décisions et d’autres écrans.',
     note: 'Réalisé pour un client privé. Le produit appartient au client ; les détails sont couverts par un accord de confidentialité. Les écrans présentés sont représentatifs.',
+    also: 'Également livré dans la finance, la santé, la robotique et d’autres secteurs, le plus souvent sous accord de confidentialité.',
     noteTitle: 'Mission',
     metaSuffix: 'Réalisation client — BLAKRA',
     all: 'Toutes les réalisations',
@@ -219,6 +222,26 @@ export const fr: Dict = {
       },
     },
   },
+  ai: {
+    eyebrow: 'IA',
+    title: 'Une IA qui fait un vrai travail, sur vos données, selon vos conditions.',
+    lede: 'Nous construisons des outils d’IA de bout en bout, des données qu’ils lisent à l’écran qu’utilisent vos équipes. Les modèles open source tournent sur nos serveurs ou les vôtres, pour que les données sensibles restent chez vous. Les plateformes commerciales mènent le plus vite en production. Nous choisissons la bonne option pour chaque projet.',
+    blocks: {
+      agents: { name: 'Des agents qui agissent', text: 'Ils lisent, répondent et effectuent l’étape suivante dans les outils que votre équipe utilise déjà. Une personne valide ce qui compte.' },
+      documents: { name: 'Des réponses tirées de vos documents', text: 'Chaque réponse cite son document et sa page. L’accès suit les droits de chaque lecteur.' },
+      extraction: { name: 'Des documents aux données', text: 'L’OCR et l’extraction transforment scans, formulaires et factures en enregistrements exploitables par vos systèmes.' },
+      vision: { name: 'Vision', text: 'Des modèles qui inspectent images et vidéos, des défauts sur une ligne de production à la peau sur une seule photo.' },
+      training: { name: 'Entraînement et machine learning', text: 'Nous préparons et annotons les données, entraînons et affinons les modèles, construisons des modèles prédictifs classiques, puis les déployons et les supervisons en production.' },
+      evaluation: { name: 'Évaluation et garde-fous', text: 'Testée sur vos propres cas avant la mise en ligne, tenue aux limites que vous fixez, avec des coûts suivis dès la première exécution.' },
+    },
+    twoWays: 'Deux façons de construire',
+    open: { name: 'Open source', text: 'Hébergés par nous ou sur vos serveurs ; vos données restent chez vous. Entraînés ou affinés sur vos données quand la tâche l’exige.' },
+    platforms: { name: 'Plateformes', text: 'Des modèles commerciaux, et les services d’IA d’Azure, d’AWS et de Google Cloud.' },
+    closer: 'Votre système reste ouvert aux nouveaux modèles : vous pouvez changer de modèle plus tard et conserver tout ce qui est construit autour.',
+    cta: 'Dites-nous ce que l’IA doit faire',
+    ourProduct: 'notre produit',
+  },
+
   engine: {
     eyebrow: 'Expertises',
     title: 'Sept couches. Une seule équipe.',
@@ -230,7 +253,7 @@ export const fr: Dict = {
       design: { name: 'Design produit', text: 'Recherche, UX et design d’interface, pour que chaque écran soit adapté à ses utilisateurs et à leur travail.' },
       automation: { name: 'Automatisation et bots', text: 'Workflows et bots qui prennent en charge le travail répétitif, dans les messageries, sur le web ou dans vos outils.' },
       data: { name: 'Données et intégrations', text: 'Bases de données, pipelines et intégrations qui mettent vos outils, systèmes et appareils sur une seule source de vérité.' },
-      cloud: { name: 'Cloud et backend', text: 'API, serveurs, cloud et sécurité, conçus pour tenir une charge réelle, avec une supervision dès le premier jour.' },
+      cloud: { name: 'Cloud et backend', text: 'API, serveurs, cloud et sécurité, supervisés dès le premier jour.' },
     },
     symbol: 'BLAKRA, pour « black hole » (trou noir) et chakra. Sept couches sur un même axe : le socle à la racine, l’IA à la couronne.',
     usedAt: 'Intervient dans',
@@ -248,17 +271,17 @@ export const fr: Dict = {
     steps: [
       { name: 'Cadrer le problème', text: 'Nous passons en revue le travail avec ceux qui le font, et identifions le processus qui vous coûte le plus. Le premier échange et l’évaluation technique sont gratuits.' },
       { name: 'Construire le premier système', text: 'Un périmètre fixe, un prix fixe et un critère de « terminé » convenu ensemble. Un logiciel qui fonctionne toutes les deux semaines, pour juger l’avancement à l’usage.' },
-      { name: 'L’exploiter avec vous', text: 'L’usage réel commence à la mise en ligne. Avec votre équipe, nous surveillons, corrigeons et améliorons, sous contrat de support écrit.' },
+      { name: 'L’exploiter avec vous', text: 'Après la mise en ligne, nous surveillons, corrigeons et améliorons le système avec votre équipe, sous contrat de support écrit.' },
     ],
-    terms: ['Le code et les données vous appartiennent.', 'Des outils standard, documentés. Aucun verrouillage.', 'Un ingénieur nommé, jamais une file de tickets.', 'Une réponse sous 24 heures.', 'Un NDA avant d’entrer dans le détail.'],
+    terms: ['Le code et les données vous appartiennent.', 'Des outils standard et documentés, pour que le système reste le vôtre à exploiter et à faire évoluer.', 'Un responsable de compte désigné pour votre projet.', 'Une réponse sous 24 heures.', 'Un NDA avant d’entrer dans le détail.'],
     shapes: 'D’abord un projet au périmètre fixe. Après la mise en ligne, évolutions et support d’un commun accord.',
-    notFit: 'Pas pour nous : les sites vitrines, ou un logiciel sans processus derrière.',
+    notFit: 'Idéal pour : un logiciel qui porte un vrai processus, de l’exploitation à l’IA.',
   },
 
   products: {
     eyebrow: 'Nos produits',
     title: 'Nous développons aussi nos propres produits.',
-    lede: 'En parallèle des projets clients, nous développons nos propres logiciels, avec les mêmes dirigeants et les mêmes exigences. Chaque produit est ouvert à un financeur qui le mènera plus loin, ou à un acquéreur qui veut le détenir en pleine propriété.',
+    lede: 'La même direction qui mène les projets clients développe nos propres produits. Chacun est ouvert à un financeur ou à un acquéreur.',
     stage: { working: 'Fonctionnel · ouvert aux offres' },
     items: {
       skin: {
@@ -275,21 +298,21 @@ export const fr: Dict = {
   },
 
   people: {
-    eyebrow: 'Les personnes',
+    eyebrow: 'Notre direction, nos équipes',
     title: 'Les personnes que vous rencontrez sont celles qui construisent.',
-    lede: 'Aucun intermédiaire entre vous et les ingénieurs. Les dirigeants qui cadrent votre projet le mènent du premier appel à la mise en production.',
+    lede: 'Notre direction cadre chaque projet et reste impliquée jusqu’à sa mise en production.',
     roles: [
       { role: 'Fondateur et directeur technique (CTO)', owns: 'Stratégie IA et architecture des systèmes, du premier schéma à la production.', ask: 'À aborder : la place de l’IA dans votre processus, si elle en a une.' },
       { role: 'Ingénieur full-stack senior et responsable backend', owns: 'Le socle de chaque système : backends, plateformes de données et fiabilité.', ask: 'À aborder : des données fiables et des systèmes qui tiennent.' },
       { role: 'Responsable des opérations et de la conformité', owns: 'Gouvernance d’entreprise, conformité et fournisseurs, pour que la gestion tourne aussi proprement que le code.', ask: 'À aborder : contrats, NDA et protection des données.' },
     ],
-    bench: 'Les trois dirigeants mènent chaque projet. Des spécialistes rejoignent ceux qui correspondent à leur profil, sous notre direction et notre contrat : l’équipe s’ajuste ainsi au volume de travail. Toute l’équipe travaille à distance.',
+    bench: 'La réalisation s’appuie sur nos pôles : Engineering, Product Design, Data & AI, Cloud & DevOps et Delivery. Chaque projet est staffé à partir de notre réseau de spécialistes, avec un responsable de compte désigné.',
   },
 
   contact: {
     eyebrow: 'Commencer ici',
     title: 'Décrivez-nous votre besoin.',
-    lede: 'Sous 24 heures, un ingénieur qui le réaliserait vous adresse une première analyse : ce que cela implique, les risques identifiés et un premier pas raisonnable. Ni présentation commerciale, ni liste de diffusion.',
+    lede: 'Sous 24 heures, un ingénieur qui le réaliserait vous adresse une première analyse : ce que cela implique, les risques identifiés et une première étape claire. Directement par l’ingénierie, par ceux qui le construiraient.',
     doorsLabel: 'Je souhaite',
     doors: {
       commission: {
@@ -323,7 +346,7 @@ export const fr: Dict = {
     failure: 'L’envoi n’a pas abouti. Merci de réessayer, ou de nous écrire directement.',
     privacy: 'Nous utilisons ces informations uniquement pour vous répondre.',
     privacyLink: 'Confidentialité',
-    horizon: 'Lu par un ingénieur, pas par un commercial.',
+    horizon: 'Lu par l’ingénieur qui le réaliserait.',
     noScript: 'Ce formulaire nécessite JavaScript. Vous pouvez aussi nous écrire directement.',
     direct: 'Vous préférez l’e-mail ?',
     errorsTitle: 'Avant que nous puissions répondre',
@@ -343,7 +366,7 @@ export const fr: Dict = {
       contact: 'Décrivez le projet. Un ingénieur qui le construirait vous répond sous 24 heures.',
     },
   },
-  footer: { line: 'Du logiciel qui a de la gravité.', investors: 'Financeurs et acquéreurs', privacy: 'Confidentialité', legal: 'Mentions légales', join: 'Ingénieurs et designers souhaitant rejoindre un projet :' },
+  footer: { line: 'Du logiciel qui a de la gravité.', investors: 'Financeurs et acquéreurs', privacy: 'Confidentialité', legal: 'Mentions légales', join: 'Nous recrutons des spécialistes :' },
 
   investors: {
     eyebrow: 'Nos produits',
@@ -397,6 +420,54 @@ export const fr: Dict = {
     country: 'États-Unis',
     creditsTitle: 'Crédits',
     credits: 'La figure de la Navigatrice est basée sur « Mecha roe deer » de Osho (Sketchfab), sous licence CC BY 4.0.',
+  },
+  about: {
+    eyebrow: 'À propos',
+    title: 'Une seule entreprise, du cadrage au produit fini.',
+    story: [
+      'BLAKRA LLC a été fondée en 2024 et est immatriculée en Californie. Toute l’équipe travaille à distance.',
+      'Le nom associe trou noir (black hole) et chakra. Nous construisons en sept couches sur un même axe, du cloud et du backend à la racine jusqu’à l’IA au sommet, chaque couche reposant sur celle du dessous.',
+      'BLAKRA est une société de logiciels organisée en cinq pôles : Engineering, Product Design, Data & AI, Cloud & DevOps et Delivery. Notre direction cadre et mène chaque projet, et le staffe à partir d’un réseau croissant de spécialistes, pour que chaque partie du travail ait le bon expert. Un seul contrat et une équipe responsable le portent du premier cadrage au produit fini et à son support après la mise en ligne.',
+      'En parallèle de projets clients dans un nombre croissant de secteurs, nous développons nos propres produits ; LIOXSA est le premier.',
+    ],
+    leadershipTitle: 'Notre direction, nos équipes',
+    trustTitle: 'Ce sur quoi vous pouvez compter',
+    trust: [
+      'Notre direction reste impliquée du cadrage à la production.',
+      'Un responsable de compte désigné pour votre projet, dès le premier échange.',
+      'L’assurance qualité et la documentation, parties intégrantes de chaque livraison.',
+      'Le premier échange et l’évaluation technique sont gratuits, et vous en ressortez en sachant clairement ce que le travail demandera.',
+      'Le premier système a un périmètre fixe, un prix fixe et un critère de « terminé » convenu.',
+      'Un logiciel qui fonctionne entre vos mains toutes les deux semaines.',
+      'Le code et les données vous appartiennent, construits avec des outils standard et documentés.',
+      'Un NDA signé avant que vous partagiez des détails, et votre nom gardé confidentiel.',
+      'Un contrat de support écrit qui maintient le système en marche après la mise en ligne.',
+    ],
+    engageTitle: 'Notre façon de travailler',
+    engage: [
+      { name: 'Un premier projet clair', text: 'Après une évaluation gratuite, nous chiffrons le premier système à prix fixe, avec un périmètre fixe et un critère de « terminé » convenu : vous connaissez le coût et le résultat avant le début des travaux.' },
+      { name: 'Un processus de livraison défini', text: 'Cadrage, design, développement, assurance qualité, mise en ligne. Un logiciel qui fonctionne toutes les deux semaines, documenté au fil de la construction.' },
+      { name: 'Après la mise en ligne', text: 'Nous surveillons, corrigeons et améliorons le système sous contrat de support écrit. Les travaux suivants sur accord.' },
+      { name: 'Partenaires', text: 'Les partenaires qui développent, vendent ou intègrent peuvent nous associer comme leur équipe d’ingénierie.' },
+    ],
+    industriesTitle: 'Les secteurs pour lesquels nous avons livré',
+    industries: ['Commerce et e-commerce', 'Finance', 'Logistique', 'Industrie', 'Éducation', 'Santé et bien-être', 'Immobilier', 'Hôtellerie et restauration', 'Services professionnels', 'Médias', 'Secteur public et associatif', 'Énergie', 'Produits d’IA', 'Robotique'],
+    nda: 'L’essentiel de notre travail est confidentiel, sous accord de confidentialité. Lors d’un appel, nous vous présentons ce qui concerne votre projet.',
+    faqTitle: 'Questions fréquentes',
+    faq: [
+      { q: 'À qui appartiennent le code et les données ?', a: 'À vous, dès le premier jour. Tout est construit avec des outils standard et documentés, pour que le système reste entièrement le vôtre à exploiter et à faire évoluer.' },
+      { q: 'Signez-vous un NDA ?', a: 'Oui, comme première étape, avant que vous partagiez le moindre détail.' },
+      { q: 'Avec qui travaillerons-nous ?', a: 'Avec un responsable de compte désigné, une équipe constituée à partir de nos pôles pour votre projet, et notre direction, impliquée tout au long. Tous travaillent sous un seul contrat BLAKRA.' },
+      { q: 'Comment travaillez-vous entre fuseaux horaires ?', a: 'Au lancement, nous fixons une plage commune quotidienne avec vos heures de travail, et nous la tenons pendant tout le projet.' },
+      { q: 'Dans quelle langue se déroulent les projets ?', a: 'En anglais, ou dans une autre langue convenue au lancement.' },
+      { q: 'Comment protégez-vous nos données ?', a: 'Le NDA vient en premier. Votre code et vos données restent les vôtres. L’accès est limité aux personnes qui en ont besoin pour leur part du travail. Quand les données sont sensibles, nous exploitons le système, modèles open source compris, sur votre propre infrastructure.' },
+      { q: 'Que se passe-t-il après la mise en ligne ?', a: 'Nous surveillons, corrigeons et améliorons le système avec votre équipe, sous contrat de support écrit.' },
+      { q: 'Quel type de travail prenez-vous en charge ?', a: 'Des logiciels qui portent un vrai processus : exploitation, données, applications et IA. Pour un site vitrine, un web designer est le meilleur choix.' },
+      { q: 'Comment commencer ?', a: 'Décrivez le travail. Sous 24 heures, un ingénieur qui le réaliserait vous répond avec ce que cela implique, les risques identifiés et une première étape claire.' },
+    ],
+    joinTitle: 'Nous recrutons des spécialistes',
+    join: 'Notre réseau se développe en ingénierie, design produit, données et IA, et cloud. Nous intégrons des spécialistes à distance dans nos projets, sous notre contrat et notre direction. Écrivez-nous avec ce que vous construisez et des réalisations à montrer :',
+    cta: 'Lancer un projet',
   },
   notFound: { eyebrow: '404', title: 'Page introuvable.', text: 'Elle a peut-être été déplacée, ou l’adresse est incorrecte.', back: 'Retour à l’accueil' },
 }

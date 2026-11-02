@@ -139,7 +139,16 @@
   outline: none;
 }
 
-/* 06 How we work: the strip that closes the screen. */
+/* Further industries, under the grid: one quiet line. */
+.also {
+  margin-top: 40px;
+  max-width: 640px;
+  font-size: 0.9375rem;
+  line-height: 1.5;
+  color: var(--grey);
+}
+
+/* 07 How we work: the strip that closes the screen. */
 .process {
   display: grid;
   grid-template-columns: minmax(0, 530px) 1fr;

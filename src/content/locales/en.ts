@@ -15,6 +15,8 @@ export const en: Dict = {
     privacyDescription: 'What BLAKRA collects through this site, why, and what happens to it.',
     legalTitle: 'Legal notice — BLAKRA',
     legalDescription: 'Who runs blakra.us: BLAKRA LLC, its address and how to reach it.',
+    aboutTitle: 'About BLAKRA — Practices, terms, industries and FAQ',
+    aboutDescription: 'BLAKRA LLC, founded in 2024: five practices, one contract and one accountable team. What you can count on, how we engage, the industries we serve and answers to common questions.',
     notFoundTitle: 'Page not found — BLAKRA',
     ogAlt: 'BLAKRA: Software with gravity.',
   },
@@ -22,7 +24,7 @@ export const en: Dict = {
   ui: {
     skip: 'Skip to content',
     home: 'home',
-    nav: { work: 'Work', engine: 'Capabilities', products: 'Products', people: 'People' },
+    nav: { work: 'Work', engine: 'Capabilities', products: 'Products', people: 'People', about: 'About' },
     cta: 'Start a project',
     pauseMotion: 'Pause motion',
     menu: 'Menu',
@@ -40,16 +42,16 @@ export const en: Dict = {
   prologue: {
     eyebrow: 'BLAKRA — Software with gravity.',
     title: { before: 'We build what', human: 'organizations run on', after: '.' },
-    lede: 'We design, build and run operations and inventory systems, admin panels and online shops, web and mobile apps, bots, and AI that works on your own data. Three principals lead each project, from the first scope to production.',
+    lede: 'We design, build and run operations and inventory systems, admin panels and online shops, web and mobile apps, bots, and AI that works on your own data. Our leadership team leads each project, hands-on from the first scope to production.',
     cue: 'What do you need built?',
     also: 'Other ways to work with us:',
-    facts: 'Founded 2024 · Fully remote · Reply within 24 hours',
+    facts: 'Founded 2024 · Remote-first teams · Reply within 24 hours',
   },
 
   pulse: {
     eyebrow: 'Why one team',
     title: 'A product is only as strong as its weakest hand-off.',
-    body: 'Design from one agency, the app from another, the backend from a freelancer and the AI from a consultant. Each hand-off loses something, and when it breaks, each vendor points at the next. With us it is one contract and one team, led by the same three principals, answering for all of it.',
+    body: 'Design from one agency, the app from another, the backend from a freelancer and the AI from a consultant. Each hand-off loses something, and when it breaks, each vendor points at the next. With us it is one contract, one team and one accountable lead for all of it.',
     ask: 'What do you need built?',
     needs: {
       panel: { label: 'An admin panel to run our operations.', tag: 'Admin panel' },
@@ -76,6 +78,7 @@ export const en: Dict = {
     title: 'Products we designed and built for private clients.',
     lede: 'Apps, operations platforms and AI tools, each delivered to a client who owns it. One screen per project here; open one for the problem, the decisions and more screens.',
     note: 'Delivered for a private client. The client owns the product; details under NDA. Screens shown are representative.',
+    also: 'Also delivered in finance, healthcare, robotics and more, most of it confidential under NDA.',
     noteTitle: 'Engagement',
     metaSuffix: 'Client work — BLAKRA',
     all: 'All client work',
@@ -222,6 +225,26 @@ export const en: Dict = {
       },
     },
   },
+  ai: {
+    eyebrow: 'AI',
+    title: 'AI that does real work, on your data, on your terms.',
+    lede: 'We build AI tools end to end, from the data they read to the screen people use. Open-source models run on our servers or yours, so sensitive data stays inside your walls. Commercial platforms take you to production fastest. We choose the right one for each project.',
+    blocks: {
+      agents: { name: 'Agents that act', text: 'They read, answer and take the next step inside the tools your team already uses. A person approves what matters.' },
+      documents: { name: 'Answers from your documents', text: 'Every answer cites its document and page. Access follows each reader’s permissions.' },
+      extraction: { name: 'Documents into data', text: 'OCR and extraction turn scans, forms and invoices into records your systems can use.' },
+      vision: { name: 'Vision', text: 'Models that inspect images and video, from defects on a production line to skin from one photo.' },
+      training: { name: 'Training and machine learning', text: 'We prepare and label data, train and fine-tune models, build classic predictive models, and deploy and monitor them in production.' },
+      evaluation: { name: 'Evaluation and guardrails', text: 'Tested against your own cases before launch, held to limits you set, with costs we track from the first run.' },
+    },
+    twoWays: 'Two ways to build',
+    open: { name: 'Open-source', text: 'Hosted by us or on your servers; your data stays inside. Trained or fine-tuned on your data when the task needs it.' },
+    platforms: { name: 'Platforms', text: 'Commercial models, and the AI services of Azure, AWS and Google Cloud.' },
+    closer: 'Your system stays open to new models: you can change the model later and keep everything built around it.',
+    cta: 'Tell us what the AI should do',
+    ourProduct: 'our product',
+  },
+
   engine: {
     eyebrow: 'Capabilities',
     title: 'Seven layers. One team.',
@@ -233,7 +256,7 @@ export const en: Dict = {
       design: { name: 'Product design', text: 'Research, UX and interface design, so each screen fits the people who use it and the work they do.' },
       automation: { name: 'Automation and bots', text: 'Workflows and bots that take over the repetitive work, in chat, on the web or inside your tools.' },
       data: { name: 'Data and integrations', text: 'Databases, pipelines and integrations that put your tools, systems and devices on one source of truth.' },
-      cloud: { name: 'Cloud and backend', text: 'APIs, servers, cloud and security, engineered to carry real load, with monitoring from day one.' },
+      cloud: { name: 'Cloud and backend', text: 'APIs, servers, cloud and security, monitored from day one.' },
     },
     symbol: 'BLAKRA: black hole and chakra. Seven layers on one axis, from the foundation at the root to AI at the crown.',
     usedAt: 'Used in',
@@ -251,17 +274,17 @@ export const en: Dict = {
     steps: [
       { name: 'Scope the problem', text: 'We walk through the work with the people who do it, and name the process that costs you most. The first conversation and the technical assessment are free.' },
       { name: 'Build the first system', text: 'A fixed scope, a fixed price and an agreed bar for done. Working software every two weeks, so you judge progress by using it.' },
-      { name: 'Run it with you', text: 'Launch is where real use begins. We monitor, fix and improve it with your team, under a written support agreement.' },
+      { name: 'Run it with you', text: 'After launch, we monitor, fix and improve it with your team, under a written support agreement.' },
     ],
-    terms: ['You own the code and the data.', 'Standard, documented tools. No lock-in.', 'A named engineer, never a ticket queue.', 'A reply within 24 hours.', 'An NDA before you share details.'],
+    terms: ['You own the code and the data.', 'Standard, documented tools, so the system stays yours to run and extend.', 'A named account lead for your project.', 'A reply within 24 hours.', 'An NDA before you share details.'],
     shapes: 'Start with one fixed-scope project. After launch, further work and support by agreement.',
-    notFit: 'Not a fit: brochure websites, or software with no process behind it.',
+    notFit: 'Best fit: software that runs a real process, from operations to AI.',
   },
 
   products: {
     eyebrow: 'Our products',
     title: 'We also build products of our own.',
-    lede: 'Alongside client work, we build software of our own, with the same principals and the same standards. Each product is open to a sponsor who will take it further, or a buyer who wants to own it outright.',
+    lede: 'The same leadership team that runs client work builds products of our own. Each is open to a sponsor or a buyer.',
     stage: { working: 'Working · open to offers' },
     items: {
       skin: {
@@ -278,21 +301,21 @@ export const en: Dict = {
   },
 
   people: {
-    eyebrow: 'The people',
+    eyebrow: 'Our leadership, our teams',
     title: 'The people you meet are the people who build.',
-    lede: 'Nothing stands between you and the engineers. The principals who scope your project lead it from the first call to production.',
+    lede: 'Our leadership team scopes every project and stays hands-on until it runs in production.',
     roles: [
       { role: 'Founder and Chief Technology Officer', owns: 'AI strategy and systems architecture, from the first diagram to production.', ask: 'Ask about: whether AI belongs in your process at all.' },
       { role: 'Senior Full-Stack Engineer and Backend Lead', owns: 'The foundation of each system: backends, data platforms and reliability.', ask: 'Ask about: data you can trust and systems that stay up.' },
       { role: 'Head of Operations and Corporate Compliance', owns: 'Corporate governance, compliance and vendors, so the business side runs as cleanly as the code.', ask: 'Ask about: contracts, NDAs and data protection.' },
     ],
-    bench: 'The three principals lead each project. Specialists join the projects they fit, under our lead and our contract, so the team grows or shrinks with the work. The whole team works remotely.',
+    bench: 'Delivery runs through our practices: Engineering, Product Design, Data & AI, Cloud & DevOps and Delivery. Each project is staffed from our specialist network, with a named account lead.',
   },
 
   contact: {
     eyebrow: 'Start here',
     title: 'Tell us what you need built.',
-    lede: 'Within 24 hours, an engineer who would build it replies with a first read: what it involves, the risks we see and a sensible first step. No sales deck, no mailing list.',
+    lede: 'Within 24 hours, an engineer who would build it replies with a first read: what it involves, the risks we see and a clear first step. Straight to the engineering, from the people who would build it.',
     doorsLabel: 'I would like to',
     doors: {
       commission: {
@@ -326,7 +349,7 @@ export const en: Dict = {
     failure: 'That didn’t go through. Please try again, or write to us directly.',
     privacy: 'We use these details only to reply to you.',
     privacyLink: 'Privacy',
-    horizon: 'Read by an engineer, not a sales team.',
+    horizon: 'Read by the engineer who would build it.',
     noScript: 'This form needs JavaScript. You can write to us directly instead.',
     direct: 'Prefer email?',
     errorsTitle: 'Before we can reply',
@@ -346,7 +369,7 @@ export const en: Dict = {
       contact: 'Describe the work. An engineer who would build it replies within 24 hours.',
     },
   },
-  footer: { line: 'Software with gravity.', investors: 'Sponsors and buyers', privacy: 'Privacy', legal: 'Legal notice', join: 'Engineers and designers who want to join a project:' },
+  footer: { line: 'Software with gravity.', investors: 'Sponsors and buyers', privacy: 'Privacy', legal: 'Legal notice', join: 'We’re hiring specialists:' },
 
   investors: {
     eyebrow: 'Our products',
@@ -400,6 +423,54 @@ export const en: Dict = {
     country: 'United States',
     creditsTitle: 'Credits',
     credits: 'The Navigator’s figure is based on “Mecha roe deer” by Osho (Sketchfab), licensed under CC BY 4.0.',
+  },
+  about: {
+    eyebrow: 'About',
+    title: 'One company, from the first scope to the finished product.',
+    story: [
+      'BLAKRA LLC was founded in 2024 and is registered in California. The whole team works remotely.',
+      'The name joins black hole and chakra. We build in seven layers on one axis, from cloud and backend at the root to AI at the crown, and each layer rests on the one beneath it.',
+      'BLAKRA is a software company organised in five practices: Engineering, Product Design, Data & AI, Cloud & DevOps, and Delivery. Our leadership team scopes and leads every project, and staffs it from a growing network of specialists, so each part of the work has the right expert. One contract and one accountable team carry it from the first scope to the finished product and its support after launch.',
+      'Alongside client work across a growing range of industries, we build products of our own; LIOXSA is the first.',
+    ],
+    leadershipTitle: 'Our leadership, our teams',
+    trustTitle: 'What you can count on',
+    trust: [
+      'Our leadership team stays hands-on from scope to production.',
+      'A named account lead for your project, from the first call onward.',
+      'QA and documentation as standard parts of every delivery.',
+      'The first conversation and the technical assessment are free, and you leave them knowing plainly what the work will take.',
+      'The first system has a fixed scope, a fixed price and an agreed bar for done.',
+      'Working software in your hands every two weeks.',
+      'You own the code and the data, built on standard, documented tools.',
+      'An NDA in place before you share details, and your name kept confidential.',
+      'A written support agreement that keeps the system running after launch.',
+    ],
+    engageTitle: 'How we engage',
+    engage: [
+      { name: 'A clear first project', text: 'After a free assessment, we quote the first system at a fixed price, with a fixed scope and an agreed bar for done, so you know the cost and the result before work starts.' },
+      { name: 'A defined delivery process', text: 'Scope, design, build, QA, launch. Working software every two weeks, documented as it is built.' },
+      { name: 'After launch', text: 'We monitor, fix and improve the system under a written support agreement. Further work by agreement.' },
+      { name: 'Partners', text: 'Partners who build, sell or integrate can bring us in as their engineering team.' },
+    ],
+    industriesTitle: 'Industries we’ve delivered for',
+    industries: ['Retail and e-commerce', 'Finance', 'Logistics', 'Manufacturing', 'Education', 'Healthcare and wellness', 'Real estate', 'Hospitality', 'Professional services', 'Media', 'Public sector and non-profit', 'Energy', 'AI products', 'Robotics'],
+    nda: 'Most of our work is confidential under NDA. We walk you through what’s relevant to your project on a call.',
+    faqTitle: 'Questions buyers ask',
+    faq: [
+      { q: 'Who owns the code and the data?', a: 'You do, from day one. Everything is built on standard, documented tools, so it stays fully yours to run and extend.' },
+      { q: 'Do you sign an NDA?', a: 'Yes, as the first step, before you share any details.' },
+      { q: 'Who will we work with?', a: 'A named account lead, a team staffed from our practices for your project, and our leadership team, hands-on throughout. Everyone works under one BLAKRA contract.' },
+      { q: 'How do you work across time zones?', a: 'At kickoff we fix a daily overlap with your working hours, and we keep it for the whole project.' },
+      { q: 'What language do projects run in?', a: 'English, or another language agreed at kickoff.' },
+      { q: 'How do you protect our data?', a: 'An NDA comes first. Your code and data stay yours. Access is limited to the people who need it for their part of the work. When the data is sensitive, we run the system, open-source models included, on your own infrastructure.' },
+      { q: 'What happens after launch?', a: 'We monitor, fix and improve the system with your team under a written support agreement.' },
+      { q: 'What kind of work do you take on?', a: 'Software that runs a real process: operations, data, apps and AI. For brochure websites, a web designer is the better choice.' },
+      { q: 'How do we start?', a: 'Describe the work. Within 24 hours, an engineer who would build it replies with what it involves, the risks we see and a clear first step.' },
+    ],
+    joinTitle: 'We’re hiring specialists',
+    join: 'Our network is growing across engineering, product design, data and AI, and cloud. We bring specialists into projects remotely, under our contract and our leads. Write to us with what you build and work you can show:',
+    cta: 'Start a project',
   },
   notFound: { eyebrow: '404', title: 'Page not found.', text: 'It may have moved, or the address may be incorrect.', back: 'Back to the home page' },
 }

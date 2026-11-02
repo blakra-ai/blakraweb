@@ -13,7 +13,7 @@ const num = (id: LayerId) => ORDER.indexOf(id) + 1
 const two = (n: number) => String(n).padStart(2, '0')
 
 /**
- * 07 Products + 08 People, the porcelain screen (storyboard d-04-porcelain): the light surface,
+ * 08 Products + 09 People, the porcelain screen (storyboard d-04-porcelain): the light surface,
  * ink text and grey-on-light secondary (5.50 : 1); gold never as text here. Columns 1–6: the
  * products as hairline rows (eyebrow, H3, lede, the skin-analysis product with "Uses layers",
  * the investors link), then the three people as hairline rows. Columns 8–12: the one large
@@ -32,13 +32,13 @@ export function Porcelain() {
   const tag = choice ? (choice === 'all' ? t.pulse.allTag : t.pulse.needs[choice].tag) : null
 
   return (
-    <Section id="products" beat="payload" surface="porcelain" station={7} className={s.porcelain} aria-labelledby="products-title">
+    <Section id="products" beat="payload" surface="porcelain" station={8} className={s.porcelain} aria-labelledby="products-title">
       {/* The page's grid bends into the well here too (static SVG under the content). */}
       <WellGrid cx={0.76} cy={0.1} sigma={300} pull={0.64} className={s.grid} />
       <div className={s.col}>
         <div className={s.block}>
           <p className="eyebrow mono">
-            {two(7)} / 09 &nbsp;·&nbsp; {t.products.eyebrow}
+            {two(8)} / 10 &nbsp;·&nbsp; {t.products.eyebrow}
           </p>
           <h2 id="products-title" className={`h3 ${s.h}`} data-focus tabIndex={-1}>
             {t.products.title}
@@ -73,13 +73,14 @@ export function Porcelain() {
           </a>
         </div>
 
-        <div className={s.block} id="people" data-station={8}>
+        <div className={s.block} id="people" data-station={9}>
           <p className="eyebrow mono">
-            {two(8)} / 09 &nbsp;·&nbsp; {t.people.eyebrow}
+            {two(9)} / 10 &nbsp;·&nbsp; {t.people.eyebrow}
           </p>
           <h2 id="people-title" className={`h3 ${s.h}`} data-focus tabIndex={-1}>
             {t.people.title}
           </h2>
+          <p className={`lede ${s.lede}`}>{t.people.lede}</p>
           <ul className={s.rows}>
             {t.people.roles.map((r) => (
               <li key={r.role} className={s.r}>

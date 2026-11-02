@@ -28,6 +28,9 @@ export function Footer({ route }: { route: Route }) {
         <nav aria-label="Footer">
           <ul className={s.links}>
             <li>
+              <a href={pathFor('about', locale)}>{t.ui.nav.about}</a>
+            </li>
+            <li>
               <a href={pathFor('investors', locale)}>{t.footer.investors}</a>
             </li>
             <li>

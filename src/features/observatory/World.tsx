@@ -9,6 +9,7 @@ import { needs } from '../../content/shared'
 import { LAYERS, nav } from '../navigator/state'
 import { CHAKRAS } from '../navigator/yantra'
 import { onReflow } from '../../motion/reflow'
+import { STATIONS } from './gauge'
 import { ORBIT_END } from './orbit'
 import { obs } from './state'
 import { createGuideHandle, fitGuideCamera, Guide, placeGuide } from './Guide'
@@ -520,7 +521,7 @@ function Passes({ handle }: { handle: ReturnType<typeof createGuideHandle> }) {
       const i = handle.input
       i.mode = mode
       i.station = obs.station
-      i.depth = Math.min(1, Math.max(0, (obs.station - 1 + obs.progress) / 8))
+      i.depth = Math.min(1, Math.max(0, (obs.station - 1 + obs.progress) / (STATIONS - 1)))
       i.pointer = obs.pointer
       i.eyes.x = nav.anchor.eyes.x
       i.eyes.y = nav.anchor.eyes.y

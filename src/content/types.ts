@@ -13,6 +13,7 @@ export type LayerId = 'cloud' | 'data' | 'automation' | 'design' | 'apps' | 'gro
 export type NeedId = 'panel' | 'shop' | 'assistant' | 'aidata' | 'app' | 'warehouse' | 'bots'
 export type ProductId = 'skin'
 export type StageId = 'working'
+export type AiBlockId = 'agents' | 'documents' | 'extraction' | 'vision' | 'training' | 'evaluation'
 export type Intent = 'commission' | 'partner' | 'invest'
 
 /** One project of the selected client work: descriptive copy only, no figures (run 2026-11-02-portfolio). */
@@ -41,13 +42,15 @@ export interface Dict {
     privacyDescription: string
     legalTitle: string
     legalDescription: string
+    aboutTitle: string
+    aboutDescription: string
     notFoundTitle: string
     ogAlt: string
   }
   ui: {
     skip: string
     home: string
-    nav: { work: string; engine: string; products: string; people: string }
+    nav: { work: string; engine: string; products: string; people: string; about: string }
     cta: string
     pauseMotion: string
     /** The header's menu button (below 1100 px). */
@@ -100,6 +103,8 @@ export interface Dict {
     lede: string
     /** The private-client framing, shown on the section and on every project page. */
     note: string
+    /** One line under the grid: further industries, short form. */
+    also: string
     noteTitle: string
     /** Page title suffix and description lead for a project page. */
     metaSuffix: string
@@ -111,6 +116,21 @@ export interface Dict {
     screens: string
     next: string
     projects: Record<WorkSlug, WorkText>
+  }
+  /** AI on the home page, after the seven layers (run 2026-11-02-company-content). */
+  ai: {
+    eyebrow: string
+    title: string
+    lede: string
+    blocks: Record<AiBlockId, { name: string; text: string }>
+    /** The two ways to build: open-source models and commercial platforms. */
+    twoWays: string
+    open: { name: string; text: string }
+    platforms: { name: string; text: string }
+    closer: string
+    cta: string
+    /** After LIOXSA's name in the vision block. */
+    ourProduct: string
   }
   engine: {
     eyebrow: string
@@ -237,6 +257,25 @@ export interface Dict {
     /** Third-party work used on the site, with its licence (the Navigator's model is CC BY). */
     creditsTitle: string
     credits: string
+  }
+  /** The /about page. */
+  about: {
+    eyebrow: string
+    title: string
+    story: [string, string, string, string]
+    leadershipTitle: string
+    trustTitle: string
+    trust: string[]
+    engageTitle: string
+    engage: Step[]
+    industriesTitle: string
+    industries: string[]
+    nda: string
+    faqTitle: string
+    faq: { q: string; a: string }[]
+    joinTitle: string
+    join: string
+    cta: string
   }
   notFound: { eyebrow: string; title: string; text: string; back: string }
 }

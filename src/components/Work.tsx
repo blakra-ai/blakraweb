@@ -7,19 +7,19 @@ import s from './Work.module.css'
 const two = (n: number) => String(n).padStart(2, '0')
 
 /**
- * 05 Selected client work (run 2026-11-02-portfolio): a grid of project cards on the paper, each an
+ * 06 Selected client work (run 2026-11-02-portfolio): a grid of project cards on the paper, each an
  * ink window holding one representative screen, then the category and the name. Every card opens
  * the project's own page. The private-client note sits under the head, once. The first card is
- * wide on desktop, so the grid closes without an empty slot. 06 "How we work" closes the screen.
+ * wide on desktop, so the grid closes without an empty slot. 07 "How we work" closes the screen; one line under the grid names further industries.
  */
 export function Work() {
   const { t, locale } = useI18n()
   const w = t.work
   return (
-    <Section id="work" beat="proof" surface="body" station={5} className={s.work} aria-labelledby="work-title">
+    <Section id="work" beat="proof" surface="body" station={6} className={s.work} aria-labelledby="work-title">
       <div className={s.head}>
         <p className="eyebrow mono">
-          {two(5)} / 09 &nbsp;·&nbsp; {w.eyebrow}
+          {two(6)} / 10 &nbsp;·&nbsp; {w.eyebrow}
         </p>
         <h2 id="work-title" className={`h2 ${s.title}`} data-focus tabIndex={-1}>
           {w.title}
@@ -49,12 +49,13 @@ export function Work() {
           )
         })}
       </ul>
+      <p className={s.also}>{w.also}</p>
 
-      {/* 06 How we work: the strip that closes the screen. */}
-      <div className={s.process} id="approach" data-station={6}>
+      {/* 07 How we work: the strip that closes the screen. */}
+      <div className={s.process} id="approach" data-station={7}>
         <div>
           <p className="eyebrow mono">
-            {two(6)} / 09 &nbsp;·&nbsp; {t.process.eyebrow}
+            {two(7)} / 10 &nbsp;·&nbsp; {t.process.eyebrow}
           </p>
           <h3 id="process-title" className={`h3 ${s.processTitle}`} data-focus tabIndex={-1}>
             {t.process.title}

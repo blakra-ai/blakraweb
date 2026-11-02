@@ -11,6 +11,8 @@ function titleFor(route: Route, t: Dict) {
   switch (route.id) {
     case 'home':
       return { title: m.homeTitle, description: m.homeDescription }
+    case 'about':
+      return { title: m.aboutTitle, description: m.aboutDescription }
     case 'investors':
       return { title: m.investorsTitle, description: m.investorsDescription }
     case 'privacy':
@@ -59,6 +61,7 @@ export function renderHead(route: Route, t: Dict): string {
   } else {
     tags.push('<meta name="robots" content="noindex">')
   }
+  if (route.id === 'about') tags.push(`<script type="application/ld+json">${JSON.stringify(faqPage(t)).replace(/</g, '\\u003c')}</script>`)
   if (route.id === 'home') tags.push(`<script type="application/ld+json">${JSON.stringify(organization(route, t)).replace(/</g, '\\u003c')}</script>`)
   return tags.join('\n    ')
 }
@@ -88,5 +91,14 @@ function organization(route: Route, t: Dict) {
     subjectOf: work.map((p) => ({ '@type': 'CreativeWork', name: p.name, about: t.work.projects[p.slug].category, url: `${company.url}${workPath(p.slug, route.locale)}` })),
     // Products are listed once they are real (draft: false in shared.ts).
     makesOffer: products.filter((p) => !p.draft).map((p) => ({ '@type': 'Offer', itemOffered: { '@type': 'SoftwareApplication', name: p.name } })),
+  }
+}
+
+/** The About page's questions as FAQPage structured data (the same text the page shows). */
+function faqPage(t: Dict) {
+  return {
+    '@context': 'https://schema.org',
+    '@type': 'FAQPage',
+    mainEntity: t.about.faq.map((f) => ({ '@type': 'Question', name: f.q, acceptedAnswer: { '@type': 'Answer', text: f.a } })),
   }
 }

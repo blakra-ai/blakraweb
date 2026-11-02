@@ -139,12 +139,14 @@ export function sectionLook(station: number): { yaw: number; pitch: number } {
     case 4:
       return { yaw: -13, pitch: 5 }
     case 5:
-      return { yaw: -14, pitch: 6 }
+      return { yaw: -12, pitch: 5 }
     case 6:
-      return { yaw: -12, pitch: 4 }
-    case 7:
       return { yaw: -14, pitch: 6 }
+    case 7:
+      return { yaw: -12, pitch: 4 }
     case 8:
+      return { yaw: -14, pitch: 6 }
+    case 9:
       return { yaw: -12, pitch: 3 }
     default:
       return { yaw: -10, pitch: 2 }

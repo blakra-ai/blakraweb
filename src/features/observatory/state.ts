@@ -18,7 +18,7 @@ export type WindowId = 'hero' | 'stage' | 'contact' | (string & {})
  * layout: `windows` is refreshed only on reflow (src/motion/reflow.ts).
  */
 export const obs = {
-  /** The station on screen (1 … 9) and the page's progress through the descent (0 … 1). */
+  /** The station on screen (1 … 10) and the page's progress through the descent (0 … 1). */
   station: 1,
   progress: 0,
   /** Every framed window's page rect, in CSS px, measured on reflow. */

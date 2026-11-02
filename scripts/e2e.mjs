@@ -51,6 +51,9 @@ try {
       t.process.title, ...t.process.steps.map((s) => s.name), t.people.title, ...t.people.roles.map((r) => r.ask), t.contact.title, t.contact.horizon,
     ]
     // Selected client work (run 2026-11-02-portfolio): the section on home, and one page per project.
+    // AI (run 2026-11-02-company-content) and the further-industries line.
+    expected[`${p}/`].push(t.ai.title, ...Object.values(t.ai.blocks).map((b) => b.name), t.ai.open.name, t.ai.platforms.name, t.ai.closer, t.work.also, t.people.bench)
+    expected[`${p}/about/`] = [t.about.title, ...t.about.story, ...t.about.trust, ...t.about.engage.map((e) => e.text), ...t.about.industries, t.about.nda, ...t.about.faq.map((f) => f.q), t.about.joinTitle, 'hello@blakra.us']
     expected[`${p}/`].push(t.work.title, t.work.note, ...Object.values(t.work.projects).map((w) => w.category))
     for (const [slug, w] of Object.entries(t.work.projects)) expected[`${p}/work/${slug}/`] = [w.line, w.about, w.problem, ...w.design, w.platforms, t.work.note, t.work.next]
     expected[`${p}/investors/`] = [t.investors.title, ...t.investors.thesis, t.investors.ask, t.investors.ndaTitle, t.investors.deck, t.investors.disclaimer]
@@ -86,7 +89,7 @@ try {
       }
     })
     const state = await page.evaluate(() => {
-      const acts = ['#top', '#stage', '#work', '#products', '#approach', '#people', '#contact']
+      const acts = ['#top', '#stage', '#ai', '#work', '#products', '#approach', '#people', '#contact']
       // Screen-reader-only text (1 px, clipped on purpose) is not hidden text.
       const text = [...document.querySelectorAll(acts.map((a) => `${a} *`).join(','))].filter((el) => el.children.length === 0 && el.textContent.trim() && el.getBoundingClientRect().width > 1)
       const day = document.getElementById('work').getBoundingClientRect()
@@ -179,7 +182,7 @@ try {
   // AC7: no horizontal scroll at four widths, on every page.
   for (const width of [375, 768, 1440, 1920]) {
     const page = await browser.newPage({ viewport: { width, height: width < 800 ? 812 : 900 } })
-    for (const path of Object.keys(dicts).flatMap((code) => ['/', '/investors/', '/privacy/', '/legal/', '/404.html'].map((x) => prefix(code) + x))) {
+    for (const path of Object.keys(dicts).flatMap((code) => ['/', '/about/', '/investors/', '/privacy/', '/legal/', '/404.html'].map((x) => prefix(code) + x))) {
       await page.goto(BASE + path)
       await page.waitForTimeout(600)
       const over = await page.evaluate(() => document.documentElement.scrollWidth - document.documentElement.clientWidth)

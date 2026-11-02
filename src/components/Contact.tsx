@@ -52,7 +52,7 @@ function Field({ name, label, error, textarea, maxLength, ...input }: FieldProps
 }
 
 /**
- * 09 Contact, the closing stage (art pass v1): the window with the horizon, the disk grown to
+ * 10 Contact, the closing stage (art pass v1): the window with the horizon, the disk grown to
  * fill its right half (painted by the world for kind "contact"); the form on a panel in columns
  * 1–5: eyebrow, H2, lede, three doors as radios (a check mark on the chosen one), three fields,
  * Send in gold (one of the frame's three gold elements), the privacy line; the line under the disk. States: inline errors with a
@@ -145,10 +145,10 @@ export function Contact() {
   const sending = status === 'sending'
 
   return (
-    <Section ref={ref} id="contact" beat="contact" surface="body" station={9} className={s.contact} aria-labelledby="contact-title">
+    <Section ref={ref} id="contact" beat="contact" surface="body" station={10} className={s.contact} aria-labelledby="contact-title">
       <Window id="contact" kind="contact" ring className={s.window}>
         <p className={`mono ${s.tag}`} aria-hidden="true">
-          09 / 09
+          10 / 10
         </p>
         {/* The horizon's line: under the disk, on its left, where the form ends. */}
         <div className={s.voice}>

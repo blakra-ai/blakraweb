@@ -57,13 +57,13 @@ describe('the load device', () => {
 })
 
 describe('the hole', () => {
-  it('grows station by station and is clamped to 1 … 9', () => {
+  it('grows station by station and is clamped to 1 … 10', () => {
     let last = 0
-    for (let s = 1; s <= 9; s++) {
+    for (let s = 1; s <= 10; s++) {
       expect(holeFor(s)).toBeGreaterThan(last)
       last = holeFor(s)
     }
     expect(holeFor(0)).toBe(holeFor(1))
-    expect(holeFor(12)).toBe(holeFor(9))
+    expect(holeFor(12)).toBe(holeFor(10))
   })
 })

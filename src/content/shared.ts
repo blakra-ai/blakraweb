@@ -83,3 +83,12 @@ export interface ProductFacts {
 export const products: readonly ProductFacts[] = [
   { id: 'skin', name: 'LIOXSA', stage: 'working', platforms: ['iOS'], layers: ['ai', 'data', 'apps'], href: 'https://lioxsa.com', draft: false },
 ]
+
+/**
+ * The AI section's two ways to build: the models and platforms we work with, named as tools, not
+ * as partners (owner, 2026-11-02; run 2026-11-02-company-content, draft.md §1).
+ */
+export const aiTools = {
+  open: ['Llama', 'Mistral', 'Qwen', 'Whisper'],
+  platforms: ['OpenAI', 'Anthropic Claude', 'Google Gemini', 'Azure', 'AWS', 'Google Cloud'],
+} as const

@@ -1,3 +1,4 @@
+import { STATIONS } from './gauge'
 import { onReflow } from '../../motion/reflow'
 import { obs } from './state'
 
@@ -142,11 +143,12 @@ export function frameWindow(kind: WindowKind, rect: Rect, hint?: { x: number; y:
 
 /**
  * The hole's radius (where the grid falls into black) as a multiple of the ring's radius, by
- * station 1 … 9: it grows station by station, the contact window enters with it already large.
+ * station 1 … 10: it grows station by station, the contact window enters with it already large
+ * (the same span as with nine stations: 0.92 … 1.28).
  */
 export function holeFor(station: number): number {
-  const s = Math.max(1, Math.min(9, station))
-  return 0.92 + 0.045 * (s - 1)
+  const s = Math.max(1, Math.min(STATIONS, station))
+  return 0.92 + (0.36 * (s - 1)) / (STATIONS - 1)
 }
 
 /** The window's rect on screen for the scroll `scrollY`: its viewport, and the part of it the viewport shows (or null when off-screen). */
