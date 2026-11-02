@@ -622,11 +622,11 @@ html.porthole-margin main > section:not(#top) {
    @supports (animation-timeline: view()): Firefox, Safari and reduced motion keep the finished state. */
 @keyframes m-suck {
   0% {
-    transform: scale(1.5);
+    transform: scale(1.25);
     opacity: 0;
   }
   25% {
-    opacity: 0.55;
+    opacity: 0.3;
   }
   100% {
     transform: scale(1);

@@ -23,10 +23,10 @@ export function Hero() {
     <Section id="top" beat="hero" surface="body" station={1} className={s.hero} aria-labelledby="title" data-loop>
       <Window id="hero" kind="hero" ring still={heroStill} stillPhone={heroStillPhone} className={s.window}>
         {/* Phones: gold suction ripples contract into the still's ring (CSS only; paused off screen). */}
-        <svg className={`m-only ${s.ripples}`} viewBox="0 0 715 500" aria-hidden="true">
-          <circle cx="222" cy="170" r="184" />
-          <circle cx="222" cy="170" r="184" />
-          <circle cx="222" cy="170" r="184" />
+        <svg className={`m-only ${s.ripples}`} viewBox="0 0 780 900" aria-hidden="true">
+          <circle cx="198" cy="402" r="206" />
+          <circle cx="198" cy="402" r="206" />
+          <circle cx="198" cy="402" r="206" />
         </svg>
         <div className={s.inner}>
           <p className={`mono ${s.tag}`} aria-hidden="true">

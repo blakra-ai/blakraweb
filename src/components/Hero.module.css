@@ -183,7 +183,8 @@
     border: 0;
     border-radius: 0;
     min-height: calc(100svh - var(--header-h));
-    --still-h: 440px;
+    /* The still is 780 × 900 (2×): the ring behind her head, both ears in frame. */
+    --still-h: calc(100vw * 900 / 780);
   }
   /* The still: the ring and the guide across the top 440 px, fading into the ink under the words. */
   .window > [data-still] {
@@ -192,41 +193,45 @@
     height: var(--still-h);
   }
   .window > [data-still] img {
-    left: -128px;
-    right: auto;
-    width: 715px;
+    left: 0;
+    right: 0;
+    width: 100%;
     max-width: none;
-    height: 500px;
+    height: 100%;
     object-fit: cover;
-    object-position: left top;
+    object-position: center top;
+  }
+  /* The CSS ring is only the fallback for a window without a still: never over her. */
+  .window > [data-still] > :not(picture) {
+    display: none;
   }
   .window > [data-still]::after {
     content: '';
     position: absolute;
     inset: 0;
-    background: linear-gradient(to bottom, rgba(11, 11, 13, 0.55) 0, rgba(11, 11, 13, 0) 18%, rgba(11, 11, 13, 0) 55%, #0b0b0d 98%);
+    background: linear-gradient(to bottom, rgba(11, 11, 13, 0.5) 0, rgba(11, 11, 13, 0) 14%, rgba(11, 11, 13, 0) 70%, #0b0b0d 99%);
   }
   .ripples {
     display: block;
     position: absolute;
-    left: -128px;
+    left: 0;
     top: 0;
-    width: 715px;
+    width: 100%;
     max-width: none;
-    height: 500px;
+    height: var(--still-h);
     z-index: 0;
     pointer-events: none;
   }
   .ripples circle {
     fill: none;
     stroke: #d9a441;
-    stroke-width: 1.2;
+    stroke-width: 1;
     opacity: 0;
     transform-box: fill-box;
     transform-origin: center;
   }
   .inner {
-    padding: calc(var(--still-h) - 96px) 20px 18px;
+    padding: calc(var(--still-h) - 28px) 20px 18px;
     grid-template-rows: auto auto auto;
   }
   .inner::after,
