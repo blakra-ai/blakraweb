@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest'
-import { frameWindow, guideInView, HEAD_SHARE, HEAD_SHARE_CONTACT, onScreen, RING, ringScale, stickyViewY, toGl, WORDS_COLUMN, type Rect } from '../src/features/observatory/windows'
+import { FIGURE, frameWindow, guideInView, HEAD_SHARE, HEAD_SHARE_CONTACT, onScreen, RING, ringScale, stickyViewY, toGl, WORDS_COLUMN, type Rect } from '../src/features/observatory/windows'
 
 const desktop: Rect = { x: 24, y: 88, w: 1392, h: 788 }
 const phone: Rect = { x: 16, y: 80, w: 358, h: 232 }
@@ -36,9 +36,12 @@ describe('window framing', () => {
     // Her head overlaps the ring's lower-right quadrant: the rim is behind her, on the words' side.
     expect(g.x).toBeGreaterThan(f.ring.x)
     expect(g.x - 0.5 * g.headPx).toBeLessThan(f.ring.x + f.ring.r)
-    expect(g.y).toBeGreaterThan(f.ring.y + 0.9 * f.ring.r)
+    // The cinematic crop: 130 % of the height, her eyes at 42 % of it, in the ring's lower-right quadrant.
+    expect(g.figurePx).toBeCloseTo(FIGURE.hero.share * desktop.h)
+    expect(g.y).toBeCloseTo(FIGURE.hero.eyeY * desktop.h)
+    expect(g.y).toBeGreaterThan(f.ring.y)
+    expect(g.y).toBeLessThan(f.ring.y + f.ring.r)
     expect(g.key).toBe(-1)
-    expect(g.bust).toBe(true)
     expect(g.y + 0.35 * g.headPx).toBeLessThanOrEqual(desktop.h + 1e-6)
     // Her head (half a head either side of the eyes) stays inside the frame.
     expect(g.x + 0.45 * g.headPx).toBeLessThanOrEqual(desktop.w)
@@ -48,12 +51,13 @@ describe('window framing', () => {
     const f = frameWindow('contact', desktop)
     const g = f.guide!
     expect(g.headPx).toBeCloseTo(HEAD_SHARE_CONTACT * desktop.h)
+    expect(g.figurePx).toBeCloseTo(FIGURE.contact.share * desktop.h)
+    expect(g.y).toBeCloseTo(FIGURE.contact.eyeY * desktop.h)
     expect(g.x).toBeGreaterThan(f.ring.x)
     expect(g.x).toBeLessThan(f.ring.x + f.ring.r)
-    expect(g.x + 1.8 * g.headPx).toBeLessThanOrEqual(desktop.w + 1e-6)
+    expect(g.x + 1.0 * g.headPx).toBeLessThanOrEqual(desktop.w + 1e-6)
     expect(g.y).toBeGreaterThan(f.ring.y)
     expect(g.key).toBe(-1)
-    expect(g.bust).toBe(true)
   })
 
   it('never lets her cross the words column, whatever the rect', () => {
@@ -102,9 +106,13 @@ describe('the guide hint and her bounds', () => {
   it('takes the page\'s --guide-x/--guide-y place, still clamped off the words and inside the frame', () => {
     const fw = frameWindow
     const W = WORDS_COLUMN
-    const g = fw('hero', desktop, { x: 0.9, y: 0.75 }).guide!
+    const g = fw('hero', desktop, { x: 0.9, y: 0.5 }).guide!
     expect(g.x).toBeCloseTo(0.9 * desktop.w)
-    expect(g.y).toBeCloseTo(0.75 * desktop.h)
+    expect(g.y).toBeCloseTo(0.5 * desktop.h)
+    // A phone band: head and neck only (190 % of the height), her eyes right of centre.
+    const ph = fw('hero', phone).guide!
+    expect(ph.figurePx).toBeCloseTo(FIGURE.phone.share * phone.h)
+    expect(ph.x).toBeGreaterThanOrEqual(0.5 * phone.w)
     const far = fw('hero', desktop, { x: 0.2, y: 2 }).guide!
     expect(far.x - 0.5 * far.headPx).toBeGreaterThanOrEqual(W * desktop.w - 1e-6)
     expect(far.y + 0.35 * far.headPx).toBeLessThanOrEqual(desktop.h + 1e-6)

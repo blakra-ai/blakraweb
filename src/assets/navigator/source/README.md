@@ -1,39 +1,27 @@
 # The Navigator's model
 
-**Astraía** by Quentin Otani, Sketchfab, CC Attribution 4.0 —
-https://sketchfab.com/3d-models/astraia-c0f37ac567d34fa8881ed7a79b335c4d
-(adopted 2026-11-02; the credit line is on the legal page). Required credit:
-This work is based on "Astraía" (https://sketchfab.com/3d-models/astraia-c0f37ac567d34fa8881ed7a79b335c4d)
-by Quentin Otani (https://sketchfab.com/quentinotani) licensed under CC-BY-4.0 (http://creativecommons.org/licenses/by/4.0/).
+**Mecha roe deer** by Osho, Sketchfab, CC Attribution 4.0 —
+https://sketchfab.com/3d-models/mecha-roe-deer-6c25867eda6a4dafb274eb9efd37ebfd (adopted 2026-11-02; the
+credit line is on the legal page). Required credit:
+This work is based on "Mecha roe deer" (https://sketchfab.com/3d-models/mecha-roe-deer-6c25867eda6a4dafb274eb9efd37ebfd)
+by Osho (https://sketchfab.com/Crysis007-94) licensed under CC-BY-4.0 (http://creativecommons.org/licenses/by/4.0/).
 
-`navigator.glb` (2.7 MB) is built from the Sketchfab glTF download (`scene.gltf` + `scene.bin` +
-`textures/`, not committed: 4K PNGs, 240 MB) with the intake script. The model is a porcelain
-figure with six Biped-rigged arms, gold wire, floating shards and instruments, one clip
-("Slow Mvt", 26.7 s, the arms' sway) and no humanoid skeleton for the head: the script
-
-- drops the background sphere, the hand dummies, the floating "Fractures" shards, five of the six
-  arms with their bracelets, the compass and the two held spheres (one raised arm with its sphere
-  stays: the bust), and turns the scene 62° so she faces +Z,
-- builds the Hips…Head chain with the Head pivot at the neck (`--head x,y,z`), parents the brain,
-  mouth and eye sockets to it through bridge nodes (their own animation keeps working) and skins
-  the one body shell, the skeleton and the neck muscles between Spine1 and Head across the neck
-  band (`--skin-head`, `--neck`), so the head turns at the neck under the gold wire,
-- keeps her own porcelain eyeballs as Eye_L/R, set upright so the gaze turns them about world
-  axes (`--upright`; the loader keeps a textured eye's material), makes both identical with one
-  glass material (`--same-eyes`), caps the kept arm's open tube ends (`--cap`), adds empty lids (blink off),
-  the jaw, the seven system lights (hidden in the Observatory) and the X-ray inner set,
-- moves the baked emissive maps into the base colour (`--bake-look`), drops transmission and
-  clearcoat, warms the blue bake to porcelain and makes the organs and bones monochrome (`--tint`),
-- re-encodes the textures as WebP (body 2048, the rest 1024) and compresses with meshopt.
+`navigator.glb` (1.0 MB) is built from the Sketchfab glTF download (`scene.gltf` + `scene.bin` +
+`textures/`, 4K PNGs): seven rigid meshes, no bones, no clips. The script cuts the head off the body
+and strip meshes by a plane just above the top neck vertebra (`--split`), turns her −135° so she
+stands three-quarter facing the words, builds the Hips…Head chain with the pivot at the neck top
+(`--head`), parents the head parts and lenses to it (`--head-meshes`), puts Eye_L/R empties on her
+lenses (`--eyes-at`: the gaze turns only the head), makes every emissive material gold with a
+monochrome mask (`--glow`; the bottles go dark and graphite), lowers the chrome to 0.6 metalness
+so it reads silver (`--metal`), and encodes the body's maps at 2048, the rest at 1024.
 
 ```bash
-node scripts/navigator-adopt.mjs ~/Downloads/astraia/scene.gltf src/assets/navigator/source/astraia.names.json \
-  --drop '^(FOND ROND001|Main Low0|Fractures Dos_low|Object_2(48|49|51|52|54|55|57|58|60|61)|Group005|Circle00[345789]|Circle011)$' --yaw 62 --augment --head 0.017,0.22,0.05 --neck 0.16,0.27 \
-  --head-meshes '^(Cerveau Low|Bouche_low001|Eye_[LR])' --upright '^Eye_[LR]$' --same-eyes --cap '^Object_26[34]$' --skin-head '^(Face|Retopo 001|Crane Low uv|Muscles00[4-7])' \
-  --bake-look --tint '2.03,1.7,1.29:Body_Ext|Bras_Ext;grey:Organes|material|body_Int|Muscle_Int|Bras_Int' \
-  --webp 80 --tex-max 2048 --tex-hi 'Body_Ext' --optimize
-npx vitest run tests/navigator-contract.test.ts
+node scripts/navigator-adopt.mjs ~/Downloads/mecha-roe-deer/scene.gltf src/assets/navigator/source/mecha-deer.names.json \
+  --split '^(Face|Strips)$=0,2.555,0,0,1,0' --yaw -135 --augment --head -0.562,2.58,0.477 --head-meshes '^(Head_|Face|Strips_Head|Lenses)$' \
+  --eyes-at '-0.997,2.65,0.474;-0.559,2.65,0.912' --glow '#d9a441:^(E_Neck|E_Head|E_Eyes|Material\.002)$:8.75;off:^Bottles$' \
+  --metal '0.6:^Material\.001$' --tint '0.2,1,0.2:^Bottles$' --webp 80 --tex-max 2048 --tex-hi 'Material\.001' --optimize
 ```
 
-The earlier model, Cyber Girl by Rotmill (CC BY 4.0), keeps its name map in `cyber-girl.names.json`.
-The code-generated placeholder is still one command away: `npm run navigator:glb`.
+The earlier models, Astraía by Quentin Otani and Cyber Girl by Rotmill (both CC BY 4.0), keep their
+name maps in git history and `cyber-girl.names.json`. The code-generated placeholder is still one
+command away: `npm run navigator:glb`.

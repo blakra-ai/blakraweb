@@ -356,7 +356,7 @@ export const fr: Dict = {
     phoneLabel: 'Téléphone',
     country: 'États-Unis',
     creditsTitle: 'Crédits',
-    credits: 'La figure de la Navigatrice est basée sur « Astraía » de Quentin Otani (Sketchfab), sous licence CC BY 4.0.',
+    credits: 'La figure de la Navigatrice est basée sur « Mecha roe deer » de Osho (Sketchfab), sous licence CC BY 4.0.',
   },
   notFound: { eyebrow: '404', title: 'Cette page est tombée au-delà de l’horizon.', text: 'Elle n’existe pas, ou elle a déménagé.', back: 'Retour au début' },
 }

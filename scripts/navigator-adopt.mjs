@@ -4,6 +4,11 @@
  *
  *   node scripts/navigator-adopt.mjs <model.glb> [names.json] [--augment] [--eyes x,y,z,r] [--head y|x,y,z] [--simplify ratio] [--drop regex] [--webp quality] [--optimize] [--dry]
  *       [--yaw deg] [--head-meshes regex] [--skin-head regex --neck y0,y1] [--bake-look] [--tint r,g,b:regex] [--tex-max px] [--tex-hi regex]
+ *       [--split regex=px,py,pz,nx,ny,nz] [--eyes-at Lx,Ly,Lz;Rx,Ry,Rz] [--glow hex|off:regex[:strength];…] [--metal f:regex]
+ *
+ * A single-mesh mecha (the roe deer): --split cuts the head off the body mesh by a world plane into
+ * Head_* nodes (for --head-meshes), --eyes-at puts Eye_L/R empties on the head's own lenses, --glow
+ * recolours the emissive materials (the site's gold) and --metal lowers a chrome bake's metalness.
  *
  * A Sketchfab-style scene (Astraía): --yaw turns the whole scene about Y so she faces +Z; with
  * --augment and no skeleton, --head x,y,z puts the Head pivot at a world point (the neck),
@@ -52,7 +57,7 @@ import { CONTRACT, validateNames } from '../src/features/navigator/figure/names.
 import { CHAKRAS } from '../src/features/navigator/yantra.ts'
 
 const args = process.argv.slice(2)
-const WITH_VALUE = new Set(['--eyes', '--head', '--simplify', '--drop', '--webp', '--eye-forward', '--yaw', '--head-meshes', '--skin-head', '--neck', '--tint', '--tex-max', '--tex-hi', '--upright', '--cap'])
+const WITH_VALUE = new Set(['--eyes', '--head', '--simplify', '--drop', '--webp', '--eye-forward', '--yaw', '--head-meshes', '--skin-head', '--neck', '--tint', '--tex-max', '--tex-hi', '--upright', '--cap', '--split', '--eyes-at', '--glow', '--metal'])
 const value = (flag) => args[args.indexOf(flag) + 1]
 const flags = new Set(args.filter((a) => a.startsWith('--')))
 const positional = args.filter((a, i) => !a.startsWith('--') && !(i > 0 && WITH_VALUE.has(args[i - 1])))
@@ -102,6 +107,54 @@ if (flags.has('--drop')) {
   for (const n of victims) { if (n.isDisposed?.() ) continue; disposeTree(n); dropped++ }
   await doc.transform(prune())
   console.log(`dropped ${dropped} node(s) matching ${re}; pruned unused meshes, skins, materials and textures`)
+}
+
+// ---- Split: a rigid head cut out of a single body mesh by a world plane -------------------------
+// --split <regex>=<px,py,pz,nx,ny,nz>: for every mesh node whose name matches, the triangles whose
+// centroid lies on the plane's +n side move into a new node `Head_<name>` (same parent, same TRS,
+// same vertex buffers; only the index buffer is split), so --head-meshes '^Head_' can parent them to
+// the Head pivot. The plane is in the scene's frame before --yaw (a mecha whose body is one mesh).
+if (flags.has('--split')) {
+  const [reSrc, planeSrc] = value('--split').split('=')
+  const re = new RegExp(reSrc)
+  const [px, py, pz, nx, ny, nz] = planeSrc.split(',').map(Number)
+  const xf = (m, p) => [m[0] * p[0] + m[4] * p[1] + m[8] * p[2] + m[12], m[1] * p[0] + m[5] * p[1] + m[9] * p[2] + m[13], m[2] * p[0] + m[6] * p[1] + m[10] * p[2] + m[14]]
+  let moved = 0
+  for (const node of root.listNodes().filter((n) => n.getMesh() && re.test(n.getName()))) {
+    const mesh = node.getMesh()
+    const m = node.getWorldMatrix()
+    const headMesh = doc.createMesh(`Head_${mesh.getName()}`)
+    for (const prim of mesh.listPrimitives()) {
+      const idxAcc = prim.getIndices()
+      const pos = prim.getAttribute('POSITION')
+      if (!idxAcc || !pos) continue
+      const idx = idxAcc.getArray()
+      const keep = [], head = []
+      const v = []
+      for (let i = 0; i < idx.length; i += 3) {
+        const c = [0, 0, 0]
+        for (const k of [idx[i], idx[i + 1], idx[i + 2]]) { const w = xf(m, pos.getElement(k, v)); c[0] += w[0] / 3; c[1] += w[1] / 3; c[2] += w[2] / 3 }
+        const side = (c[0] - px) * nx + (c[1] - py) * ny + (c[2] - pz) * nz
+        ;(side > 0 ? head : keep).push(idx[i], idx[i + 1], idx[i + 2])
+      }
+      if (!head.length) continue
+      const Arr = idx.constructor
+      idxAcc.setArray(new Arr(keep))
+      const hp = doc.createPrimitive().setMaterial(prim.getMaterial()).setMode(prim.getMode())
+      for (const sem of prim.listSemantics()) hp.setAttribute(sem, prim.getAttribute(sem))
+      hp.setIndices(doc.createAccessor().setType('SCALAR').setArray(new Arr(head)).setBuffer(idxAcc.getBuffer() ?? root.listBuffers()[0]))
+      headMesh.addPrimitive(hp)
+      moved += head.length / 3
+    }
+    if (!headMesh.listPrimitives().length) { headMesh.dispose(); continue }
+    const parent = node.listParents().find((x) => x.propertyType === 'Node' || x.propertyType === 'Scene')
+    // The contract's Face is the head's box: a body mapped to Face gives the name to its head part and becomes Body.
+    const isFace = node.getName() === 'Face'
+    const headNode = doc.createNode(isFace ? 'Face' : `Head_${node.getName()}`).setMesh(headMesh).setTranslation(node.getTranslation()).setRotation(node.getRotation()).setScale(node.getScale())
+    if (isFace) node.setName('Body')
+    parent?.addChild(headNode)
+  }
+  console.log(`split: ${moved} triangle(s) above the plane moved into Head_* nodes (meshes matching ${re})`)
 }
 
 // ---- Yaw: turn the scene's top-level nodes about Y (she faces +Z, the camera) ------------------
@@ -451,6 +504,15 @@ if (flags.has('--augment')) {
     }
     console.log(`augment: no skeleton; built Hips…Head down the axis (mesh ${bottom.toFixed(2)}…${top.toFixed(2)} m, Head bone at y=${headY.toFixed(3)}); ${headRe ? `nodes matching ${headRe} parented to Head through ${bridges.size} bridge(s)` : 'meshes parented to Head'}`)
   }
+  // --eyes-at Lx,Ly,Lz;Rx,Ry,Rz (world, after --yaw): a model whose eyes are part of a rigid head
+  // mesh (a mecha's lit lenses) gets Eye_L/Eye_R as empties under Head, so the anchor, the metrics
+  // and the lids resolve and the head mesh keeps its own look; the gaze then turns only the head.
+  if (flags.has('--eyes-at') && byName('Head')) {
+    const [L, R] = value('--eyes-at').split(';').map((s) => s.split(',').map(Number))
+    if (!byName('Eye_L')) addEmpty('Eye_L', byName('Head'), L)
+    if (!byName('Eye_R')) addEmpty('Eye_R', byName('Head'), R)
+    console.log(`augment: Eye_L/Eye_R empties at ${L} / ${R}`)
+  }
   const head = byName('Head'), neck = byName('Neck'), hips = byName('Hips'), spine = byName('Spine'), spine1 = byName('Spine1'), spine2 = byName('Spine2')
   if (!head || !hips) {
     console.error('--augment needs Head and Hips bones (after renames). Found: ' + [...root.listNodes().map((n) => n.getName())].filter((n) => /head|hips|spine|neck/i.test(n)).join(', '))
@@ -656,6 +718,49 @@ if (flags.has('--tint')) {
   }
 }
 
+// --glow <hex|off>:<regex>[:strength];…: the matching materials' emissive colour and strength (an
+// emissive mask texture stays and is tinted by the colour); `off` makes them dark. --metal <f>:<regex>
+// sets the matching materials' metallic factor (a chrome bake that must read as brushed silver).
+if (flags.has('--glow')) {
+  const { KHRMaterialsEmissiveStrength } = await import('@gltf-transform/extensions')
+  const sharp = (await import('sharp')).default
+  const ext = doc.createExtension(KHRMaterialsEmissiveStrength)
+  const masked = new Set()
+  for (const spec of value('--glow').split(';')) {
+    const [what, re, strength] = spec.split(':')
+    const test = new RegExp(re ?? '.')
+    let n = 0
+    for (const m of root.listMaterials()) {
+      if (!test.test(m.getName())) continue
+      n++
+      if (what === 'off') {
+        m.setEmissiveFactor([0, 0, 0]).setEmissiveTexture(null)
+        m.getExtension('KHR_materials_emissive_strength')?.dispose()
+        continue
+      }
+      m.setEmissiveFactor(hex(what))
+      const es = ext.createEmissiveStrength().setEmissiveStrength(Number(strength) || 1)
+      m.setExtension('KHR_materials_emissive_strength', es)
+      // The artist's coloured glow map becomes a monochrome mask (its brightest pixel white), so the colour is ours alone.
+      const t = m.getEmissiveTexture()
+      if (t && !masked.has(t)) {
+        t.setImage(new Uint8Array(await sharp(Buffer.from(t.getImage())).grayscale().normalise().png().toBuffer())).setMimeType('image/png')
+        masked.add(t)
+      }
+    }
+    console.log(`glow ${what} on ${n} material(s) matching ${test}`)
+  }
+}
+if (flags.has('--metal')) {
+  for (const spec of value('--metal').split(';')) {
+    const [f, re] = spec.split(':')
+    const test = new RegExp(re ?? '.')
+    let n = 0
+    for (const m of root.listMaterials()) if (test.test(m.getName())) { m.setMetallicFactor(Number(f)); n++ }
+    console.log(`metal ${f} on ${n} material(s) matching ${test}`)
+  }
+}
+
 const nodes = new Set(root.listNodes().map((n) => n.getName()))
 const morphs = new Set()
 for (const mesh of root.listMeshes()) for (const prim of mesh.listPrimitives()) for (const name of prim.getParent?.()?.getExtras?.()?.targetNames ?? mesh.getExtras()?.targetNames ?? []) morphs.add(name)
@@ -695,11 +800,13 @@ if (flags.has('--webp')) {
   for (const m of root.listMaterials()) for (const slot of ['BaseColor', 'Normal', 'MetallicRoughness', 'Emissive', 'Occlusion']) {
     const t = m[`get${slot}Texture`]()
     if (t && !t.getName()) t.setName(`${m.getName()}:${slot}`)
+    // The pattern below tests the URI first: a .gltf delivery's file names would hide the slot names.
+    if (t) t.setURI('')
   }
   if (flags.has('--tex-hi')) {
     const hi = new RegExp(`^(${value('--tex-hi')}):(BaseColor|Normal)$`)
     await doc.transform(textureCompress({ encoder: sharp, targetFormat: 'webp', quality: q, resize: [max, max], pattern: hi }))
-    const lo = new RegExp(`^(?!(${value('--tex-hi')}):(BaseColor|Normal)$)`)
+    const lo = new RegExp(`^(?!(${value('--tex-hi')}):(BaseColor|Normal)$).+$`) // `.+`: an empty URI must not match
     await doc.transform(textureCompress({ encoder: sharp, targetFormat: 'webp', quality: q, resize: [max / 2, max / 2], pattern: lo }))
   } else await doc.transform(textureCompress({ encoder: sharp, targetFormat: 'webp', quality: q, resize: [max, max] }))
   const after = root.listTextures().reduce((a, t) => a + (t.getImage()?.byteLength ?? 0), 0)

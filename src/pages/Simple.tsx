@@ -164,12 +164,12 @@ export function Legal() {
             <dd>
               {/* The licence's own credit line (CC BY 4.0): the work, its author and the licence, each linked. */}
               {l.credits}{' '}
-              <a href="https://sketchfab.com/3d-models/astraia-c0f37ac567d34fa8881ed7a79b335c4d" rel="noopener" target="_blank">
-                Astraía
+              <a href="https://sketchfab.com/3d-models/mecha-roe-deer-6c25867eda6a4dafb274eb9efd37ebfd" rel="noopener" target="_blank">
+                Mecha roe deer
               </a>
               {' · '}
-              <a href="https://sketchfab.com/quentinotani" rel="noopener" target="_blank">
-                Quentin Otani
+              <a href="https://sketchfab.com/Crysis007-94" rel="noopener" target="_blank">
+                Osho
               </a>
               {' · '}
               <a href="https://creativecommons.org/licenses/by/4.0/" rel="license noopener" target="_blank">

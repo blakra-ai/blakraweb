@@ -1,6 +1,6 @@
 import { useFrame, useThree } from '@react-three/fiber'
 import { useEffect, useMemo, useRef } from 'react'
-import { type DirectionalLight, Group, type Object3D, PerspectiveCamera, Vector3 } from 'three'
+import { type DirectionalLight, Group, MeshStandardMaterial, type Object3D, PerspectiveCamera, Vector3 } from 'three'
 import { Studio } from '../experience/objects/Studio'
 import { Figure, type FigureRig } from '../navigator/figure/Figure'
 import { createLivingState, IGNITION_GAP, stepLiving, type LivingInput, type LivingState } from '../navigator/living'
@@ -18,10 +18,12 @@ import type { Framing, Rect } from './windows'
  * the line from `obs.line`; her hair spring is Figure's own. Where she stands is the world's
  * business (`placeGuide`, per window pass): this file only mounts and animates her.
  *
- * She is Astraía (Quentin Otani, CC BY 4.0; src/assets/navigator/source/README.md), adopted as
- * src/assets/navigator/navigator.glb: a porcelain figure with six arms and gold wire, her own
- * "Slow Mvt" clip (the arms' sway, played by Figure), her head skinned to turn at the neck. Nodes
- * named Far_* (the four far arms and what they hold) are hidden where a window asks for the bust.
+ * She is the Mecha roe deer (Osho, CC BY 4.0; src/assets/navigator/source/README.md), adopted as
+ * src/assets/navigator/navigator.glb: a silver mecha standing full-length, her head cut from the
+ * body at the neck so it turns toward the cursor, her light strips gold. Her idle here: the slow
+ * float placeGuide applies, the head's turn (HEAD_REST_YAW keeps her face a slight three-quarter
+ * toward the words; HEAD_GAIN widens the living step's share to ±10°, since her lenses cannot
+ * move on their own) and the strips' pulse (STRIP_PULSE).
  */
 
 export interface GuideHandle {
@@ -31,11 +33,9 @@ export interface GuideHandle {
   living: LivingState | null
   /** Her eye nodes, found once under the loaded figure. */
   eyes: [Object3D, Object3D] | null
-  /** Her far arms (nodes named Far_*), found once; and whether they are shown. */
-  far: Object3D[] | null
-  farShown: boolean
-  /** The key light (from the ring's side): placeGuide turns it to the window's side. */
+  /** The key light (from the ring's side) and the gold rim behind her: placeGuide turns them to the window's side. */
   key: DirectionalLight | null
+  rim: DirectionalLight | null
   /** Show or hide her seven systems' lights (the chakra dots show only where layers are the subject: never in these windows). */
   systems: (on: boolean) => void
   /** The living step's wake-up times (clock s): the next blink and the next idle glance. */
@@ -50,9 +50,8 @@ export function createGuideHandle(): GuideHandle {
     group: null,
     living: null,
     eyes: null,
-    far: null,
-    farShown: true,
     key: null,
+    rim: null,
     systems: () => {},
     nextEvent: () => Infinity,
     moving: () => false,
@@ -87,6 +86,14 @@ export function createGuideHandle(): GuideHandle {
 
 const FOV = 30
 const DEG = Math.PI / 180
+/** The head carries the gaze: the living step gives the head a third of the eyes' ±12°; ×2.5 makes it ±10°. */
+const HEAD_GAIN = 2.5
+/** Her head's rest turn (degrees, negative toward the words): never dead frontal. */
+const HEAD_REST_YAW = -15
+/** Her light strips breathe about their rest intensity by this share, at this rate (Hz). */
+const STRIP_PULSE = 0.1
+const STRIP_HZ = 0.25
+const STRIP_MATERIAL = /^(E_|Material\.002)/
 /** The key light's stand-off on x (its side flips per window) and the fill's: world units are px here, the lights are directional. */
 const KEY_X = 3
 
@@ -115,27 +122,16 @@ export function placeGuide(h: GuideHandle, framing: Framing, view: Rect, camera:
   const m = h.rig.metrics
   const place = framing.guide
   if (!g || !m || !place) return false
-  const s = place.headPx / m.headHeight
+  // Her whole height fills `figurePx` (a full-length figure); the head's share is the fallback.
+  const s = place.figurePx ? place.figurePx / m.height : place.headPx / m.headHeight
   const x = place.x - view.w / 2
   const y = view.h / 2 - place.y
   g.position.set(x, y - s * m.eyeY + h.rig.float * s, -s * m.headZ)
   g.scale.setScalar(s)
   g.updateMatrixWorld(true)
-  // The bust crop: her far arms (and what they hold) are hidden where the window asks for it.
-  if (!h.far) {
-    const list: Object3D[] = []
-    g.traverse((o) => {
-      if (/^Far_/.test(o.name)) list.push(o)
-    })
-    h.far = list
-  }
-  const showFar = !place.bust
-  if (h.farShown !== showFar) {
-    for (const o of h.far) o.visible = showFar
-    h.farShown = showFar
-  }
   // The key light comes from the ring's side of this window.
   if (h.key) h.key.position.x = KEY_X * place.key
+  if (h.rim) h.rim.position.x = KEY_X * place.key
   // Her eyes on screen: the midpoint projected through the window's camera into viewport px.
   if (!h.eyes) {
     const l = g.getObjectByName('Eye_L')
@@ -191,8 +187,12 @@ export function Guide({ handle }: { handle: GuideHandle }) {
   )
 
   const key = useRef<DirectionalLight>(null)
+  const rim = useRef<DirectionalLight>(null)
+  /** Her strips' materials (cloned per mesh by the loader) and their rest intensity, found once she is mounted. */
+  const strips = useRef<{ mats: MeshStandardMaterial[]; rest: number[] } | null>(null)
   useEffect(() => {
     handle.key = key.current
+    handle.rim = rim.current
     // The world's figure never docks here: Figure then leaves the anchor to placeGuide.
     nav.atDock = true
     return () => {
@@ -221,16 +221,34 @@ export function Guide({ handle }: { handle: GuideHandle }) {
     input.clock = obs.clock
     input.dt = Math.min(0.1, dt)
     stepLiving(handle.living, input, nav.perf)
+    nav.perf.head.yaw = nav.perf.head.yaw * HEAD_GAIN + HEAD_REST_YAW
+    nav.perf.head.pitch *= HEAD_GAIN
     nav.perf.jaw = nav.still ? 0 : jawOpen(obs.line.text, obs.line.typed, obs.clock, obs.line.from)
+    // The strips' pulse: every emissive material of hers, about its rest (the still keeps the rest).
+    if (!strips.current && group.current) {
+      const mats: MeshStandardMaterial[] = []
+      group.current.traverse((o) => {
+        const m = (o as { material?: unknown }).material
+        if (m instanceof MeshStandardMaterial && STRIP_MATERIAL.test(m.name) && !mats.includes(m)) mats.push(m)
+      })
+      strips.current = { mats, rest: mats.map((m) => m.emissiveIntensity) }
+    }
+    const st = strips.current
+    if (st) {
+      const k = nav.still ? 1 : 1 + STRIP_PULSE * Math.sin(obs.clock * STRIP_HZ * Math.PI * 2)
+      st.mats.forEach((m, i) => (m.emissiveIntensity = st.rest[i] * k))
+    }
   }, -1)
 
   return (
     <>
-      {/* The key from the ring's side (gold, warm; placeGuide flips its side per window), a cool porcelain fill from the front, a dim environment: no shadows. The lights stay outside her placed group. */}
-      <Studio warm="#d9a441" cool="#8a8781" base="#1a1a1f" />
-      <directionalLight ref={key} position={[-KEY_X, 2, 2]} intensity={2.4} color="#d9a441" />
-      <directionalLight position={[0.5, 2.5, 4]} intensity={1.1} color="#ece9e2" />
-      <ambientLight intensity={0.35} color="#ece9e2" />
+      {/* The key from the ring's side (warm; placeGuide flips its side per window), a cool fill from the other front quarter, a near-neutral environment so her brushed metal reads silver, not gold or blue: no shadows. The lights stay outside her placed group. */}
+      <Studio warm="#c9ab7a" cool="#8e98a6" base="#17171c" />
+      <directionalLight ref={key} position={[-KEY_X, 2, 2]} intensity={2.2} color="#e9c98f" />
+      {/* The faint gold rim from behind, the ring's side: her silhouette separates from the ink. */}
+      <directionalLight ref={rim} position={[-KEY_X, 1, -3]} intensity={1.4} color="#d9a441" />
+      <directionalLight position={[2, 2.5, 4]} intensity={1.0} color="#aebbd0" />
+      <ambientLight intensity={0.3} color="#e4e2dc" />
       <group ref={group}>
         <Figure rig={handle.rig} variant="world" />
       </group>

@@ -356,7 +356,7 @@ export const es: Dict = {
     phoneLabel: 'Teléfono',
     country: 'Estados Unidos',
     creditsTitle: 'Créditos',
-    credits: 'La figura de la Navegante está basada en «Astraía» de Quentin Otani (Sketchfab), bajo licencia CC BY 4.0.',
+    credits: 'La figura de la Navegante está basada en «Mecha roe deer» de Osho (Sketchfab), bajo licencia CC BY 4.0.',
   },
   notFound: { eyebrow: '404', title: 'Esta página cayó más allá del horizonte.', text: 'No existe, o se ha movido.', back: 'Volver al inicio' },
 }

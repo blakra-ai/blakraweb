@@ -12,7 +12,7 @@ import s from './Hero.module.css'
  * 01 Hero (storyboard d-01 / m-01): one framed window onto the world. Words in columns 1–6
  * (eyebrow, H1, lede, the call to action and the cue), the world in 7–12: the lensing ring at
  * columns 9–10 (painted by World.tsx), its line on the object's tangent, the facts in the foot.
- * The guide (Astraía) stands at the ring's lower-right edge, painted by the world; on phones the
+ * The guide (the Mecha roe deer) rises through the ring's lower-right quadrant, painted by the world; on phones the
  * window's lower band shows her still (hero-still-phone.webp). All words are DOM; nothing but the world moves.
  */
 export function Hero() {

@@ -26,8 +26,8 @@ export interface Framing {
   pull: number
   /** Where the grid's left fade ends (0 … 1 of the width): the words' column stays quiet. */
   fade: number
-  /** The guide's eyes in window-local px, her head's height in px, which side her key light comes from (−1 left, 1 right: the lit rim's side) and whether she is cropped to the bust (nodes named Far_* hidden); null where she is absent. */
-  guide: { x: number; y: number; headPx: number; key: -1 | 1; bust: boolean } | null
+  /** The guide's eyes in window-local px, her head's height in px, her whole figure's height in px (what scales her), and which side her key light comes from (−1 left, 1 right: the lit rim's side); null where she is absent. */
+  guide: { x: number; y: number; headPx: number; figurePx: number; key: -1 | 1 } | null
 }
 
 export interface ObsWindow {
@@ -66,9 +66,22 @@ const FADE = { hero: 0.42, stage: 0.42, contact: 0.5 } as const
 /** The ring's centre: 62 % across the hero, 58 % on the stage (its bands reach 1.6 r; the line stands on the tangent beyond them). */
 const RING_X = { hero: 0.62, stage: 0.58, contact: 0.74 } as const
 const RING_Y = { hero: 322 / 788, stage: 0.47, contact: 300 / 788 } as const
-/** The guide's head as a share of the window's height: a bust in the hero (24 %), a fuller, smaller figure in the contact (16 %); the words own the left half. */
+/** The guide's head as a share of the window's height (the in-view box and the clamps off the words); the words own the left half. */
 export const HEAD_SHARE = 0.24
 export const HEAD_SHARE_CONTACT = 0.16
+/**
+ * The cinematic crop: her height as a share of the window's (over 1: the frame cuts her), her eyes
+ * at ring.x + eyeX · r and eyeY of the window's height. Hero: head, neck and chest fill the right
+ * 45 %, head and neck in front of the ring's lower-right quadrant, hind legs off the bottom edge.
+ * Contact: head and neck rise from the bottom right at the ring's edge, the body cut by the frame.
+ * Phone (under 768 px): head and neck only, right-aligned (eyes from the page's hint, else eyeX · w), body off-frame.
+ */
+export const FIGURE = {
+  hero: { share: 1.3, eyeX: 0.72, eyeY: 0.42 },
+  contact: { share: 1.1, eyeX: 0.7, eyeY: 0.58 },
+  phone: { share: 1.9, eyeX: 0.76, eyeY: 0.56 },
+} as const
+export const PHONE_W = 768
 export const WORDS_COLUMN = 0.5
 export const FRAME_RADIUS = 16
 export const GRID_CELL = 24
@@ -95,29 +108,32 @@ export function frameWindow(kind: WindowKind, rect: Rect, hint?: { x: number; y:
   if (kind === 'contact') {
     // The closing stage: a fuller figure at a fifth of the height, standing inside the disk right
     // of its centre (her line keeps the disk's left), the lit rim below and left of her (her key
-    // light's side), still the bust crop so no arm crosses the line or the panel.
+    // light's side).
     const headPx = Math.min(HEAD_SHARE_CONTACT * rect.h, 0.5 * rect.w)
-    let x = hint ? hint.x * rect.w : ring.x + 0.3 * r
-    let y = hint ? hint.y * rect.h : ring.y + 0.1 * r
-    // Her raised arm reaches 1.8 heads right of her eyes: it stays inside the frame; the words' column wins on a narrow window.
-    x = Math.min(x, rect.w - 1.8 * headPx)
+    const fig = rect.w < PHONE_W ? FIGURE.phone : FIGURE.contact
+    const figurePx = fig.share * rect.h
+    let x = hint ? hint.x * rect.w : rect.w < PHONE_W ? fig.eyeX * rect.w : ring.x + fig.eyeX * r
+    let y = hint ? hint.y * rect.h : fig.eyeY * rect.h
+    // Her head (a head's width right of her eyes) stays inside the frame; the body may be cut by it; the words' column wins on a narrow window.
+    x = Math.min(x, rect.w - 1.0 * headPx)
     x = Math.max(x, WORDS_COLUMN * rect.w + 0.5 * headPx)
     y = Math.max(y, 0.5 * headPx)
-    guide = { x, y, headPx, key: -1, bust: true }
+    guide = { x, y, headPx, figurePx, key: -1 }
   } else {
     // 24 % of the window's height, and never so large that she cannot fit in the right half.
     const headPx = Math.min(HEAD_SHARE * rect.h, 0.5 * rect.w)
-    // A bust at the ring's lower-right edge: her eyes 0.72 r right of its centre and one radius
-    // below it, the gold rim behind her head on the words' side (her key light), her raised arm
-    // right of her, under her line, her chin near the frame's bottom edge.
-    let x = hint ? hint.x * rect.w : ring.x + 0.72 * r
-    let y = hint ? hint.y * rect.h : ring.y + 1.0 * r
+    const fig = rect.w < PHONE_W ? FIGURE.phone : FIGURE.hero
+    const figurePx = fig.share * rect.h
+    // Her head in front of the ring's lower-right quadrant, turned to the words, the gold rim
+    // behind her silhouette (her key light's side), her body running off the frame's bottom right.
+    let x = hint ? hint.x * rect.w : rect.w < PHONE_W ? fig.eyeX * rect.w : ring.x + fig.eyeX * r
+    let y = hint ? hint.y * rect.h : fig.eyeY * rect.h
     y = Math.min(y, rect.h - 0.35 * headPx)
     // Never over the words: she stays right of the left column, and inside the frame.
     x = Math.max(x, WORDS_COLUMN * rect.w + 0.5 * headPx)
     x = Math.min(x, rect.w - 0.45 * headPx)
     y = Math.max(y, 0.5 * headPx)
-    guide = { x, y, headPx, key: -1, bust: true }
+    guide = { x, y, headPx, figurePx, key: -1 }
   }
   return { ring, sigma: SIGMA[kind] * s, pull: PULL[kind], fade: FADE[kind], guide }
 }

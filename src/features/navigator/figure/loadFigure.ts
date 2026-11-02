@@ -1,6 +1,5 @@
 import {
   AdditiveBlending,
-  type AnimationClip,
   Bone,
   Box3,
   SkinnedMesh,
@@ -93,8 +92,6 @@ export interface LoadedFigure extends Figure {
   glows: SpriteMaterial[]
   outer: Mesh[]
   inner: Mesh[]
-  /** The model's own animation clips (an idle sway), bound by node name; empty for a still model. */
-  clips: AnimationClip[]
 }
 
 /** Load the figure at `url`. Rejects when the GLB breaks the contract (throws in dev, warns in prod). */
@@ -132,7 +129,7 @@ export async function loadFigure(url: string): Promise<LoadedFigure> {
   const uShow = { value: 0 }
   const uBright = { value: 0 }
   const uBand = { value: -1 }
-  // A model that brings its own textured eyeballs (Astraía's porcelain irises) keeps them; the
+  // A model that brings its own textured eyeballs keeps them; the
   // hole shader goes only on bare spheres. The shader material still exists so the uniforms the
   // performance writes (uShow, uBright, uBand) have a home either way.
   const eyeMats = eyes.map((e) => {
@@ -290,7 +287,6 @@ export async function loadFigure(url: string): Promise<LoadedFigure> {
     glows,
     outer,
     inner,
-    clips: gltf.animations,
   }
   if (import.meta.env.DEV) (globalThis as Record<string, unknown>).__figure = figure
   return figure

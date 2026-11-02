@@ -61,13 +61,12 @@
 }
 
 
-/* The line on the object's tangent: right of the ring, vertically centred on it; the caret gold. */
+/* The line on the object's tangent: right of the ring, above her head (she rises through the ring's lower-right quadrant); the caret gold. */
 .voice {
   position: absolute;
   left: calc(var(--ring-x) + var(--ring-r) + 44px);
   right: 40px;
-  top: var(--ring-y);
-  transform: translateY(-50%);
+  top: 96px;
   z-index: 1;
   max-width: 420px;
 }
