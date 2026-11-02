@@ -11,6 +11,7 @@ function load(opts: { sheet?: boolean; mailFails?: boolean; busyCounter?: boolea
   const sheet = {
     appendRow: (r: unknown[]) => void rows.push([...r]),
     getLastRow: () => rows.length,
+    deleteRows: (start: number, n: number) => void rows.splice(start - 1, n),
     getRange: (row: number, col: number, nRows?: number, nCols?: number) => ({
       getValues: () => rows.slice(row - 1, row - 1 + (nRows ?? 1)).map((r) => r.slice(col - 1, col - 1 + (nCols ?? 1))),
       setValue: (v: unknown) => void (rows[row - 1][col - 1] = v),
@@ -44,7 +45,7 @@ function load(opts: { sheet?: boolean; mailFails?: boolean; busyCounter?: boolea
   runInNewContext(readFileSync('server/contact.gs', 'utf8'), ctx)
   const post = (body: Record<string, unknown>) =>
     (ctx.doPost as (e: unknown) => { ok: boolean; error?: string })({ postData: { contents: JSON.stringify({ intent: 'commission', org: 'Northwind', email: 'ops@northwind.example', msg: 'We re-type every order.', elapsed: 9000, ...body }) } })
-  return { post, digest: ctx.digest as () => void, rows, mails }
+  return { post, digest: ctx.digest as () => void, purge: ctx.purge as () => void, rows, mails, props }
 }
 
 describe('contact.gs (launch audit R2)', () => {
@@ -171,5 +172,29 @@ describe('contact.gs (launch audit R2)', () => {
     expect(post({ website: 'x' })).toEqual({ ok: true })
     expect(post({ elapsed: 200 })).toEqual({ ok: true })
     expect(rows).toHaveLength(0)
+  })
+
+  it('stores no page path, even when a client still sends one (data minimisation, 2026-11-02)', () => {
+    const { post, rows, mails } = load()
+    post({ page: '/de/privacy/?utm=x', lang: 'de' })
+    expect(rows[0][3]).toBe('')
+    expect(rows[0][2]).toBe('de')
+    expect(mails[0].body).not.toContain('Page:')
+    expect(mails[0].body).not.toContain('/de/privacy/')
+  })
+
+  it('purge deletes enquiries older than 12 months from the Sheet and keeps the digest pointer in step', () => {
+    const { post, purge, rows, props } = load()
+    rows.push(['time', 'intent', 'language', 'page', 'from', 'email', 'message', 'mailed'])
+    const day = 24 * 3600 * 1000
+    rows.push([new Date(Date.now() - 400 * day), 'commission', 'en', '', 'Old', 'old@x.example', 'old message', 'yes'])
+    rows.push([new Date(Date.now() - 366 * day), 'commission', 'en', '', 'Old2', 'old2@x.example', 'old message', 'yes'])
+    post({ org: 'Recent' })
+    props.set('DIGESTED', '3')
+    purge()
+    expect(rows).toHaveLength(2)
+    expect(rows[0][0]).toBe('time')
+    expect(rows[1][4]).toBe('Recent')
+    expect(props.get('DIGESTED')).toBe('1')
   })
 })

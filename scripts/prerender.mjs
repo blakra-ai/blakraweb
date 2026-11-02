@@ -22,7 +22,7 @@ const mono = assets.find((f) => f.startsWith('geist-mono-latin-wght-normal') && 
 const fontPreload = [geist, newsreader, mono].filter(Boolean).map((f) => `<link rel="preload" href="/assets/${f}" as="font" type="font/woff2" crossorigin>`)
 // The hero's phone still is the first screen's largest paint on phones: it starts with the HTML.
 const phoneStill = assets.find((f) => f.startsWith('hero-still-phone') && /\.(jpg|webp)$/.test(f))
-const stillPreload = phoneStill ? [`<link rel="preload" href="/assets/${phoneStill}" as="image" media="(max-width: 767px)">`] : []
+const stillPreload = phoneStill ? [`<link rel="preload" href="/assets/${phoneStill}" as="image" media="(max-width: 767px)" fetchpriority="high">`] : []
 const preload = [...fontPreload, ...stillPreload].join('\n    ')
 
 for (const route of routes) {
@@ -48,7 +48,10 @@ const pageKey = (r) => `${r.id}:${r.slug ?? ''}`
 const byPage = Map.groupBy(pages, pageKey)
 const today = new Date().toISOString().slice(0, 10)
 const urls = pages.map((r) => {
-  const alternates = byPage.get(pageKey(r)).map((a) => `    <xhtml:link rel="alternate" hreflang="${a.locale}" href="${site}${a.path}"/>`).join('\n')
+  const group = byPage.get(pageKey(r))
+  // Each language, then x-default (the English page), the same set the <head> lists.
+  const xDefault = group.find((a) => a.locale === 'en') ?? group[0]
+  const alternates = [...group.map((a) => `    <xhtml:link rel="alternate" hreflang="${a.locale}" href="${site}${a.path}"/>`), `    <xhtml:link rel="alternate" hreflang="x-default" href="${site}${xDefault.path}"/>`].join('\n')
   return `  <url>\n    <loc>${site}${r.path}</loc>\n    <lastmod>${today}</lastmod>\n${alternates}\n  </url>`
 })
 await writeFile(join(dist, 'sitemap.xml'), `<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9" xmlns:xhtml="http://www.w3.org/1999/xhtml">\n${urls.join('\n')}\n</urlset>\n`)

@@ -52,6 +52,8 @@ export default defineConfig({
     target: 'es2022',
     manifest: true,
     assetsInlineLimit: 0,
+    // The bundled packages' licence texts (MIT and others ask for their notice to travel with the code).
+    license: { fileName: 'third-party-licenses.md' },
   },
   css: {
     modules: { localsConvention: 'camelCaseOnly' },

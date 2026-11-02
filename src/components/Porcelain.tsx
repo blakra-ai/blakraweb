@@ -95,12 +95,9 @@ export function Porcelain() {
         </div>
       </div>
 
-      {/* The one large object: the ink well, the remembered choice's layers as orange ticks on its rim; the line under it. */}
+      {/* The one large object: the ink well, the remembered choice's layers as orange ticks on its rim. */}
       <div className={s.object} data-hold>
         <InkWell r={56} ticks={lit} seal className={s.ring} />
-        <p className="voice" data-caret>
-          {t.navigator.lines.payload}
-        </p>
         <p className={s.cap} aria-live="polite">
           <em>{t.pulse.remembered}</em>
           {tag ? (

@@ -47,9 +47,6 @@
   transform: translateY(-50%);
   z-index: 2;
 }
-.voice {
-  max-width: 420px;
-}
 
 /* The seven layers: named once each, in large type, as their band forms; the colour only as the 2 px line
    under the name. With motion only the layer forming now shows; without it, all seven stand in a column. */
@@ -227,9 +224,6 @@
     right: 20px;
     bottom: 20px;
     width: auto;
-  }
-  .voice {
-    display: none;
   }
   .layers {
     margin-top: 0;

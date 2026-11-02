@@ -134,7 +134,7 @@ export function Privacy() {
 
 /** Provider identification (Impressum, mentions légales, aviso legal). */
 export function Legal() {
-  const { t } = useI18n()
+  const { t, locale } = useI18n()
   const l = t.legal
   return (
     <Section className={s.page} aria-labelledby="page-title">
@@ -154,6 +154,13 @@ export function Legal() {
             <dt>{l.contactTitle}</dt>
             <dd>
               {l.emailLabel}: <a href={`mailto:${company.email}`}>{company.email}</a>
+              {/* The second direct, fast way to reach us (DDG § 5), only when the form can deliver. */}
+              {import.meta.env.VITE_CONTACT_ENDPOINT && (
+                <>
+                  <br />
+                  {l.formLabel}: <a href={pathFor('home', locale, '#contact')}>{l.formLink}</a>
+                </>
+              )}
             </dd>
           </div>
           <div>

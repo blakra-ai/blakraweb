@@ -44,7 +44,7 @@ export interface SendMeta {
   /** Honeypot value: real people never fill it. */
   website: string
   elapsedMs: number
-  page: string
+  /** The page's language, so the reply can be in it. */
   lang: string
 }
 
@@ -56,7 +56,7 @@ export async function sendContact(endpoint: string, fields: ContactFields, meta:
     const res = await fetcher(endpoint, {
       method: 'POST',
       headers: { 'Content-Type': 'text/plain;charset=utf-8' },
-      body: JSON.stringify({ ...normalize(fields), website: meta.website, elapsed: Math.round(meta.elapsedMs), page: meta.page, lang: meta.lang }),
+      body: JSON.stringify({ ...normalize(fields), website: meta.website, elapsed: Math.round(meta.elapsedMs), lang: meta.lang }),
       redirect: 'follow',
     })
     if (!res.ok) return 'failed'

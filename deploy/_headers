@@ -1,0 +1,16 @@
+# Netlify / Cloudflare Pages: copy to dist/_headers after the build (or to public/ if the site moves
+# to one of them). Same headers as deploy/blakra-headers.conf (nginx); see the notes there.
+/*
+  Content-Security-Policy: default-src 'self'; script-src 'self' 'sha256-gysoJ7nLFkTZ27iE4Nj7OxQULW/WWR7HkXRWQoQ5gko='; style-src 'self' 'unsafe-inline'; img-src 'self' data: blob:; font-src 'self'; connect-src 'self' blob: https://script.google.com https://script.googleusercontent.com; worker-src 'self' blob:; manifest-src 'self'; frame-ancestors 'none'; base-uri 'self'; form-action 'self'; object-src 'none'; upgrade-insecure-requests
+  Strict-Transport-Security: max-age=31536000; includeSubDomains
+  X-Content-Type-Options: nosniff
+  X-Frame-Options: DENY
+  Referrer-Policy: strict-origin-when-cross-origin
+  Cross-Origin-Opener-Policy: same-origin
+  Permissions-Policy: accelerometer=(), autoplay=(), camera=(), display-capture=(), geolocation=(), gyroscope=(), magnetometer=(), microphone=(), payment=(), usb=(), browsing-topics=()
+
+/assets/*
+  Cache-Control: public, max-age=31536000, immutable
+
+/.well-known/security.txt
+  Content-Type: text/plain; charset=utf-8

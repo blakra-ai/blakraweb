@@ -13,7 +13,7 @@ badge on any product marked `draft: true` in `shared.ts`.
 
 | Item | Where | What to supply | Until then |
 |---|---|---|---|
-| Legal entity, still missing: state of organization, entity (file) number, the manager or managing member who represents it; an EU representative (GDPR Art. 27) if one is needed; the hosting provider's name and address (France, LCEN) | Legal notice, Privacy | owner; a lawyer confirms which apply | Legal notice shows name, address and email only (phone removed by owner 2026-11-02) |
+| Legal entity, still missing: state of organization, entity (file) number, the manager or managing member who represents it; an EU representative (GDPR Art. 27) if one is needed; the hosting provider's name and address (France, LCEN) | Legal notice, Privacy | owner; a lawyer confirms which apply | Legal notice shows name, address, email and the contact form (phone removed by owner 2026-11-02) |
 | Server log retention: 14 days | Privacy | set it on the server (logrotate, see deploy/nginx.conf.example) and confirm | shown as written (default, 2026-10-27) |
 | The skin-analysis AI's product name and platforms | Products, Sponsors and buyers, structured data | LIOXSA, iOS, lioxsa.com (owner, 2026-11-02) | — |
 | What a party receives under NDA: live demo, architecture walkthrough, code review | Products card, Sponsors and buyers, contact door | confirm all three exist (owner confirmed the product is working and ready) | shown as written (writer default, 2026-10-27) |
@@ -31,11 +31,11 @@ badge on any product marked `draft: true` in `shared.ts`.
 | A fixed scope, a fixed price and an agreed bar for done for the first system; working software every two weeks | How we work | blueprint v5 default, approved by the owner 2026-10-26 | approved default |
 | You own the code and the data; standard, documented tools, no lock-in; a named engineer, never a ticket queue | How we work | blueprint v5 default, approved by the owner 2026-10-26 | approved default |
 | "Not a fit: brochure websites, or software with no process behind it." | How we work | blueprint v5 default, approved by the owner 2026-10-26 | approved default |
-| Gartner expects over 40% of agentic AI projects to be canceled by the end of 2027, because of escalating costs, unclear business value or inadequate risk controls | Seven layers (crown) | Gartner press release, 25 June 2025 (checked 2026-10-27) | sourced |
+| Gartner statistic (agentic AI projects canceled by 2027) | not on this site | owner removed it 2026-11-02 | deliberately absent |
 | References on request | (not on the site) | blueprint default: only if at least two clients agree | omitted until confirmed |
 | Reply within 24 hours, from an engineer who would build it | Contact, How we work | live site ("We'll respond within 24 hours"); owner chose 24 hours, 2026-10-26 | confirmed |
 | Contact: hello@blakra.us on the site; postal address on the Legal notice and Privacy pages and in the structured data | Contact, footer, Legal notice, Privacy, structured data | owner, 2026-10-26 (email) and 2026-10-27 (address, phone) | confirmed |
-| Legal entity: BLAKRA LLC, 901 H St Ste 120, Sacramento, CA 95814-1817, USA; phone +1 (279) 300-9011 | Footer, Legal notice, Privacy ("Who we are"), structured data | owner, 2026-10-27 | confirmed |
+| Legal entity: BLAKRA LLC, 901 H St Ste 120, Sacramento, CA 95814-1817, USA | Footer, Legal notice, Privacy ("Who we are"), structured data | owner, 2026-10-27; phone removed from the site and the code 2026-11-02 | confirmed |
 | Founded in 2024 (footer years, structured data foundingDate) | Footer, structured data | owner, 2026-10-26 (the live site says 2024 in its timeline and 2019 in its structured data) | confirmed |
 | Social links: none | Footer, structured data | checked 2026-10-27: github.com/blakra is an unrelated personal account ("Blaž", one 2018 repo); linkedin.com/company/blakra and x.com/blakra do not exist | removed (the old site's links were wrong) |
 | Titles: Founder and Chief Technology Officer; Senior Full-Stack Engineer and Backend Lead; Head of Operations and Corporate Compliance, United States | People, structured data (founder) | live site team section | confirmed |
@@ -49,7 +49,8 @@ badge on any product marked `draft: true` in `shared.ts`.
 | Other products of our own are in development, discussed under NDA | Products, Sponsors and buyers | owner, 2026-10-27 ("there are other products as well") | confirmed |
 | BLAKRA = black hole + chakra | Seven layers (one caption) | owner, 2026-10-27 | confirmed |
 | No seed round, data room, deck contents or revenue figures | not on this site | owner wants sponsors or buyers, 2026-10-27 | deliberately absent |
-| The form sends what the visitor types plus the time, page and page language; delivered via Google Apps Script to the company inbox and a Google Sheet; no analytics or ad cookies; fonts self-hosted | Privacy | this build (server/contact.gs, no trackers in code) | true of this build |
+| The form sends what the visitor types plus the time and page language (no page path since 2026-11-02); delivered via Google Apps Script to the company inbox and a Google Sheet; Sheet rows deleted after 12 months by `purge`; no cookies, analytics or trackers; fonts self-hosted; only local-storage item is the motion choice | Privacy | this build (server/contact.gs, no trackers in code) | true of this build; `purge` trigger must be installed |
+| Google LLC takes part in the EU-U.S. Data Privacy Framework (incl. UK and Swiss extensions) | Privacy (transfers) | dataprivacyframework.gov listing; re-check before launch | needs lawyer review with the rest of the Privacy text |
 
 ## Illustrations
 Scene labels ("Store 04", "Line 3 · machine 4 stopped", the inbox messages) are illustrative

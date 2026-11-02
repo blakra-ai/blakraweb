@@ -8,9 +8,12 @@
  *
  * Script properties (Project settings → Script properties):
  *   SHEET_ID      a Google Sheet id; every enquiry is saved here first. Use a new Sheet for
- *                 this version (columns: time, intent, language, page, from, email, message,
+ *                 this version (columns: time, intent, language, page (kept empty since 2026-11-02), from, email, message,
  *                 mailed). Without one, enquiries past the daily mail cap cannot be kept.
  *   NOTIFY_EMAIL  where enquiries are emailed, e.g. hello@blakra.us
+ *
+ * Retention: add a second trigger that runs `purge` daily. It deletes Sheet rows older than
+ * 12 months (the Privacy page's period). Mails in the inbox are deleted by hand on the same schedule.
  *
  * Trigger (Triggers → Add trigger): run `digest`, time-driven, every hour. It mails the
  * enquiries that were saved but not mailed (past the daily mail cap, or a mail error), so a
@@ -28,6 +31,7 @@
 // Volume never rejects an enquiry: every valid one is saved. Only the instant mails are
 // capped (a consumer account's MailApp quota is about 100 recipients a day); the hourly
 // digest covers the rest with one mail.
+var RETAIN_DAYS = 365;
 var LIMITS = { org: 120, email: 254, msgMin: 10, msg: 2000, minMs: 3000, mailPerDay: 40, digestRows: 50 };
 // No spaces, quotes, brackets, commas, angle brackets or invisible characters: one plain address,
 // never a list, a display name or text that reads backwards.
@@ -48,7 +52,8 @@ function doPost(e) {
     // Single-line fields lose control characters, so nobody can forge extra lines in the email.
     var line = function (v, max) { return String(v || '').replace(INVISIBLE, '').replace(/[\u0000-\u001f\u007f]+/g, ' ').trim().slice(0, max); };
     var lang = line(data.lang || 'en', 5);
-    var page = line(data.page || '/', 80);
+    // The page path is not collected (data minimisation, 2026-11-02); its column stays for older Sheets.
+    var page = '';
     var org = line(data.org, 1000);
     var email = line(data.email, 1000);
     var msg = String(data.msg || '').replace(/[\u2028\u2029]/g, '\n').replace(INVISIBLE, '').replace(/[\u0000-\u0008\u000b\u000c\u000e-\u001f\u007f]/g, '').trim();
@@ -160,6 +165,43 @@ function digest() {
   }
 }
 
+/**
+ * Daily (time-driven trigger): deletes enquiries older than RETAIN_DAYS from the Sheet. Rows are
+ * appended in time order, so the old ones are one block after the optional header row.
+ */
+function purge() {
+  var sheetId = PropertiesService.getScriptProperties().getProperty('SHEET_ID');
+  if (!sheetId) return;
+  var lock = LockService.getScriptLock();
+  lock.waitLock(20000);
+  try {
+    var props = PropertiesService.getScriptProperties();
+    var sheet = SpreadsheetApp.openById(sheetId).getSheets()[0];
+    var last = sheet.getLastRow();
+    if (last < 1) return;
+    var times = sheet.getRange(1, 1, last, 1).getValues();
+    var cutoff = Date.now() - RETAIN_DAYS * 24 * 3600 * 1000;
+    var start = 0;
+    var n = 0;
+    for (var i = 0; i < times.length; i++) {
+      var t = times[i][0];
+      if (!(t instanceof Date)) {
+        if (n) break;
+        continue;
+      }
+      if (t.getTime() >= cutoff) break;
+      if (!n) start = i + 1;
+      n++;
+    }
+    if (!n) return;
+    sheet.deleteRows(start, n);
+    var digested = Number(props.getProperty('DIGESTED') || 0);
+    if (digested >= start) props.setProperty('DIGESTED', String(Math.max(start - 1, digested - n)));
+  } finally {
+    lock.releaseLock();
+  }
+}
+
 /** A fixed subject: nothing a visitor typed, so the inbox never shows their wording as ours. */
 function subjectFor(intent) {
   return '[blakra.us] ' + intent + ' enquiry';
@@ -169,7 +211,7 @@ function subjectFor(intent) {
 // or for another enquiry in the digest.
 function describe(row) {
   var quoted = String(row[6]).split('\n').map(function (l) { return '> ' + l; }).join('\n');
-  return 'Time: ' + row[0] + '\nIntent: ' + row[1] + '\nLanguage: ' + row[2] + '\nPage: ' + row[3] + '\nFrom: ' + row[4] + '\nEmail: ' + row[5] + '\n\n' + quoted;
+  return 'Time: ' + row[0] + '\nIntent: ' + row[1] + '\nLanguage: ' + row[2] + (row[3] ? '\nPage: ' + row[3] : '') + '\nFrom: ' + row[4] + '\nEmail: ' + row[5] + '\n\n' + quoted;
 }
 
 // A value that a spreadsheet would read as a formula gets a visible prefix. Sheets hides a

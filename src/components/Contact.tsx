@@ -119,7 +119,6 @@ export function Contact() {
     const result = await sendContact(endpoint, fields, {
       website: String(data.get('website') ?? ''),
       elapsedMs: performance.now(),
-      page: location.pathname,
       lang: locales[locale].lang,
     })
     setStatus(result === 'failed' ? 'failed' : 'sent')

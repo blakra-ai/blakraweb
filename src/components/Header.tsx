@@ -57,7 +57,6 @@ export function Header({ route }: { route: Route }) {
     { label: t.ui.nav.engine, href: `${homePath}#engine`, station: '03' },
     { label: t.ui.nav.products, href: `${homePath}#products`, station: '07' },
     { label: t.ui.nav.people, href: `${homePath}#people`, station: '08' },
-    { label: t.ui.nav.investors, href: pathFor('investors', locale), station: '↗' },
   ]
 
   // The Menu panel: a modal dialog. Escape closes it (focus back on its button), a link closes it,

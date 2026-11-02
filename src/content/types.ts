@@ -47,7 +47,7 @@ export interface Dict {
   ui: {
     skip: string
     home: string
-    nav: { work: string; engine: string; products: string; people: string; investors: string }
+    nav: { work: string; engine: string; products: string; people: string }
     cta: string
     pauseMotion: string
     /** The header's menu button (below 1100 px). */
@@ -73,8 +73,6 @@ export interface Dict {
     also: string
     /** Confirmed facts under the actions, separated by " · ". */
     facts: string
-    /** The hero's invitation to move the cursor over the Navigator (mouse only; decorative). */
-    hint: string
   }
   /** Why one team, and the one-tap question that tailors the page to the visitor. */
   pulse: {
@@ -123,7 +121,6 @@ export interface Dict {
     symbol: string
     usedAt: string
     crownTitle: string
-    crownText: string
     crownSource: string
     /** Marks the layer the visitor picked in the pulse. */
     focus: string
@@ -184,16 +181,12 @@ export interface Dict {
     errors: { org: string; email: string; emailFormat: string; msg: string; msgLong: string }
   }
   /**
-   * The Navigator's voice: what he says to the reader in each section (data-beat), as a short
-   * transmission, in the first person. `mission` takes {tag} and {n} once a mission is chosen.
+   * The Navigator's voice: the typed line in the hero and at contact only (owner, 2026-11-02);
+   * on the paper sections her eyes read the section heading instead.
    */
   navigator: {
     name: string
-    lines: Record<'hero' | 'manifesto' | 'mission' | 'systems' | 'proof' | 'checklist' | 'payload' | 'crew' | 'contact', string>
-    mission: string
-    missionAll: string
-    /** On the card while the cursor rests on her eyes. */
-    lookCloser: string
+    lines: Record<'hero' | 'contact', string>
   }
   footer: {
     line: string
@@ -237,7 +230,9 @@ export interface Dict {
     providerTitle: string
     contactTitle: string
     emailLabel: string
-    phoneLabel: string
+    /** The second direct way to reach us (the contact form), for the Impressum. */
+    formLabel: string
+    formLink: string
     country: string
     /** Third-party work used on the site, with its licence (the Navigator's model is CC BY). */
     creditsTitle: string

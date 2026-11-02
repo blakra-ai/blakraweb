@@ -3,7 +3,6 @@ import { chakraColors, chakraOf, needOrder, needs } from '../content/shared'
 import type { LayerId } from '../content/types'
 import { useStation } from '../features/observatory/Gauge'
 import { chip } from '../features/observatory/gauge'
-import { Voice } from '../features/observatory/Line'
 import { handoverAt, holdAt, inOrbit, LAYERS_N, ORBIT_END } from '../features/observatory/orbit'
 import { obs } from '../features/observatory/state'
 import { InkWell, WellGrid } from '../features/observatory/Well'
@@ -109,7 +108,6 @@ export function Stage() {
   const pickedIdx = picked ? ROOT_TO_CROWN.map((l, i) => (picked.includes(l) ? i + 1 : 0)).filter(Boolean) : []
   const nearWork = choice && choice !== 'all' ? needs[choice].work : null
   const at = Math.min(4, Math.max(2, station))
-  const line = at === 2 ? t.navigator.lines.manifesto : at === 3 ? t.navigator.lines.systems : t.navigator.lines.mission
   // The layer named now: the last band that formed (none before the first); all seven without motion.
   const current = orbit - 1
 
@@ -126,9 +124,8 @@ export function Stage() {
             {chip(at)}
           </p>
 
-          {/* The object's tangent: the line, then the layer forming now, named once, in large type. */}
+          {/* The object's tangent: the layer forming now, named once, in large type. */}
           <div className={s.tangent}>
-            <Voice text={line} delay={0} className={`voice ${s.voice}`} />
             <ul className={s.layers} aria-label={t.engine.title}>
               {ROOT_TO_CROWN.map((id, k) => {
                 const on = k < orbit

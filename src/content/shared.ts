@@ -8,12 +8,12 @@ import type { WorkSlug } from './work'
  */
 
 // As stated on the live blakra.us (2026-10-26) and confirmed by the owner, founded in 2024.
-// The legal entity, its address and phone: owner, 2026-10-27 (footer, Legal notice, Privacy).
+// The legal entity and its address: owner, 2026-10-27 (footer, Legal notice, Privacy). The phone
+// number was removed by the owner on 2026-11-02 and is no longer kept in the code.
 export const company = {
   name: 'BLAKRA',
   legalName: 'BLAKRA LLC',
   address: { street: '901 H St Ste 120', city: 'Sacramento', region: 'CA', postalCode: '95814-1817', country: 'US' },
-  phone: '+1 (279) 300-9011',
   url: 'https://blakra.us',
   email: 'hello@blakra.us',
   founded: 2024,
@@ -83,18 +83,3 @@ export interface ProductFacts {
 export const products: readonly ProductFacts[] = [
   { id: 'skin', name: 'LIOXSA', stage: 'working', platforms: ['iOS'], layers: ['ai', 'data', 'apps'], href: 'https://lioxsa.com', draft: false },
 ]
-
-export interface PersonFacts {
-  id: string
-  name: string
-  known?: string
-  /** Path under public/, e.g. /team/ashen.jpg. Empty uses the drawn portrait. */
-  photo: string
-}
-
-export const people: readonly PersonFacts[] = [
-  { id: 'ashen', name: 'Hamid Reza Alizadeh', known: 'Ashen', photo: '' },
-  { id: 'mehdi', name: 'Mehdi Jannatipour', photo: '' },
-  { id: 'habib', name: 'Habiburahman Karokhi', photo: '' },
-]
-

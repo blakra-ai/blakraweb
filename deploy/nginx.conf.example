@@ -38,6 +38,17 @@ server {
         return 404;
     }
 
+    # security.txt (RFC 9116) and the web app manifest, with their own types.
+    location = /.well-known/security.txt {
+        include /etc/nginx/snippets/blakra-headers.conf;
+        default_type text/plain;
+        charset utf-8;
+    }
+    location = /site.webmanifest {
+        include /etc/nginx/snippets/blakra-headers.conf;
+        default_type application/manifest+json;
+    }
+
     # Hashed build assets never change: cache them for a year.
     location /assets/ {
         include /etc/nginx/snippets/blakra-headers.conf;

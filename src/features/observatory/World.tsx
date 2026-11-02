@@ -100,7 +100,7 @@ const ease = (t: number) => t * t * (3 - 2 * t)
 
 /**
  * The point her eyes read: the guide's line (an italic `.voice` with the caret) on screen nearest
- * the porthole's height, swept left to right over its lines at the typing pace (Line.tsx's CPS),
+ * the porthole's height (the hero and contact only; elsewhere the nearest section heading), swept left to right over its lines at the typing pace (Line.tsx's CPS),
  * from when it became the current line; a new line of it marks a nod. Reads one element's rects per frame.
  */
 const READ_CPS = 34
@@ -108,16 +108,20 @@ function readingPoint(r: { host: HTMLElement | null; start: number; line: number
   let best: HTMLElement | null = null
   let bestD = Infinity
   let bestRect: DOMRect | null = null
-  for (const el of document.querySelectorAll<HTMLElement>('.voice[data-caret]')) {
-    const host = el.parentElement?.matches('p.voice') ? el.parentElement : el
-    const b = host.getBoundingClientRect()
-    if (b.height <= 0 || b.bottom < 70 || b.top > vh - 20) continue
-    const d = Math.abs(b.top + b.height / 2 - 0.55 * vh)
-    if (d < bestD) {
-      bestD = d
-      best = host
-      bestRect = b
+  // Her line where there is one (hero, contact); on the paper sections, the section heading.
+  for (const sel of ['.voice[data-caret]', 'main :is(h1, h2)']) {
+    for (const el of document.querySelectorAll<HTMLElement>(sel)) {
+      const host = el.parentElement?.matches('p.voice') ? el.parentElement : el
+      const b = host.getBoundingClientRect()
+      if (b.height <= 0 || b.bottom < 70 || b.top > vh - 20) continue
+      const d = Math.abs(b.top + b.height / 2 - 0.55 * vh)
+      if (d < bestD) {
+        bestD = d
+        best = host
+        bestRect = b
+      }
     }
+    if (best) break
   }
   if (!best || !bestRect) {
     r.host = null

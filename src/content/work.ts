@@ -22,10 +22,10 @@ export type WorkSlug = (typeof workSlugs)[number]
 export const work: readonly WorkProject[] = [
   { slug: 'vitrin-app', name: 'Vitrin', shots: [{ file: '01-phone.webp', frame: 'phone', width: 640, height: 1358 }, { file: '02-phone.webp', frame: 'phone', width: 640, height: 1358 }, { file: '03-phone.webp', frame: 'phone', width: 640, height: 1358 }] },
   { slug: 'veyra-money', name: 'Veyra', shots: [{ file: '01-phone.webp', frame: 'phone', width: 640, height: 1358 }, { file: '02-phone.webp', frame: 'phone', width: 640, height: 1358 }, { file: '03-phone.webp', frame: 'phone', width: 640, height: 1358 }] },
-  { slug: 'vitrin-console', name: 'Vitrin Console', shots: [{ file: '01-browser.webp', frame: 'browser', width: 1920, height: 1309 }, { file: '02-browser.webp', frame: 'browser', width: 1920, height: 1311 }] },
-  { slug: 'flowline-automation', name: 'Flowline', shots: [{ file: '01-browser.webp', frame: 'browser', width: 1920, height: 1311 }, { file: '02-browser.webp', frame: 'browser', width: 1920, height: 1309 }] },
+  { slug: 'vitrin-console', name: 'Vitrin Console', shots: [{ file: '01-browser.webp', frame: 'browser', width: 1920, height: 1309 }] },
+  { slug: 'flowline-automation', name: 'Flowline', shots: [{ file: '01-browser.webp', frame: 'browser', width: 1920, height: 1311 }] },
   { slug: 'helya-ai', name: 'Helya', shots: [{ file: '01-browser.webp', frame: 'browser', width: 1920, height: 1309 }] },
-  { slug: 'nuvoq-vision', name: 'Nuvoq', shots: [{ file: '01-browser.webp', frame: 'browser', width: 1920, height: 1309 }, { file: '02-browser.webp', frame: 'browser', width: 1920, height: 1311 }] },
+  { slug: 'nuvoq-vision', name: 'Nuvoq', shots: [{ file: '01-browser.webp', frame: 'browser', width: 1920, height: 1309 }] },
   { slug: 'tiravan-logistics', name: 'Tiravan', shots: [{ file: '01-browser.webp', frame: 'browser', width: 1920, height: 1311 }, { file: '02-phone.webp', frame: 'phone', width: 640, height: 1356 }] },
   { slug: 'raah-learning', name: 'Raah', shots: [{ file: '01-browser.webp', frame: 'browser', width: 1920, height: 1309 }, { file: '02-phone.webp', frame: 'phone', width: 640, height: 1358 }] },
 ]
