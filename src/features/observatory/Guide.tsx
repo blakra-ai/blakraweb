@@ -1,94 +1,63 @@
 import { useFrame, useThree } from '@react-three/fiber'
-import { useEffect, useMemo, useRef } from 'react'
+import { useEffect, useRef } from 'react'
 import { type DirectionalLight, Group, type Object3D, PerspectiveCamera, Vector3 } from 'three'
 import { Studio } from '../experience/objects/Studio'
 import { Figure, type FigureRig } from '../navigator/figure/Figure'
-import { createLivingState, IGNITION_GAP, stepLiving, type LivingInput, type LivingState } from '../navigator/living'
-import { pickedLayers } from './World'
-import { jawOpen } from '../navigator/speech'
 import { nav } from '../navigator/state'
 import { obs } from './state'
+import { createPose, GOLD, poseSettling, stepPose, type PoseInput, type PoseState } from './guidePose'
 import type { Rect } from './windows'
 
 /*
  * The guide: the Navigator's figure from the navigator pipeline (loadFigure + Figure, variant
- * 'world'), mounted once in the world and drawn at the ring's rim of every window whose framing
- * has a place for her (hero, contact). Her life (gaze, blink, breath, the systems' light) is
- * living.ts stepped here once per frame into `nav.perf`, which Figure applies; her jaw follows
- * the line from `obs.line`; her hair spring is Figure's own. Where she stands is the world's
- * business (`placeGuide`, per window pass): this file only mounts and animates her.
+ * 'world'), mounted once in the world and drawn by the world's passes: framed in the hero and the
+ * contact windows, and as a bust in the porthole between them (porthole.ts). She never walks or
+ * relocates: her life is guidePose.ts (head and eyes toward the cursor or the section, ear
+ * flicks, blinks, breath, the strips' tint), stepped here once per frame into `nav.perf`, which
+ * Figure applies.
  *
  * She is the Mecha roe deer (Osho, CC BY 4.0; src/assets/navigator/source/README.md), adopted as
- * src/assets/navigator/navigator.glb: a silver mecha standing full-length, her head cut from the
- * rigged in Blender (scripts/navigator-rig-deer.py: spine, neck, head, ears, jets, plates, four
- * legs) with her "Walk" and "Idle" clips, her colours as the artist authored them. Her head turns
- * toward the cursor and the journey's item (HEAD_REST_YAW keeps her face a slight three-quarter
- * toward the words; HEAD_GAIN widens the living step's share to ±10°, since her lenses cannot
- * move on their own); the ears follow the cursor through living.ts; the gait comes from journey.ts.
+ * src/assets/navigator/navigator.glb, her colours as the artist authored them.
  */
 
 export interface GuideHandle {
   rig: FigureRig
   /** Her outer group (placed per window); null until mounted. */
   group: Group | null
-  living: LivingState | null
   /** Her eye nodes, found once under the loaded figure. */
   eyes: [Object3D, Object3D] | null
   /** The key light (from the ring's side): placeGuide turns it to the window's side. */
   key: DirectionalLight | null
-  /** Show or hide her seven systems' lights (the chakra dots show only where layers are the subject: never in these windows). */
+  /** Show or hide her seven systems' lights (the chakra dots: never in these windows). */
   systems: (on: boolean) => void
-  /** The living step's wake-up times (clock s): the next blink and the next idle glance. */
-  nextEvent: () => number
-  /** True while something of hers is moving (a blink, a gaze settling, the lights): the world keeps the frames coming. */
+  /** Her life, and what the world asks of it this frame (written by the passes, read on the next step). */
+  pose: PoseState | null
+  input: PoseInput
+  /** True while something of hers is moving: the world keeps the frames coming. */
   moving: () => boolean
 }
 
 export function createGuideHandle(): GuideHandle {
   const h: GuideHandle = {
-    rig: { group: null, systems: [], metrics: null, explode: 0, assembled: 0, float: 0, gait: { ground: 0, unitsPerPx: 0, moving: false } },
+    rig: { group: null, systems: [], metrics: null, explode: 0, assembled: 0, float: 0 },
     group: null,
-    living: null,
     eyes: null,
     key: null,
     systems: () => {},
-    nextEvent: () => Infinity,
+    pose: null,
+    input: { mode: 'hero', station: 1, depth: 0, clock: 0, dt: 0, still: false, pointer: obs.pointer, eyes: { x: 0, y: 0 }, viewport: { w: 1, h: 1 }, focus: null, read: null, nodAt: -10, sentAt: 0, tint: [...GOLD], tintMix: 0 },
     moving: () => false,
-  }
-  h.nextEvent = () => {
-    const l = h.living
-    if (!l) return Infinity
-    // Only what lies ahead: the idle glance exists only without a mouse on the page.
-    let next = l.blink.phase === 'open' ? l.blink.nextAt : 0
-    if (!obs.pointer.on && l.wander.nextAt > obs.clock) next = Math.min(next, l.wander.nextAt)
-    return next
   }
   h.systems = (on) => {
     for (const o of h.rig.systems) o.visible = on
   }
-  h.moving = () => {
-    const l = h.living
-    // Loaded but not yet alive (Figure mounts her a step after the living step): the next frame starts her.
-    if (!l) return !!h.rig.metrics
-    if (l.blink.phase !== 'open') return true
-    // The ignition (root → crown, then her eyes open) plays whether or not the cursor moves.
-    if (obs.clock < l.powerOn + 7 * IGNITION_GAP + 1.5) return true
-    const p = nav.perf
-    // The eyes or the lights still settling toward their targets.
-    if (Math.abs(p.eyes.yaw - l.eyes.yaw) > 0.05 || Math.abs(p.head.yaw - l.head.yaw) > 0.05) return true
-    for (let i = 0; i < 7; i++) if (Math.abs(p.sys[i] - l.sys[i]) > 0.01) return true
-    // Her line still being typed (the jaw).
-    return obs.line.text.length > 0 && obs.line.typed < obs.line.text.length
-  }
+  // Breath, blinks and flicks never stop while she shows (still frames excepted): the springs only add to that.
+  h.moving = () => !!h.rig.metrics && (!obs.still || (h.pose ? poseSettling(h.pose) : true))
   return h
 }
 
 const FOV = 30
 const DEG = Math.PI / 180
-/** The head carries the gaze: the living step gives the head a third of the eyes' ±12°; ×2.5 makes it ±10°. */
-const HEAD_GAIN = 2.5
-/** Her head's rest turn (degrees, negative toward the words): never dead frontal. */
-const HEAD_REST_YAW = -15
 /** The key light's stand-off on x (its side flips per window) and the fill's: world units are px here, the lights are directional. */
 const KEY_X = 3
 
@@ -140,10 +109,6 @@ export function placeGuide(h: GuideHandle, place: GuidePlace, view: Rect, camera
   g.updateMatrixWorld(true)
   // The key light comes from the ring's side of this window.
   if (h.key) h.key.position.x = KEY_X * place.key
-  // The gait the journey asks for.
-  h.rig.gait.ground = obs.journey.ground
-  h.rig.gait.unitsPerPx = 1 / s
-  h.rig.gait.moving = obs.journey.walking
   // Her eyes on screen: the midpoint projected through the window's camera into viewport px.
   if (!h.eyes) {
     const l = g.getObjectByName('Eye_L')
@@ -163,13 +128,13 @@ export function placeGuide(h: GuideHandle, place: GuidePlace, view: Rect, camera
 }
 
 /**
- * Mounts the figure and steps her living systems before the frame is drawn (priority −1, so
- * Figure's own useFrame applies this frame's performance).
+ * Mounts the figure and steps her life before the frame is drawn (priority −1, so Figure's own
+ * useFrame applies this frame's performance).
  */
-export function Guide({ handle, variant = 'world' }: { handle: GuideHandle; variant?: 'world' | 'journey' }) {
+export function Guide({ handle }: { handle: GuideHandle }) {
   const group = useRef<Group>(null)
-  const { size, invalidate } = useThree()
-
+  const key = useRef<DirectionalLight>(null)
+  const { invalidate } = useThree()
   // While her GLB downloads no frame is due; one frame every 250 ms lets Figure mount her the moment she arrives.
   useEffect(() => {
     const timer = window.setInterval(() => {
@@ -178,27 +143,6 @@ export function Guide({ handle, variant = 'world' }: { handle: GuideHandle; vari
     }, 250)
     return () => window.clearInterval(timer)
   }, [handle, invalidate])
-  const input = useMemo<LivingInput>(
-    () => ({
-      pointer: obs.pointer,
-      anchor: nav.anchor,
-      viewport: { w: 1, h: 1 },
-      beat: 'hero',
-      progress: 0,
-      spokeAt: 0,
-      typingUntil: 0,
-      transmitAt: 0,
-      missionAt: 0,
-      missionLayers: null,
-      hover: nav.hover,
-      still: false,
-      clock: 0,
-      dt: 0,
-    }),
-    [],
-  )
-
-  const key = useRef<DirectionalLight>(null)
   useEffect(() => {
     handle.key = key.current
     // The world's figure never docks here: Figure then leaves the anchor to placeGuide.
@@ -207,47 +151,29 @@ export function Guide({ handle, variant = 'world' }: { handle: GuideHandle; vari
       nav.atDock = false
       nav.anchor.on = false
     }
-  }, [])
+  }, [handle])
 
   useFrame((_, dt) => {
     handle.group = group.current
     if (!handle.rig.metrics) return
-    if (variant === 'journey') return
-    if (!handle.living) handle.living = createLivingState(1, obs.clock + 0.3)
-    input.viewport.w = size.width
-    input.viewport.h = size.height
-    input.beat = `station-${obs.station}`
-    input.progress = obs.progress
-    input.spokeAt = obs.line.from
-    input.typingUntil = obs.line.typed < obs.line.text.length ? Infinity : 0
-    input.transmitAt = obs.glowAt
-    const picked = pickedLayers()
-    if (String(picked) !== String(input.missionLayers)) {
-      input.missionLayers = picked
-      input.missionAt = obs.clock
-    }
-    input.still = nav.still
-    input.clock = obs.clock
-    input.dt = Math.min(0.1, dt)
-    stepLiving(handle.living, input, nav.perf)
-    // The head: her rest turn, the journey's look (ahead, or at the item) and the cursor's share (full in the windows, a third on the paper).
-    const j = obs.journey
-    const cursor = j.mode === 'paper' ? 0.35 : 1
-    nav.perf.head.yaw = nav.perf.head.yaw * HEAD_GAIN * cursor + HEAD_REST_YAW + j.headYaw
-    nav.perf.head.pitch = nav.perf.head.pitch * HEAD_GAIN * cursor + j.headPitch
-    nav.perf.jaw = nav.still ? 0 : jawOpen(obs.line.text, obs.line.typed, obs.clock, obs.line.from)
+    if (!handle.pose) handle.pose = createPose(7, obs.clock)
+    const i = handle.input
+    i.clock = obs.clock
+    i.dt = Math.min(0.1, dt)
+    i.still = obs.still
+    stepPose(handle.pose, i, nav.perf)
   }, -1)
 
   return (
     <>
-      {/* Neutral studio light (a white key from the ring's side, a soft fill, a dim grey environment): her own colours as the artist authored them, her violet strips and lenses self-lit. No shadows. The lights stay outside her placed group. */}
+      {/* Neutral studio light (a white key from the ring's side, a soft fill, a dim grey environment): her own colours as the artist authored them, her strips and lenses self-lit. No shadows. The lights stay outside her placed group. */}
       <Studio warm="#efe9df" cool="#dde2ea" base="#15151a" />
       <directionalLight ref={key} position={[-KEY_X, 2, 2]} intensity={2.0} color="#fff6e8" />
       <directionalLight position={[2, 2.5, 4]} intensity={0.9} color="#e6ebf2" />
       <ambientLight intensity={0.35} color="#ffffff" />
       <group ref={group}>
         <group>
-          <Figure rig={handle.rig} variant={variant} />
+          <Figure rig={handle.rig} variant="world" />
         </group>
       </group>
     </>

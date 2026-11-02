@@ -258,3 +258,10 @@
     margin-top: 20px;
   }
 }
+/* The porthole's margin (≥ 1200 px with the world running): the tangent's words stop short of it. */
+:global(html.porthole-margin) .tangent {
+  right: calc(var(--porthole-pad, 64px) - var(--inset));
+}
+:global(html.porthole-margin) .object {
+  --ring-x: 51.5%;
+}

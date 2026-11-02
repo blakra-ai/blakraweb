@@ -35,9 +35,11 @@ export interface Perf {
   lids: number
   /** 0 … 1; written by the caller from `jawOpen()`, zeroed here only when `still`. */
   jaw: number
-  ears: { prick: number; turn: number; glow: number }
+  ears: { prick: number; turn: number; glow: number; back: number; flickL: number; flickR: number }
   /** −1 … 1, the 5.2 s cycle. */
   breath: number
+  /** The emissive strips' tint (linear 0 … 1 rgb), how far toward it (0 … 1) and their brightness multiplier (1 = as authored). */
+  tint: { r: number; g: number; b: number; mix: number; gain: number }
   /** The seven systems' light, root to crown (0 … ~1.4). */
   sys: Float32Array
   /** 0 … 1: the disks' extra brightness. */
@@ -61,8 +63,9 @@ export function createPerf(): Perf {
     body: { yaw: 0 },
     lids: 0,
     jaw: 0,
-    ears: { prick: 0, turn: 0, glow: 0 },
+    ears: { prick: 0, turn: 0, glow: 0, back: 0, flickL: 0, flickR: 0 },
     breath: 0,
+    tint: { r: 1, g: 1, b: 1, mix: 0, gain: 1 },
     sys: new Float32Array(7),
     bright: 0,
     band: -1,

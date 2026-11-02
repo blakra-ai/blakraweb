@@ -331,3 +331,7 @@
     display: none;
   }
 }
+/* The porthole's margin (≥ 1200 px with the world running): the right column stops short of it. */
+:global(html.porthole-margin) .proof {
+  padding-right: var(--porthole-pad, 64px);
+}

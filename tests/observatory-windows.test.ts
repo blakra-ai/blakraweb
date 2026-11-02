@@ -44,10 +44,10 @@ describe('window framing', () => {
     expect(g.key).toBe(-1)
     expect(g.y + 0.35 * g.headPx).toBeLessThanOrEqual(desktop.h + 1e-6)
     // Her head (half a head either side of the eyes) stays inside the frame.
-    expect(g.x + 0.45 * g.headPx).toBeLessThanOrEqual(desktop.w)
+    expect(g.x + 1.5 * g.headPx).toBeLessThanOrEqual(desktop.w)
   })
 
-  it('gives the contact a fuller, smaller figure inside the disk, right of her line, lit from the rim', () => {
+  it("gives the contact a fuller, smaller figure at the disk's right rim, her head above the closing line, lit from the rim", () => {
     const f = frameWindow('contact', desktop)
     const g = f.guide!
     expect(g.headPx).toBeCloseTo(HEAD_SHARE_CONTACT * desktop.h)
@@ -56,7 +56,7 @@ describe('window framing', () => {
     expect(g.x).toBeGreaterThan(f.ring.x)
     expect(g.x).toBeLessThan(f.ring.x + f.ring.r)
     expect(g.x + 1.0 * g.headPx).toBeLessThanOrEqual(desktop.w + 1e-6)
-    expect(g.y).toBeGreaterThan(f.ring.y)
+    expect(g.y).toBeLessThan(f.ring.y + 0.5 * f.ring.r)
     expect(g.key).toBe(-1)
   })
 
@@ -107,7 +107,7 @@ describe('the guide hint and her bounds', () => {
     const fw = frameWindow
     const W = WORDS_COLUMN
     const g = fw('hero', desktop, { x: 0.9, y: 0.5 }).guide!
-    expect(g.x).toBeCloseTo(0.9 * desktop.w)
+    expect(g.x).toBeCloseTo(Math.min(0.9 * desktop.w, desktop.w - 1.5 * g.headPx))
     expect(g.y).toBeCloseTo(0.5 * desktop.h)
     // A phone band: head and neck only (190 % of the height), her eyes right of centre.
     const ph = fw('hero', phone).guide!

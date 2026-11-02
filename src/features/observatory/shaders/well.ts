@@ -104,7 +104,17 @@ void main() {
   // The pull breathes toward the hole: a slow wave travelling inward (the grid's radial breath).
   float breath = uSky * 0.07 * sin(uTime * 0.45 + R / max(uSigma, 1.0) * 2.4);
   float pull = uPull * uBend * (1.0 + breath);
-  float r = pull > 0.0005 ? wellInverse(R, uSigma * uSigma, pull) : R;
+  // The ripples' lensing (the ring shader's four inward ripples): the grid and stars bend inward with each passing ripple.
+  float lensR = R;
+  if (uSky > 0.5 && uRing > 1.0) {
+    for (int k = 0; k < 4; k++) {
+      float phk = fract(uTime / 3.5 + float(k) * 0.25);
+      float rad = uRing * mix(1.8, 1.02, phk * phk);
+      float life = smoothstep(0.0, 0.15, phk) * (1.0 - smoothstep(0.86, 1.0, phk));
+      lensR += 2.5 * exp(-pow((R - rad) / 12.0, 2.0)) * life;
+    }
+  }
+  float r = pull > 0.0005 ? wellInverse(lensR, uSigma * uSigma, pull) : lensR;
   vec2 g = R > 1e-4 ? uCentre + d * (r / R) : uCentre;
 
   // Hairlines one CSS px wide, whatever the local stretch (fwidth keeps them a pixel on screen).

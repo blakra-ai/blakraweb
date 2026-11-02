@@ -129,7 +129,7 @@ export function InkWell({ r, bands, lit, dots, ticks, tick = 'var(--accent)', se
     }
   }
   return (
-    <svg className={className} viewBox={`0 0 ${size} ${size}`} width={size} height={size} aria-hidden="true" style={{ display: 'block', overflow: 'visible' }}>
+    <svg className={className} data-ink-well viewBox={`0 0 ${size} ${size}`} width={size} height={size} aria-hidden="true" style={{ display: 'block', overflow: 'visible' }}>
       {el}
     </svg>
   )

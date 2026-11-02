@@ -78,7 +78,7 @@ export const HEAD_SHARE_CONTACT = 0.16
  */
 export const FIGURE = {
   hero: { share: 1.3, eyeX: 0.72, eyeY: 0.42 },
-  contact: { share: 1.1, eyeX: 0.7, eyeY: 0.58 },
+  contact: { share: 1.1, eyeX: 0.84, eyeY: 0.47 },
   phone: { share: 1.9, eyeX: 0.76, eyeY: 0.56 },
 } as const
 export const PHONE_W = 768
@@ -115,7 +115,8 @@ export function frameWindow(kind: WindowKind, rect: Rect, hint?: { x: number; y:
     let x = hint ? hint.x * rect.w : rect.w < PHONE_W ? fig.eyeX * rect.w : ring.x + fig.eyeX * r
     let y = hint ? hint.y * rect.h : fig.eyeY * rect.h
     // Her head (a head's width right of her eyes) stays inside the frame; the body may be cut by it; the words' column wins on a narrow window.
-    x = Math.min(x, rect.w - 1.0 * headPx)
+    // Both ear blades inside the frame.
+    x = Math.min(x, rect.w - 1.5 * headPx)
     x = Math.max(x, WORDS_COLUMN * rect.w + 0.5 * headPx)
     y = Math.max(y, 0.5 * headPx)
     guide = { x, y, headPx, figurePx, key: -1 }
@@ -130,8 +131,9 @@ export function frameWindow(kind: WindowKind, rect: Rect, hint?: { x: number; y:
     let y = hint ? hint.y * rect.h : fig.eyeY * rect.h
     y = Math.min(y, rect.h - 0.35 * headPx)
     // Never over the words: she stays right of the left column, and inside the frame.
+    // Both ear blades inside the frame (they reach ~1.4 heads right of the eyes); the words' column wins on a narrow window.
+    x = Math.min(x, rect.w - 1.5 * headPx)
     x = Math.max(x, WORDS_COLUMN * rect.w + 0.5 * headPx)
-    x = Math.min(x, rect.w - 0.45 * headPx)
     y = Math.max(y, 0.5 * headPx)
     guide = { x, y, headPx, figurePx, key: -1 }
   }

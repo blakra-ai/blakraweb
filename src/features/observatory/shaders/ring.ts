@@ -25,6 +25,7 @@ uniform vec2 uCentre;
 uniform float uR;
 uniform float uGlow;
 uniform float uTime;
+uniform float uRipple;    // 0 … 1: the inward ripples (hero, contact); 0 on the stage
 uniform float uExtent;
 uniform float uBands;      // 0 … 7: how many of the seven layers' bands have formed (fractional: the last one forming)
 uniform float uLit[7];     // 0.2 … 1 per band: the picker keeps the chosen lit and dims the rest
@@ -34,6 +35,8 @@ const vec3 GOLD = vec3(0.8510, 0.6431, 0.2549);      // #d9a441
 const vec3 LIMB = vec3(0.9529, 0.8863, 0.7059);      // #f3e2b4, the limb's hot tone
 const vec3 WARM = vec3(1.0, 0.9255, 0.7843);          // rgba(255,236,200)
 const vec3 PORCELAIN = vec3(0.9255, 0.9137, 0.8863);  // #ece9e2
+const vec3 NEON_CORE = vec3(1.0, 0.96, 0.86);          // the tube's hot core, near white
+const vec3 NEON = vec3(1.0, 0.56, 0.16);               // its bloom: saturated gold-orange
 
 void main() {
   // The quad spans uExtent × the radius each side of the centre.
@@ -58,6 +61,10 @@ void main() {
   float glow = exp(-out1 / (22.0 * px)) * (0.62 + 0.4 * uGlow) * step(1.0, d);
   float halo = exp(-out1 / (80.0 * px)) * (0.16 + 0.1 * uGlow) * step(1.0, d);
   vec3 glowTone = mix(LIMB, GOLD, smoothstep(0.0, 14.0 * px, out1));
+  // The rim's slow doppler shimmer: one side brighter, the bright side turning once in 20 s.
+  float dop = 1.0 + 0.3 * uRipple * cos(ang - uTime * 0.31416);
+  edge *= dop;
+  glow *= dop;
   // The photon rings (inset −7 % → d 1.07 at 22 %, inset −16 % → d 1.16 at 8 %).
   float ph1 = exp(-pow((d - 1.07) / (0.9 * px), 2.0)) * 0.22;
   float ph2 = exp(-pow((d - 1.16) / (0.9 * px), 2.0)) * 0.08;
@@ -90,8 +97,33 @@ void main() {
     r0 = r1 + gap;
   }
 
-  vec3 light = LIMB * edge + glowTone * glow + GOLD * halo + PORCELAIN * (ph1 + ph2) + crescent * (1.0 + 0.6 * uGlow) + bands;
-  float la = clamp(edge + glow + halo + ph1 + ph2 + arc * band * 0.6 + ba, 0.0, 1.0);
+  // The pull: four faint gold ripples born at 1.8 r, falling inward (accelerating) over 3.5 s,
+  // brightening and thinning as they near the rim, gone at it. Staggered by a quarter. Quiet on the
+  // words' side (left of the ring). A still frame keeps them where they are: faint static rings.
+  // Neon: every line is a tube, a thin near-white hot core inside a saturated gold-orange bloom
+  // (a tight glow and a wide soft one, additive), with a faint hum (brightness breathing, no flicker).
+  float hum = 1.0 + 0.04 * uRipple * sin(uTime * 1.7);
+  float rip = 0.0;      // the ripples' core
+  float ripGlow = 0.0;  // their bloom
+  for (int k = 0; k < 4; k++) {
+    float phk = fract(uTime / 3.5 + float(k) * 0.25);
+    float rad = mix(1.8, 1.02, phk * phk);
+    float life = smoothstep(0.0, 0.15, phk) * (1.0 - smoothstep(0.86, 1.0, phk));
+    float amp = mix(0.45, 1.0, phk) * life;
+    float dd = (d - rad) / px;                                    // CSS px from the ripple's line
+    rip += exp(-dd * dd / (0.55 * 0.55)) * amp;                  // ~1 px core
+    ripGlow += (exp(-dd * dd / 16.0) * 0.55 + exp(-abs(dd) / 14.0) * 0.22) * amp;
+  }
+  float side = step(1.0, d) * smoothstep(-1.5, -0.7, p.x / uR);
+  float ripK = 0.36 * uRipple * side * hum;                      // ~35 % peak (×1.4 in the contact)
+  rip *= ripK;
+  ripGlow *= ripK;
+  // The rim as a neon tube: its hot core on the limb, a tight orange bloom and a wide soft one.
+  float rd = (d - 1.0) / px;
+  float rimCore = exp(-rd * rd / (0.7 * 0.7)) * 0.9 * dop * hum * min(uRipple, 1.0);
+  float rimBloom = (exp(-rd * rd / 36.0) * 0.5 + exp(-max(rd, 0.0) / 28.0) * 0.25) * dop * hum * min(uRipple, 1.0) * step(0.0, rd);
+  vec3 light = NEON_CORE * (rip + rimCore) + NEON * (ripGlow + rimBloom) + LIMB * edge + glowTone * glow + GOLD * halo + PORCELAIN * (ph1 + ph2) + crescent * (1.0 + 0.6 * uGlow) + bands;
+  float la = clamp(rip + ripGlow + rimCore + rimBloom + edge + glow + halo + ph1 + ph2 + arc * band * 0.6 + ba, 0.0, 1.0);
   // Premultiplied: the disk covers the well in black; outside it the light adds over the well.
   col = light * (1.0 - disk);
   a = max(a, la * (1.0 - disk));
@@ -104,6 +136,7 @@ export interface RingUniforms extends Record<string, { value: unknown }> {
   uR: { value: number }
   uGlow: { value: number }
   uTime: { value: number }
+  uRipple: { value: number }
   uExtent: { value: number }
   uBands: { value: number }
   uLit: { value: Float32Array }
@@ -113,7 +146,7 @@ export interface RingUniforms extends Record<string, { value: unknown }> {
 export const RING_EXTENT = 2.4
 
 export function createRing(): { mesh: Mesh; uniforms: RingUniforms } {
-  const uniforms: RingUniforms = { uCentre: { value: [0, 0] }, uR: { value: 150 }, uGlow: { value: 0 }, uTime: { value: 0 }, uExtent: { value: RING_EXTENT }, uBands: { value: 0 }, uLit: { value: new Float32Array([1, 1, 1, 1, 1, 1, 1]) } }
+  const uniforms: RingUniforms = { uCentre: { value: [0, 0] }, uR: { value: 150 }, uGlow: { value: 0 }, uTime: { value: 0 }, uRipple: { value: 0 }, uExtent: { value: RING_EXTENT }, uBands: { value: 0 }, uLit: { value: new Float32Array([1, 1, 1, 1, 1, 1, 1]) } }
   const mat = new ShaderMaterial({
     vertexShader: ringVertex,
     fragmentShader: ringFragment,

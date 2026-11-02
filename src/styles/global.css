@@ -332,32 +332,22 @@ body {
   color: var(--porcelain);
   overflow-x: clip;
 }
+/* The world's one canvas sits ABOVE the paper (z 2) and paints only inside the dark windows and the
+   porthole, clearing everything else to transparent. The dark windows (z 3, transparent) lift their
+   words above it, so the canvas shows through them under their text; the paper's words never meet
+   it (the porthole keeps clear of them: porthole.ts). main and footer are positioned without a
+   z-index, so the windows and the canvas share one stacking context. */
 main,
 footer {
   position: relative;
-  z-index: 1;
 }
 .obs-world {
   position: fixed;
   inset: 0;
-  z-index: 0;
+  z-index: 2;
   pointer-events: none;
 }
 .obs-world canvas {
-  display: block;
-}
-/* The journey's overlay: a box that rides with her (Journey.tsx moves it by transform), above the paper (z 2, under the header); journey.ts keeps her clear of the words. */
-.obs-journey {
-  position: fixed;
-  left: 0;
-  top: 0;
-  width: 50vh;
-  height: 45vh;
-  z-index: 2;
-  pointer-events: none;
-  will-change: transform;
-}
-.obs-journey canvas {
   display: block;
 }
 
@@ -514,4 +504,10 @@ html.motion-off [data-hold] {
 
 main:focus {
   outline: none;
+}
+
+/* The porthole's margin (World.tsx sets the class and --porthole-gutter from porthole.ts, ≥ 1200 px):
+   the paper's right column stops short of it, so it never sits on a line. */
+html.porthole-margin main > section:not(#top) {
+  --porthole-pad: max(64px, var(--porthole-gutter, 0px));
 }

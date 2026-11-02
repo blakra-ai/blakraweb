@@ -3,7 +3,6 @@ import { useEffect, useMemo, useRef, useState } from 'react'
 import { Bone, Euler, Group, Matrix4, MeshStandardMaterial, Object3D, Quaternion, Vector3 } from 'three'
 import { createHair, segmentQuaternion, stepHair, type HairState } from '../hair'
 import { nav } from '../state'
-import { createDrive, stepDrive, stepDriveHead, type BodyOut, type Drive } from './drive'
 import { CHAKRAS } from '../yantra'
 import { GLB_URL, HAIR_BONES, type Figure as FigureData } from './contract'
 import { loadFigure, type LoadedFigure } from './loadFigure'
@@ -22,24 +21,16 @@ export interface FigureRig {
   assembled: number
   /** Her slow float (world units), for whoever places her. */
   float: number
-  /** The ground the journey has her walk: the page px covered so far (monotonic), model units per px at her drawn size, and whether she walks. */
-  gait: Gait
 }
-
-export interface Gait {
-  ground: number
-  unitsPerPx: number
-  moving: boolean
-}
-
-/** Dev only: ?gait=off keeps the rest pose (no procedural walk), to tell the rig from the gait. */
-const NO_GAIT = import.meta.env.DEV && typeof location !== 'undefined' && new URLSearchParams(location.search).get('gait') === 'off'
-const BODY: BodyOut = { bob: 0, sway: 0, roll: 0, pitch: 0 }
 
 const DEG = Math.PI / 180
 /** How the head's turn is shared down the neck: Head, Neck, Spine2. */
 const SHARE = { Head: 0.6, Neck: 0.3, Spine2: 0.1 } as const
 const BREATH_M = 0.004
+/** Breathing as scale on the chest (Spine2, which carries the neck): 0.5 % at the breath's peak. */
+const BREATH_SCALE = 0.005
+/** The emissive strips' materials (the GLB's E_Neck, E_Head, E_Eyes and the chest strip). */
+const STRIPS = /^(E_Eyes|E_Head|E_Neck|Material\.002)$/
 const COLLAR_TURN = 0.006 // map offset per second
 
 /* Hair: the Verlet chains (hair.ts) live in the head's space in metres and are carried into world
@@ -116,6 +107,7 @@ const Q = new Quaternion()
 const W = new Quaternion()
 const PARENT = new Quaternion()
 const SEG = new Float32Array(4)
+const EAR_Q = new Quaternion()
 const headMatrix = new Float32Array(16)
 const wind: [number, number, number] = [0, 0, 0]
 
@@ -178,7 +170,7 @@ const damp = (from: number, to: number, l: number, dt: number) => from + (to - f
  * bones and materials. The world's variant also tells the page where her eyes and mouth are
  * (`nav.anchor`). Where she stands is the poser's business: this group is placed from outside.
  */
-export function Figure({ rig, variant }: { rig: FigureRig; variant: 'world' | 'dock' | 'journey' }) {
+export function Figure({ rig, variant }: { rig: FigureRig; variant: 'world' | 'dock' }) {
   const group = useRef<Group>(null)
   const [figure, setFigure] = useState<LoadedFigure | null>(null)
   const { camera, size } = useThree()
@@ -187,7 +179,6 @@ export function Figure({ rig, variant }: { rig: FigureRig; variant: 'world' | 'd
   const show = useRef(0)
   const collarOffset = useRef(0)
   const hair = useRef<HairRig | null>(null)
-  const drive = useRef<Drive | null>(null)
   /** Single hair bones (HairSway_n, a model's own dynamic-hair joints): a damped spring per bone that lags her turns. */
   const sway = useRef<{ bones: Object3D[]; rest: Quaternion[]; ang: Float32Array; vel: Float32Array; last: { yaw: number; pitch: number } } | null>(null)
 
@@ -222,6 +213,23 @@ export function Figure({ rig, variant }: { rig: FigureRig; variant: 'world' | 'd
       })
       return out
     }
+    // Each ear's lateral axis in the bone's own space (the root's z: x forward, y up), measured at rest.
+    figure.root.updateMatrixWorld(true)
+    const rootInv = figure.root.getWorldQuaternion(new Quaternion()).invert()
+    const earAxes: { bone: Object3D; axis: Vector3; side: -1 | 1 }[] = []
+    for (const [bone, side] of [[figure.bones.Ear_L, -1], [figure.bones.Ear_R, 1]] as const) {
+      if (!bone) continue
+      const qb = bone.getWorldQuaternion(new Quaternion()).premultiply(rootInv)
+      earAxes.push({ bone, axis: new Vector3(0, 0, 1).applyQuaternion(qb.invert()).normalize(), side })
+    }
+    const strips: { mat: MeshStandardMaterial; r: number; g: number; b: number; i: number }[] = []
+    // By material name (the strips' materials are cloned per mesh by the loader; their names survive).
+    figure.root.traverse((m) => {
+      const mats = (m as { material?: unknown }).material
+      for (const mat of Array.isArray(mats) ? mats : [mats]) {
+        if (mat instanceof MeshStandardMaterial && STRIPS.test(mat.name) && !strips.some((s) => s.mat === mat)) strips.push({ mat, r: mat.emissive.r, g: mat.emissive.g, b: mat.emissive.b, i: mat.emissiveIntensity })
+      }
+    })
     const collar = figure.root.getObjectByName('Collar') as { material?: MeshStandardMaterial } | undefined
     return {
       head: r(figure.bones.Head)!,
@@ -232,14 +240,11 @@ export function Figure({ rig, variant }: { rig: FigureRig; variant: 'world' | 'd
       earL: r(figure.bones.Ear_L),
       earR: r(figure.bones.Ear_R),
       earMats: [...earMats(figure.bones.Ear_L), ...earMats(figure.bones.Ear_R)],
+      earAxes,
+      strips,
       collarMap: collar?.material instanceof MeshStandardMaterial ? collar.material.map : null,
     }
   }, [figure])
-
-  // Her walk: the procedural gait drives the legs, neck, head, ears, plates and jets (models without legs keep their rest).
-  useEffect(() => {
-    drive.current = figure && !NO_GAIT && variant !== 'dock' ? createDrive(figure.root) : null
-  }, [figure, variant])
 
   // The hair's chains, world variant only (the dock's badge is still too small for it to read).
   useEffect(() => {
@@ -278,9 +283,6 @@ export function Figure({ rig, variant }: { rig: FigureRig; variant: 'world' | 'd
       m.uniforms.uBand.value = Math.round(p.band)
     }
 
-    // The gait: the legs for this frame (the body's bob, sway, roll and pitch go on the group below).
-    const dv = drive.current
-    if (dv) stepDrive(dv, { ground: rig.gait.ground, unitsPerPx: rig.gait.unitsPerPx, moving: rig.gait.moving, dt: Math.min(dt, 0.1), clock: t, still }, BODY)
 
     // Gaze: the eyes lead; head, neck and shoulders share the head's turn; the body turns the group.
     const set = (o: Object3D, r: { x: number; y: number; z: number }, yaw: number, pitch: number) => {
@@ -324,19 +326,23 @@ export function Figure({ rig, variant }: { rig: FigureRig; variant: 'world' | 'd
     figure.blink(Math.max(p.lids, 1 - show.current))
     figure.jaw(p.jaw)
     figure.bones.Spine2.position.z = rest.spine2Z + BREATH_M * p.breath
+    figure.bones.Spine2.scale.setScalar(1 + BREATH_SCALE * p.breath)
+    // The strips' light: toward the tint, times the gain.
+    const tint = p.tint
+    for (const s of rest.strips) {
+      s.mat.emissive.setRGB(s.r + (tint.r - s.r) * tint.mix, s.g + (tint.g - s.g) * tint.mix, s.b + (tint.b - s.b) * tint.mix)
+      s.mat.emissiveIntensity = s.i * tint.gain
+    }
 
     // Ears: prick (tips rise toward vertical), the cursor-side ear turns toward it, tips glow while she types.
     const earL = figure.bones.Ear_L
     const earR = figure.bones.Ear_R
     if (earL && rest.earL) earL.rotation.set(rest.earL.x, rest.earL.y + (p.ears.turn < 0 ? -p.ears.turn * DEG : 0), rest.earL.z - p.ears.prick * DEG)
     if (earR && rest.earR) earR.rotation.set(rest.earR.x, rest.earR.y + (p.ears.turn > 0 ? -p.ears.turn * DEG : 0), rest.earR.z + p.ears.prick * DEG)
-    // The nod, its counter and the ear flicks compose on the gaze; the body rides the stride.
-    if (dv) {
-      stepDriveHead(dv)
-      const k = figure.root.scale.x
-      g.position.set(0, BODY.bob * k, BODY.sway * k)
-      g.rotation.x = BODY.roll * DEG
-      g.rotation.z = BODY.pitch * DEG
+    // The ears' rest lean (gravity) and their flicks, about her lateral axis on top of the prick and turn.
+    for (const e of rest.earAxes) {
+      const deg = p.ears.back + (e.side < 0 ? p.ears.flickL : p.ears.flickR)
+      if (deg) e.bone.quaternion.multiply(EAR_Q.setFromAxisAngle(e.axis, -deg * DEG))
     }
     for (const m of rest.earMats) m.emissiveIntensity = 1.2 * p.ears.glow
 

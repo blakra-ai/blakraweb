@@ -13,6 +13,8 @@
   background: transparent;
   overflow: hidden;
   isolation: isolate;
+  /* Above the world's canvas (z 2): transparent, so the canvas shows through under the words. */
+  z-index: 3;
 }
 
 /* The still: the final state before the world runs, and for every visitor it never runs for. */
