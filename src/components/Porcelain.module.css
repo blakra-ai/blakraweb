@@ -180,3 +180,78 @@
 .products > :last-child {
   margin-bottom: 0;
 }
+
+/* ---------- Phones, run 2026-11-02-mobile (concept.md 08): ink; the roles as a swipe row, the practices as chips ---------- */
+.practices {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-top: 20px;
+  padding: 0;
+  list-style: none;
+}
+@media (max-width: 767px) {
+  .porcelain:not(.products) {
+    --swipe-pad: 20px;
+    padding: 64px 20px 56px;
+    border-top: 0;
+  }
+  .products {
+    padding: calc(var(--header-h) * 0 + 20px) 12px 28px;
+  }
+  .porcelain:not(.products) .h {
+    font-size: 2rem;
+    font-weight: 300;
+    line-height: 1.04;
+  }
+  .porcelain .grid {
+    display: none;
+  }
+  .col,
+  .block {
+    grid-template-columns: minmax(0, 1fr);
+    min-width: 0;
+  }
+  .rows {
+    margin-top: 24px;
+  }
+  .r,
+  .r:last-child {
+    width: 280px;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    padding: 22px 20px;
+    border: 1px solid var(--hair);
+    border-radius: var(--r-card);
+    background: var(--panel);
+  }
+  .r[data-active] {
+    transform: translateY(-8px);
+  }
+  .r b {
+    font-size: 1.25rem;
+    font-weight: 400;
+  }
+  .r span {
+    font-size: 1rem;
+    color: var(--grey);
+  }
+  .r em {
+    margin-top: auto;
+    padding-top: 12px;
+    border-top: 1px solid var(--hair);
+    font-family: var(--font-mono);
+    font-size: 0.75rem;
+    letter-spacing: 0.06em;
+    color: #d9a441;
+  }
+  .practices li {
+    padding: 8px 12px;
+    border: 1px solid var(--hair);
+    border-radius: var(--r-pill);
+    font-size: 0.6875rem;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+  }
+}

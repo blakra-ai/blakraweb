@@ -204,3 +204,43 @@
     padding: 12px 22px;
   }
 }
+
+/* ---------- Phones, run 2026-11-02-mobile (concept.md 05): ink; the six capabilities as a swipe row ---------- */
+@media (max-width: 767px) {
+  .ai {
+    --swipe-pad: 20px;
+    padding: 64px 20px 56px;
+  }
+  .grid {
+    margin-top: 28px;
+  }
+  .cell {
+    width: 280px;
+    min-height: 300px;
+    padding: 22px 20px;
+    border: 1px solid var(--hair);
+    border-radius: var(--r-card);
+    background: var(--panel);
+  }
+  .cell[data-active] {
+    transform: translateY(-8px);
+  }
+  .cell[data-active] .n {
+    color: #d9a441;
+  }
+  .name {
+    font-size: 1.5rem;
+    font-weight: 300;
+  }
+  .foot {
+    display: block;
+  }
+  .foot :global(.m-details) {
+    margin-bottom: 20px;
+  }
+  .window {
+    margin-top: 24px;
+    border: 1px solid var(--hair);
+    border-radius: var(--r-window);
+  }
+}

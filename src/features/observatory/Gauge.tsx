@@ -1,4 +1,6 @@
 import { useEffect, useRef, useState, useSyncExternalStore } from 'react'
+import type { CSSProperties } from 'react'
+import { useI18n } from '../../i18n'
 import { onReflow } from '../../motion/reflow'
 import { STATIONS, chip, markerY, progressFrom, stationY } from './gauge'
 import { obs } from './state'
@@ -13,9 +15,13 @@ let frame = 0
 
 function measure() {
   tops = [...document.querySelectorAll<HTMLElement>('[data-station]')]
-    .map((el) => el.getBoundingClientRect().top + window.scrollY - headerPx())
+    .map((el) => el.getBoundingClientRect().top + window.scrollY - headerPx() - phoneLead())
     .sort((a, b) => a - b)
   update()
+}
+/** Phones: the chip turns to a chapter once its top passes the upper eighth of the screen (anchor links land 88 px down). */
+function phoneLead() {
+  return window.matchMedia('(max-width: 767px)').matches ? window.innerHeight * 0.12 : 0
 }
 function headerPx() {
   const v = getComputedStyle(document.documentElement).getPropertyValue('--header-h')
@@ -62,12 +68,20 @@ export function useStation(): number {
 
 /* ---------- the chip: "04 / 09", in the header on phones ---------- */
 
+/** The chip dot's colour per chapter on phones: gold, the crown's violet where AI is the subject. */
+const DOT: Record<number, string> = { 3: 'currentColor', 4: 'var(--crown)', 6: 'var(--crown)' }
+
 export function GaugeChip({ className }: { className?: string }) {
   const station = useStation()
+  const { t } = useI18n()
+  // The chapter's name on phones, from words the page already uses (no new copy).
+  const names = ['', t.products.eyebrow, t.pulse.eyebrow, t.engine.title.split('.')[0], t.engine.focus, t.engine.layers.ai.name, t.process.eyebrow, t.ui.nav.people, t.ui.nav.work, t.contact.eyebrow]
+  const name = names[station - 1]
   return (
-    <span className={`${s.chip}${className ? ` ${className}` : ''}`} aria-live="polite" aria-atomic="true">
+    <span className={`${s.chip}${className ? ` ${className}` : ''}`} aria-live="polite" aria-atomic="true" style={{ '--dot': DOT[station] ?? '#d9a441' } as CSSProperties}>
       <i className={s.chipDot} aria-hidden="true" />
       {chip(station)}
+      {name && <span className={s.chipName}>{name}</span>}
     </span>
   )
 }

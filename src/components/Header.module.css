@@ -297,9 +297,23 @@
     display: none;
   }
   .chip {
-    height: 26px;
-    padding: 0 8px;
+    height: 30px;
+    max-width: 210px;
+    min-width: 0;
+    padding: 0 10px;
     font-size: 0.6875rem;
+    white-space: nowrap;
+    text-transform: uppercase;
+  }
+  .right {
+    min-width: 0;
+  }
+  /* The chip carries the chapter now; the bar keeps the brand, the chip and the menu. */
+  .cta {
+    display: none;
+  }
+  .bar {
+    transition: background-color 0.3s var(--ease), color 0.3s var(--ease);
   }
   .cta {
     height: 34px;

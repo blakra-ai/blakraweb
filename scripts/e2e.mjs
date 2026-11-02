@@ -101,7 +101,7 @@ try {
           const cs = getComputedStyle(el)
           return Number(cs.opacity) < 1 || cs.visibility === 'hidden' || (cs.clipPath !== 'none' && cs.clipPath !== '')
         }).length,
-        details: [...document.querySelectorAll('#stage li')].every((li) => li.lastElementChild.getBoundingClientRect().height > 10),
+        details: [...document.querySelectorAll('#stage li[id^="layer-"]')].every((li) => li.lastElementChild.getBoundingClientRect().height > 10),
         casesInside: [...document.querySelectorAll('#work li[id^="work-"]')].every((c) => {
           const r = c.getBoundingClientRect()
           return r.top >= day.top - 1 && r.bottom <= day.bottom + 1 && getComputedStyle(c).visibility === 'visible'
@@ -177,6 +177,38 @@ try {
     await bot.waitForTimeout(500)
     check('AC5', 'honeypot or an instant submit sends nothing', botPosts === 0)
     await bot.close()
+  }
+
+  // M1 (run 2026-11-02-mobile): phones. No overflow, the chip names the chapter, the ink and paper
+  // surfaces alternate, the swipe rows are keyboard regions, one layer row open at a time, and no
+  // three.js, GSAP or Lenis is fetched.
+  for (const [width, height] of [[390, 844], [360, 800]]) {
+    const phone = await browser.newContext({ viewport: { width, height }, deviceScaleFactor: 2, isMobile: true, hasTouch: true })
+    const page = await phone.newPage()
+    const scripts = []
+    page.on('request', (r) => r.resourceType() === 'script' && scripts.push(r.url()))
+    for (const path of ['/', '/de/']) {
+      await page.goto(BASE + path)
+      await page.waitForTimeout(800)
+      const res = await page.evaluate(async () => {
+        const over = document.documentElement.scrollWidth - innerWidth
+        document.querySelector('#ai').scrollIntoView({ behavior: 'instant' })
+        await new Promise((r) => setTimeout(r, 400))
+        const chip = document.querySelector('header [aria-live]')?.textContent ?? ''
+        const swipes = [...document.querySelectorAll('.m-swipe')].map((u) => u.tabIndex === 0 && u.getAttribute('aria-roledescription') === 'carousel' && !!u.getAttribute('aria-label'))
+        const rows = [...document.querySelectorAll('details[name="m-layers"]')]
+        rows[2].querySelector('summary').click()
+        await new Promise((r) => setTimeout(r, 50))
+        const open = rows.filter((d) => d.open).length
+        const ink = getComputedStyle(document.querySelector('#ai')).backgroundColor
+        const paper = getComputedStyle(document.querySelector('#approach')).backgroundColor
+        const title = getComputedStyle(document.querySelector('#contact-title'))
+        return { over, chip, swipes, open, rows: rows.length, ink, paper, contact: title.color, opacity: title.opacity }
+      })
+      check('M1', `${width}px ${path}: phone layout, chip, surfaces, carousels, accordion`, res.over <= 0 && /06 \/ 10\s*\S/.test(res.chip) && res.swipes.length === 3 && res.swipes.every(Boolean) && res.rows === 7 && res.open === 1 && res.ink !== res.paper && res.contact === 'rgb(236, 233, 226)' && res.opacity === '1', JSON.stringify(res))
+    }
+    check('M1', `${width}px: no three.js, GSAP or Lenis on phones`, !scripts.some((u) => /three|gsap|lenis|World/i.test(u)), scripts.filter((u) => /three|gsap|lenis|World/i.test(u)).join(' '))
+    await phone.close()
   }
 
   // AC7: no horizontal scroll at four widths, on every page.

@@ -3,6 +3,7 @@ import type { AiBlockId } from '../content/types'
 import { useI18n } from '../i18n'
 import { pathFor, workPath } from '../routes'
 import { Section } from './Section'
+import { useSwipe } from '../mobile/swipe'
 import s from './Ai.module.css'
 
 const ORDER: readonly AiBlockId[] = ['agents', 'documents', 'extraction', 'vision', 'training', 'evaluation']
@@ -17,6 +18,7 @@ const two = (n: number) => String(n).padStart(2, '0')
 export function Ai() {
   const { t, locale } = useI18n()
   const a = t.ai
+  const { list, count } = useSwipe<HTMLUListElement>()
   const lioxsa = products.find((p) => p.id === 'skin')
   const proof: Partial<Record<AiBlockId, { href: string; label: string; external?: boolean }[]>> = {
     documents: [{ href: workPath('helya-ai', locale), label: 'Helya' }],
@@ -26,7 +28,7 @@ export function Ai() {
     ],
   }
   return (
-    <Section id="ai" beat="ai" surface="body" station={6} className={s.ai} aria-labelledby="ai-title">
+    <Section id="ai" beat="ai" surface="body" station={6} className={s.ai} aria-labelledby="ai-title" data-m-surface="ink">
       <div className={s.head}>
         <p className="eyebrow mono">
           {two(6)} / 10 &nbsp;·&nbsp; {a.eyebrow}
@@ -34,10 +36,11 @@ export function Ai() {
         <h2 id="ai-title" className={`h2 ${s.title}`} data-focus tabIndex={-1}>
           {a.title}
         </h2>
-        <p className={`lede ${s.lede}`}>{a.lede}</p>
+        <p className={`d-only lede ${s.lede}`}>{a.lede}</p>
+        <p className={`m-only lede ${s.lede}`}>{a.ledeShort}</p>
       </div>
 
-      <ul className={s.grid}>
+      <ul ref={list} className={`m-swipe ${s.grid}`} aria-label={a.title} aria-roledescription="carousel">
         {ORDER.map((id, i) => (
           <li key={id} className={s.cell}>
             <span className={`mono ${s.n}`}>{two(i + 1)}</span>
@@ -61,6 +64,8 @@ export function Ai() {
         ))}
       </ul>
 
+      <p ref={count} className="m-only m-count" aria-hidden="true" />
+
       {/* The two ways to build: one ink window, split down the middle. */}
       <div className={`dark ${s.window}`}>
         <p className={`mono ${s.ways}`}>{a.twoWays}</p>
@@ -80,7 +85,12 @@ export function Ai() {
       </div>
 
       <div className={s.foot}>
-        <p className={s.closer}>{a.closer}</p>
+        <p className={`d-only ${s.closer}`}>{a.closer}</p>
+        <details className="m-only m-details">
+          <summary>{t.ui.detailsShort}</summary>
+          <p>{a.lede}</p>
+          <p>{a.closer}</p>
+        </details>
         <a className={`pill ${s.cta}`} href={pathFor('home', locale, '#contact')}>
           {a.cta} <span aria-hidden="true">→</span>
         </a>

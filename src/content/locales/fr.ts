@@ -34,12 +34,14 @@ export const fr: Dict = {
     before: 'Avant',
     now: 'Aujourd’hui',
     usesEngine: 'Couches',
+    detailsShort: 'Détails',
   },
 
   prologue: {
     eyebrow: 'BLAKRA — Du logiciel qui a de la gravité.',
     title: { before: 'Nous bâtissons', human: 'vos logiciels métier', after: '.' },
     lede: 'Nous concevons, développons et exploitons des systèmes de gestion et de stocks, des back-offices et boutiques en ligne, des applications web et mobiles, des bots, et de l’IA sur vos propres données. Notre direction mène chaque projet, impliquée du cadrage à la production.',
+    ledeShort: 'Gestion, applications et IA sur vos propres données. Conçus, développés et exploités.',
     cue: 'De quoi avez-vous besoin ?',
     also: 'Autres façons de collaborer :',
     facts: 'Fondée en 2024 · Équipes remote-first · Réponse sous 24 heures',
@@ -49,6 +51,11 @@ export const fr: Dict = {
     eyebrow: 'Pourquoi une seule équipe',
     title: 'Un produit ne vaut que son passage de relais le plus faible.',
     body: 'LIOXSA a été construit par une seule équipe, de bout en bout, et c’est ainsi que nous construisons pour nos clients. D’habitude, tout est morcelé : le design chez une agence, l’application chez une autre, le backend chez un freelance et l’IA chez un consultant. Chaque passage de relais perd quelque chose, et en cas de problème, les prestataires se renvoient la balle. Avec nous, un seul contrat, une seule équipe et un responsable désigné pour l’ensemble.',
+    bodyShort: 'LIOXSA a été construit par une seule équipe, de bout en bout. Chaque passage de relais perd quelque chose, et en cas de problème, les prestataires se renvoient la balle.',
+    usualShort: 'D’habitude',
+    withUsLabelShort: 'Avec nous',
+    withUsShort: 'Un seul contrat, une seule équipe et un responsable désigné pour l’ensemble.',
+    vendorsShort: [{ area: 'Design', who: 'Une agence' }, { area: 'L’application', who: 'Une autre' }, { area: 'Backend', who: 'Un freelance' }, { area: 'IA', who: 'Un consultant' }],
     ask: 'De quoi avez-vous besoin ?',
     needs: {
       panel: { label: 'Un back-office pour piloter nos opérations.', tag: 'Back-office' },
@@ -226,6 +233,7 @@ export const fr: Dict = {
     eyebrow: 'L’IA au sommet',
     title: 'Une IA qui fait un vrai travail, sur vos données, selon vos conditions.',
     lede: 'Nous construisons des outils d’IA de bout en bout, des données qu’ils lisent à l’écran qu’utilisent vos équipes. Les modèles open source tournent sur nos serveurs ou les vôtres, pour que les données sensibles restent chez vous. Les plateformes commerciales mènent le plus vite en production. Nous choisissons la bonne option pour chaque projet.',
+    ledeShort: 'Nous construisons des outils d’IA de bout en bout, en open source ou sur plateformes commerciales, selon chaque projet.',
     blocks: {
       agents: { name: 'Des agents qui agissent', text: 'Ils lisent, répondent et effectuent l’étape suivante dans les outils que votre équipe utilise déjà. Une personne valide ce qui compte.' },
       documents: { name: 'Des réponses tirées de vos documents', text: 'Chaque réponse cite son document et sa page. L’accès suit les droits de chaque lecteur.' },
@@ -246,6 +254,7 @@ export const fr: Dict = {
     eyebrow: 'Expertises',
     title: 'Sept couches. Une seule équipe.',
     lede: 'Une seule équipe, c’est maîtriser chaque couche. Beaucoup d’organisations font appel à un prestataire différent pour chacune ; nous couvrons les sept et les construisons dans l’ordre, en partant des fondations, car chaque couche dépend de celle qui la porte.',
+    ledeShort: 'Nous couvrons les sept et les construisons dans l’ordre, en partant des fondations.',
     layers: {
       ai: { name: 'IA', text: 'Assistants IA qui lisent, répondent et agissent au cœur de votre travail, sur vos propres données, avec une personne à un pas.' },
       growth: { name: 'Lancement et SEO', text: 'SEO technique, contenus et médias de lancement, pour que ceux à qui le produit s’adresse le trouvent.' },
@@ -286,6 +295,8 @@ export const fr: Dict = {
     items: {
       skin: {
         line: 'LIOXSA lit une seule photo du visage pour le teint, la texture, les rougeurs et les pores, explique le résultat en termes simples et recommande des produits professionnels. Conseil cosmétique, pas un diagnostic médical.',
+        lineShort: 'Lit une seule photo du visage pour le teint, la texture, les rougeurs et les pores, et explique le résultat en termes simples.',
+        noteShort: 'Conseil cosmétique, pas un diagnostic médical.',
         detail: 'Écrite à partir de zéro, sans dépendance tierce. Les images ne sont jamais envoyées à des services externes. Démo sous NDA.',
         offer: 'Financement, licence ou cession complète avec code source et PI',
       },
@@ -303,12 +314,14 @@ export const fr: Dict = {
     eyebrow: 'Notre direction, nos équipes',
     title: 'Les personnes que vous rencontrez sont celles qui construisent.',
     lede: 'Derrière chaque étape, il y a notre direction. Elle cadre chaque projet et reste impliquée jusqu’à sa mise en production.',
+    ledeShort: 'Notre direction cadre chaque projet et reste impliquée jusqu’à sa mise en production.',
     roles: [
       { role: 'Fondateur et directeur technique (CTO)', owns: 'Stratégie IA et architecture des systèmes, du premier schéma à la production.', ask: 'À aborder : la place de l’IA dans votre processus, si elle en a une.' },
       { role: 'Ingénieur full-stack senior et responsable backend', owns: 'Le socle de chaque système : backends, plateformes de données et fiabilité.', ask: 'À aborder : des données fiables et des systèmes qui tiennent.' },
       { role: 'Responsable des opérations et de la conformité', owns: 'Gouvernance d’entreprise, conformité et fournisseurs, pour que la gestion tourne aussi proprement que le code.', ask: 'À aborder : contrats, NDA et protection des données.' },
     ],
     bench: 'La réalisation s’appuie sur nos pôles : Engineering, Product Design, Data & AI, Cloud & DevOps et Delivery. Chaque projet est staffé à partir de notre réseau de spécialistes, avec un responsable de compte désigné.',
+    practicesShort: ['Engineering', 'Product Design', 'Data & AI', 'Cloud & DevOps', 'Delivery'],
   },
 
   contact: {

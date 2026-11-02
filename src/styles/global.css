@@ -511,3 +511,137 @@ main:focus {
 html.porthole-margin main > section:not(#top) {
   --porthole-pad: max(64px, var(--porthole-gutter, 0px));
 }
+
+/* ---------- Phones (run 2026-11-02-mobile, concept.md): everything below sits under 767 px ---------- */
+/* Desktop-only and phone-only twins: the phone shows the short copy, the desktop the full. */
+@media (min-width: 768px) {
+  .m-only {
+    display: none !important;
+  }
+}
+@media (max-width: 767px) {
+  .d-only {
+    display: none !important;
+  }
+  :root {
+    --gold: #d9a441;
+    --inset-phone: 12px;
+  }
+  /* Rhythm by surface: a section marked ink takes the dark window's tokens on phones only. */
+  html [data-m-surface='ink'] {
+    --body: #0b0b0d;
+    --panel: #121216;
+    --porcelain: #ece9e2;
+    --grey: #a9a59d;
+    --grey-on-light: #a9a59d;
+    --hair: rgba(236, 233, 226, 0.12);
+    --hair-2: rgba(236, 233, 226, 0.06);
+    --ctrl: #8a8781;
+    --accent: #d9a441;
+    --accent-rgb: 217, 164, 65;
+    background: #0b0b0d;
+    color: #ece9e2;
+    color-scheme: dark;
+  }
+  /* "Details +": a native disclosure, crawlable, no script. */
+  .m-details {
+    margin-top: 18px;
+    border-top: 1px solid var(--hair);
+  }
+  .m-details > summary {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    min-height: 44px;
+    list-style: none;
+    cursor: pointer;
+    font-family: var(--font-mono);
+    font-size: 0.75rem;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--porcelain);
+  }
+  .m-details > summary::-webkit-details-marker {
+    display: none;
+  }
+  .m-details > summary::after {
+    content: '+';
+    font-size: 1.125rem;
+    letter-spacing: 0;
+  }
+  .m-details[open] > summary::after {
+    content: '–';
+  }
+  .m-details > :not(summary) {
+    margin-top: 10px;
+    color: var(--grey);
+  }
+  /* Haptic press: a short scale on touch. */
+  .pill:active,
+  .m-press:active {
+    transform: scale(0.97);
+    transition: transform 120ms var(--ease);
+  }
+  /* The swipe rows (Swipe.tsx): scroll-snap, the next card peeking, never trapping vertical scroll. */
+  .m-swipe {
+    display: flex !important;
+    position: relative;
+    min-width: 0;
+    max-width: none;
+    gap: 12px;
+    margin-inline: calc(-1 * var(--swipe-pad, 20px));
+    padding: 4px var(--swipe-pad, 20px) 16px;
+    overflow-x: auto;
+    overscroll-behavior-x: contain;
+    scroll-snap-type: x mandatory;
+    scroll-padding-inline: var(--swipe-pad, 20px);
+    scrollbar-width: none;
+    list-style: none;
+  }
+  .m-swipe::-webkit-scrollbar {
+    display: none;
+  }
+  .m-swipe > * {
+    flex: 0 0 auto;
+    scroll-snap-align: start;
+    transition: transform 0.4s var(--ease);
+  }
+  .m-swipe:focus-visible {
+    outline-offset: -2px;
+  }
+  .m-count {
+    margin-top: 4px;
+    font-family: var(--font-mono);
+    font-size: 0.75rem;
+    letter-spacing: 0.14em;
+    color: var(--grey);
+  }
+}
+
+/* Phone loops (ripples, drift). Scroll-driven motion lives in each module, transform only, behind
+   @supports (animation-timeline: view()): Firefox, Safari and reduced motion keep the finished state. */
+@keyframes m-suck {
+  0% {
+    transform: scale(1.5);
+    opacity: 0;
+  }
+  25% {
+    opacity: 0.55;
+  }
+  100% {
+    transform: scale(1);
+    opacity: 0;
+  }
+}
+@keyframes m-drift {
+  to {
+    transform: translate3d(-10px, -6px, 0) scale(1.035);
+  }
+}
+@media (max-width: 767px) and (prefers-reduced-motion: no-preference) {
+  /* Loops stop while off screen (mobile.ts toggles data-paused). */
+  [data-paused],
+  [data-paused] * {
+    animation-play-state: paused !important;
+  }
+}

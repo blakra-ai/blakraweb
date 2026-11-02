@@ -5,7 +5,11 @@ import { availableLocales, locales, useI18n } from '../i18n'
 import { useMotion } from '../motion/MotionProvider'
 import { pathFor, translatePath, type Route } from '../routes'
 import { LanguageSwitch } from './LanguageSwitch'
+import { PHONE } from '../mobile/swipe'
 import s from './Header.module.css'
+
+/** The chapters whose surface is ink on phones; the rest are paper. */
+export const INK_CHAPTERS: readonly number[] = [1, 4, 6, 8, 10]
 
 /** The mark: a black hole, its disk passing in front of the shadow. */
 export function Mark({ className }: { className?: string }) {
@@ -45,7 +49,17 @@ export function Header({ route }: { route: Route }) {
   const { systemReduced } = useMotion()
   const [open, setOpen] = useState(false)
   const station = useStation()
-  const light = home && (station === 2 || station === 8)
+  // Phones: the bar follows the surface of the chapter under it (concept.md, "rhythm by surface").
+  const [phone, setPhone] = useState(false)
+  useEffect(() => {
+    const mq = window.matchMedia(PHONE)
+    const sync = () => setPhone(mq.matches)
+    sync()
+    mq.addEventListener('change', sync)
+    return () => mq.removeEventListener('change', sync)
+  }, [])
+  const light = home && !phone && (station === 2 || station === 8)
+  const inkBar = home && phone && INK_CHAPTERS.includes(station)
   const panelRef = useRef<HTMLDivElement>(null)
   const burgerRef = useRef<HTMLButtonElement>(null)
   const panelId = useId()
@@ -103,7 +117,7 @@ export function Header({ route }: { route: Route }) {
 
   return (
     <header className={s.header}>
-      <div className={s.bar} data-surface={light ? 'light' : undefined}>
+      <div className={s.bar} data-surface={light ? 'light' : undefined} data-m-surface={inkBar ? 'ink' : undefined}>
         <a href={homePath} className={s.brand} aria-label={`${company.name}, ${t.ui.home}`}>
           <Mark className={s.mark} />
           <span className={s.word}>{company.name}</span>

@@ -34,12 +34,14 @@ export const es: Dict = {
     before: 'Antes',
     now: 'Ahora',
     usesEngine: 'Capas',
+    detailsShort: 'Detalles',
   },
 
   prologue: {
     eyebrow: 'BLAKRA — Software con gravedad.',
     title: { before: 'Construimos lo', human: 'que mueve su empresa', after: '.' },
     lede: 'Diseñamos, construimos y operamos sistemas de gestión e inventario, paneles de administración y tiendas en línea, apps web y móviles, bots e IA que trabaja con sus propios datos. Nuestro equipo directivo dirige cada proyecto, implicado desde el alcance inicial hasta producción.',
+    ledeShort: 'Sistemas de gestión, apps e IA sobre sus datos. Diseño, desarrollo y operación.',
     cue: '¿Qué necesita construir?',
     also: 'Otras formas de trabajar con nosotros:',
     facts: 'Fundada en 2024 · Equipos remote-first · Respuesta en 24 horas',
@@ -49,6 +51,11 @@ export const es: Dict = {
     eyebrow: 'Por qué un solo equipo',
     title: 'Un producto es tan fuerte como su traspaso más débil.',
     body: 'LIOXSA lo construyó un solo equipo, de principio a fin, y así construimos para nuestros clientes. Lo habitual es repartirlo: el diseño de una agencia, la app de otra, el backend de un freelance y la IA de un consultor. Cada traspaso pierde algo, y cuando algo falla, cada proveedor señala al siguiente. Con nosotros hay un solo contrato, un solo equipo y un responsable designado para todo.',
+    bodyShort: 'LIOXSA lo construyó un solo equipo, de principio a fin. Cada traspaso pierde algo, y cuando algo falla, cada proveedor señala al siguiente.',
+    usualShort: 'Lo habitual',
+    withUsLabelShort: 'Con nosotros',
+    withUsShort: 'Un solo contrato, un solo equipo y un responsable designado para todo.',
+    vendorsShort: [{ area: 'Diseño', who: 'Una agencia' }, { area: 'La app', who: 'Otra' }, { area: 'Backend', who: 'Un freelance' }, { area: 'IA', who: 'Un consultor' }],
     ask: '¿Qué necesita construir?',
     needs: {
       panel: { label: 'Un panel de administración para gestionar nuestras operaciones.', tag: 'Panel de administración' },
@@ -226,6 +233,7 @@ export const es: Dict = {
     eyebrow: 'La IA en la cima',
     title: 'IA que hace trabajo real, con sus datos, en sus condiciones.',
     lede: 'Construimos herramientas de IA de principio a fin, desde los datos que leen hasta la pantalla que usan las personas. Los modelos de código abierto funcionan en nuestros servidores o en los suyos, para que los datos sensibles se queden en casa. Las plataformas comerciales le llevan a producción lo más rápido. Elegimos la opción adecuada para cada proyecto.',
+    ledeShort: 'Construimos herramientas de IA de principio a fin, con código abierto o plataformas comerciales, según cada proyecto.',
     blocks: {
       agents: { name: 'Agentes que actúan', text: 'Leen, responden y dan el siguiente paso dentro de las herramientas que su equipo ya usa. Una persona aprueba lo importante.' },
       documents: { name: 'Respuestas desde sus documentos', text: 'Cada respuesta cita su documento y su página. El acceso sigue los permisos de cada lector.' },
@@ -246,6 +254,7 @@ export const es: Dict = {
     eyebrow: 'Capacidades',
     title: 'Siete capas. Un equipo.',
     lede: 'Un solo equipo significa dominar cada capa. Muchas organizaciones contratan un proveedor distinto para cada una; nosotros cubrimos las siete y las construimos en orden, desde los cimientos, porque cada capa depende de la que tiene debajo.',
+    ledeShort: 'Cubrimos las siete y las construimos en orden, desde los cimientos.',
     layers: {
       ai: { name: 'IA', text: 'Asistentes de IA que leen, responden y actúan dentro de su trabajo, sobre sus propios datos y con una persona a un paso.' },
       growth: { name: 'Lanzamiento y SEO', text: 'SEO técnico, contenido y medios de lanzamiento, para que el público de un producto pueda encontrarlo.' },
@@ -286,6 +295,8 @@ export const es: Dict = {
     items: {
       skin: {
         line: 'LIOXSA lee una sola foto del rostro para el tono, la textura, el enrojecimiento y los poros, explica el resultado con palabras claras y recomienda productos profesionales. Orientación cosmética, no un diagnóstico médico.',
+        lineShort: 'Lee una sola foto del rostro para el tono, la textura, el enrojecimiento y los poros, y explica el resultado con palabras claras.',
+        noteShort: 'Orientación cosmética, no un diagnóstico médico.',
         detail: 'Escrita desde cero, sin dependencias de terceros. Las imágenes nunca se envían a servicios externos. Demo bajo NDA.',
         offer: 'Patrocinio, licencia o venta completa con código fuente y propiedad intelectual',
       },
@@ -303,12 +314,14 @@ export const es: Dict = {
     eyebrow: 'Nuestra dirección, nuestros equipos',
     title: 'Las personas que conoce son las que construyen.',
     lede: 'Detrás de cada paso está nuestro equipo directivo. Define el alcance de cada proyecto y sigue implicado hasta que funciona en producción.',
+    ledeShort: 'Nuestro equipo directivo define cada proyecto y sigue implicado hasta que funciona en producción.',
     roles: [
       { role: 'Fundador y director de tecnología (CTO)', owns: 'Estrategia de IA y arquitectura de sistemas, del primer diagrama a producción.', ask: 'Pregunte por: si la IA tiene realmente sitio en su proceso.' },
       { role: 'Ingeniero full-stack sénior y responsable de backend', owns: 'La base de cada sistema: backends, plataformas de datos y fiabilidad.', ask: 'Pregunte por: datos fiables y sistemas que no se caen.' },
       { role: 'Responsable de operaciones y cumplimiento corporativo', owns: 'Gobierno corporativo, cumplimiento y proveedores, para que el lado del negocio funcione tan limpio como el código.', ask: 'Pregunte por: contratos, NDA y protección de datos.' },
     ],
     bench: 'La entrega se organiza en nuestras áreas: Engineering, Product Design, Data & AI, Cloud & DevOps y Delivery. Cada proyecto se forma con especialistas de nuestra red, con un responsable de cuenta designado.',
+    practicesShort: ['Engineering', 'Product Design', 'Data & AI', 'Cloud & DevOps', 'Delivery'],
   },
 
   contact: {

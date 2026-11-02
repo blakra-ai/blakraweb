@@ -238,3 +238,105 @@
   max-width: 460px;
   font-size: 1rem;
 }
+
+/* ---------- Phones, run 2026-11-02-mobile (concept.md 07 · 09) ---------- */
+@media (max-width: 767px) {
+  .work {
+    --swipe-pad: 20px;
+    padding: 64px 20px 56px;
+  }
+  .head .note {
+    margin-top: 4px;
+  }
+  /* Client work: one project per screen width, the screen cropped to its readable corner. */
+  .grid {
+    margin-top: 28px;
+    padding-top: 0;
+    border-top: 0;
+  }
+  .item {
+    width: calc(100vw - 52px);
+  }
+  .item[data-active] {
+    transform: translateY(-6px);
+  }
+  .work .window,
+  .item:first-child .window {
+    aspect-ratio: 4 / 5;
+  }
+  .window[data-frame='browser'] img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    object-position: left top;
+    transform: none;
+  }
+  .window[data-row] img:not([data-k='0']) {
+    display: none;
+  }
+  .name {
+    font-size: 2rem;
+    font-weight: 300;
+  }
+  /* How we work: a vertical timeline, a gold line through three nodes. */
+  .processSection {
+    padding-top: 64px;
+  }
+  .processTitle {
+    font-size: 2rem;
+    font-weight: 300;
+  }
+  .steps {
+    position: relative;
+    row-gap: 28px;
+    margin-top: 12px;
+    padding-left: 28px;
+  }
+  .steps::before {
+    content: '';
+    position: absolute;
+    left: 5px;
+    top: 8px;
+    bottom: 8px;
+    width: 2px;
+    background: #d9a441;
+    transform-origin: top;
+  }
+  .steps li {
+    position: relative;
+    border-top: 0;
+    padding-top: 0;
+  }
+  .steps li::before {
+    content: '';
+    position: absolute;
+    left: -28px;
+    top: 4px;
+    width: 12px;
+    height: 12px;
+    border-radius: 50%;
+    background: var(--body);
+    border: 2px solid #d9a441;
+  }
+  .steps b {
+    font-size: 1.25rem;
+    font-weight: 400;
+  }
+  .steps span {
+    font-size: 1rem;
+  }
+}
+@media (max-width: 767px) and (prefers-reduced-motion: no-preference) {
+  @supports (animation-timeline: view()) {
+    :global(html:not(.motion-off)) .steps::before {
+      animation: m-draw linear both;
+      animation-timeline: view();
+      animation-range: entry 30% cover 60%;
+    }
+  }
+}
+@keyframes m-draw {
+  from {
+    transform: scaleY(0);
+  }
+}

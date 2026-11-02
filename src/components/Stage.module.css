@@ -259,3 +259,223 @@
 :global(html.porthole-margin) .object {
   --ring-x: 51.5%;
 }
+
+/* ---------- Phones, run 2026-11-02-mobile (concept.md 03 · 04 · 05): no held stage, three plain blocks ---------- */
+@media (max-width: 767px) {
+  .stage,
+  :global(html.motion-off) .stage {
+    height: auto;
+  }
+  .hold {
+    display: none;
+  }
+  .words,
+  :global(html.motion-off) .words {
+    position: static;
+  }
+  .block,
+  .block:first-child,
+  .block + .block {
+    min-height: 0;
+    margin: 0;
+    padding: 56px 20px 48px;
+    width: auto;
+    background: var(--body);
+  }
+  .h2 {
+    margin-top: 16px;
+  }
+  .lede {
+    margin-top: 18px;
+  }
+  .why {
+    margin-top: 28px;
+  }
+  .whyLabel {
+    color: var(--grey);
+  }
+  .vendors {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 8px;
+    margin-top: 12px;
+    padding: 0;
+    list-style: none;
+  }
+  .vendors li {
+    padding: 14px;
+    border: 1px solid var(--hair);
+    border-radius: 12px;
+    background: var(--panel);
+  }
+  .vendors b {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-weight: 400;
+    font-size: 1.0625rem;
+  }
+  .vendors b::before {
+    content: '';
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background: var(--chakra);
+  }
+  .vendors span {
+    display: block;
+    margin-top: 6px;
+    font-size: 0.6875rem;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--grey);
+  }
+  .withUs {
+    margin-top: 12px;
+    padding: 18px;
+    border-radius: 12px;
+  }
+  .wire {
+    position: relative;
+    display: flex;
+    justify-content: space-between;
+    margin: 18px 6px;
+  }
+  .wireLine {
+    position: absolute;
+    left: 0;
+    right: 0;
+    top: 3px;
+    height: 1px;
+    background: #d9a441;
+    transform-origin: left;
+  }
+  .wireDot {
+    position: relative;
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background: var(--chakra);
+  }
+  .withText {
+    font-size: 1.1875rem;
+    line-height: 1.35;
+  }
+  .orbit {
+    width: min(100%, 350px);
+    margin: 24px auto 8px;
+    overflow: visible;
+  }
+  .rows {
+    margin-top: 16px;
+    border-bottom: 1px solid var(--hair);
+  }
+  .row {
+    border-top: 1px solid var(--hair);
+  }
+  .row summary {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    min-height: 52px;
+    list-style: none;
+    cursor: pointer;
+  }
+  .row summary::-webkit-details-marker {
+    display: none;
+  }
+  .row summary i {
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    background: var(--chakra);
+    box-shadow: 0 0 10px var(--chakra);
+  }
+  .rowName {
+    flex: 1;
+    font-size: 1.1875rem;
+    font-weight: 300;
+  }
+  .rowN {
+    color: var(--grey);
+  }
+  .row summary::after {
+    content: '+';
+    width: 16px;
+    text-align: center;
+    font-size: 1.125rem;
+  }
+  .row[open] summary::after {
+    content: '–';
+  }
+  .row p {
+    padding: 0 0 16px 24px;
+    color: var(--grey);
+  }
+  .crown {
+    margin-top: 24px;
+  }
+  .ask {
+    font-size: 2rem;
+  }
+  .pills {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 8px;
+  }
+  .pill {
+    height: auto;
+    min-height: 44px;
+    justify-content: center;
+    text-align: center;
+  }
+  .mini {
+    width: 200px;
+    margin: 20px auto 0;
+  }
+  .mini circle[data-ring],
+  .orbit circle[data-ring] {
+    transition: opacity 0.4s var(--ease);
+  }
+  .mini circle[data-dim] {
+    opacity: 0.18;
+  }
+}
+@media (max-width: 767px) and (prefers-reduced-motion: no-preference) {
+  @supports (animation-timeline: view()) {
+    :global(html:not(.motion-off)) .orbit circle[data-ring] {
+      transform-box: view-box;
+      transform-origin: center;
+      animation: m-settle linear both;
+      animation-timeline: view();
+    }
+    :global(html:not(.motion-off)) .orbit circle[data-ring='0'] { animation-range: entry 0% cover 30%; }
+    :global(html:not(.motion-off)) .orbit circle[data-ring='1'] { animation-range: entry 5% cover 33%; }
+    :global(html:not(.motion-off)) .orbit circle[data-ring='2'] { animation-range: entry 10% cover 36%; }
+    :global(html:not(.motion-off)) .orbit circle[data-ring='3'] { animation-range: entry 15% cover 39%; }
+    :global(html:not(.motion-off)) .orbit circle[data-ring='4'] { animation-range: entry 20% cover 42%; }
+    :global(html:not(.motion-off)) .orbit circle[data-ring='5'] { animation-range: entry 25% cover 45%; }
+    :global(html:not(.motion-off)) .orbit circle[data-ring='6'] { animation-range: entry 30% cover 48%; }
+    :global(html:not(.motion-off)) .wireLine {
+      animation: m-wire linear both;
+      animation-timeline: view();
+      animation-range: entry 40% cover 50%;
+    }
+    :global(html:not(.motion-off)) .vendors li {
+      animation: m-apart linear both;
+      animation-timeline: view();
+      animation-range: entry 20% cover 50%;
+    }
+    :global(html:not(.motion-off)) .vendors li:nth-child(odd) { --dx: -4px; --rot: -2deg; }
+    :global(html:not(.motion-off)) .vendors li:nth-child(even) { --dx: 4px; --rot: 2deg; }
+  }
+}
+@keyframes m-settle {
+  from { transform: scale(0.42) rotate(-40deg); }
+}
+@keyframes m-wire {
+  from { transform: scaleX(0); }
+}
+@keyframes m-apart {
+  to { transform: translateX(var(--dx, 0)) rotate(var(--rot, 0)); }
+}

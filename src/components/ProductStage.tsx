@@ -22,13 +22,13 @@ export function ProductStage() {
   const tx = t.products.items[p.id]
   const uses = p.layers.map((l) => ORDER.indexOf(l) + 1).sort((a, b) => a - b)
   return (
-    <div className={`dark ${s.stage}`}>
+    <div className={`dark ${s.stage}`} data-loop>
       <div className={s.copy}>
         <p className="eyebrow mono">02 / 10 &nbsp;·&nbsp; {t.products.eyebrow}</p>
         <h2 id="products-title" className={`h3 ${s.h}`} data-focus tabIndex={-1}>
           {t.products.title}
         </h2>
-        <p className={s.lede}>{t.products.lede}</p>
+        <p className={`d-only ${s.lede}`}>{t.products.lede}</p>
 
         <div className={s.product}>
           <p className={`mono ${s.chip}`}>
@@ -36,9 +36,11 @@ export function ProductStage() {
             {t.products.stage[p.stage]} · {p.platforms.join(', ')}
           </p>
           <h3 className={s.name}>{p.name}</h3>
-          <p className={s.line}>{tx.line}</p>
-          <p className={s.detail}>{tx.detail}</p>
-          <p className={`mono ${s.uses}`}>
+          <p className={`d-only ${s.line}`}>{tx.line}</p>
+          <p className={`m-only ${s.line}`}>{tx.lineShort}</p>
+          <p className={`m-only ${s.note}`}>{tx.noteShort}</p>
+          <p className={`d-only ${s.detail}`}>{tx.detail}</p>
+          <p className={`d-only mono ${s.uses}`}>
             {t.pulse.uses} {uses.join(', ')}
           </p>
         </div>
@@ -50,18 +52,35 @@ export function ProductStage() {
               <li key={o}>{o}</li>
             ))}
           </ul>
-          <p className={s.offerText}>{tx.offer}</p>
+          <p className={`d-only ${s.offerText}`}>{tx.offer}</p>
         </div>
 
         <div className={s.actions}>
           <a className={`pill ${s.cta}`} href={`${pathFor('home', locale)}?intent=invest#contact`}>
             {t.contact.doors.invest.label} <span aria-hidden="true">→</span>
           </a>
-          <a className={s.link} href={pathFor('investors', locale)}>
+          <a className={`d-only ${s.link}`} href={pathFor('investors', locale)}>
             {t.products.investorsLink}
           </a>
         </div>
-        <p className={s.more}>{t.products.more}</p>
+        <p className={`d-only ${s.more}`}>{t.products.more}</p>
+
+        {/* Phones: the rest of the story behind "Details +" (concept.md §3). */}
+        <details className={`m-only m-details ${s.details}`}>
+          <summary>{t.ui.detailsShort}</summary>
+          <p>{t.products.lede}</p>
+          <p>{tx.detail}</p>
+          <p className="mono">
+            {t.pulse.uses} {uses.join(', ')}
+          </p>
+          <p>{tx.offer}</p>
+          <p>{t.products.more}</p>
+          <p>
+            <a className={s.link} href={pathFor('investors', locale)}>
+              {t.products.investorsLink}
+            </a>
+          </p>
+        </details>
       </div>
 
       {/* The object: the gold ring and its black hole, the phone standing in front of it. */}

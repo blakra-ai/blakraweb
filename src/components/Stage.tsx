@@ -13,6 +13,32 @@ import { onReflow } from '../motion/reflow'
 import { Section } from './Section'
 import s from './Stage.module.css'
 
+/** The vendor grid's four areas (design, the app, backend, AI) as their layers' chakra indices. */
+const VENDOR_CHAKRA = [3, 4, 0, 6] as const
+
+/**
+ * Phones: the seven layers as rings round the black disc with its gold rim (root inside, crown
+ * outside). `lit` dims the rings not chosen (opacity on strokes only); `settle` lets the rings
+ * settle into orbit with the scroll (CSS view timeline; the final state without it).
+ */
+function Orbit({ lit, settle, className }: { lit: readonly LayerId[] | null; settle?: boolean; className?: string }) {
+  return (
+    <svg className={className} viewBox="0 0 360 360" aria-hidden="true" data-settle={settle || undefined}>
+      <defs>
+        <radialGradient id={settle ? 'm-glow' : 'm-glow-mini'}>
+          <stop offset="0.55" stopColor="#d9a441" stopOpacity="0.28" />
+          <stop offset="1" stopColor="#d9a441" stopOpacity="0" />
+        </radialGradient>
+      </defs>
+      <circle cx="180" cy="180" r="96" fill={`url(#${settle ? 'm-glow' : 'm-glow-mini'})`} />
+      {ROOT_TO_CROWN.map((id, i) => (
+        <circle key={id} cx="180" cy="180" r={84 + i * 15} fill="none" stroke={chakraColors[chakraOf[id]]} strokeWidth="1.6" data-ring={i} data-dim={(lit && !lit.includes(id)) || undefined} />
+      ))}
+      <circle cx="180" cy="180" r="66" fill="#000" stroke="#d9a441" strokeWidth="1.6" />
+    </svg>
+  )
+}
+
 /** The seven layers root to crown (the chakra order), by id. */
 const ROOT_TO_CROWN: readonly LayerId[] = ['cloud', 'data', 'automation', 'design', 'apps', 'growth', 'ai']
 
@@ -154,14 +180,54 @@ export function Stage() {
         <div className={s.block} data-station={3}>
           <p className="eyebrow mono">{t.pulse.eyebrow}</p>
           <h2 className={`h2 ${s.h2}`}>{t.pulse.title}</h2>
-          <p className={`lede ${s.lede}`}>{t.pulse.body}</p>
+          <p className={`d-only lede ${s.lede}`}>{t.pulse.body}</p>
+          {/* Phones: the argument drawn: four vendors drift apart, one gold wire joins the four layers. */}
+          <div className={`m-only ${s.why}`}>
+            <p className={`mono ${s.whyLabel}`}>{t.pulse.usualShort}</p>
+            <ul className={s.vendors}>
+              {t.pulse.vendorsShort.map((v, i) => (
+                <li key={v.area} style={{ '--chakra': chakraColors[VENDOR_CHAKRA[i]!] } as CSSProperties} data-m-drift={i}>
+                  <b>{v.area}</b>
+                  <span className="mono">{v.who}</span>
+                </li>
+              ))}
+            </ul>
+            <div className={s.withUs} data-m-surface="ink">
+              <p className={`mono ${s.whyLabel}`}>{t.pulse.withUsLabelShort}</p>
+              <div className={s.wire} aria-hidden="true">
+                <i className={s.wireLine} />
+                {VENDOR_CHAKRA.map((c) => (
+                  <i key={c} className={s.wireDot} style={{ '--chakra': chakraColors[c] } as CSSProperties} />
+                ))}
+              </div>
+              <p className={s.withText}>{t.pulse.withUsShort}</p>
+            </div>
+            <p className={`lede ${s.lede}`}>{t.pulse.bodyShort}</p>
+          </div>
         </div>
-        <div className={s.block} data-station={4}>
+        <div className={s.block} data-station={4} data-m-surface="ink">
           <p className="eyebrow mono">{t.engine.eyebrow}</p>
           <h2 id="stage-title" className={`h2 ${s.h2}`} data-focus tabIndex={-1}>
             {t.engine.title}
           </h2>
-          <p className={`lede ${s.lede}`}>{t.engine.lede}</p>
+          <p className={`d-only lede ${s.lede}`}>{t.engine.lede}</p>
+          <p className={`m-only lede ${s.lede}`}>{t.engine.ledeShort}</p>
+          {/* Phones: the seven rings settle into orbit round the disc, then one row per layer, crown to root. */}
+          <Orbit className={`m-only ${s.orbit}`} lit={null} settle />
+          <div className={`m-only ${s.rows}`}>
+            {[...ROOT_TO_CROWN].reverse().map((id) => (
+              <details key={id} name="m-layers" open={id === 'ai'} className={s.row} style={{ '--chakra': chakraColors[chakraOf[id]] } as CSSProperties}>
+                <summary>
+                  <i aria-hidden="true" />
+                  <span className={s.rowName}>{t.engine.layers[id].name}</span>
+                  <span className={`mono ${s.rowN}`} aria-hidden="true">
+                    0{chakraOf[id] + 1}
+                  </span>
+                </summary>
+                <p>{t.engine.layers[id].text}</p>
+              </details>
+            ))}
+          </div>
           <p className={`lede ${s.crown}`}>{t.engine.crownTitle}</p>
         </div>
         <div className={`${s.block} ${s.picker}`} data-station={5} id="pulse">
@@ -176,6 +242,7 @@ export function Stage() {
               </button>
             ))}
           </div>
+          <Orbit className={`m-only ${s.mini}`} lit={picked} />
           <div className={s.takes} aria-live="polite">
             {choice && <p className={`lede ${s.verdict}`}>{choice === 'all' ? t.pulse.verdictAll : t.pulse.verdict}</p>}
             {choice && (

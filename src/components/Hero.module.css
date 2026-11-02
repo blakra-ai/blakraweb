@@ -165,3 +165,130 @@
     letter-spacing: 0.06em;
   }
   }
+
+/* ---------- Phones, run 2026-11-02-mobile (concept.md 01): the figure owns the top, the words sit under it ---------- */
+.human {
+  font: inherit;
+}
+.ripples {
+  display: none;
+}
+@media (max-width: 767px) {
+  .hero {
+    padding-top: var(--header-h);
+    background: #0b0b0d;
+  }
+  .window {
+    margin: 0;
+    border: 0;
+    border-radius: 0;
+    min-height: calc(100svh - var(--header-h));
+    --still-h: 440px;
+  }
+  /* The still: the ring and the guide across the top 440 px, fading into the ink under the words. */
+  .window > [data-still] {
+    top: 0;
+    bottom: auto;
+    height: var(--still-h);
+  }
+  .window > [data-still] img {
+    left: -128px;
+    right: auto;
+    width: 715px;
+    max-width: none;
+    height: 500px;
+    object-fit: cover;
+    object-position: left top;
+  }
+  .window > [data-still]::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(to bottom, rgba(11, 11, 13, 0.55) 0, rgba(11, 11, 13, 0) 18%, rgba(11, 11, 13, 0) 55%, #0b0b0d 98%);
+  }
+  .ripples {
+    display: block;
+    position: absolute;
+    left: -128px;
+    top: 0;
+    width: 715px;
+    max-width: none;
+    height: 500px;
+    z-index: 0;
+    pointer-events: none;
+  }
+  .ripples circle {
+    fill: none;
+    stroke: #d9a441;
+    stroke-width: 1.2;
+    opacity: 0;
+    transform-box: fill-box;
+    transform-origin: center;
+  }
+  .inner {
+    padding: calc(var(--still-h) - 96px) 20px 18px;
+    grid-template-rows: auto auto auto;
+  }
+  .inner::after,
+  .tag,
+  .voice {
+    display: none;
+  }
+  .words {
+    grid-row: 1;
+    padding: 0;
+  }
+  .eyebrow {
+    margin-bottom: 14px;
+  }
+  .human {
+    font-family: var(--font-serif);
+    font-style: italic;
+    font-weight: 400;
+    letter-spacing: -0.02em;
+  }
+  .lede {
+    margin-top: 14px;
+    font-size: 1.0625rem;
+    line-height: 1.45;
+    color: #a9a59d;
+    max-width: 34ch;
+  }
+  .actions {
+    margin-top: 22px;
+    gap: 18px;
+  }
+  .actions :global(.pill) {
+    background: #d9a441;
+    border-color: #d9a441;
+    color: #0b0b0d;
+    min-height: 48px;
+    padding-inline: 22px;
+  }
+  .cue {
+    color: var(--porcelain);
+    text-decoration: underline;
+    text-underline-offset: 4px;
+  }
+  .foot {
+    grid-row: 2;
+    margin-top: 22px;
+    padding-top: 14px;
+    border-top: 1px solid var(--hair);
+    color: #a9a59d;
+  }
+}
+@media (max-width: 767px) and (prefers-reduced-motion: no-preference) {
+  :global(html:not(.motion-off)) .ripples circle {
+    animation: m-suck 3.6s cubic-bezier(0.5, 0, 0.75, 0) infinite;
+  }
+  :global(html:not(.motion-off)) .ripples circle:nth-child(2) {
+    animation-delay: 1.2s;
+  }
+  :global(html:not(.motion-off)) .ripples circle:nth-child(3) {
+    animation-delay: 2.4s;
+  }
+  :global(html:not(.motion-off)) .window > [data-still] img {
+    animation: m-drift 14s ease-in-out infinite alternate;
+  }
+}

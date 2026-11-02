@@ -34,12 +34,14 @@ export const de: Dict = {
     before: 'Vorher',
     now: 'Jetzt',
     usesEngine: 'Ebenen',
+    detailsShort: 'Details',
   },
 
   prologue: {
     eyebrow: 'BLAKRA — Software mit Anziehungskraft.',
     title: { before: 'Wir bauen, was', human: 'Ihren Betrieb trägt', after: '.' },
     lede: 'Wir entwerfen, entwickeln und betreiben Systeme für Abläufe und Bestände, Admin-Panels und Onlineshops, Web- und Mobile-Apps, Bots sowie KI, die mit Ihren eigenen Daten arbeitet. Unser Leitungsteam führt jedes Projekt selbst, von der ersten Analyse bis zum Produktivbetrieb.',
+    ledeShort: 'Systeme für Abläufe, Apps und KI. Entworfen, gebaut, betrieben.',
     cue: 'Was sollen wir für Sie bauen?',
     also: 'Andere Formen der Zusammenarbeit:',
     facts: 'Gegründet 2024 · Remote-first-Teams · Antwort binnen 24 Stunden',
@@ -49,6 +51,11 @@ export const de: Dict = {
     eyebrow: 'Warum ein Team',
     title: 'Ein Produkt ist nur so stark wie seine schwächste Übergabe.',
     body: 'LIOXSA hat ein einziges Team gebaut, vollständig, und genau so bauen wir für unsere Kunden. Üblich ist die Aufteilung: das Design von einer Agentur, die App von einer zweiten, das Backend von einem Freelancer und die KI von einem Berater. Bei jeder Übergabe geht etwas verloren, und wenn etwas ausfällt, zeigt jeder Anbieter auf den nächsten. Bei uns gibt es für alles einen Vertrag, ein Team und eine verantwortliche Projektleitung.',
+    bodyShort: 'LIOXSA hat ein einziges Team gebaut, vollständig. Bei jeder Übergabe geht etwas verloren, und wenn etwas ausfällt, zeigt jeder Anbieter auf den nächsten.',
+    usualShort: 'Üblich',
+    withUsLabelShort: 'Bei uns',
+    withUsShort: 'Für alles ein Vertrag, ein Team und eine verantwortliche Projektleitung.',
+    vendorsShort: [{ area: 'Design', who: 'Eine Agentur' }, { area: 'Die App', who: 'Eine zweite' }, { area: 'Backend', who: 'Ein Freelancer' }, { area: 'KI', who: 'Ein Berater' }],
     ask: 'Was sollen wir für Sie bauen?',
     needs: {
       panel: { label: 'Ein Admin-Panel für unseren Betrieb.', tag: 'Admin-Panel' },
@@ -226,6 +233,7 @@ export const de: Dict = {
     eyebrow: 'KI an der Spitze',
     title: 'KI, die echte Arbeit leistet, mit Ihren Daten, zu Ihren Bedingungen.',
     lede: 'Wir bauen KI-Werkzeuge vollständig, von den Daten, die sie lesen, bis zum Bildschirm, den Menschen nutzen. Open-Source-Modelle laufen auf unseren Servern oder Ihren, damit sensible Daten in Ihrem Haus bleiben. Kommerzielle Plattformen bringen Sie am schnellsten in den Produktivbetrieb. Wir wählen für jedes Projekt das Passende.',
+    ledeShort: 'Wir bauen KI-Werkzeuge vollständig, mit Open-Source-Modellen oder kommerziellen Plattformen, passend für jedes Projekt.',
     blocks: {
       agents: { name: 'Agenten, die handeln', text: 'Sie lesen, antworten und erledigen den nächsten Schritt in den Tools, die Ihr Team bereits nutzt. Was wichtig ist, gibt ein Mensch frei.' },
       documents: { name: 'Antworten aus Ihren Dokumenten', text: 'Jede Antwort nennt Dokument und Seite. Der Zugriff folgt den Berechtigungen der jeweiligen Person.' },
@@ -246,6 +254,7 @@ export const de: Dict = {
     eyebrow: 'Leistungen',
     title: 'Sieben Ebenen. Ein Team.',
     lede: 'Ein Team heißt: Jede Ebene liegt in einer Hand. Viele Organisationen beauftragen für jede davon einen eigenen Anbieter; wir decken alle sieben ab und bauen sie der Reihe nach, vom Fundament aufwärts, denn jede Ebene hängt von der darunter ab.',
+    ledeShort: 'Wir decken alle sieben ab und bauen sie der Reihe nach, vom Fundament aufwärts.',
     layers: {
       ai: { name: 'KI', text: 'KI-Assistenten, die in Ihrer Arbeit lesen, antworten und handeln, mit Ihren eigenen Daten und einem Menschen in Reichweite.' },
       growth: { name: 'Launch und Suche', text: 'Technisches SEO, Inhalte und Medien zum Launch, damit die Zielgruppe ein Produkt auch findet.' },
@@ -286,6 +295,8 @@ export const de: Dict = {
     items: {
       skin: {
         line: 'LIOXSA liest aus einem Foto des Gesichts Hautton, Textur, Rötungen und Poren, erklärt das Ergebnis in klaren Worten und empfiehlt professionelle Produkte. Kosmetische Orientierung, keine medizinische Diagnose.',
+        lineShort: 'Liest aus einem Foto des Gesichts Hautton, Textur, Rötungen und Poren und erklärt das Ergebnis in klaren Worten.',
+        noteShort: 'Kosmetische Orientierung, keine medizinische Diagnose.',
         detail: 'Von Grund auf selbst geschrieben, ohne Abhängigkeiten von Drittanbietern. Bilder werden nie an externe Dienste gesendet. Demo unter NDA.',
         offer: 'Sponsoring, Lizenz oder Komplettverkauf mit Quellcode und IP-Rechten',
       },
@@ -303,12 +314,14 @@ export const de: Dict = {
     eyebrow: 'Unsere Leitung, unsere Teams',
     title: 'Die Menschen, die Sie treffen, sind die, die bauen.',
     lede: 'Hinter jedem Schritt steht unser Leitungsteam. Es definiert jedes Projekt und bleibt selbst eingebunden, bis es im Produktivbetrieb läuft.',
+    ledeShort: 'Unser Leitungsteam definiert jedes Projekt und bleibt eingebunden, bis es im Produktivbetrieb läuft.',
     roles: [
       { role: 'Gründer und Chief Technology Officer', owns: 'KI-Strategie und Systemarchitektur, vom ersten Diagramm bis zum Produktivbetrieb.', ask: 'Fragen Sie nach: ob KI überhaupt in Ihren Prozess gehört.' },
       { role: 'Senior Full-Stack Engineer und Leitung Backend', owns: 'Das Fundament jedes Systems: Backends, Datenplattformen und Zuverlässigkeit.', ask: 'Fragen Sie nach: Daten, denen man trauen kann, und Systemen, die laufen.' },
       { role: 'Leitung Betrieb und Corporate Compliance', owns: 'Unternehmensführung, Compliance und Dienstleister, damit die geschäftliche Seite so sauber läuft wie der Code.', ask: 'Fragen Sie nach: Verträgen, NDAs und Datenschutz.' },
     ],
     bench: 'Die Umsetzung läuft über unsere Fachbereiche: Engineering, Product Design, Data & AI, Cloud & DevOps und Delivery. Jedes Projekt wird aus unserem Netzwerk von Fachleuten besetzt, mit einer benannten Ansprechperson.',
+    practicesShort: ['Engineering', 'Product Design', 'Data & AI', 'Cloud & DevOps', 'Delivery'],
   },
 
   contact: {

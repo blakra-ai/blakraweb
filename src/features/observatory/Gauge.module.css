@@ -124,3 +124,24 @@
   }
 }
 
+
+/* Phones (run 2026-11-02-mobile): the chip names the chapter, its dot takes the chapter's colour,
+   and the progress rule is gold. */
+.chipName {
+  display: none;
+}
+@media (max-width: 767px) {
+  .chip .chipDot {
+    background: var(--dot, var(--porcelain));
+  }
+  .chipName {
+    display: inline;
+    min-width: 0;
+    margin-left: 0.75em;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+  .ruleFill {
+    background: #d9a441;
+  }
+}

@@ -37,12 +37,14 @@ export const en: Dict = {
     before: 'Before',
     now: 'Now',
     usesEngine: 'Layers',
+    detailsShort: 'Details',
   },
 
   prologue: {
     eyebrow: 'BLAKRA — Software with gravity.',
     title: { before: 'We build what', human: 'organizations run on', after: '.' },
     lede: 'We design, build and run operations and inventory systems, admin panels and online shops, web and mobile apps, bots, and AI that works on your own data. Our leadership team leads each project, hands-on from the first scope to production.',
+    ledeShort: 'Operations software, apps and AI, designed, built and run by one team.',
     cue: 'What do you need built?',
     also: 'Other ways to work with us:',
     facts: 'Founded 2024 · Remote-first teams · Reply within 24 hours',
@@ -52,6 +54,11 @@ export const en: Dict = {
     eyebrow: 'Why one team',
     title: 'A product is only as strong as its weakest hand-off.',
     body: 'LIOXSA was built by one team, end to end, and that is how we build for clients. The usual way splits it up: design from one agency, the app from another, the backend from a freelancer and the AI from a consultant. Each hand-off loses something, and when it breaks, each vendor points at the next. With us it is one contract, one team and one accountable lead for all of it.',
+    bodyShort: 'LIOXSA was built by one team, end to end. Each hand-off loses something, and when it breaks, each vendor points at the next.',
+    usualShort: 'The usual way',
+    withUsLabelShort: 'With us',
+    withUsShort: 'One contract, one team and one accountable lead for all of it.',
+    vendorsShort: [{ area: 'Design', who: 'One agency' }, { area: 'The app', who: 'Another agency' }, { area: 'The backend', who: 'A freelancer' }, { area: 'The AI', who: 'A consultant' }],
     ask: 'What do you need built?',
     needs: {
       panel: { label: 'An admin panel to run our operations.', tag: 'Admin panel' },
@@ -229,6 +236,7 @@ export const en: Dict = {
     eyebrow: 'AI at the crown',
     title: 'AI that does real work, on your data, on your terms.',
     lede: 'We build AI tools end to end, from the data they read to the screen people use. Open-source models run on our servers or yours, so sensitive data stays inside your walls. Commercial platforms take you to production fastest. We choose the right one for each project.',
+    ledeShort: 'We build AI tools end to end, on open-source models or commercial platforms, chosen for each project.',
     blocks: {
       agents: { name: 'Agents that act', text: 'They read, answer and take the next step inside the tools your team already uses. A person approves what matters.' },
       documents: { name: 'Answers from your documents', text: 'Every answer cites its document and page. Access follows each reader’s permissions.' },
@@ -249,6 +257,7 @@ export const en: Dict = {
     eyebrow: 'Capabilities',
     title: 'Seven layers. One team.',
     lede: 'One team means owning every layer. Many organizations hire a separate vendor for each of these; we cover all seven and build them in order, from the foundation up, because each layer depends on the one beneath it.',
+    ledeShort: 'We cover all seven and build them in order, from the foundation up.',
     layers: {
       ai: { name: 'AI', text: 'AI assistants that read, answer and act inside your work, on your own data, with a person one step away.' },
       growth: { name: 'Launch and search', text: 'Technical SEO, content and media for launch, so the people a product is for can find it.' },
@@ -289,6 +298,8 @@ export const en: Dict = {
     items: {
       skin: {
         line: 'LIOXSA reads one photo of the face for tone, texture, redness and pores, explains the result in plain words and recommends professional products. Cosmetic guidance, not a medical diagnosis.',
+        lineShort: 'Reads one photo of the face for tone, texture, redness and pores, and explains it in plain words.',
+        noteShort: 'Cosmetic guidance, not a medical diagnosis.',
         detail: 'Written from scratch, with no third-party dependencies. Images are never sent to outside services. Demo under NDA.',
         offer: 'Sponsorship, a license, or outright sale with source code and IP',
       },
@@ -306,12 +317,14 @@ export const en: Dict = {
     eyebrow: 'Our leadership, our teams',
     title: 'The people you meet are the people who build.',
     lede: 'Behind every step is our leadership team. It scopes each project and stays hands-on until it runs in production.',
+    ledeShort: 'Our leadership team scopes each project and stays hands-on until it runs in production.',
     roles: [
       { role: 'Founder and Chief Technology Officer', owns: 'AI strategy and systems architecture, from the first diagram to production.', ask: 'Ask about: whether AI belongs in your process at all.' },
       { role: 'Senior Full-Stack Engineer and Backend Lead', owns: 'The foundation of each system: backends, data platforms and reliability.', ask: 'Ask about: data you can trust and systems that stay up.' },
       { role: 'Head of Operations and Corporate Compliance', owns: 'Corporate governance, compliance and vendors, so the business side runs as cleanly as the code.', ask: 'Ask about: contracts, NDAs and data protection.' },
     ],
     bench: 'Delivery runs through our practices: Engineering, Product Design, Data & AI, Cloud & DevOps and Delivery. Each project is staffed from our specialist network, with a named account lead.',
+    practicesShort: ['Engineering', 'Product Design', 'Data & AI', 'Cloud & DevOps', 'Delivery'],
   },
 
   contact: {

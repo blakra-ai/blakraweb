@@ -64,12 +64,16 @@ export interface Dict {
     before: string
     now: string
     usesEngine: string
+    /** Phones: the label of a "Details +" disclosure. */
+    detailsShort: string
   }
   prologue: {
     eyebrow: string
     /** The H1 is `before` + `human` (set in italic) + `after`; `after` carries its own leading space. */
     title: { before: string; human: string; after: string }
     lede: string
+    /** Phones: the lede cut to one line (from meta.homeDescription). */
+    ledeShort: string
     /** The second action: jumps to the pulse question. */
     cue: string
     /** Short line before the partner and sponsor links in the hero. */
@@ -82,6 +86,12 @@ export interface Dict {
     eyebrow: string
     title: string
     body: string
+    /** Phones: the body cut to two sentences, and its parts as the vendor grid and the one-contract card. */
+    bodyShort: string
+    usualShort: string
+    withUsLabelShort: string
+    withUsShort: string
+    vendorsShort: [Vendor, Vendor, Vendor, Vendor]
     ask: string
     /** What the visitor needs: the label in their words (it also starts the message) and a short tag. */
     needs: Record<NeedId, { label: string; tag: string }>
@@ -122,6 +132,7 @@ export interface Dict {
     eyebrow: string
     title: string
     lede: string
+    ledeShort: string
     blocks: Record<AiBlockId, { name: string; text: string }>
     /** The two ways to build: open-source models and commercial platforms. */
     twoWays: string
@@ -136,6 +147,7 @@ export interface Dict {
     eyebrow: string
     title: string
     lede: string
+    ledeShort: string
     layers: Record<LayerId, { name: string; text: string }>
     /** The one place the name is explained: black hole and chakra. */
     symbol: string
@@ -164,7 +176,7 @@ export interface Dict {
     title: string
     lede: string
     stage: Record<StageId, string>
-    items: Record<ProductId, { line: string; detail: string; offer: string }>
+    items: Record<ProductId, { line: string; lineShort: string; noteShort: string; detail: string; offer: string }>
     platforms: string
     /** Label of the card row that says what is on offer. */
     offer: string
@@ -181,7 +193,9 @@ export interface Dict {
     eyebrow: string
     title: string
     lede: string
+    ledeShort: string
     roles: [Person, Person, Person]
+    practicesShort: string[]
     bench: string
   }
   contact: {
@@ -303,4 +317,10 @@ interface Door {
   msg: string
   placeholder: string
   submit: string
+}
+
+/** Phones: one vendor of the usual split (from pulse.body). */
+export interface Vendor {
+  area: string
+  who: string
 }

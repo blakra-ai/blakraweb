@@ -1,6 +1,5 @@
 import { createContext, useCallback, useContext, useEffect, useMemo, useRef, useState, type ReactNode } from 'react'
 import type Lenis from 'lenis'
-import { gsap } from './gsap'
 import { reflow, reflowNow } from './reflow'
 import { whenMotionIdle } from './schedule'
 
@@ -137,12 +136,16 @@ export function MotionProvider({ children }: { children: ReactNode }) {
   // never jump; ?smooth=native leaves the browser's own scrolling for comparison.
   useEffect(() => {
     if (!enabled || new URLSearchParams(location.search).get('smooth') === 'native') return
+    // Phones scroll natively: no Lenis and no GSAP there (run 2026-11-02-mobile budgets).
+    if (window.matchMedia('(max-width: 767px)').matches) return
     // Lenis is not in the boot bundle: it arrives after the page is interactive (TBT on phones).
     let lenis: Lenis | null = null
     let raf: ((time: number) => void) | null = null
     let cancelled = false
-    import('lenis').then(({ default: LenisCtor }) => {
+    let gsap: typeof import('gsap').gsap | null = null
+    Promise.all([import('lenis'), import('./gsap')]).then(([{ default: LenisCtor }, g]) => {
       if (cancelled) return
+      gsap = g.gsap
       lenis = new LenisCtor({ autoRaf: false, lerp: 0.09, smoothWheel: true, wheelMultiplier: 1 })
       lenisRef.current = lenis
       currentLenis = lenis
@@ -152,11 +155,11 @@ export function MotionProvider({ children }: { children: ReactNode }) {
     })
     return () => {
       cancelled = true
-      if (raf) gsap.ticker.remove(raf)
+      if (raf) gsap?.ticker.remove(raf)
       lenis?.destroy()
       lenisRef.current = null
       currentLenis = null
-      gsap.ticker.lagSmoothing(500, 33)
+      gsap?.ticker.lagSmoothing(500, 33)
     }
   }, [enabled])
 

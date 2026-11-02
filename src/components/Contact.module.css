@@ -329,3 +329,35 @@ textarea.control {
     content: attr(data-foot);
   }
 }
+
+/* ---------- Phones, run 2026-11-02-mobile (concept.md 10): ink; the headline in porcelain (contrast fix) ---------- */
+@media (max-width: 767px) {
+  .contact {
+    padding: 12px 0 48px;
+  }
+  .window {
+    margin: 0 12px;
+    border-radius: var(--r-window);
+  }
+  .panel {
+    margin: 28px 20px 0;
+  }
+  .title {
+    margin-top: 6px;
+    color: var(--porcelain);
+    font-size: 2rem;
+    font-weight: 300;
+  }
+  .lede {
+    font-size: 1rem;
+    line-height: 1.5;
+    color: var(--grey);
+  }
+  .door {
+    min-height: 44px;
+    height: auto;
+  }
+  .doors {
+    margin-top: 28px;
+  }
+}

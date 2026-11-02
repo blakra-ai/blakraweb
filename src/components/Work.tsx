@@ -2,6 +2,7 @@ import { shotUrl, work } from '../content/work'
 import { useI18n } from '../i18n'
 import { workPath } from '../routes'
 import { Section } from './Section'
+import { useSwipe } from '../mobile/swipe'
 import s from './Work.module.css'
 
 const two = (n: number) => String(n).padStart(2, '0')
@@ -15,6 +16,7 @@ const two = (n: number) => String(n).padStart(2, '0')
 export function Work() {
   const { t, locale } = useI18n()
   const w = t.work
+  const { list, count } = useSwipe<HTMLUListElement>()
   return (
     <Section id="work" beat="proof" surface="body" station={9} className={s.work} aria-labelledby="work-title">
       <div className={s.head}>
@@ -24,10 +26,10 @@ export function Work() {
         <h2 id="work-title" className={`h2 ${s.title}`} data-focus tabIndex={-1}>
           {w.title}
         </h2>
-        <p className={`lede ${s.lede}`}>{w.lede}</p>
+        <p className={`d-only lede ${s.lede}`}>{w.lede}</p>
         <p className={s.note}>{w.note}</p>
       </div>
-      <ul className={s.grid}>
+      <ul ref={list} className={`m-swipe ${s.grid}`} aria-label={w.title} aria-roledescription="carousel">
         {work.map((p, n) => {
           const shot = p.shots[0]
           const tx = w.projects[p.slug]
@@ -49,6 +51,7 @@ export function Work() {
           )
         })}
       </ul>
+      <p ref={count} className="m-only m-count" aria-hidden="true" />
       <p className={s.also}>{w.also}</p>
 
     </Section>

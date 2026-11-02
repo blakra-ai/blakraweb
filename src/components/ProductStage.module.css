@@ -356,3 +356,113 @@
 :global(html.motion-off) .sweep {
   animation: none;
 }
+
+/* ---------- Phones, run 2026-11-02-mobile (concept.md 02): the device first, then the name and the offer ---------- */
+@media (max-width: 767px) {
+  .stage {
+    display: flex;
+    flex-direction: column;
+    margin: 0 0 8px;
+    padding: 28px 20px 24px;
+  }
+  .copy {
+    display: contents;
+  }
+  .copy > :global(.eyebrow) {
+    order: 0;
+  }
+  .h {
+    order: 0;
+    margin-top: 14px;
+    font-size: 2rem;
+    font-weight: 300;
+    line-height: 1.04;
+  }
+  .object {
+    order: 1;
+    min-height: 380px;
+    margin: 18px -20px 0;
+  }
+  .ring {
+    width: 340px;
+  }
+  .phone {
+    width: 196px;
+    border-radius: 34px;
+  }
+  .product {
+    order: 2;
+    margin-top: 10px;
+    padding-top: 0;
+    border-top: 0;
+  }
+  .name {
+    font-size: 3rem;
+  }
+  .line {
+    font-size: 1.0625rem;
+  }
+  .note {
+    margin-top: 8px;
+    font-size: 0.9375rem;
+    color: var(--grey);
+  }
+  .offer {
+    order: 3;
+    margin-top: 22px;
+  }
+  .offerLabel {
+    display: none;
+  }
+  /* The offer strip as a segmented control: three equal cells in one rounded frame. */
+  .strip {
+    margin-top: 0;
+    flex-wrap: nowrap;
+    border: 1px solid var(--hair);
+    border-radius: 12px;
+  }
+  .strip li,
+  .strip li + li {
+    flex: 1 1 0;
+    min-width: 0;
+    padding: 14px 4px;
+    font-size: 1rem;
+    text-align: center;
+  }
+  .actions {
+    order: 4;
+    margin-top: 20px;
+  }
+  .cta {
+    height: 48px;
+    background: #d9a441;
+    border-color: #d9a441;
+    color: #0b0b0d;
+  }
+  .details {
+    order: 5;
+  }
+  .details p + p {
+    margin-top: 10px;
+  }
+  .details .link {
+    color: var(--porcelain);
+  }
+}
+@media (max-width: 767px) and (prefers-reduced-motion: no-preference) {
+  @supports (animation-timeline: view()) {
+    :global(html:not(.motion-off)) .phone {
+      animation: m-tilt linear both;
+      animation-timeline: view();
+      animation-range: cover 10% cover 60%;
+    }
+  }
+}
+@keyframes m-tilt {
+  from {
+    transform: rotate(-9deg) translateY(30px);
+  }
+  to {
+    transform: rotate(-3deg) translateY(-10px);
+  }
+}

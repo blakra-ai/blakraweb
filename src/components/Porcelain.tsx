@@ -6,6 +6,7 @@ import { getPulse, onPulse, type PulseChoice } from '../motion/pulse'
 import { InkWell, WellGrid } from '../features/observatory/Well'
 import { ProductStage } from './ProductStage'
 import { Section } from './Section'
+import { useSwipe } from '../mobile/swipe'
 import s from './Porcelain.module.css'
 
 const ORDER: readonly LayerId[] = ['cloud', 'data', 'automation', 'design', 'apps', 'growth', 'ai']
@@ -35,6 +36,7 @@ export function Products() {
 export function People() {
   const { t } = useI18n()
   const [choice, setChoice] = useState<PulseChoice>(null)
+  const { list, count } = useSwipe<HTMLUListElement>()
   useEffect(() => {
     setChoice(getPulse().choice)
     return onPulse(setChoice)
@@ -44,7 +46,7 @@ export function People() {
   const tag = choice ? (choice === 'all' ? t.pulse.allTag : t.pulse.needs[choice].tag) : null
 
   return (
-    <Section id="people" beat="crew" surface="porcelain" station={8} className={s.porcelain} aria-labelledby="people-title">
+    <Section id="people" beat="crew" surface="porcelain" station={8} className={s.porcelain} aria-labelledby="people-title" data-m-surface="ink">
       {/* The page's grid bends into the well here too (static SVG under the content). */}
       <WellGrid cx={0.76} cy={0.1} sigma={300} pull={0.64} className={s.grid} />
       <div className={s.col}>
@@ -55,8 +57,9 @@ export function People() {
           <h2 id="people-title" className={`h3 ${s.h}`} data-focus tabIndex={-1}>
             {t.people.title}
           </h2>
-          <p className={`lede ${s.lede}`}>{t.people.lede}</p>
-          <ul className={s.rows}>
+          <p className={`d-only lede ${s.lede}`}>{t.people.lede}</p>
+          <p className={`m-only lede ${s.lede}`}>{t.people.ledeShort}</p>
+          <ul ref={list} className={`m-swipe ${s.rows}`} aria-label={t.people.title} aria-roledescription="carousel">
             {t.people.roles.map((r) => (
               <li key={r.role} className={s.r}>
                 <b>{r.role}</b>
@@ -67,12 +70,24 @@ export function People() {
               </li>
             ))}
           </ul>
-          <p className={s.bench}>{t.people.bench}</p>
+          <p ref={count} className="m-only m-count" aria-hidden="true" />
+          <p className={`d-only ${s.bench}`}>{t.people.bench}</p>
+          <ul className={`m-only ${s.practices}`}>
+            {t.people.practicesShort.map((x) => (
+              <li key={x} className="mono">
+                {x}
+              </li>
+            ))}
+          </ul>
+          <details className="m-only m-details">
+            <summary>{t.ui.detailsShort}</summary>
+            <p>{t.people.bench}</p>
+          </details>
         </div>
       </div>
 
       {/* The one large object: the ink well, the remembered choice's layers as orange ticks on its rim. */}
-      <div className={s.object} data-hold>
+      <div className={`d-only ${s.object}`} data-hold>
         <InkWell r={56} ticks={lit} seal className={s.ring} />
         <p className={s.cap} aria-live="polite">
           <em>{t.pulse.remembered}</em>

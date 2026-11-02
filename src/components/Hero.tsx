@@ -18,11 +18,16 @@ import s from './Hero.module.css'
 export function Hero() {
   const { t, locale } = useI18n()
   const p = t.prologue
-  const title = `${p.title.before} ${p.title.human}${p.title.after}`
 
   return (
-    <Section id="top" beat="hero" surface="body" station={1} className={s.hero} aria-labelledby="title">
+    <Section id="top" beat="hero" surface="body" station={1} className={s.hero} aria-labelledby="title" data-loop>
       <Window id="hero" kind="hero" ring still={heroStill} stillPhone={heroStillPhone} className={s.window}>
+        {/* Phones: gold suction ripples contract into the still's ring (CSS only; paused off screen). */}
+        <svg className={`m-only ${s.ripples}`} viewBox="0 0 715 500" aria-hidden="true">
+          <circle cx="222" cy="170" r="184" />
+          <circle cx="222" cy="170" r="184" />
+          <circle cx="222" cy="170" r="184" />
+        </svg>
         <div className={s.inner}>
           <p className={`mono ${s.tag}`} aria-hidden="true">
             {chip(1)}
@@ -32,9 +37,13 @@ export function Hero() {
           <div className={s.words}>
             <p className={`eyebrow mono ${s.eyebrow}`}>{p.eyebrow}</p>
             <h1 id="title" className={`h1 ${s.title}`} data-focus tabIndex={-1}>
-              {title}
+              {p.title.before} <span className={s.human}>{p.title.human}</span>
+              {p.title.after}
             </h1>
-            <p className={`lede ${s.lede}`}>{p.lede}</p>
+            <p className={`lede ${s.lede}`}>
+              <span className="d-only">{p.lede}</span>
+              <span className="m-only">{p.ledeShort}</span>
+            </p>
             <div className={s.actions}>
               <a className="pill" data-cta href={`${pathFor('home', locale)}#contact`}>
                 {t.ui.cta}

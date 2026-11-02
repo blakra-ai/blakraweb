@@ -1,4 +1,5 @@
 import { Suspense } from 'react'
+import { useLoopPause } from '../mobile/swipe'
 import { Hero } from '../components/Hero'
 import { Stage } from '../components/Stage'
 import { Ai } from '../components/Ai'
@@ -16,6 +17,7 @@ import { Gauge } from '../features/observatory/Gauge'
  * in document order).
  */
 export function Home() {
+  useLoopPause()
   // Each station is its own Suspense boundary: the HTML is identical, but React hydrates
   // the page one station at a time and lets the browser breathe in between.
   return (
@@ -42,7 +44,7 @@ export function Home() {
         <Work />
       </Suspense>
       <Suspense fallback={null}>
-        <div data-station={10}>
+        <div data-station={10} data-m-surface="ink">
           <Contact />
         </div>
       </Suspense>
