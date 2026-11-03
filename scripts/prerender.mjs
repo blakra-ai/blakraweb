@@ -24,6 +24,9 @@ const fontPreload = [geist, newsreader, mono].filter(Boolean).map((f) => `<link 
 // The hero's phone still is the first screen's largest paint on phones: it starts with the HTML.
 const phoneStill = assets.find((f) => f.startsWith('hero-still-phone') && /\.(jpg|webp)$/.test(f))
 const stillPreload = phoneStill ? [`<link rel="preload" href="/assets/${phoneStill}" as="image" media="(max-width: 767px)" fetchpriority="high">`] : []
+// The desktop still too: the brand loader waits on it, and it is the first screen until the world runs.
+const deskStill = assets.find((f) => /^hero-still-[\w-]+\.jpg$/.test(f) && !f.startsWith('hero-still-phone'))
+if (deskStill) stillPreload.push(`<link rel="preload" href="/assets/${deskStill}" as="image" media="(min-width: 768px)" fetchpriority="high">`)
 const preload = [...fontPreload, ...stillPreload].join('\n    ')
 
 const images = new Map()

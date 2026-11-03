@@ -1,5 +1,6 @@
 import { lazy, Suspense, useEffect, useState } from 'react'
 import { canRunWorld } from '../experience/capable'
+import { markWorldReady } from './ready'
 
 const World = lazy(() => import('./World'))
 
@@ -17,6 +18,7 @@ export function ObservatoryStage() {
     const off = new URLSearchParams(location.search).get('film') === 'off'
     if (off || window.matchMedia(PHONE).matches || !canRunWorld()) {
       document.documentElement.classList.add('gl-off')
+      markWorldReady()
       return
     }
     let idle = 0

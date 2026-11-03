@@ -1,8 +1,12 @@
 import { StrictMode } from 'react'
 import { hydrateRoot, createRoot } from 'react-dom/client'
 import { App } from './App'
+import { boot } from './boot'
 import { loadDict } from './i18n'
 import { resolveRoute } from './routes'
+
+// The brand loader counts from the first module run, before the language file and hydration.
+boot()
 
 const root = document.getElementById('root')!
 const route = resolveRoute(location.pathname)

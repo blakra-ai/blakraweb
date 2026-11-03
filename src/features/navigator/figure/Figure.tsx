@@ -6,6 +6,7 @@ import { nav } from '../state'
 import { CHAKRAS } from '../yantra'
 import { GLB_URL, HAIR_BONES, type Figure as FigureData } from './contract'
 import { loadFigure, type LoadedFigure } from './loadFigure'
+import { markWorldReady } from '../../observatory/ready'
 
 /** What the world asks of the figure each frame. */
 export interface FigureRig {
@@ -177,6 +178,7 @@ export function Figure({ rig, variant }: { rig: FigureRig; variant: 'world' | 'd
   const v = useMemo(() => new Vector3(), [])
   const w = useMemo(() => new Vector3(), [])
   const show = useRef(0)
+  const firstFrame = useRef(false)
   const collarOffset = useRef(0)
   const hair = useRef<HairRig | null>(null)
   /** Single hair bones (HairSway_n, a model's own dynamic-hair joints): a damped spring per bone that lags her turns. */
@@ -189,6 +191,7 @@ export function Figure({ rig, variant }: { rig: FigureRig; variant: 'world' | 'd
       (e: unknown) => {
         // The still (the drawn face in the hero) stays; in dev the error also surfaces.
         document.documentElement.classList.add('gl-off')
+        markWorldReady()
         if (import.meta.env.DEV) setTimeout(() => { throw e })
       },
     )
@@ -264,6 +267,11 @@ export function Figure({ rig, variant }: { rig: FigureRig; variant: 'world' | 'd
     if (!g) return
     rig.group = g
     if (!figure || !rest) return
+    // The first frame with her in it: the loader may lift once it is on screen (the next frame).
+    if (variant === 'world' && !firstFrame.current) {
+      firstFrame.current = true
+      requestAnimationFrame(() => markWorldReady())
+    }
     rig.systems = figure.systems
     rig.metrics = figure.metrics
     const p = nav.perf

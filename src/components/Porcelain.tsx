@@ -1,3 +1,4 @@
+import { HoloAvatar } from '../features/avatar/HoloAvatar'
 import { useEffect, useState } from 'react'
 import { needs } from '../content/shared'
 import type { LayerId } from '../content/types'
@@ -84,6 +85,11 @@ export function People() {
             <p>{t.people.bench}</p>
           </details>
         </div>
+      </div>
+
+      {/* The founder's AI avatar, a hologram on its own dark plate. */}
+      <div className={s.holo}>
+        <HoloAvatar className={s.holoFig} />
       </div>
 
       {/* The one large object: the ink well, the remembered choice's layers as orange ticks on its rim. */}

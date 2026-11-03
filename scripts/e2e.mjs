@@ -211,6 +211,33 @@ try {
     await phone.close()
   }
 
+  // L1: the brand loader. First page of a session: shown at once, counted, lifted and removed within
+  // the cap; the next page of the session skips it; reduced motion only fades it.
+  for (const [width, cap] of [[1440, 3000], [390, 1800]]) {
+    const lctx = await browser.newContext({ viewport: { width, height: width < 800 ? 844 : 900 } })
+    const page = await lctx.newPage()
+    await page.goto(BASE + '/', { waitUntil: 'domcontentloaded' })
+    const shown = await page.evaluate(() => document.documentElement.classList.contains('loading') && getComputedStyle(document.getElementById('boot')).display !== 'none' && document.getElementById('boot').getAttribute('aria-hidden') === 'true')
+    const gone = await page.waitForFunction(() => !document.getElementById('boot'), null, { timeout: cap + 3000 }).then(() => true, () => false)
+    const after = await page.evaluate(() => ({ t: performance.now() | 0, cls: document.documentElement.className, flag: sessionStorage.getItem('blakra:loaded') }))
+    check('L1', `${width}px first visit: loader shows, then is removed`, shown && gone && !/loading/.test(after.cls) && after.flag === '1', JSON.stringify({ shown, gone, ...after }))
+    await page.goto(BASE + '/about/', { waitUntil: 'domcontentloaded' })
+    const again = await page.evaluate(() => ({ loading: document.documentElement.classList.contains('loading'), display: document.getElementById('boot') ? getComputedStyle(document.getElementById('boot')).display : 'removed' }))
+    check('L1', `${width}px repeat navigation skips the loader`, !again.loading && (again.display === 'none' || again.display === 'removed'), JSON.stringify(again))
+    await lctx.close()
+  }
+  {
+    const lctx = await browser.newContext({ viewport: { width: 1440, height: 900 }, reducedMotion: 'reduce' })
+    const page = await lctx.newPage()
+    await page.goto(BASE + '/', { waitUntil: 'domcontentloaded' })
+    const turning = await page.evaluate(() => getComputedStyle(document.querySelector('#boot .b-orbit')).animationName)
+    await page.waitForFunction(() => document.getElementById('boot')?.classList.contains('out'), null, { polling: 'raf', timeout: 6000 })
+    const exit = await page.evaluate(() => ({ core: getComputedStyle(document.querySelector('#boot .b-core')).transform, prop: getComputedStyle(document.getElementById('boot')).transitionProperty }))
+    const gone = await page.waitForFunction(() => !document.getElementById('boot'), null, { timeout: 2000 }).then(() => true, () => false)
+    check('L1', 'reduced motion: the loader does not turn or expand, it fades', turning === 'none' && exit.core === 'none' && exit.prop.includes('opacity') && gone, JSON.stringify({ turning, ...exit, gone }))
+    await lctx.close()
+  }
+
   // AC7: no horizontal scroll at four widths, on every page.
   for (const width of [375, 768, 1440, 1920]) {
     const page = await browser.newPage({ viewport: { width, height: width < 800 ? 812 : 900 } })

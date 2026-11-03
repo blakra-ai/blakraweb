@@ -5,11 +5,53 @@
     <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
     <!-- Before the first paint: the motion layout (sticky sections) is in place from the start, so the page never re-lays out on load.
          If the app never starts (a script that fails to load, an old browser), the still layout returns at once or 5 s after load, so no content stays hidden.
+         On the first page of a session it also sets `loading`, which shows the brand loader (#boot, below; src/boot.ts counts and lifts it).
          Allowed by its hash in the CSP (deploy/blakra-headers.conf). -->
-    <script>(function(c){c.add('js');var off;try{off=localStorage.getItem('blakra:motion')==='off'}catch(e){}c.add(off||matchMedia('(prefers-reduced-motion: reduce)').matches?'motion-off':'motion-on');function still(){if(!c.contains('booted')){c.remove('motion-on');c.add('motion-off')}}addEventListener('error',function(e){var t=e.target;if(t&&t.tagName==='SCRIPT')still()},true);addEventListener('load',function(){setTimeout(still,5000)})})(document.documentElement.classList)</script>
+    <script>(function(c){c.add('js');var off;try{off=localStorage.getItem('blakra:motion')==='off'}catch(e){}c.add(off||matchMedia('(prefers-reduced-motion: reduce)').matches?'motion-off':'motion-on');try{sessionStorage.getItem('blakra:loaded')||c.add('loading')}catch(e){}function still(){c.remove('loading');if(!c.contains('booted')){c.remove('motion-on');c.add('motion-off')}}addEventListener('error',function(e){var t=e.target;if(t&&t.tagName==='SCRIPT')still()},true);addEventListener('load',function(){setTimeout(still,5000)})})(document.documentElement.classList)</script>
+    <style>
+      /* The brand loader: a thin gold ring round a black hole, the mark, a count 000 → 100. Shown only
+         while <html> has `loading` (set above, JavaScript only, first page of a session); src/boot.ts
+         drives --p and the count, then lifts it. If nothing ever lifts it, it leaves by itself at 6 s. */
+      #boot{display:none}
+      html.loading #boot{display:grid}
+      /* The page's scrollbar goes dark under the loader (hiding it would change the width and shift the hero). */
+      html.loading{scrollbar-color:#1a1a1c #050506}
+      #boot{position:fixed;inset:0;z-index:2147483000;place-items:center;align-content:center;gap:28px;background:#050506;color:#ece9e2;pointer-events:none;--p:0;animation:b-safety 0s linear 6s forwards}
+      #boot::before{content:"";position:absolute;inset:0;background:radial-gradient(closest-side at 50% 50%,rgba(217,164,65,.09),rgba(217,164,65,0) 70%) center/min(90vw,640px) min(90vw,640px) no-repeat;transition:opacity .6s}
+      #boot .b-core{position:relative;width:132px;height:132px;display:grid;place-items:center;transition:transform .6s cubic-bezier(.7,0,.2,1),opacity .5s cubic-bezier(.7,0,.2,1)}
+      #boot svg{position:absolute;overflow:visible}
+      #boot .b-ring{inset:0;width:100%;height:100%;transform:rotate(-90deg)}
+      #boot .b-track{fill:none;stroke:#d9a441;stroke-opacity:.16;stroke-width:.75}
+      #boot .b-arc{fill:none;stroke:#d9a441;stroke-width:1.1;stroke-linecap:round;stroke-dasharray:100 100;stroke-dashoffset:calc(100 - var(--p) * 100)}
+      #boot .b-disc{fill:#000;stroke:#d9a441;stroke-opacity:.35;stroke-width:.5}
+      #boot .b-orbit{position:absolute;inset:0;animation:b-turn 2.8s linear infinite}
+      #boot .b-orbit::after{content:"";position:absolute;left:50%;top:-1.5px;width:3px;height:3px;margin-left:-1.5px;border-radius:50%;background:#f0c875;box-shadow:0 0 8px 2px rgba(217,164,65,.55)}
+      #boot .b-mark{width:40px;height:27px;color:#ece9e2;animation:b-breathe 2.8s ease-in-out infinite}
+      #boot .b-num{font:400 11px/1 'Geist Mono',ui-monospace,SFMono-Regular,Menlo,monospace;letter-spacing:.32em;margin-right:-.32em;color:rgba(236,233,226,.62);font-variant-numeric:tabular-nums;transition:opacity .25s}
+      #boot.out{background:transparent;transition:background-color .45s cubic-bezier(.7,0,.2,1) .15s}
+      #boot.out::before,#boot.out .b-num{opacity:0}
+      #boot.out .b-core{transform:scale(9);opacity:0}
+      @keyframes b-turn{to{transform:rotate(360deg)}}
+      @keyframes b-breathe{50%{opacity:.7}}
+      @keyframes b-safety{to{visibility:hidden;opacity:0}}
+      @media (max-width:767px){#boot{gap:22px}#boot .b-core{width:104px;height:104px}#boot .b-mark{width:28px;height:19px}}
+      /* Reduced motion: no turning, no expanding; the overlay simply fades. */
+      html.motion-off #boot .b-orbit,html.motion-off #boot .b-mark{animation:none}
+      html.motion-off #boot.out{opacity:0;transition:opacity .3s linear}
+      html.motion-off #boot.out .b-core{transform:none}
+      @media (prefers-reduced-motion:reduce){#boot .b-orbit,#boot .b-mark{animation:none}#boot.out{opacity:0;transition:opacity .3s linear}#boot.out .b-core{transform:none}}
+    </style>
     <!--head-->
   </head>
   <body>
+    <div id="boot" aria-hidden="true">
+      <div class="b-core">
+        <svg class="b-ring" viewBox="0 0 132 132"><circle class="b-track" cx="66" cy="66" r="65" /><circle class="b-arc" cx="66" cy="66" r="65" pathLength="100" /><circle class="b-disc" cx="66" cy="66" r="40" /></svg>
+        <i class="b-orbit"></i>
+        <svg class="b-mark" viewBox="0 0 24 16"><path d="M2.2 9.2C4.6 4.2 19.4 4.2 21.8 9.2" fill="none" stroke="currentColor" stroke-width="1.1" stroke-opacity="0.55" /><circle cx="12" cy="8" r="4.3" fill="currentColor" /><circle cx="12" cy="8" r="2.9" fill="#000" /><path d="M1 9.6C4 12.6 20 12.6 23 9.6" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" /></svg>
+      </div>
+      <span class="b-num" data-count>000</span>
+    </div>
     <div id="root"><!--app--></div>
     <script type="module" src="/src/entry-client.tsx"></script>
   </body>
