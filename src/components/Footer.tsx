@@ -2,6 +2,7 @@ import { company } from '../content/shared'
 import { useI18n } from '../i18n'
 import { useMotion } from '../motion/MotionProvider'
 import { pathFor, type Route } from '../routes'
+import { Mark, Wordmark } from './Header'
 import { LanguageSwitch } from './LanguageSwitch'
 import { Section } from './Section'
 import s from './Footer.module.css'
@@ -23,7 +24,8 @@ export function Footer({ route }: { route: Route }) {
       </p>
       <div className={s.bottom}>
         <p className={s.word} aria-hidden="true">
-          {company.name}
+          <Mark className={s.wordMark} />
+          <Wordmark className={s.wordType} />
         </p>
         <nav aria-label="Footer">
           <ul className={s.links}>

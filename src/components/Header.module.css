@@ -32,16 +32,16 @@
   padding: 0.5rem 0;
   flex: none;
 }
+/* The official logo: the symbol (1721 x 1113) and the lettering (1889 x 171), in currentColor. */
 .mark {
-  width: 24px;
-  height: 16px;
-  overflow: visible;
+  width: 37px;
+  height: 24px;
+  flex: none;
 }
 .word {
-  font-weight: 600;
-  font-size: 0.8125rem;
-  letter-spacing: 0.22em;
-  margin-right: -0.22em;
+  width: 100px;
+  height: 9px;
+  flex: none;
 }
 
 /* The links: mono readouts in grey; the hovered or current one turns porcelain and underlines. */

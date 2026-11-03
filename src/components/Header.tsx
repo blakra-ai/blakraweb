@@ -1,5 +1,6 @@
 import { useEffect, useId, useRef, useState } from 'react'
 import { company } from '../content/shared'
+import { MARK, WORDMARK } from './logo'
 import { GaugeChip, useStation } from '../features/observatory/Gauge'
 import { availableLocales, locales, useI18n } from '../i18n'
 import { useMotion } from '../motion/MotionProvider'
@@ -11,14 +12,20 @@ import s from './Header.module.css'
 /** The chapters whose surface is ink on phones; the rest are paper. */
 export const INK_CHAPTERS: readonly number[] = [1, 4, 6, 8, 10]
 
-/** The mark: a black hole, its disk passing in front of the shadow. */
+/** The mark: the official BLAKRA symbol (orbit ring, axis, two dots), in currentColor. */
 export function Mark({ className }: { className?: string }) {
   return (
-    <svg className={className} viewBox="0 0 24 16" aria-hidden="true">
-      <path d="M2.2 9.2C4.6 4.2 19.4 4.2 21.8 9.2" fill="none" stroke="currentColor" strokeWidth="1.1" strokeOpacity="0.55" />
-      <circle cx="12" cy="8" r="4.3" fill="currentColor" />
-      <circle cx="12" cy="8" r="2.9" fill="var(--body, #0b0b0d)" />
-      <path d="M1 9.6C4 12.6 20 12.6 23 9.6" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" />
+    <svg className={className} viewBox={MARK.viewBox} fill="currentColor" aria-hidden="true">
+      <path d={MARK.d} />
+    </svg>
+  )
+}
+
+/** The official BLAKRA lettering, in currentColor; the link around it carries the name. */
+export function Wordmark({ className }: { className?: string }) {
+  return (
+    <svg className={className} viewBox={WORDMARK.viewBox} fill="currentColor" aria-hidden="true">
+      <path d={WORDMARK.d} />
     </svg>
   )
 }
@@ -120,7 +127,7 @@ export function Header({ route }: { route: Route }) {
       <div className={s.bar} data-surface={light ? 'light' : undefined} data-m-surface={inkBar ? 'ink' : undefined}>
         <a href={homePath} className={s.brand} aria-label={`${company.name}, ${t.ui.home}`}>
           <Mark className={s.mark} />
-          <span className={s.word}>{company.name}</span>
+          <Wordmark className={s.word} />
         </a>
         <nav className={`mono ${s.nav}`} aria-label="Primary">
           <ul>

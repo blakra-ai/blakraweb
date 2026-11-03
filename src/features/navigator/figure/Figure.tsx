@@ -1,12 +1,12 @@
 import { useFrame, useThree } from '@react-three/fiber'
 import { useEffect, useMemo, useRef, useState } from 'react'
-import { Bone, Euler, Group, Matrix4, MeshStandardMaterial, Object3D, Quaternion, Vector3 } from 'three'
+import { Bone, type Camera, Euler, Group, type Material, Matrix4, MeshStandardMaterial, Object3D, Quaternion, type Scene, Texture, Vector3, type WebGLRenderer } from 'three'
 import { createHair, segmentQuaternion, stepHair, type HairState } from '../hair'
 import { nav } from '../state'
 import { CHAKRAS } from '../yantra'
 import { GLB_URL, HAIR_BONES, type Figure as FigureData } from './contract'
 import { loadFigure, type LoadedFigure } from './loadFigure'
-import { markWorldReady } from '../../observatory/ready'
+import { afterReveal, markWorldReady } from '../../observatory/ready'
 
 /** What the world asks of the figure each frame. */
 export interface FigureRig {
@@ -152,6 +152,32 @@ function applyHair(figure: LoadedFigure, h: HairRig, dt: number, t: number) {
   })
 }
 
+/**
+ * Uploads her textures one per frame, then compiles her programs with the parallel-compile
+ * extension where there is one (`compileAsync`), so the frame that first draws her does neither.
+ * Any failure only means that work happens in that frame, as before.
+ */
+async function warmUp(gl: WebGLRenderer, root: Object3D, camera: Camera, scene: Scene) {
+  const textures = new Set<Texture>()
+  root.traverse((o) => {
+    const mats = (o as { material?: Material | Material[] }).material
+    for (const m of Array.isArray(mats) ? mats : mats ? [mats] : []) {
+      for (const v of Object.values(m)) if (v instanceof Texture) textures.add(v)
+    }
+  })
+  const frame = () => new Promise<void>((r) => requestAnimationFrame(() => r()))
+  try {
+    for (const t of textures) {
+      await afterReveal()
+      gl.initTexture(t)
+      await frame()
+    }
+    await afterReveal()
+    await gl.compileAsync(root, camera, scene)
+  } catch {}
+  await afterReveal()
+}
+
 // One figure per variant: StrictMode's double mount and a remount reuse the same load.
 const loads = new Map<string, Promise<LoadedFigure>>()
 function figureFor(variant: string): Promise<LoadedFigure> {
@@ -174,7 +200,7 @@ const damp = (from: number, to: number, l: number, dt: number) => from + (to - f
 export function Figure({ rig, variant }: { rig: FigureRig; variant: 'world' | 'dock' }) {
   const group = useRef<Group>(null)
   const [figure, setFigure] = useState<LoadedFigure | null>(null)
-  const { camera, size } = useThree()
+  const { camera, size, gl, scene } = useThree()
   const v = useMemo(() => new Vector3(), [])
   const w = useMemo(() => new Vector3(), [])
   const show = useRef(0)
@@ -187,7 +213,9 @@ export function Figure({ rig, variant }: { rig: FigureRig; variant: 'world' | 'd
   useEffect(() => {
     let live = true
     figureFor(variant).then(
-      (f) => live && setFigure(f),
+      // Her textures and programs are made ready first, off the frame that first draws her: done in
+      // that frame they stalled it for most of a second (just as the brand loader lifted).
+      (f) => warmUp(gl, f.root, camera, scene).then(() => live && setFigure(f)),
       (e: unknown) => {
         // The still (the drawn face in the hero) stays; in dev the error also surfaces.
         document.documentElement.classList.add('gl-off')

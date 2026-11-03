@@ -23,6 +23,7 @@ import { createRing, fitRing, glowAt } from './shaders/ring'
 import { createWell, fitWell } from './shaders/well'
 import { bendAt, FRAME_RADIUS, getWindows, GRID_CELL, holeFor, onScreen, onWindows, stickyOf, stickyViewY, toGl, type Rect, type Sticky } from './windows'
 import { LAYERS_N } from './orbit'
+import { onWorldReady } from './ready'
 
 /*
  * The Observatory's world: ONE fixed, full-viewport canvas behind the document, drawing the one
@@ -590,8 +591,13 @@ export default function World() {
   useEffect(() => {
     // The figure pipeline reads the cursor from nav: one object for both.
     nav.pointer = obs.pointer
-    document.documentElement.classList.add('gl-live')
-    return () => document.documentElement.classList.remove('gl-live')
+    // The still hands over only once her first frame is on screen (the world's ready), and fades
+    // (Window.module.css): flipping it at mount showed an empty ring until her GLB arrived.
+    const off = onWorldReady(() => document.documentElement.classList.add('gl-live'))
+    return () => {
+      off()
+      document.documentElement.classList.remove('gl-live')
+    }
   }, [])
   if (PROFILE) (globalThis as Record<string, unknown>).__obsWorld = { nav, frames }
   return createPortal(

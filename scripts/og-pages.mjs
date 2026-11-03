@@ -18,7 +18,9 @@ const dataUrl = (file, type) => `data:${type};base64,${readFileSync(file).toStri
 const hero = dataUrl(join(root, 'src/assets/og-hero.jpg'), 'image/jpeg')
 const ink = '#0b0b10'
 const paper = '#f2f0eb'
-const mark = `<svg width="36" height="24" viewBox="0 0 24 16"><path d="M2.2 9.2C4.6 4.2 19.4 4.2 21.8 9.2" fill="none" stroke="${ink}" stroke-width="1.1" stroke-opacity="0.55"/><circle cx="12" cy="8" r="4.3" fill="${ink}"/><circle cx="12" cy="8" r="2.9" fill="${paper}"/><path d="M1 9.6C4 12.6 20 12.6 23 9.6" fill="none" stroke="#ff5a1f" stroke-width="1.5" stroke-linecap="round"/></svg>`
+// The official logo (src/assets/brand): the symbol and the BLAKRA lettering, in ink.
+const brandSvg = (f, h) => readFileSync(join(root, 'src/assets/brand', f), 'utf8').replace('<svg ', `<svg height="${h}" style="color:${ink}" `)
+const logo = `${brandSvg('mark.svg', 34)}${brandSvg('wordmark.svg', 12)}`
 
 const decode = (s) =>
   s
@@ -46,7 +48,7 @@ const css = `
 * { margin: 0; box-sizing: border-box; }
 body { width: 1200px; height: 630px; overflow: hidden; color: ${ink}; font-family: Geist; background: ${paper}; position: relative; }
 body.hero { background: url(${hero}) 276px 0 / 1056px 554px no-repeat, ${paper}; }
-.brand { position: absolute; top: 56px; left: 72px; display: flex; gap: 14px; align-items: center; font-weight: 600; letter-spacing: .22em; font-size: 22px; }
+.brand { position: absolute; top: 52px; left: 72px; display: flex; gap: 16px; align-items: center; }
 .text { position: absolute; left: 72px; top: 150px; width: 620px; }
 .wide .text { width: 1000px; }
 .eyebrow { font-family: GeistMono; font-size: 20px; letter-spacing: .08em; text-transform: uppercase; color: #ff5a1f; margin-bottom: 22px; }
@@ -60,7 +62,7 @@ p { margin-top: 24px; font-size: 26px; line-height: 1.32; color: #33363d; }
 
 function card({ eyebrow, title, lede, url, shot, kind }) {
   const img = shot ? `<div class="shot ${shot.phone ? 'phone' : ''}"><img src="${shot.src}"></div>` : ''
-  return `<style>${css}</style><body class="${kind}"><div class="brand">${mark}BLAKRA</div>
+  return `<style>${css}</style><body class="${kind}"><div class="brand">${logo}</div>
 <div class="text">${eyebrow ? `<div class="eyebrow">${esc(eyebrow)}</div>` : ''}<h1>${esc(title)}</h1>${lede ? `<p>${esc(lede)}</p>` : ''}</div>
 ${img}<div class="foot"><span>${esc(url)}</span><span></span></div></body>`
 }

@@ -22,6 +22,7 @@ import { glowTexture } from '../figure'
 import { lens, withLens } from '../lens'
 import { eyeFragment, eyeVertex } from '../visor'
 import { CHAKRAS } from '../yantra'
+import { afterReveal } from '../../observatory/ready'
 import { CONTRACT, FIGURE_TEXTURES, HAIR_BONES, validateNames, type Figure, type FigureBoneName } from './contract'
 
 /*
@@ -100,6 +101,8 @@ export interface LoadedFigure extends Figure {
 /** Load the figure at `url`. Rejects when the GLB breaks the contract (throws in dev, warns in prod). */
 export async function loadFigure(url: string): Promise<LoadedFigure> {
   const gltf = await getFigureSource(url)
+  // The measuring below is a long task: never on the brand loader's reveal.
+  await afterReveal()
   const { nodes, morphs } = collectNames(gltf.scene)
   const report = validateNames(nodes, morphs)
   if (!report.ok) {

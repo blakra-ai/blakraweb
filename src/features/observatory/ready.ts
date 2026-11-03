@@ -24,3 +24,28 @@ export function onWorldReady(cb: () => void): () => void {
   waiters.add(cb)
   return () => waiters.delete(cb)
 }
+
+/*
+ * The reveal's quiet window: when the loader lifts before the world is ready, her remaining heavy
+ * steps (measuring the GLB, uploading textures, compiling) wait until its exit has played and the
+ * page has settled, so no long task lands on the reveal. The still covers the window meanwhile.
+ */
+let quietUntil = 0
+
+/** Asks the world's heavy work to wait `ms` from now (src/boot.ts, as the loader lifts). */
+export function holdWorld(ms: number) {
+  quietUntil = Math.max(quietUntil, performance.now() + ms)
+}
+
+/** Resolves at once outside a hold; inside one, after it ends and the page is next idle. */
+export function afterReveal(): Promise<void> {
+  const wait = quietUntil - performance.now()
+  if (wait <= 0) return Promise.resolve()
+  return new Promise((r) =>
+    setTimeout(() => {
+      if (quietUntil - performance.now() > 1) return void afterReveal().then(r)
+      if (window.requestIdleCallback) window.requestIdleCallback(() => r(), { timeout: 400 })
+      else r()
+    }, wait),
+  )
+}

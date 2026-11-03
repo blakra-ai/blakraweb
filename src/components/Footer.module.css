@@ -45,11 +45,20 @@
   align-items: end;
   gap: 1rem 2.5rem;
 }
+/* The official logo, symbol and lettering, in ink. */
 .word {
-  composes: label from global;
-  font-weight: 600;
-  letter-spacing: 0.22em;
+  display: inline-flex;
+  align-items: center;
+  gap: 12px;
   color: var(--ink);
+}
+.wordMark {
+  width: 34px;
+  height: 22px;
+}
+.wordType {
+  width: 92px;
+  height: 8.3px;
 }
 .links {
   display: flex;

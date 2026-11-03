@@ -16,6 +16,7 @@
     "e2e": "node scripts/e2e.mjs",
     "og": "node scripts/og.mjs",
     "og:pages": "node scripts/og-pages.mjs",
+    "icons": "node scripts/icons.mjs",
     "og:frame": "node scripts/og-frame.mjs",
     "navigator:glb": "node scripts/navigator-placeholder.mjs"
   },

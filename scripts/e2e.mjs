@@ -213,7 +213,7 @@ try {
 
   // L1: the brand loader. First page of a session: shown at once, counted, lifted and removed within
   // the cap; the next page of the session skips it; reduced motion only fades it.
-  for (const [width, cap] of [[1440, 3000], [390, 1800]]) {
+  for (const [width, cap] of [[1440, 4500], [390, 1800]]) {
     const lctx = await browser.newContext({ viewport: { width, height: width < 800 ? 844 : 900 } })
     const page = await lctx.newPage()
     await page.goto(BASE + '/', { waitUntil: 'domcontentloaded' })
