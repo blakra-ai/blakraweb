@@ -15,7 +15,7 @@ const prefix = (l) => (l === 'en' ? '' : `/${l}`)
 
 const font = (f) => `data:font/woff2;base64,${readFileSync(join(root, 'src/assets/fonts', f)).toString('base64')}`
 const dataUrl = (file, type) => `data:${type};base64,${readFileSync(file).toString('base64')}`
-const hero = dataUrl(join(root, 'src/assets/og-hero.jpg'), 'image/jpeg')
+const hero = dataUrl(join(root, 'src/assets/observatory/hero-still.jpg'), 'image/jpeg')
 const ink = '#0b0b10'
 const paper = '#f2f0eb'
 // The official logo (src/assets/brand): the symbol and the BLAKRA lettering, in ink.
@@ -47,7 +47,10 @@ const css = `
 @font-face { font-family: GeistMono; src: url(${font('geist-mono-latin-wght-normal.woff2')}); font-weight: 100 900; }
 * { margin: 0; box-sizing: border-box; }
 body { width: 1200px; height: 630px; overflow: hidden; color: ${ink}; font-family: Geist; background: ${paper}; position: relative; }
-body.hero { background: url(${hero}) 276px 0 / 1056px 554px no-repeat, ${paper}; }
+body.hero { background: linear-gradient(90deg, ${ink} 57%, rgba(11,11,16,.6) 66%, rgba(11,11,16,0) 80%), url(${hero}) right 0 top 0 / auto 700px no-repeat, ${ink}; color: ${paper}; }
+body.hero p { color: #b9b6ae; }
+body.hero .foot { color: #8d8a83; }
+body.hero .brand svg { color: ${paper} !important; }
 .brand { position: absolute; top: 52px; left: 72px; display: flex; gap: 16px; align-items: center; }
 .text { position: absolute; left: 72px; top: 150px; width: 620px; }
 .wide .text { width: 1000px; }
