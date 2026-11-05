@@ -45,8 +45,12 @@ function routes(): Plugin {
   }
 }
 
+/** SITE_BASE=/blakraweb/ builds the site for that sub-path (GitHub Pages); unset, it is the root. */
+const base = `/${(process.env.SITE_BASE ?? '').replace(/^\/+|\/+$/g, '')}/`.replace('//', '/')
+
 export default defineConfig({
   appType: 'mpa',
+  base,
   plugins: [react(), routes()],
   build: {
     target: 'es2022',

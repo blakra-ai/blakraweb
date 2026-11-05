@@ -1,4 +1,5 @@
 import { useEffect, useId, useRef, useState } from 'react'
+import { withBase } from '../base'
 import { company } from '../content/shared'
 import { MARK, WORDMARK } from './logo'
 import { GaugeChip, useStation } from '../features/observatory/Gauge'
@@ -133,7 +134,7 @@ export function Header({ route }: { route: Route }) {
           <ul>
             {nav.map((item) => (
               <li key={item.href}>
-                <a href={item.href} aria-current={!home && item.href === route.path ? 'page' : undefined}>
+                <a href={item.href} aria-current={!home && item.href === withBase(route.path) ? 'page' : undefined}>
                   {item.label}
                 </a>
               </li>
@@ -169,7 +170,7 @@ export function Header({ route }: { route: Route }) {
       <div ref={panelRef} id={panelId} className={s.panel} role="dialog" aria-modal="true" aria-label={t.ui.menu} hidden={!open}>
         <nav className={s.links} aria-label="Primary">
           {nav.map((item) => (
-            <a key={item.href} href={item.href} aria-current={!home && item.href === route.path ? 'page' : undefined}>
+            <a key={item.href} href={item.href} aria-current={!home && item.href === withBase(route.path) ? 'page' : undefined}>
               {item.label}
               <span className="mono" aria-hidden="true">
                 {item.station}

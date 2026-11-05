@@ -1,3 +1,4 @@
+import { stripBase } from './base'
 import { aiTools, company, layerOrder, products } from './content/shared'
 import type { Dict } from './content/types'
 import { work } from './content/work'
@@ -10,7 +11,7 @@ import { pathFor, workPath } from './routes'
  * can say more than the site does. scripts/prerender.mjs writes them to dist/.
  */
 export function renderLlms(t: Dict, full: boolean): string {
-  const u = (p: string) => `${company.url}${p}`
+  const u = (p: string) => `${company.url}${stripBase(p)}`
   const lines: string[] = []
   const p = (...s: string[]) => lines.push(...s, '')
 

@@ -1,3 +1,4 @@
+import { stripBase, withBase } from './base'
 import { availableLocales, localeFromPath, locales, type Locale } from './i18n'
 import { workSlugs, type WorkSlug } from './content/work'
 
@@ -6,7 +7,7 @@ export type PageId = 'home' | 'about' | 'investors' | 'privacy' | 'legal' | 'wor
 export interface Route {
   id: PageId
   locale: Locale
-  /** Public path, with trailing slash for pages. */
+  /** Path from the site's root, with trailing slash for pages, without the base: compare with withBase, see src/base.ts. */
   path: string
   /** Output file inside dist/. */
   file: string
@@ -18,23 +19,24 @@ export interface Route {
 const pagePaths = { home: '/', about: '/about/', investors: '/investors/', privacy: '/privacy/', legal: '/legal/' } as const
 type PageWithPath = keyof typeof pagePaths
 
+/** A link to a page, ready for href (with the base). */
 export function pathFor(id: PageWithPath, locale: Locale, hash = ''): string {
-  return `${locales[locale].prefix}${pagePaths[id]}${hash}`
+  return withBase(`${locales[locale].prefix}${pagePaths[id]}${hash}`)
 }
 
 /** A client-work project page: /work/<slug>/ under the locale's prefix. */
 export function workPath(slug: WorkSlug, locale: Locale): string {
-  return `${locales[locale].prefix}/work/${slug}/`
+  return withBase(`${locales[locale].prefix}/work/${slug}/`)
 }
 
 function build(locale: Locale): Route[] {
   const prefix = locales[locale].prefix
   const pages = (Object.keys(pagePaths) as PageWithPath[]).map((id) => {
-    const path = pathFor(id, locale)
+    const path = stripBase(pathFor(id, locale))
     return { id, locale, path, file: `${path.slice(1)}index.html`, indexable: true }
   })
   const work = workSlugs.map((slug) => {
-    const path = workPath(slug, locale)
+    const path = stripBase(workPath(slug, locale))
     return { id: 'work' as const, locale, path, file: `${path.slice(1)}index.html`, indexable: true, slug }
   })
   return [...pages, ...work, { id: 'notFound', locale, path: `${prefix}/404`, file: `${prefix.slice(1)}${prefix ? '/' : ''}404.html`, indexable: false }]
@@ -44,7 +46,7 @@ export const routes: readonly Route[] = availableLocales.flatMap(build)
 
 export function resolveRoute(pathname: string): Route {
   const locale = localeFromPath(pathname)
-  const rest = pathname.slice(locales[locale].prefix.length) || '/'
+  const rest = stripBase(pathname).slice(locales[locale].prefix.length) || '/'
   const clean = rest.replace(/index\.html$/, '').replace(/\/?$/, '/')
   const match = routes.find((r) => r.locale === locale && r.id !== 'notFound' && r.path === `${locales[locale].prefix}${clean}`)
   return match ?? routes.find((r) => r.locale === locale && r.id === 'notFound')!

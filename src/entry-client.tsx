@@ -2,7 +2,7 @@ import { StrictMode } from 'react'
 import { hydrateRoot, createRoot } from 'react-dom/client'
 import { App } from './App'
 import { boot } from './boot'
-import { loadDict } from './i18n'
+import { loadDict, locales } from './i18n'
 import { resolveRoute } from './routes'
 
 // The brand loader counts from the first module run, before the language file and hydration.
@@ -19,5 +19,10 @@ const app = (
 )
 
 // Prerendered pages hydrate; the dev server serves an empty shell and renders fresh.
-if (root.firstElementChild) hydrateRoot(root, app)
-else createRoot(root).render(app)
+// GitHub Pages has one 404.html, in English, for every path: a miss under /de/ renders fresh in its language.
+const lang = locales[route.locale].lang
+if (root.firstElementChild && document.documentElement.lang === lang) hydrateRoot(root, app)
+else {
+  document.documentElement.lang = lang
+  createRoot(root).render(app)
+}

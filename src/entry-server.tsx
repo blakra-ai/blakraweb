@@ -8,6 +8,7 @@ import { locales } from './i18n'
 import { resolveRoute, routes } from './routes'
 
 export { routes }
+export { BASE, stripBase, withBase } from './base'
 
 const dicts = import.meta.glob<{ [k: string]: Dict }>('./content/locales/*.ts', { eager: true })
 
