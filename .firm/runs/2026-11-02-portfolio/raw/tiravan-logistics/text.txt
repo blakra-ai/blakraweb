@@ -1,0 +1,262 @@
+Noyan
+STUDIO
+Work
+Services
+Process
+Studio
+Start a project
+All concept studies
+07
+CONCEPT STUDY · DELIVERY DISPATCH AND DRIVER APP
+Tiravan
+
+A dispatch screen and a driver app that share one view of the day.
+
+Designed for freight operators who currently coordinate drivers by phone. The dispatch screen shows route progress; the driver app shows the next stop and keeps it when the signal goes.
+
+TYPE
+Concept study
+PLATFORMS (DESIGNED FOR)
+Desktop web, iOS and Android
+APPROACH
+React components · Hand-written CSS · Inline SVG map
+Application preview
+•••
+T
+Tiravan
+WORKSPACE
+PRO
+Dispatch
+Fleet
+Deliveries
+Analytics
+Help & documentation
+AC
+Alex Chen
+Personal workspace
+Tiravan / Dispatch
+Search anything
+⌘ K
+AC
+Dispatch control tower
+
+Friday, October 24 · Live fleet overview
+
+New delivery
+Active vehicles
+48 / 52
+Live fleet data
+Deliveries today
+1,284
+Live fleet data
+On-time rate
+96.8%
+Live fleet data
+Exceptions
+3
+Live fleet data
+1
+2
+3
+4
+5
+6
+7
+8
+DOWNTOWN
+BROOKLYN
+EAST RIVER
+WILLIAMSBURG
+● Active routes
+● Completed stops
+48 vehicles online
+Active routes
+48 live
+Alex Morgan
+Brooklyn East · TR-104
+8 / 14
+Sam Rivera
+Manhattan South · TR-105
+12 / 18
+Jamie Lee
+Queens North · TR-106
+6 / 12
+Taylor Park
+Brooklyn West · TR-107
+10 / 16
+Select a route to see stop details
+9:41
+Today's route
+On time
+8 of 14 stops complete
+57%
+1
+2
+3
+4
+5
+6
+7
+8
+DOWNTOWN
+BROOKLYN
+EAST RIVER
+WILLIAMSBURG
+NEXT STOP · DELIVERY 09
+48 Maple Avenue
+
+Brooklyn, NY 11201 · Apt 3B
+
+Olivia Martin
+2 packages · Leave at front desk
+6 min away
+1.2 mi · Arrival at 10:48 AM
+Start navigation
+Capture proof of delivery on arrival
+THE PROBLEM
+
+A dispatcher who cannot see stop progress calls the driver to ask. A driver who loses signal loses the stop list with it, and proof of delivery becomes a later phone call.
+
+THE DESIGN
+01
+
+The map marks completed and remaining stops differently on each route.
+
+02
+
+The route list states stops done against stops assigned, per driver.
+
+03
+
+The driver app keeps the stop list on the device, so a lost connection does not lose the day.
+
+04
+
+Proof of delivery is captured as a photo with a timestamp at the stop.
+
+05
+
+Arrival times are estimated from completed stops rather than from a fixed average.
+
+NOTE
+
+Concept work. Screens are design mockups, not a client deployment.
+
+Application preview
+•••
+T
+Tiravan
+WORKSPACE
+PRO
+Dispatch
+Fleet
+Deliveries
+Analytics
+Help & documentation
+AC
+Alex Chen
+Personal workspace
+Tiravan / Dispatch
+Search anything
+⌘ K
+AC
+Dispatch control tower
+
+Friday, October 24 · Live fleet overview
+
+New delivery
+Active vehicles
+48 / 52
+Live fleet data
+Deliveries today
+1,284
+Live fleet data
+On-time rate
+96.8%
+Live fleet data
+Exceptions
+3
+Live fleet data
+1
+2
+3
+4
+5
+6
+7
+8
+DOWNTOWN
+BROOKLYN
+EAST RIVER
+WILLIAMSBURG
+● Active routes
+● Completed stops
+48 vehicles online
+Active routes
+48 live
+Alex Morgan
+Brooklyn East · TR-104
+8 / 14
+Sam Rivera
+Manhattan South · TR-105
+12 / 18
+Jamie Lee
+Queens North · TR-106
+6 / 12
+Taylor Park
+Brooklyn West · TR-107
+10 / 16
+Select a route to see stop details
+Dispatch screen: routes on a map with completed and remaining stops.
+9:41
+Today's route
+On time
+8 of 14 stops complete
+57%
+1
+2
+3
+4
+5
+6
+7
+8
+DOWNTOWN
+BROOKLYN
+EAST RIVER
+WILLIAMSBURG
+NEXT STOP · DELIVERY 09
+48 Maple Avenue
+
+Brooklyn, NY 11201 · Apt 3B
+
+Olivia Martin
+2 packages · Leave at front desk
+6 min away
+1.2 mi · Arrival at 10:48 AM
+Start navigation
+Capture proof of delivery on arrival
+Driver screen: next stop, arrival estimate and proof-of-delivery step.
+
+NEXT CONCEPT STUDY
+
+Raah — An exam app for students and a results view for teachers.
+
+Noyan
+
+A small product studio designing and engineering apps, platforms and AI tools for teams that care about the details.
+
+NAVIGATE
+
+Concept studies
+Services
+Process
+Contact
+
+ELSEWHERE
+
+hello@noyan.studio
+Book an intro call
+Vitrin — concept study
+© 2026 Noyan Studio. All rights reserved.
+CONCEPT STUDIES · REGISTERED 2024

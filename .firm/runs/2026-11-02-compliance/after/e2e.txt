@@ -1,0 +1,164 @@
+
+> blakra-site@1.0.0 e2e
+> node scripts/e2e.mjs
+
+PASS AC1 no-JS copy on /de/
+PASS AC1 no-JS copy on /de/work/vitrin-app/
+PASS AC1 no-JS copy on /de/work/veyra-money/
+PASS AC1 no-JS copy on /de/work/vitrin-console/
+PASS AC1 no-JS copy on /de/work/flowline-automation/
+PASS AC1 no-JS copy on /de/work/helya-ai/
+PASS AC1 no-JS copy on /de/work/nuvoq-vision/
+PASS AC1 no-JS copy on /de/work/tiravan-logistics/
+PASS AC1 no-JS copy on /de/work/raah-learning/
+PASS AC1 no-JS copy on /de/investors/
+PASS AC1 no-JS copy on /de/privacy/
+PASS AC1 no-JS copy on /de/legal/
+PASS AC1 no-JS copy on /de/404.html
+PASS AC1 no-JS copy on /
+PASS AC1 no-JS copy on /work/vitrin-app/
+PASS AC1 no-JS copy on /work/veyra-money/
+PASS AC1 no-JS copy on /work/vitrin-console/
+PASS AC1 no-JS copy on /work/flowline-automation/
+PASS AC1 no-JS copy on /work/helya-ai/
+PASS AC1 no-JS copy on /work/nuvoq-vision/
+PASS AC1 no-JS copy on /work/tiravan-logistics/
+PASS AC1 no-JS copy on /work/raah-learning/
+PASS AC1 no-JS copy on /investors/
+PASS AC1 no-JS copy on /privacy/
+PASS AC1 no-JS copy on /legal/
+PASS AC1 no-JS copy on /404.html
+PASS AC1 no-JS copy on /es/
+PASS AC1 no-JS copy on /es/work/vitrin-app/
+PASS AC1 no-JS copy on /es/work/veyra-money/
+PASS AC1 no-JS copy on /es/work/vitrin-console/
+PASS AC1 no-JS copy on /es/work/flowline-automation/
+PASS AC1 no-JS copy on /es/work/helya-ai/
+PASS AC1 no-JS copy on /es/work/nuvoq-vision/
+PASS AC1 no-JS copy on /es/work/tiravan-logistics/
+PASS AC1 no-JS copy on /es/work/raah-learning/
+PASS AC1 no-JS copy on /es/investors/
+PASS AC1 no-JS copy on /es/privacy/
+PASS AC1 no-JS copy on /es/legal/
+PASS AC1 no-JS copy on /es/404.html
+PASS AC1 no-JS copy on /fr/
+PASS AC1 no-JS copy on /fr/work/vitrin-app/
+PASS AC1 no-JS copy on /fr/work/veyra-money/
+PASS AC1 no-JS copy on /fr/work/vitrin-console/
+PASS AC1 no-JS copy on /fr/work/flowline-automation/
+PASS AC1 no-JS copy on /fr/work/helya-ai/
+PASS AC1 no-JS copy on /fr/work/nuvoq-vision/
+PASS AC1 no-JS copy on /fr/work/tiravan-logistics/
+PASS AC1 no-JS copy on /fr/work/raah-learning/
+PASS AC1 no-JS copy on /fr/investors/
+PASS AC1 no-JS copy on /fr/privacy/
+PASS AC1 no-JS copy on /fr/legal/
+PASS AC1 no-JS copy on /fr/404.html
+PASS AC1 unknown paths are not served as the home page — status 404
+PASS AC2 reduced motion: no pinning — 0 pins
+PASS AC2 reduced motion: no smooth scrolling
+PASS AC2 reduced motion: no act holds the screen; every section reads top to bottom
+PASS AC2 reduced motion: all text of every act visible, nothing faded or clipped — 0 hidden, details true
+PASS AC2 reduced motion: every client-work card visible inside its section
+PASS AC5 invalid input: inline errors, focus on the error summary with a link per field, nothing sent — 3 invalid, focus {"role":"alert","links":3}
+PASS AC5 unconfirmed delivery shows the error with the email address
+PASS AC5 valid input: posts {intent,org,email,msg} and confirms
+PASS AC5 success message takes focus
+PASS AC5 honeypot or an instant submit sends nothing
+PASS AC7 375px /de/: no horizontal scroll — -15px over
+PASS AC7 375px /de/investors/: no horizontal scroll — -15px over
+PASS AC7 375px /de/privacy/: no horizontal scroll — -15px over
+PASS AC7 375px /de/legal/: no horizontal scroll — -15px over
+PASS AC7 375px /de/404.html: no horizontal scroll — -15px over
+PASS AC7 375px /: no horizontal scroll — -15px over
+PASS AC7 375px /investors/: no horizontal scroll — -15px over
+PASS AC7 375px /privacy/: no horizontal scroll — -15px over
+PASS AC7 375px /legal/: no horizontal scroll — -15px over
+PASS AC7 375px /404.html: no horizontal scroll — -15px over
+PASS AC7 375px /es/: no horizontal scroll — -15px over
+PASS AC7 375px /es/investors/: no horizontal scroll — -15px over
+PASS AC7 375px /es/privacy/: no horizontal scroll — -15px over
+PASS AC7 375px /es/legal/: no horizontal scroll — -15px over
+PASS AC7 375px /es/404.html: no horizontal scroll — -15px over
+PASS AC7 375px /fr/: no horizontal scroll — -15px over
+PASS AC7 375px /fr/investors/: no horizontal scroll — -15px over
+PASS AC7 375px /fr/privacy/: no horizontal scroll — -15px over
+PASS AC7 375px /fr/legal/: no horizontal scroll — -15px over
+PASS AC7 375px /fr/404.html: no horizontal scroll — -15px over
+PASS AC7 768px /de/: no horizontal scroll — -15px over
+PASS AC7 768px /de/investors/: no horizontal scroll — -15px over
+PASS AC7 768px /de/privacy/: no horizontal scroll — -15px over
+PASS AC7 768px /de/legal/: no horizontal scroll — -15px over
+PASS AC7 768px /de/404.html: no horizontal scroll — -15px over
+PASS AC7 768px /: no horizontal scroll — -15px over
+PASS AC7 768px /investors/: no horizontal scroll — -15px over
+PASS AC7 768px /privacy/: no horizontal scroll — -15px over
+PASS AC7 768px /legal/: no horizontal scroll — -15px over
+PASS AC7 768px /404.html: no horizontal scroll — -15px over
+PASS AC7 768px /es/: no horizontal scroll — -15px over
+PASS AC7 768px /es/investors/: no horizontal scroll — -15px over
+PASS AC7 768px /es/privacy/: no horizontal scroll — -15px over
+PASS AC7 768px /es/legal/: no horizontal scroll — -15px over
+PASS AC7 768px /es/404.html: no horizontal scroll — -15px over
+PASS AC7 768px /fr/: no horizontal scroll — -15px over
+PASS AC7 768px /fr/investors/: no horizontal scroll — -15px over
+PASS AC7 768px /fr/privacy/: no horizontal scroll — -15px over
+PASS AC7 768px /fr/legal/: no horizontal scroll — -15px over
+PASS AC7 768px /fr/404.html: no horizontal scroll — -15px over
+PASS AC7 1440px /de/: no horizontal scroll — -15px over
+PASS AC7 1440px /de/investors/: no horizontal scroll — -15px over
+PASS AC7 1440px /de/privacy/: no horizontal scroll — -15px over
+PASS AC7 1440px /de/legal/: no horizontal scroll — -15px over
+PASS AC7 1440px /de/404.html: no horizontal scroll — -15px over
+PASS AC7 1440px /: no horizontal scroll — -15px over
+PASS AC7 1440px /investors/: no horizontal scroll — -15px over
+PASS AC7 1440px /privacy/: no horizontal scroll — -15px over
+PASS AC7 1440px /legal/: no horizontal scroll — -15px over
+PASS AC7 1440px /404.html: no horizontal scroll — -15px over
+PASS AC7 1440px /es/: no horizontal scroll — -15px over
+PASS AC7 1440px /es/investors/: no horizontal scroll — -15px over
+PASS AC7 1440px /es/privacy/: no horizontal scroll — -15px over
+PASS AC7 1440px /es/legal/: no horizontal scroll — -15px over
+PASS AC7 1440px /es/404.html: no horizontal scroll — -15px over
+PASS AC7 1440px /fr/: no horizontal scroll — -15px over
+PASS AC7 1440px /fr/investors/: no horizontal scroll — -15px over
+PASS AC7 1440px /fr/privacy/: no horizontal scroll — -15px over
+PASS AC7 1440px /fr/legal/: no horizontal scroll — -15px over
+PASS AC7 1440px /fr/404.html: no horizontal scroll — -15px over
+PASS AC7 1920px /de/: no horizontal scroll — -15px over
+PASS AC7 1920px /de/investors/: no horizontal scroll — -15px over
+PASS AC7 1920px /de/privacy/: no horizontal scroll — -15px over
+PASS AC7 1920px /de/legal/: no horizontal scroll — -15px over
+PASS AC7 1920px /de/404.html: no horizontal scroll — -15px over
+PASS AC7 1920px /: no horizontal scroll — -15px over
+PASS AC7 1920px /investors/: no horizontal scroll — -15px over
+PASS AC7 1920px /privacy/: no horizontal scroll — -15px over
+PASS AC7 1920px /legal/: no horizontal scroll — -15px over
+PASS AC7 1920px /404.html: no horizontal scroll — -15px over
+PASS AC7 1920px /es/: no horizontal scroll — -15px over
+PASS AC7 1920px /es/investors/: no horizontal scroll — -15px over
+PASS AC7 1920px /es/privacy/: no horizontal scroll — -15px over
+PASS AC7 1920px /es/legal/: no horizontal scroll — -15px over
+PASS AC7 1920px /es/404.html: no horizontal scroll — -15px over
+PASS AC7 1920px /fr/: no horizontal scroll — -15px over
+PASS AC7 1920px /fr/investors/: no horizontal scroll — -15px over
+PASS AC7 1920px /fr/privacy/: no horizontal scroll — -15px over
+PASS AC7 1920px /fr/legal/: no horizontal scroll — -15px over
+PASS AC7 1920px /fr/404.html: no horizontal scroll — -15px over
+PASS AC8 skip link is first and moves focus to main — Skip to content → main
+PASS AC8 every focus stop shows a visible indicator
+PASS AC8 form fields, doors, language switch and the motion switch are reachable — 314 stops
+PASS O5 header CTA mid-page focuses the contact heading in view — {"focused":true,"inView":true}
+PASS O6 motion off keeps the reader in the same section and is remembered — {"top":-150,"bottom":922,"vh":900,"pins":0,"stored":"off"}
+PASS F1 a link from the pulse lands on the nearest client-work card — {"top":0,"bottom":435,"vh":900}
+PASS P1 the pulse answer lights its layers, links its proof and starts the message — {"pressed":"AI assistant: An AI assistant that knows our business.","verdict":"One team builds it, from the foundation up.Uses layers 1, 2,","proof":"#work-helya-ai","msg":"An AI assistant that knows our business. ","lit":["layer-cloud","layer-data","layer-automation","layer-apps","layer-ai"],"uses":true}
+PASS S1 motion on: no pins or snapping, and the page height never changes after load — {"early":7719,"h":7719,"pins":0,"lenis":true}
+PASS S1 the stage holds the screen and the scroll brings the layers into orbit — {"held":true,"p":0.6,"orbit":7}
+PASS S1 the client-work grid shows every project card with its screen — {"cards":8,"sized":true}
+PASS S2 1366×650 with motion on: client work reads top to bottom, every card reachable — {"visible":true,"inside":true}
+PASS AC9 desktop home page is at most 23 screens tall — 8.6 screens
+PASS — software GPU: no live 3D, the drawn still shows instead — {"screens":8.576666666666666,"live":false,"off":true,"still":true}
+PASS — ?gl=force starts the live film
+PASS — no console or page errors
+
+158/158 checks passed. Screenshots: e2e-shots/

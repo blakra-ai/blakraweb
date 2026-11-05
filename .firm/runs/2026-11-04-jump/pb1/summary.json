@@ -1,0 +1,62 @@
+{
+  "390": {
+    "exitStart": 1066.6000000238419,
+    "loadingRemoved": 1666.5,
+    "cls": 0,
+    "shifts": [],
+    "longTasks": [
+      {
+        "t": 145.30000007152557,
+        "d": 157
+      },
+      {
+        "t": 312.60000002384186,
+        "d": 93
+      }
+    ],
+    "exitLongs": [],
+    "exitWindow": {
+      "frames": 101,
+      "maxGap": 33.299999999999955,
+      "over50": 0,
+      "over34": 0
+    },
+    "rafGapsOver50": [
+      [
+        132,
+        167
+      ],
+      [
+        315,
+        100
+      ],
+      [
+        565,
+        50
+      ],
+      [
+        815,
+        50
+      ]
+    ],
+    "classMarks": [
+      [
+        146,
+        "js motion-on loading #boot"
+      ],
+      [
+        509,
+        "js motion-on loading gl-off booted #boot"
+      ],
+      [
+        1067,
+        "js motion-on loading gl-off booted #boot.out"
+      ],
+      [
+        1667,
+        "js motion-on gl-off booted"
+      ]
+    ],
+    "screencastFrames": 73
+  }
+}

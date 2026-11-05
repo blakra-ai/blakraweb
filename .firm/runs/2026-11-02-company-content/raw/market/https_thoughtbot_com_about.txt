@@ -1,0 +1,93 @@
+URL: https://thoughtbot.com/about
+FINAL: https://thoughtbot.com/our-company
+STATUS: 200
+CAPTURED: 2026-11-02T18:59:23.407Z
+
+Skip to main content
+Services
+Industries
+Case Studies
+Resources
+Blog
+Let’s get started!
+Small teams of designers and developers collaborating closely with clients
+
+With backgrounds across Design, Development and Product Strategy, our team of expert product strategists are here to help you succeed.
+
+Meet the thoughtbot team
+
+Our Purpose and Values
+Our purpose and values drive our company
+
+We refer back to them when making decisions big and small—from the projects we work on, to how we work, to who our teammates are.
+
+Read our team’s purpose
+Our Teams
+Teams in your timezone are ready to collaborate with you in every product stage.
+Early Stage
+Rapid validation & early product strategy
+Learn more
+Growth & Innovation
+Navigate design, development and go-to-market decisions for your complex MVP or v1 product.
+Learn more
+Team & Process Improvement
+Scale your product and team while maintaining and accelerating momentum.
+Learn more
+DevOps, Cloud, CI/CD
+Launch with DevOps, platform engineering, and site reliability engineering for growth at scale.
+Learn more
+Our Approach
+How we run our company and work on projects
+
+Our Playbook and Handbook document how we make successful web and mobile products, and also how we run our company. It’s filled with things we’ve learned based on our own experience and study of others’ experiences. They’re a living document that everyone at thoughtbot can edit in a private GitHub repo.
+
+Read through our playbook
+Continuous Improvement
+Diversity, Equity, and Inclusion (DEI)
+
+thoughtbot works to create a more diverse, equitable, inclusive, fulfilling, and safe environment for all people in our community. Our DEI council, with the support and engagement of thoughtbot leadership, leads a number of initiatives that impact how we interact with our clients, our community, and as a team.
+
+Read more about DEI at thoughtbot
+Open Remote Positions
+Join a team dedicated to creating products people love to use
+
+thoughtbot works with companies in every step of the process to help identify and solve problems. We lead and participate in product design sprints, build high-quality apps, and then deploy them. We use emerging and effective technologies and methods on both internal and client projects. We believe there is always a better way to do our work, and take initiative to improve ourselves, the company, and our community.
+
+See our open positions
+Want to team up?
+Strategic Partner Program
+
+We look to connect with groups offering complimentary services to our own or those who are supporting communities of folks also passionate about building great things.
+
+Learn More
+Partnership Perks:
+Access to resources and tools
+Dedicated point of contact at thoughtbot
+Referral program
+Opportunities for joint events & workshops
+What does success look like for your team?
+Let’s talk
+Footer
+Services
+Case Studies
+Resources
+Let's Talk
+Our Company
+Careers
+Purpose
+Blog
+Events
+Sponsor
+Store
+Mastodon
+Bluesky
+GitHub
+YouTube
+Twitch
+Feeds
+© 2026 thoughtbot, inc.
+
+The design of a robot and thoughtbot are registered trademarks of thoughtbot, inc.
+
+US: +1 (877) 9-ROBOTS UK: +44 (0)20 3807 0560
+Code of Conduct Accessibility Statement Privacy Policy

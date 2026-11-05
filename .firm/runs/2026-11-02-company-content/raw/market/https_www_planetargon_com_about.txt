@@ -1,0 +1,168 @@
+URL: https://www.planetargon.com/about
+FINAL: https://www.planetargon.com/about
+STATUS: 200
+CAPTURED: 2026-11-02T19:00:56.543Z
+
+SKIP TO CONTENT
+
+The 2026 Ruby on Rails Community Survey results are in. See what Rails developers told us. →
+
+Planet Argon
+SERVICES CASE STUDIES ABOUT SPEAKING BLOG BOOK A CALL
+About Us
+We help teams get more out of the software they already have. Whether you’re trying to reduce risk, move faster, or finally tackle the technical debt that’s been quietly compounding... we’ve been doing this for over two decades.
+
+Planet Argon was founded in Portland more than 20 years ago, and our core team still calls it home. Around them is a distributed group of engineers across North America, South America, and Europe. Together, we support product teams through every phase of software delivery. That includes firefighting, planning, cleanups, and long-term improvement.
+
+We’re not a big agency. That’s intentional. We hire carefully and invest in people who are thoughtful, dependable, and genuinely enjoy collaborative, client-facing work. The result is a small, nimble team with strong technical judgment and a people-first mindset.
+
+We believe software should be delivered with care. Agile is more than a process. It’s a posture. And we believe that a great partnership should leave your team better than it was the day before. More confident. More capable. Better prepared for what comes next.
+
+If you’re looking for a steady partner who helps you move forward with clarity, you’re in the right place.
+
+Fun fact: this was built by one of our first interns.
+
+It traces our path from a tiny Portland apartment in 2002 to the team we are today.
+
+VISIT OUR TIMELINE
+
+We used to make a Year in Review every year.
+
+Then Robby said, "Does anyone actually read these?"
+
+So we stopped.
+
+You can help us win this one. 📈 Click around. Make some noise.
+
+EXPLORE 2022'S YEAR IN REVIEW
+
+2020
+year in review
+ 2019
+year in review
+ 2018
+year in review
+ 2017
+year in review
+ 2016
+year in review
+ 2015
+year in review
+ 2014
+year in review
+ 2013
+year in review
+ 2012
+year in review
+ 2011
+year in review
+Our Core Values
+PROACTIVE
+
+We actively seek opportunities to improve our client's products, our processes, and our abilities.
+
+CURIOUS
+
+A natural curiosity for the undiscovered results in remarkable work for our clients – and stronger connections for our team. We ask questions, experiment, and learn.
+
+DEPENDABLE
+
+We are invested in our work. We manage expectations. We support our clients and teammates. We hold ourselves, our teammates, and our clients accountable.
+
+DELIGHTFUL
+
+We choose to set a mindful, positive tone that allows everyone to flourish.
+
+VERSATILE
+
+We readily adapt to change and encourage innovation because our team and work are transparent and flexible.
+
+We're Proud Members of the Rails Foundation
+On Rails Podcast
+
+The On Rails Podcast is a new project from the Rails Foundation, hosted by Planet Argon's CEO, Robby Russell. It's not just another dev podcast—it's a space for thoughtful conversations with the people who maintain and evolve real-world Rails applications. Each episode shares the lessons, challenges, and decisions behind keeping software resilient over time. If you care about sustainability, maintainability, and clarity in your Rails codebase, this podcast was made for you!
+
+The Core Team
+Autumn Morgan
+SENIOR DIGITAL MARKETING COORDINATOR
+Brian Middleton
+SR. FRONTEND DEVELOPER
+Evaldo Klock
+SR. SOFTWARE DEVELOPER
+Gabriel Fruet
+PROJECT MANAGER
+Jaison Coelho
+SR. SOFTWARE DEVELOPER
+Liz Pantalone
+SR. FULL STACK DEVELOPER
+Michael Kurt
+SOFTWARE DELIVERY MANAGER
+Sergiu Truta
+SR. SOFTWARE DEVELOPER
+William Mena
+SOFTWARE DEVELOPER
+Gary Blessington
+COO, PARTNER
+Robby Russell
+CEO, PARTNER
+Join Our Team
+
+We always have our eyes peeled for talented onshore and
+nearshore individuals to potentially join our team. Interested?
+
+CULTURE & OPEN POSITIONS
+
+Planet Argon is proud to have been honored as one of Inc.'s Best Workplaces for the third year running: 2023, 2024, and 2025.
+
+Thanks to our delightful team and clients who all make Planet Argon a great place to work!
+
+Maintainable Software Podcast
+
+Feel like you’re hitting a wall with your existing software projects? That’s why we created the Maintainable software podcast. In each episode, Robby speaks with seasoned practitioners who have worked through technical debt and legacy code challenges.
+
+LISTEN TO MAINTAINABLE
+SOFTWARE PODCAST
+
+Podcast Sponsorship
+
+Looking to connect with a dedicated audience of software practitioners, project managers, and technical leaders? Sponsor an episode of the Maintainable Software Podcast!
+
+SPONSOR AN EPISODE
+
+Clients
+
+Over the past two decades, we’ve partnered with organizations of all sizes. Startups to Fortune 500 companies. All as their trusted software development partner. View the full list.
+
+Open Source Contributions
+
+Contributing to the open-source web community is in our DNA. We encourage sharing our knowledge with others, so we can improve the way we work - together. See our collection of open-sourced internal projects and industry contributions.
+
+VIEW OUR OPEN SOURCE CONTRIBUTIONS
+
+Commit Goods sells official merch for open source tools you love and returns a percentage of the profits to the maintainers building them. We run the shop, they get funded, and you get cool gear!
+
+VISIT COMMIT GOODS
+
+Planet Argon
+Events
+News
+Speaking
+Contact us
+Culture & Careers
+Privacy policy
+Site map
+
+Reviewed on
+
+22 REVIEWS
+
+United States
+
+3055 NW Yeon Ave #5767
+Portland, OR 97210
+
+(503) 847-9214
+
+Based in Portland, Oregon USA – our company has been an active member of the Ruby on Rails ecosystem since 2005.
+
+© Copyright 2002-2026, Planet Argon, LLC

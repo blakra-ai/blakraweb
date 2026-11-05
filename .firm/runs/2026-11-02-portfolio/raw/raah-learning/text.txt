@@ -1,0 +1,250 @@
+Noyan
+STUDIO
+Work
+Services
+Process
+Studio
+Start a project
+All concept studies
+08
+CONCEPT STUDY · ASSESSMENT AND LEARNING ANALYTICS
+Raah
+
+An exam app for students and a results view for teachers.
+
+Designed for schools that run mock exams on paper. The test app records answers as they are chosen; the results view turns them into topics a teacher can act on that week.
+
+TYPE
+Concept study
+PLATFORMS (DESIGNED FOR)
+Desktop web, iOS and Android
+APPROACH
+React components · Hand-written CSS · Inline SVG charts
+Application preview
+•••
+R
+Raah
+WORKSPACE
+PRO
+Overview
+Assessments
+Students
+Reports
+Help & documentation
+AC
+Alex Chen
+Personal workspace
+Raah / Overview
+Search anything
+⌘ K
+AC
+Learning overview
+
+Mehr Academy · Autumn term 2025
+
+New assessment
+Active students
+1,248
+↑ Progress this term
+Average score
+78.4%
+↑ Progress this term
+Completion rate
+94.2%
+↑ Progress this term
+Improvement
++12.6%
+↑ Progress this term
+Student performance
+All cohorts
+
+Average assessment score over the term
+
+15k
+10k
+5k
+0
+Week 1
+Week 2
+Week 3
+Week 4
+Week 5
+Week 6
+Week 7
+Topic mastery
+Biology
+86%
+Mathematics
+78%
+Chemistry
+72%
+Physics
+68%
+Recent assessments
+Assessment	Cohort	Completed	Average score	Status
+Biology · Cell structures	Year 10	112 / 120 students	82%	Published
+Mathematics · Algebra II	Year 11	104 / 120 students	79%	Published
+Chemistry · Reactions	Year 12	96 / 120 students	76%	Published
+9:41
+42:18
+Biology · Mock exam
+Question 18 of 50
+Saved
+THE NITROGEN CYCLE
+Which process converts atmospheric nitrogen into a form plants can absorb?
+
+Select one answer.
+
+A
+Photosynthesis
+Nitrogen fixation
+C
+Cellular respiration
+D
+Decomposition
+Back
+Next
+
+Answers are saved automatically.
+
+THE PROBLEM
+
+A paper exam becomes data only after someone types it in. By the time a teacher sees which topic failed, the class has moved on, and the same mistake appears in the next test.
+
+THE DESIGN
+01
+
+The exam screen keeps timer, question number and progress in one bar.
+
+02
+
+Answers save as they are selected, and the screen states when the last save happened.
+
+03
+
+The results view compares topics rather than ranking students against each other.
+
+04
+
+Weak topics are listed with the questions that produced them, so the teacher can reread the question.
+
+05
+
+Question text is set larger than the labels around it, because it is read under time pressure.
+
+NOTE
+
+Concept work. Screens are design mockups, not a client deployment.
+
+Application preview
+•••
+R
+Raah
+WORKSPACE
+PRO
+Overview
+Assessments
+Students
+Reports
+Help & documentation
+AC
+Alex Chen
+Personal workspace
+Raah / Overview
+Search anything
+⌘ K
+AC
+Learning overview
+
+Mehr Academy · Autumn term 2025
+
+New assessment
+Active students
+1,248
+↑ Progress this term
+Average score
+78.4%
+↑ Progress this term
+Completion rate
+94.2%
+↑ Progress this term
+Improvement
++12.6%
+↑ Progress this term
+Student performance
+All cohorts
+
+Average assessment score over the term
+
+15k
+10k
+5k
+0
+Week 1
+Week 2
+Week 3
+Week 4
+Week 5
+Week 6
+Week 7
+Topic mastery
+Biology
+86%
+Mathematics
+78%
+Chemistry
+72%
+Physics
+68%
+Recent assessments
+Assessment	Cohort	Completed	Average score	Status
+Biology · Cell structures	Year 10	112 / 120 students	82%	Published
+Mathematics · Algebra II	Year 11	104 / 120 students	79%	Published
+Chemistry · Reactions	Year 12	96 / 120 students	76%	Published
+Results screen: topic comparison, term trend and recent assessments.
+9:41
+42:18
+Biology · Mock exam
+Question 18 of 50
+Saved
+THE NITROGEN CYCLE
+Which process converts atmospheric nitrogen into a form plants can absorb?
+
+Select one answer.
+
+A
+Photosynthesis
+Nitrogen fixation
+C
+Cellular respiration
+D
+Decomposition
+Back
+Next
+
+Answers are saved automatically.
+
+Exam screen: timer, progress, four options and a saved state.
+
+NEXT CONCEPT STUDY
+
+Kavira — A console and a reference for developers integrating with an API.
+
+Noyan
+
+A small product studio designing and engineering apps, platforms and AI tools for teams that care about the details.
+
+NAVIGATE
+
+Concept studies
+Services
+Process
+Contact
+
+ELSEWHERE
+
+hello@noyan.studio
+Book an intro call
+Vitrin — concept study
+© 2026 Noyan Studio. All rights reserved.
+CONCEPT STUDIES · REGISTERED 2024

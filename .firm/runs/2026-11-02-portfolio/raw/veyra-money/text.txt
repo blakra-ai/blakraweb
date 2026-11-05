@@ -1,0 +1,231 @@
+Noyan
+STUDIO
+Work
+Services
+Process
+Studio
+Start a project
+All concept studies
+02
+CONCEPT STUDY · CONSUMER MONEY APP
+Veyra
+
+A money app built around what can be spent now.
+
+Designed for people who want a clearer account of day-to-day spending than a bank app gives them. It puts the balance, the change over the month and the activity that produced it on one screen.
+
+TYPE
+Concept study
+PLATFORMS (DESIGNED FOR)
+iOS and Android
+APPROACH
+React components · Hand-written CSS · Inline SVG charts
+9:41
+AC
+veyra.
+
+Total balance 
+
+$24,895.75
++$1,240.80 this month
+veyra
+••••   ••••   ••••   4281
+ALEX CHEN
+VISA
+Send
+Request
+Add money
+Recent activity
+View all
+Whole Foods
+Today, 10:30 AM
+−$142.50
+Blue Bottle
+Today, 9:15 AM
+−$6.75
+Monthly salary
+Yesterday
++$4,800.00
+Home
+Insights
+Cards
+More
+9:41
+AC
+veyra.
+Send money
+JL
+Jamie Lee
+Veyra account · 8032
+
+You send
+
+$250.00
+USD · No transfer fee
+1
+2
+3
+4
+5
+6
+7
+8
+9
+.
+0
+⌫
+Continue
+Home
+Insights
+Cards
+More
+THE PROBLEM
+
+Bank apps list transactions but rarely say what they add up to. A balance that still includes bills due looks available when it is not, and the gap is only noticed after a payment fails.
+
+THE DESIGN
+01
+
+The home screen states the balance first, then the change over the month, then the activity behind both.
+
+02
+
+Spending is grouped by merchant category and set against the previous month.
+
+03
+
+The transfer screen keeps recipient, amount and fee visible at once, with a keypad sized for one hand.
+
+04
+
+Card controls sit below the card itself rather than in a settings area.
+
+05
+
+A dark field with a single accent colour keeps amounts legible at small sizes.
+
+NOTE
+
+Concept work. Screens are design mockups, not a client deployment.
+
+9:41
+AC
+veyra.
+
+Total balance 
+
+$24,895.75
++$1,240.80 this month
+veyra
+••••   ••••   ••••   4281
+ALEX CHEN
+VISA
+Send
+Request
+Add money
+Recent activity
+View all
+Whole Foods
+Today, 10:30 AM
+−$142.50
+Blue Bottle
+Today, 9:15 AM
+−$6.75
+Monthly salary
+Yesterday
++$4,800.00
+Home
+Insights
+Cards
+More
+Wallet screen: balance, card and recent activity.
+9:41
+AC
+veyra.
+Send money
+JL
+Jamie Lee
+Veyra account · 8032
+
+You send
+
+$250.00
+USD · No transfer fee
+1
+2
+3
+4
+5
+6
+7
+8
+9
+.
+0
+⌫
+Continue
+Home
+Insights
+Cards
+More
+Transfer screen: recipient, amount and keypad.
+9:41
+AC
+veyra.
+Your spending
+This month
+
+October 1 – 31
+
+$2,340.80
+
+12% less than last month
+
+15k
+10k
+5k
+0
+Mon
+Tue
+Wed
+Thu
+Fri
+Sat
+Sun
+Spending by category
+Shopping
+$845.00
+Food & drink
+$624.50
+Transport
+$320.80
+Subscriptions
+$190.50
+Home
+Insights
+Cards
+More
+Insights screen: monthly spend and category breakdown.
+
+NEXT CONCEPT STUDY
+
+Vitrin Console — A back office for a shop that runs across several locations.
+
+Noyan
+
+A small product studio designing and engineering apps, platforms and AI tools for teams that care about the details.
+
+NAVIGATE
+
+Concept studies
+Services
+Process
+Contact
+
+ELSEWHERE
+
+hello@noyan.studio
+Book an intro call
+Vitrin — concept study
+© 2026 Noyan Studio. All rights reserved.
+CONCEPT STUDIES · REGISTERED 2024

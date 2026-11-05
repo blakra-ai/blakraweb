@@ -1,0 +1,70 @@
+{
+ "lh-mobile-home": {
+  "performance": 91,
+  "accessibility": 100,
+  "best-practices": 100,
+  "seo": 100,
+  "failed": [
+   "first-contentful-paint:1.8 s",
+   "largest-contentful-paint:3.1 s",
+   "mainthread-work-breakdown:2.7 s",
+   "largest-contentful-paint-element:3,130 ms",
+   "render-blocking-resources:Est savings of 0 ms",
+   "unused-javascript:Est savings of 55 KiB",
+   "uses-responsive-images:Est savings of 69 KiB",
+   "dom-size-insight:0",
+   "forced-reflow-insight:0",
+   "image-delivery-insight:Est savings of 86 KiB",
+   "network-dependency-tree-insight:0",
+   "render-blocking-insight:0"
+  ]
+ },
+ "lh-desktop-home": {
+  "performance": 100,
+  "accessibility": 100,
+  "best-practices": 100,
+  "seo": 100,
+  "failed": [
+   "unused-javascript:Est savings of 55 KiB",
+   "modern-image-formats:Est savings of 40 KiB",
+   "uses-responsive-images:Est savings of 167 KiB",
+   "forced-reflow-insight:0",
+   "image-delivery-insight:Est savings of 160 KiB",
+   "lcp-discovery-insight:0",
+   "network-dependency-tree-insight:0",
+   "render-blocking-insight:0.5"
+  ]
+ },
+ "lh-mobile-work": {
+  "performance": 93,
+  "accessibility": 100,
+  "best-practices": 100,
+  "seo": 100,
+  "failed": [
+   "largest-contentful-paint:3.0 s",
+   "max-potential-fid:170 ms",
+   "largest-contentful-paint-element:3,030 ms",
+   "render-blocking-resources:Est savings of 150 ms",
+   "unused-javascript:Est savings of 66 KiB",
+   "uses-responsive-images:Est savings of 57 KiB",
+   "forced-reflow-insight:0",
+   "image-delivery-insight:Est savings of 81 KiB",
+   "network-dependency-tree-insight:0",
+   "render-blocking-insight:0"
+  ]
+ },
+ "lh-desktop-work": {
+  "performance": 100,
+  "accessibility": 100,
+  "best-practices": 100,
+  "seo": 100,
+  "failed": [
+   "unused-javascript:Est savings of 66 KiB",
+   "uses-responsive-images:Est savings of 69 KiB",
+   "forced-reflow-insight:0",
+   "image-delivery-insight:Est savings of 69 KiB",
+   "network-dependency-tree-insight:0",
+   "render-blocking-insight:0.5"
+  ]
+ }
+}

@@ -1,0 +1,171 @@
+Noyan
+STUDIO
+Work
+Services
+Process
+Studio
+Start a project
+All concept studies
+05
+CONCEPT STUDY · INTERNAL KNOWLEDGE ASSISTANT
+Helya
+
+An assistant that answers from an organisation’s own documents and shows where the answer came from.
+
+Designed for teams whose procedures live in long documents. It answers in prose and cites the document and page behind each part of the answer.
+
+TYPE
+Concept study
+PLATFORMS (DESIGNED FOR)
+Desktop web
+APPROACH
+React components · Hand-written CSS · Sample documents
+Application preview
+•••
+H
+Helya
+WORKSPACE
+PRO
+Knowledge chat
+Documents
+Collections
+Activity
+Help & documentation
+AC
+Alex Chen
+Personal workspace
+Helya / Knowledge chat
+Search anything
+⌘ K
+AC
+Your knowledge, connected.
+
+Answers grounded in your team's documents.
+
+New conversation
+What is the approval process for equipment purchases over $10,000?
+Here’s the process outlined in your procurement policy.
+
+Equipment purchases above $10,000 require two levels of approval before a purchase order can be issued.
+
+Submit a purchase request. Include the vendor quote, cost centre, and business justification. 1
+Department head approval. Your department head reviews the request and confirms budget availability. 1
+Finance sign-off. Finance validates the spend and releases the purchase order. 2
+Typical turnaround: 2–3 business days after submission.
+1. Procurement Policy · p. 14
+2. Finance Handbook · p. 8
+Verified against 2 sources
+Ask a follow-up question…
+Answers include source references. Always review critical decisions.
+SOURCE DOCUMENTS
+Procurement Policy
+
+Version 3.2 · Updated Sep 12
+
+4.2 Equipment purchases
+
+All equipment expenditure exceeding $10,000 must be approved by the department head and the finance team prior to commitment.
+
+Page 14 of 32
+12,480 documents indexed
+THE PROBLEM
+
+Policies and maintenance notes are written for completeness, then stored in shared drives. Finding the current clause takes longer than the task it describes, so people ask a colleague instead.
+
+THE DESIGN
+01
+
+Answers cite the document and page beside each claim, and the source passage is shown in a side panel.
+
+02
+
+Document access follows the reader’s permissions rather than the index, so a restricted file stays restricted.
+
+03
+
+Unanswered questions are collected as gaps, which is the only reliable signal of what the index is missing.
+
+04
+
+The answer column stays narrow, because the content is prose rather than tables.
+
+05
+
+The composer holds its position at the bottom instead of moving between turns.
+
+NOTE
+
+Concept work. Screens are design mockups, not a client deployment.
+
+Application preview
+•••
+H
+Helya
+WORKSPACE
+PRO
+Knowledge chat
+Documents
+Collections
+Activity
+Help & documentation
+AC
+Alex Chen
+Personal workspace
+Helya / Knowledge chat
+Search anything
+⌘ K
+AC
+Your knowledge, connected.
+
+Answers grounded in your team's documents.
+
+New conversation
+What is the approval process for equipment purchases over $10,000?
+Here’s the process outlined in your procurement policy.
+
+Equipment purchases above $10,000 require two levels of approval before a purchase order can be issued.
+
+Submit a purchase request. Include the vendor quote, cost centre, and business justification. 1
+Department head approval. Your department head reviews the request and confirms budget availability. 1
+Finance sign-off. Finance validates the spend and releases the purchase order. 2
+Typical turnaround: 2–3 business days after submission.
+1. Procurement Policy · p. 14
+2. Finance Handbook · p. 8
+Verified against 2 sources
+Ask a follow-up question…
+Answers include source references. Always review critical decisions.
+SOURCE DOCUMENTS
+Procurement Policy
+
+Version 3.2 · Updated Sep 12
+
+4.2 Equipment purchases
+
+All equipment expenditure exceeding $10,000 must be approved by the department head and the finance team prior to commitment.
+
+Page 14 of 32
+12,480 documents indexed
+Answer screen: prose answer, numbered source references and the source passage beside it.
+
+NEXT CONCEPT STUDY
+
+Nuvoq — A quality-control screen for a line that moves faster than a person can look.
+
+Noyan
+
+A small product studio designing and engineering apps, platforms and AI tools for teams that care about the details.
+
+NAVIGATE
+
+Concept studies
+Services
+Process
+Contact
+
+ELSEWHERE
+
+hello@noyan.studio
+Book an intro call
+Vitrin — concept study
+© 2026 Noyan Studio. All rights reserved.
+CONCEPT STUDIES · REGISTERED 2024

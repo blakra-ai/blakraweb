@@ -1,0 +1,9 @@
+
+ RUN  v5.0.5 /home/ashen/Documents/projects/blakraMain
+
+
+ Test Files  15 passed (15)
+      Tests  142 passed (142)
+   Start at  22:32:47
+   Duration  2.94s (transform 63%, tests 22%, import 13%, worker 3%)
+

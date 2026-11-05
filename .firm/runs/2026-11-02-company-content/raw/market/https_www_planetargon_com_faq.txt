@@ -1,0 +1,160 @@
+URL: https://www.planetargon.com/faq
+FINAL: https://www.planetargon.com/faq
+STATUS: 200
+CAPTURED: 2026-11-02T19:01:01.556Z
+
+SKIP TO CONTENT
+
+The 2026 Ruby on Rails Community Survey results are in. See what Rails developers told us. →
+
+Planet Argon
+SERVICES CASE STUDIES ABOUT SPEAKING BLOG BOOK A CALL
+Frequently Asked Questions
+OUR TEAM & EXPERIENCE
+
+Where are Planet Argon’s employees located?
+
+Our core team and nearshore engineers work remotely across North American time zones.
+
+Where can I learn more about your team?
+
+https://www.planetargon.com/about
+
+What industries do you have experience in?
+
+We’ve worked in many industries. Recently, we've found ourselves working within Healthcare, Publishing, Education, Travel, Finance, Real Estate, and e-commerce.
+
+Who are a few of your current clients that use this service?
+
+Applegate Farms, Nike, Just, Oregon State University, LandCentral, Alphaclone, PacGlobal Insurance, etc.
+
+Could I speak to your current and/or former clients?
+
+Yes! Our clients are open to sharing their experience. Ask us for an intro. In the meantime, visit https://www.planetargon.com/testimonials.
+
+Do you outsource and/or subcontract?
+
+Sometimes. 89.999% of the work is performed by our full-time employees. If we’re in a pinch, we may bring on a subcontractor to assist for a specific project. For example, we may hire a UX designer and/or a QA Engineer, an Agile Coach, etc.
+
+BILLING & MONEY CONVERSATIONS
+
+Do you offer a referral discount?
+
+If you refer someone to work with us, we'll send you a check for $1,000. The company you refer will get a $1,000 discount on their services. Everyone wins!
+
+Do you offer a money-back guarantee?
+
+We do! If for any reason you’re dissatisfied with our services within 30 days of our agreed upon start date, we’ll refund every penny you spent with Planet Argon.
+
+How does your team track their time?
+
+Our team tracks their time across projects in a tool called Harvest. This data syncs to individual JIRA tickets in our own instance, which allows us to show our estimates compared to actuals.
+
+Why can’t we just pay you for time and materials?
+
+We ask you to reserve time with our team so that we can ensure that we properly staff your project amongst all of our client projects. This helps our team be stable so that we can focus on helping you keep yours stable.
+
+What happens if there’s budget at the end of the month?
+
+Typically when we do rollover, it’s usually bandwidth on our end. IF it’s on your end, it’s usually a percentage of the budget.
+
+How and when will you bill us?
+
+We invoice every month on the 20th for the upcoming month based on the amount of time you’re reserving with our team.
+
+How do you provide transparency into our budget?
+
+You will receive a weekly budget dashboard from our Project Manager. This will outline where your budget is currently at compared to projections. Our time entries are also visible in JIRA, which we can run reports upon request.
+
+Why do you propose a larger budget for the first 2-3 months?
+
+While we’re acclimating ourselves to your project, we need additional time to get everything in order and learn more about your project requirements. We also want to make a good impact in the first 90 days and gain some momentum together.
+
+COMMUNICATION & COLLABORATION
+
+How often will we interact to your team?
+
+Typically, you will communicate with a few people throughout the week.
+
+Will all communication be funneled through a Project Manager?
+
+Nope! Your Project Manager is there to talk about scope, schedule, and budget, and give you regular updates on those items. When it comes to the work, you will work with and talk directly to our designers and developers involved.
+
+What if we have our own developer(s), how would you work together?
+
+It depends on whether they’ll be the primary owner of the code base or if we’ll be. Let’s discuss how to make this work well for both parties.
+
+How will we know what’s going on with our project on a day-to-day basis?
+
+During the week, you can login to JIRA to see the current status of your project’s tickets. If we’re working on your project, you’ll periodically get notifications in your inbox.
+
+What tools will we need to use to collaborate with your team?
+
+We use JIRA to collaborate on your tickets and we will provide you with training on how to use it. Additionally, we use Slack channels for specific launch conversations and video conferencing tools for meetings. There will be many ways for you to interact with our team, and we'll be happy to provide training on any new tools you may need to use.
+
+What happens if our application goes down on a Sunday at 7am?
+
+If it’s a public-facing web application, we should get notifications to our mobile phones. We should be responding to these outage notifications as quickly as possible.
+
+How quickly do you respond to urgent requests?
+
+During the work week, we aim to respond to critical JIRA tickets within one hour.
+
+ESTIMATES & WORK
+
+Do you provide estimates on the work we request?
+
+Yes, our team will provide rough estimates on most JIRA tickets. We understand that you may need this information to help you prioritize your backlog.
+
+What type of work doesn’t work well in a retainer?
+
+Tickets with estimates over 40 hours to complete. We may recommend a separate budget and schedule for these. When we do this, it would be a separate Statement of Work with a not-to-exceed amount so that we can share the risk there.
+
+How long does it typically take your team to gain momentum?
+
+We’re aiming to hit a good stride in the first 30-45 days of our retainer relationship.
+
+YOUR RESPONSIBILITY & QUEUING WORK
+
+How will we communicate our priorities to you?
+
+In JIRA, you can drag and drop your tickets as you see fit. You and our Project Manager can also reconnect on this during our standing calls.
+
+What if we don’t have any work for you to do?
+
+It’s extremely rare for our clients and our team to not have a list of updates to be made. Should you not have anything prioritized, we’ll use the time to focus on security patches and performance improvements.
+
+What if we’re on vacation and unavailable, and we don’t have things queued up?
+
+Don’t worry, we got your back. Let’s not surprise each other like this, though. We should always be keeping an eye on upcoming schedules and priorities. We add our client’s vacations to our own calendars so we can plan accordingly.
+
+If this approach isn’t working, how long are we locked into this?
+
+It’s our intention that you’ll want to work with us vs feel stuck with us. While we ask to sign an annual contract, we only ask for 30 days notice to sever our working relationship and/or adjust our monthly budgets.
+
+Have a different question?
+
+GET IN TOUCH
+Planet Argon
+Events
+News
+Speaking
+Contact us
+Culture & Careers
+Privacy policy
+Site map
+
+Reviewed on
+
+22 REVIEWS
+
+United States
+
+3055 NW Yeon Ave #5767
+Portland, OR 97210
+
+(503) 847-9214
+
+Based in Portland, Oregon USA – our company has been an active member of the Ruby on Rails ecosystem since 2005.
+
+© Copyright 2002-2026, Planet Argon, LLC

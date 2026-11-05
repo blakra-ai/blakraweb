@@ -1,0 +1,319 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>BLAKRA phone prototype, screens 01–04</title>
+<!-- Static art-direction prototype (run 2026-11-02-mobile). Tokens copied from src/styles/global.css;
+     copy from src/content/locales/en.ts (shortened lines marked SHORT are proposals for new keys). -->
+<style>
+@font-face { font-family: 'Geist'; src: url('fonts/geist-latin-wght-normal.woff2') format('woff2'); font-weight: 100 900; }
+@font-face { font-family: 'Geist Mono'; src: url('fonts/geist-mono-latin-wght-normal.woff2') format('woff2'); font-weight: 100 900; }
+@font-face { font-family: 'Newsreader'; src: url('fonts/newsreader-latin-wght-italic.woff2') format('woff2'); font-weight: 200 800; font-style: italic; }
+
+:root {
+  --font-sans: 'Geist', ui-sans-serif, system-ui, sans-serif;
+  --font-serif: 'Newsreader', Georgia, serif;
+  --font-mono: 'Geist Mono', ui-monospace, monospace;
+  --body: #f4f2ec; --panel: #ece9e2; --porcelain: #0b0b0d; --grey: #5f5c56;
+  --hair: rgba(11,11,13,.14); --hair-2: rgba(11,11,13,.07); --ctrl: #7a776f;
+  --accent: #ff5a1f;
+  --root: #e8352b; --sacral: #f57a1f; --solar: #f7c21b; --heart: #2fb35a; --throat: #2a9fe0; --third: #4248c2; --crown: #9a4fd0;
+  --gold: #d9a441;
+  /* Phone scale (proposal = the existing clamp() values at 390): H1 40, H2 32, H3 24, lead 17, body 16, mono 12. */
+  --h1: 2.5rem; --h2: 2rem; --h3: 1.5rem; --lead: 1.0625rem; --body-size: 1rem; --mono-size: .75rem; --mono-track: .14em;
+  --margin: 20px; --header-h: 56px;
+  --r-window: 16px; --r-card: 14px; --r-pill: 999px; --r-tag: 4px;
+  --hairline: 1px solid var(--hair);
+  --ease: cubic-bezier(.2,.7,.2,1);
+}
+.dark { --body: #0b0b0d; --panel: #121216; --porcelain: #ece9e2; --grey: #8a8781; --hair: rgba(236,233,226,.12); --hair-2: rgba(236,233,226,.06); --ctrl: #6b6963; --accent: var(--gold); color: var(--porcelain); }
+
+* { box-sizing: border-box; margin: 0; padding: 0; }
+html { background: #f4f2ec; -webkit-text-size-adjust: 100%; }
+body { font-family: var(--font-sans); font-size: var(--body-size); line-height: 1.5; color: var(--porcelain); background: var(--body); width: 390px; margin: 0 auto; overflow-x: hidden; }
+.label { display: flex; align-items: center; gap: .5rem; font-family: var(--font-mono); font-size: var(--mono-size); font-weight: 500; letter-spacing: var(--mono-track); text-transform: uppercase; color: var(--grey); }
+.label .rule { width: 24px; height: 1px; background: currentColor; }
+.h1 { font-size: var(--h1); font-weight: 300; line-height: .98; letter-spacing: -.03em; text-wrap: balance; }
+.h2 { font-size: var(--h2); font-weight: 300; line-height: 1.04; letter-spacing: -.025em; text-wrap: balance; }
+.voice { font-family: var(--font-serif); font-style: italic; font-weight: 400; letter-spacing: -.01em; }
+.lead { font-size: var(--lead); line-height: 1.45; color: var(--grey); }
+.btn { display: inline-flex; align-items: center; gap: .5rem; height: 48px; padding: 0 22px; border-radius: var(--r-pill); font: 500 15px/1 var(--font-sans); text-decoration: none; transition: transform 120ms var(--ease); }
+.btn:active { transform: scale(.97); }
+.btn-gold { background: var(--gold); color: #0b0b0d; }
+.btn-ink { background: #0b0b0d; color: #ece9e2; }
+.link { color: inherit; font-size: 15px; text-decoration: underline; text-underline-offset: 4px; text-decoration-thickness: 1px; }
+
+/* ---------- the header: one chapter chip that names where you are ---------- */
+.hdr { position: fixed; top: 0; left: 50%; transform: translateX(-50%); width: 390px; height: var(--header-h); z-index: 10; display: flex; align-items: center; gap: 10px; padding: 0 var(--margin); transition: background-color 200ms var(--ease), color 200ms var(--ease); }
+.hdr[data-on='ink'] { color: #ece9e2; background: rgba(11,11,13,0); }
+.hdr[data-on='ink'][data-scrolled] { background: rgba(11,11,13,.92); backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px); }
+.hdr[data-on='paper'] { color: #0b0b0d; background: rgba(244,242,236,.92); backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px); box-shadow: 0 1px 0 rgba(11,11,13,.08); }
+.hdr .logo { font: 600 13px/1 var(--font-mono); letter-spacing: .32em; display: flex; align-items: center; gap: 8px; }
+.hdr .logo i { width: 14px; height: 14px; border-radius: 50%; background: currentColor; box-shadow: 0 0 0 2px var(--gold) inset; display: block; }
+.hdr .chip { margin-left: auto; height: 32px; display: flex; align-items: center; gap: 8px; padding: 0 12px; border-radius: var(--r-pill); border: 1px solid currentColor; font: 500 11px/1 var(--font-mono); letter-spacing: .1em; text-transform: uppercase; overflow: hidden; max-width: 210px; white-space: nowrap; }
+.hdr .chip b { width: 6px; height: 6px; border-radius: 50%; background: var(--dot, var(--gold)); flex: none; }
+.hdr .chip .name { overflow: hidden; text-overflow: ellipsis; }
+.hdr .menu { width: 40px; height: 40px; border-radius: 50%; border: 1px solid currentColor; display: grid; place-items: center; }
+.hdr .menu span { width: 14px; height: 1px; background: currentColor; box-shadow: 0 5px 0 currentColor; transform: translateY(-2.5px); }
+.progress { position: absolute; left: 0; bottom: 0; height: 2px; width: 100%; background: var(--gold); transform-origin: 0 50%; transform: scaleX(0); animation: grow linear both; animation-timeline: scroll(root); }
+@keyframes grow { to { transform: scaleX(1); } }
+
+section { position: relative; }
+
+/* ---------- 01 hero ---------- */
+.hero { height: 100svh; min-height: 760px; max-height: 900px; background: #0b0b0d; overflow: hidden; }
+.hero .art { position: absolute; inset: 0 0 auto 0; height: 500px; overflow: hidden; }
+.hero .art img { position: absolute; left: -128px; top: 0; height: 500px; width: auto; animation: drift 14s ease-in-out infinite alternate; }
+@keyframes drift { from { transform: translate3d(0,0,0) scale(1); } to { transform: translate3d(-10px,-6px,0) scale(1.035); } }
+.hero .art::after { content: ''; position: absolute; inset: 0; background: linear-gradient(to bottom, rgba(11,11,13,.55) 0, rgba(11,11,13,0) 18%, rgba(11,11,13,0) 52%, #0b0b0d 96%); }
+.ripples { position: absolute; left: -128px; top: 0; width: 715px; height: 500px; pointer-events: none; }
+.ripples circle { fill: none; stroke: var(--gold); transform-box: fill-box; transform-origin: center; animation: suck 3.6s cubic-bezier(.5,0,.75,0) infinite; opacity: 0; }
+.ripples circle:nth-child(2) { animation-delay: 1.2s; }
+.ripples circle:nth-child(3) { animation-delay: 2.4s; }
+.ripples .neon { stroke: #9a4fd0; }
+@keyframes suck { 0% { transform: scale(1.5); opacity: 0; } 25% { opacity: .55; } 100% { transform: scale(1); opacity: 0; } }
+.hero .copy { position: absolute; left: var(--margin); right: var(--margin); bottom: 28px; }
+.hero .h1 { margin: 14px 0 14px; }
+.hero .h1 .voice { font-size: 1.08em; letter-spacing: -.02em; }
+.hero .lead { color: #a9a59d; max-width: 34ch; }
+.hero .row { display: flex; align-items: center; gap: 18px; margin-top: 22px; }
+.hero .facts { margin-top: 22px; padding-top: 14px; border-top: 1px solid rgba(236,233,226,.12); font: 500 11px/1.4 var(--font-mono); letter-spacing: .12em; text-transform: uppercase; color: #8a8781; display: flex; justify-content: space-between; }
+.hero .cue { position: absolute; left: 50%; bottom: 0; width: 1px; height: 18px; background: var(--gold); transform-origin: top; animation: cue 1.8s var(--ease) infinite; }
+@keyframes cue { 0% { transform: scaleY(0); } 60% { transform: scaleY(1); } 100% { transform: scaleY(1) translateY(18px); } }
+
+/* entrance: a mask that opens, never a text fade */
+.rise { display: block; overflow: hidden; }
+.rise > span { display: block; animation: up 700ms var(--ease) both; }
+.rise:nth-child(2) > span { animation-delay: 70ms; }
+.rise:nth-child(3) > span { animation-delay: 140ms; }
+@keyframes up { from { transform: translateY(105%); } }
+
+/* scroll-driven entrances for everything below the fold (transform only) */
+.reveal { animation: lift linear both; animation-timeline: view(); animation-range: entry 0% entry 60%; }
+@keyframes lift { from { transform: translateY(28px); } }
+
+/* ---------- 02 products ---------- */
+.products { padding: 20px 12px 28px; }
+.window { border-radius: var(--r-window); background: #0b0b0d; color: #ece9e2; padding: 28px 20px 24px; overflow: hidden; position: relative; }
+.window .h2 { margin-top: 14px; }
+.device-wrap { position: relative; height: 380px; margin: 26px -20px 6px; display: grid; place-items: center; }
+.device-wrap .halo { position: absolute; width: 330px; height: 330px; border-radius: 50%; border: 1px solid rgba(217,164,65,.28); box-shadow: 0 0 60px rgba(217,164,65,.14) inset; }
+.device-wrap .halo.two { width: 250px; height: 250px; border-color: rgba(217,164,65,.16); }
+.device { position: relative; width: 196px; height: 360px; border-radius: 34px; background: #16161b; border: 1px solid #2a2a31; box-shadow: 0 30px 60px rgba(0,0,0,.6), inset 0 0 0 6px #0e0e12; padding: 18px 14px; transform: rotate(-6deg); animation: tilt linear both; animation-timeline: view(); animation-range: cover 10% cover 70%; }
+@keyframes tilt { from { transform: rotate(-9deg) translateY(30px); } to { transform: rotate(-3deg) translateY(-10px); } }
+.device .bar { display: flex; justify-content: space-between; font: 500 9px/1 var(--font-mono); color: #8a8781; letter-spacing: .08em; }
+.device .bar b { color: var(--gold); font-weight: 500; letter-spacing: .3em; }
+.scan { position: relative; margin: 14px 4px 0; height: 172px; border-radius: 10px; background: radial-gradient(circle at 50% 40%, #1d1d24, #101014); overflow: hidden; }
+.scan svg.face { position: absolute; inset: 22px 0 0; margin: auto; width: 74px; height: 100px; }
+.scan .corner { position: absolute; width: 16px; height: 16px; border: 1.5px solid var(--gold); }
+.scan .c1 { top: 10px; left: 10px; border-right: 0; border-bottom: 0; } .scan .c2 { top: 10px; right: 10px; border-left: 0; border-bottom: 0; }
+.scan .c3 { bottom: 10px; left: 10px; border-right: 0; border-top: 0; } .scan .c4 { bottom: 10px; right: 10px; border-left: 0; border-top: 0; }
+.scan .line { position: absolute; left: 0; right: 0; top: 0; height: 2px; background: linear-gradient(90deg, transparent, var(--gold), transparent); box-shadow: 0 0 14px 2px rgba(217,164,65,.5); animation: sweep 2.6s ease-in-out infinite alternate; }
+@keyframes sweep { from { transform: translateY(18px); } to { transform: translateY(150px); } }
+.device .read { margin: 14px 4px 0; height: 34px; border-radius: var(--r-pill); background: var(--gold); color: #0b0b0d; font: 500 11px/34px var(--font-sans); text-align: center; }
+.device .steps { display: flex; justify-content: space-between; margin: 12px 6px 0; font: 500 9px/1.3 var(--font-mono); color: #8a8781; }
+.device .steps span b { display: block; color: var(--gold); font-weight: 500; }
+.device .tags { display: flex; flex-wrap: wrap; gap: 4px; margin: 10px 2px 0; }
+.device .tags span { font: 400 9px/1 var(--font-sans); padding: 5px 7px; border: 1px solid #34343c; border-radius: var(--r-pill); color: #c9c6bf; }
+.state { display: inline-flex; align-items: center; gap: 8px; height: 28px; padding: 0 12px; border: 1px solid rgba(217,164,65,.5); border-radius: var(--r-pill); font: 500 11px/1 var(--font-mono); letter-spacing: .12em; text-transform: uppercase; color: var(--gold); }
+.state b { width: 6px; height: 6px; border-radius: 50%; background: var(--gold); box-shadow: 0 0 0 0 rgba(217,164,65,.6); animation: ping 2s ease-out infinite; }
+@keyframes ping { to { box-shadow: 0 0 0 8px rgba(217,164,65,0); } }
+.product-name { font-size: 3rem; font-weight: 300; letter-spacing: -.035em; line-height: 1; margin: 14px 0 10px; }
+.window p.line { font-size: 16px; line-height: 1.5; color: #ece9e2; }
+.window p.note { margin-top: 8px; font-size: 14px; color: #a9a59d; }
+.offers { display: grid; grid-template-columns: repeat(3, 1fr); margin-top: 22px; border: 1px solid rgba(236,233,226,.16); border-radius: var(--r-card); overflow: hidden; }
+.offers span { padding: 14px 0; text-align: center; font-size: 15px; }
+.offers span + span { border-left: 1px solid rgba(236,233,226,.16); }
+.window .row { display: flex; align-items: center; justify-content: space-between; margin-top: 18px; }
+.more { font: 500 11px/1 var(--font-mono); letter-spacing: .12em; text-transform: uppercase; color: #a9a59d; display: flex; align-items: center; gap: 6px; }
+
+/* ---------- 03 why one team ---------- */
+.why { padding: 56px var(--margin) 64px; background-image: linear-gradient(var(--hair-2) 1px, transparent 1px), linear-gradient(90deg, var(--hair-2) 1px, transparent 1px); background-size: 39px 39px; background-position: -1px -1px; }
+.why .h2 { margin: 16px 0 0; }
+.why .h2 .voice { font-size: 1.08em; }
+.chain { margin: 32px 0 0; position: relative; }
+.chain .cap { font: 500 11px/1 var(--font-mono); letter-spacing: .14em; text-transform: uppercase; color: var(--grey); margin-bottom: 12px; display: flex; justify-content: space-between; }
+.vendors { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
+.vendor { background: var(--body); border: 1px solid var(--hair); border-radius: var(--r-card); padding: 12px 14px 13px; position: relative; animation: apart linear both; animation-timeline: view(); animation-range: entry 20% cover 45%; }
+.vendor:nth-child(1) { --dx: -4px; --r: -2deg; } .vendor:nth-child(2) { --dx: 4px; --r: 1.6deg; }
+.vendor:nth-child(3) { --dx: -3px; --r: 1.4deg; } .vendor:nth-child(4) { --dx: 4px; --r: -1.8deg; }
+@keyframes apart { from { transform: translateX(0) rotate(0); } to { transform: translateX(var(--dx)) rotate(var(--r)); } }
+.vendor .what { font-size: 17px; font-weight: 400; display: flex; align-items: center; gap: 8px; }
+.vendor .what i { width: 8px; height: 8px; border-radius: 50%; display: block; }
+.vendor .who { font: 500 11px/1.3 var(--font-mono); letter-spacing: .1em; text-transform: uppercase; color: var(--grey); margin-top: 6px; }
+.gap { position: absolute; font: 500 12px/1 var(--font-mono); color: var(--grey); background: var(--body); padding: 2px 4px; }
+.one { margin-top: 18px; border-radius: var(--r-card); background: #0b0b0d; color: #ece9e2; padding: 18px 18px 18px; animation: lift linear both; animation-timeline: view(); animation-range: entry 0% entry 70%; }
+.one .wire { position: relative; height: 26px; margin: 4px 4px 14px; }
+.one .wire::before { content: ''; position: absolute; left: 0; right: 0; top: 12px; height: 1px; background: var(--gold); transform-origin: 0 50%; animation: draw linear both; animation-timeline: view(); animation-range: entry 10% entry 100%; }
+@keyframes draw { from { transform: scaleX(0); } }
+.one .wire i { position: absolute; top: 7px; width: 11px; height: 11px; border-radius: 50%; border: 2px solid #0b0b0d; }
+.one .wire span { position: absolute; top: 0; right: 0; }
+.one .t { font-size: 20px; font-weight: 400; letter-spacing: -.01em; line-height: 1.25; }
+.one .t em { font-style: normal; color: var(--gold); }
+.why p.body { margin-top: 22px; font-size: 16px; color: var(--grey); max-width: 36ch; }
+.why p.body strong { color: var(--porcelain); font-weight: 400; }
+
+/* ---------- 04 seven layers ---------- */
+.layers { padding: 52px var(--margin) 48px; background: #0b0b0d; color: #ece9e2; overflow: hidden; }
+.layers .h2 { margin-top: 16px; }
+.layers .lead { color: #a9a59d; margin-top: 12px; font-size: 16px; }
+.well { position: relative; width: 350px; height: 350px; margin: 18px auto 4px; }
+.well svg { width: 100%; height: 100%; overflow: visible; }
+.well .ring { fill: none; stroke-width: 1.25; transform-box: view-box; transform-origin: 175px 175px; animation: orbit linear both; animation-timeline: view(); }
+.well .ring:nth-of-type(1) { animation-range: entry 30% cover 34%; } .well .ring:nth-of-type(2) { animation-range: entry 34% cover 37%; }
+.well .ring:nth-of-type(3) { animation-range: entry 38% cover 40%; } .well .ring:nth-of-type(4) { animation-range: entry 42% cover 43%; }
+.well .ring:nth-of-type(5) { animation-range: entry 46% cover 46%; } .well .ring:nth-of-type(6) { animation-range: entry 50% cover 49%; }
+.well .ring:nth-of-type(7) { animation-range: entry 54% cover 52%; }
+@keyframes orbit { from { transform: scale(.42) rotate(-40deg); opacity: 0; } to { transform: scale(1) rotate(0); opacity: 1; } }
+.well .glow { position: absolute; inset: 0; margin: auto; width: 128px; height: 128px; border-radius: 50%; box-shadow: 0 0 0 1.5px var(--gold), 0 0 36px 4px rgba(217,164,65,.35); }
+.well .glow::after { content: ''; position: absolute; inset: 0; border-radius: 50%; border: 1px solid rgba(217,164,65,.6); animation: inward 3s cubic-bezier(.5,0,.75,0) infinite; }
+@keyframes inward { from { transform: scale(1.9); opacity: 0; } 30% { opacity: .7; } to { transform: scale(1); opacity: 0; } }
+.well .tag { position: absolute; font: 500 10px/1 var(--font-mono); letter-spacing: .12em; text-transform: uppercase; color: #a9a59d; }
+.list { margin-top: 10px; border-top: 1px solid rgba(236,233,226,.12); }
+.item { border-bottom: 1px solid rgba(236,233,226,.12); }
+.item summary { list-style: none; display: grid; grid-template-columns: 26px 1fr auto; align-items: center; height: 52px; cursor: pointer; }
+.item summary::-webkit-details-marker { display: none; }
+.item summary i { width: 10px; height: 10px; border-radius: 50%; background: var(--c); box-shadow: 0 0 10px var(--c); }
+.item summary .n { font-size: 19px; font-weight: 400; letter-spacing: -.01em; }
+.item summary .k { font: 500 11px/1 var(--font-mono); letter-spacing: .12em; color: #8a8781; display: flex; gap: 14px; align-items: center; }
+.item summary .k::after { content: '+'; font: 300 20px/1 var(--font-sans); color: #ece9e2; width: 14px; text-align: center; }
+.item[open] summary .k::after { content: '–'; }
+.item p { padding: 0 0 16px 26px; color: #a9a59d; font-size: 15px; }
+.crown { margin-top: 18px; font-size: 1.3rem; line-height: 1.3; }
+.crown .voice { color: #ece9e2; }
+.seam { height: 24px; }
+</style>
+</head>
+<body>
+
+<header class="hdr" data-on="ink" id="hdr">
+  <div class="logo"><i></i>BLAKRA</div>
+  <div class="chip"><b></b><span class="no">01 / 10</span><span class="name">Software with gravity</span></div>
+  <div class="menu" aria-label="Menu"><span></span></div>
+  <div class="progress"></div>
+</header>
+
+<main>
+<!-- 01 HERO: ink, one screen. One motion: the ring draws the grid in (suction ripples). -->
+<section class="hero dark" data-surface="ink" data-chip="01 / 10|" data-dot="#d9a441" id="s1">
+  <div class="art">
+    <img src="img/hero-still-phone.webp" alt="" width="715" height="500">
+    <!-- ring centre in the still: 31 % × 34 % of 1068 × 746 → (222, 170) on the 715 × 500 crop; radius ≈ 184 -->
+    <svg class="ripples" viewBox="0 0 715 500" aria-hidden="true">
+      <circle cx="222" cy="170" r="184" stroke-width="1.2"/>
+      <circle cx="222" cy="170" r="184" stroke-width="1" class="neon"/>
+      <circle cx="222" cy="170" r="184" stroke-width="1.2"/>
+    </svg>
+  </div>
+  <div class="copy">
+    <p class="label"><span class="rule"></span>BLAKRA — Software with gravity</p>
+    <h1 class="h1"><span class="rise"><span>We build what</span></span><span class="rise"><span>organizations</span></span><span class="rise"><span><span class="voice">run on</span>.</span></span></h1>
+    <p class="lead">Operations software, apps and AI, designed, built and run by one team.</p>
+    <div class="row"><a class="btn btn-gold" href="#">Start a project <span aria-hidden="true">→</span></a><a class="link" href="#s2" style="color:#ece9e2">See our product</a></div>
+    <div class="facts"><span>Founded 2024</span><span>Remote-first</span><span>Reply &lt; 24 h</span></div>
+  </div>
+  <span class="cue" aria-hidden="true"></span>
+</section>
+
+<!-- 02 OUR PRODUCTS: the ink window on paper, device first. One motion: the scan line. -->
+<section class="products" data-surface="paper" data-chip="02 / 10|Our products" data-dot="#d9a441" id="s2">
+  <div class="window">
+    <p class="label" style="color:#8a8781"><span class="rule"></span>02 · Our products</p>
+    <h2 class="h2 reveal">Proof starts with a product of our <span class="voice">own</span>.</h2>
+    <div class="device-wrap">
+      <span class="halo"></span><span class="halo two"></span>
+      <div class="device" role="img" aria-label="An illustration of the LIOXSA app: a face outline being scanned, a Read my skin button and a three-step result.">
+        <div class="bar"><span>9:41</span><b>LIOXSA</b><span>●●</span></div>
+        <div class="scan">
+          <span class="corner c1"></span><span class="corner c2"></span><span class="corner c3"></span><span class="corner c4"></span>
+          <svg class="face" viewBox="0 0 74 100" fill="none" stroke="#ece9e2" stroke-width="1.2"><path d="M37 4C18 4 8 20 9 42c1 22 12 44 28 50 16-6 27-28 28-50C66 20 56 4 37 4Z"/><path d="M25 40h7M42 40h7M35 50l-2 10h6M29 70c5 4 11 4 16 0"/></svg>
+          <span class="line"></span>
+        </div>
+        <div class="read">Read my skin</div>
+        <div class="steps"><span><b>01</b>Photo</span><span><b>02</b>Read</span><span><b>03</b>Routine</span></div>
+        <div class="tags"><span>Tone</span><span>Texture</span><span>Redness</span><span>Pores</span></div>
+      </div>
+    </div>
+    <span class="state"><b></b>Working · open to offers</span>
+    <p class="product-name">LIOXSA</p>
+    <p class="line">Reads one photo of the face for tone, texture, redness and pores, and explains it in plain words.</p>
+    <p class="note">Cosmetic guidance, not a medical diagnosis.</p>
+    <div class="offers"><span>Sponsor</span><span>License</span><span>Acquire</span></div>
+    <div class="row"><a class="btn btn-gold" href="#">Sponsor or buy <span aria-hidden="true">→</span></a><span class="more">Details <span aria-hidden="true">+</span></span></div>
+  </div>
+</section>
+
+<!-- 03 WHY ONE TEAM: paper. One motion: four vendors drift apart, one gold wire draws through. -->
+<section class="why" data-surface="paper" data-chip="03 / 10|Why one team" data-dot="#0b0b0d" id="s3">
+  <p class="label"><span class="rule"></span>03 · Why one team</p>
+  <h2 class="h2 reveal">A product is only as strong as its weakest <span class="voice">hand-off</span>.</h2>
+  <div class="chain">
+    <div class="cap"><span>The usual way</span><span>4 contracts</span></div>
+    <div class="vendors">
+      <div class="vendor"><div class="what"><i style="background:var(--heart)"></i>Design</div><div class="who">One agency</div></div>
+      <div class="vendor"><div class="what"><i style="background:var(--throat)"></i>The app</div><div class="who">Another agency</div></div>
+      <div class="vendor"><div class="what"><i style="background:var(--root)"></i>Backend</div><div class="who">A freelancer</div></div>
+      <div class="vendor"><div class="what"><i style="background:var(--crown)"></i>AI</div><div class="who">A consultant</div></div>
+    </div>
+    <div class="one">
+      <div class="cap" style="color:#8a8781;margin-bottom:6px"><span>With us</span><span>1 contract</span></div>
+      <div class="wire"><i style="left:0;background:var(--heart)"></i><i style="left:33%;background:var(--throat)"></i><i style="left:66%;background:var(--root)"></i><i style="left:calc(100% - 11px);background:var(--crown)"></i></div>
+      <p class="t">One contract, one team and <em>one accountable lead</em> for all of it.</p>
+    </div>
+  </div>
+  <p class="body"><strong>LIOXSA was built by one team, end to end.</strong> Each hand-off loses something, and when it breaks, each vendor points at the next.</p>
+</section>
+
+<!-- 04 SEVEN LAYERS: ink. One motion: the seven rings settle into orbit, root to crown. -->
+<section class="layers dark" data-surface="ink" data-chip="04 / 10|Seven layers" data-dot="#9a4fd0" id="s4">
+  <p class="label"><span class="rule"></span>04 · Capabilities</p>
+  <h2 class="h2 reveal">Seven layers. <span class="voice">One</span> team.</h2>
+  <p class="lead">We cover all seven and build them in order, from the foundation up.</p>
+  <div class="well">
+    <svg viewBox="0 0 350 350" aria-hidden="true">
+      <circle class="ring" cx="175" cy="175" r="76" stroke="#e8352b"/>
+      <circle class="ring" cx="175" cy="175" r="91" stroke="#f57a1f"/>
+      <circle class="ring" cx="175" cy="175" r="106" stroke="#f7c21b"/>
+      <circle class="ring" cx="175" cy="175" r="121" stroke="#2fb35a"/>
+      <circle class="ring" cx="175" cy="175" r="136" stroke="#2a9fe0"/>
+      <circle class="ring" cx="175" cy="175" r="151" stroke="#4248c2"/>
+      <circle class="ring" cx="175" cy="175" r="166" stroke="#9a4fd0" stroke-width="2"/>
+      <circle cx="175" cy="175" r="64" fill="#000"/>
+    </svg>
+    <span class="glow"></span>
+    <span class="tag" style="left:50%;top:-2px;transform:translateX(-50%)">Crown · AI</span>
+    <span class="tag" style="left:50%;top:calc(50% + 26px);transform:translateX(-50%);color:#8a8781">Root</span>
+  </div>
+  <div class="list">
+    <details class="item" open><summary><i style="--c:#9a4fd0"></i><span class="n">AI</span><span class="k">07</span></summary><p>AI assistants that read, answer and act inside your work, on your own data, with a person one step away.</p></details>
+    <details class="item"><summary><i style="--c:#4248c2"></i><span class="n">Launch and search</span><span class="k">06</span></summary></details>
+    <details class="item"><summary><i style="--c:#2a9fe0"></i><span class="n">Web and mobile</span><span class="k">05</span></summary></details>
+    <details class="item"><summary><i style="--c:#2fb35a"></i><span class="n">Product design</span><span class="k">04</span></summary></details>
+    <details class="item"><summary><i style="--c:#f7c21b"></i><span class="n">Automation and bots</span><span class="k">03</span></summary></details>
+    <details class="item"><summary><i style="--c:#f57a1f"></i><span class="n">Data and integrations</span><span class="k">02</span></summary></details>
+    <details class="item"><summary><i style="--c:#e8352b"></i><span class="n">Cloud and backend</span><span class="k">01</span></summary></details>
+  </div>
+  <p class="crown"><span class="voice">AI sits on top.</span> It works only when the layers beneath it hold.</p>
+</section>
+<div class="seam" style="background:#f4f2ec"></div>
+</main>
+
+<script>
+// The chapter chip: the section under the header names itself (IntersectionObserver in the build).
+const hdr = document.getElementById('hdr'), chip = hdr.querySelector('.chip');
+function update() {
+  const y = 64; let cur = null;
+  for (const s of document.querySelectorAll('section[data-chip]')) { const r = s.getBoundingClientRect(); if (r.top <= y && r.bottom > y) cur = s; }
+  if (!cur) return;
+  const [n, name] = cur.dataset.chip.split('|');
+  chip.querySelector('.no').textContent = n; chip.querySelector('.name').textContent = name;
+  chip.style.setProperty('--dot', cur.dataset.dot);
+  // the products window sits on paper but fills the header band: read the colour at the band
+  if (scrollY > 8) hdr.dataset.scrolled = ''; else delete hdr.dataset.scrolled;
+  hdr.dataset.on = cur.dataset.surface === 'ink' ? 'ink' : 'paper';
+}
+addEventListener('scroll', update, { passive: true }); update();
+</script>
+</body>
+</html>
