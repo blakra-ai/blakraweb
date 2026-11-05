@@ -1,4 +1,4 @@
-import { STATIONS } from './gauge'
+import { STATIONS } from './gaugeMath'
 import { onReflow } from '../../motion/reflow'
 import { obs } from './state'
 

@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest'
-import { STATIONS, chip, markerY, progressFrom, readout, stationY } from '../src/features/observatory/gauge'
+import { STATIONS, chip, markerY, progressFrom, readout, stationY } from '../src/features/observatory/gaugeMath'
 
 describe('the depth gauge', () => {
   it('has ten stations, 01 at the top and 10 at the foot of the rule', () => {
