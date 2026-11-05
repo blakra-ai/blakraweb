@@ -1,0 +1,65 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>BLAKRA storyboard — 03 Proof (phone 390×844)</title>
+<meta name="viewport" content="width=390">
+<link rel="stylesheet" href="./sb.css">
+<style>
+.doc{position:absolute;left:24px;right:24px;top:56px}
+.head{padding-top:14px}
+.head .eyebrow{margin-bottom:14px;font-size:10px}
+.head .eyebrow::before{width:18px}
+.head .h2{font-size:27px}
+.ringline{margin-top:14px;display:flex;gap:12px;align-items:flex-start}
+.ringline .hole{position:relative;transform:none;width:22px;height:22px;flex:none;margin-top:3px}
+.ringline .hole .disc{box-shadow:0 0 0 1px rgba(236,233,226,.9),0 0 6px 1px rgba(var(--accent-rgb),.6)}
+.ringline .voice{font-size:15px;line-height:1.3}
+.rows{margin-top:12px}
+.row{position:relative;padding:9px 0 8px;border-top:1px solid var(--hair);display:grid;grid-template-columns:1fr 112px;column-gap:12px}
+.row:last-child{border-bottom:1px solid var(--hair)}
+.row .ind{color:var(--grey);font-size:11px;letter-spacing:.06em}
+.row .moment{margin-top:4px;font-size:14px;line-height:1.3;letter-spacing:-.01em}
+.row .out{text-align:right}
+.row .out b{display:block;font-weight:400;font-size:18px;letter-spacing:-.01em;line-height:1;margin-top:4px}
+.row .out span{display:block;color:var(--grey);font-size:11px;line-height:1.3;margin-top:4px}
+.row .dots{justify-content:flex-end;gap:5px;margin-top:8px}.row .dots i{width:5px;height:5px}
+.row.near::before{content:"";position:absolute;left:-12px;top:-1px;bottom:-1px;width:2px;background:var(--accent)}
+.station{position:absolute;left:24px;top:62px;color:var(--grey)}
+.station b{color:var(--accent);font-weight:600}
+.process{margin-top:10px;border-top:1px solid var(--hair);padding-top:12px;display:flex;justify-content:space-between;align-items:baseline}
+.process .h3{font-size:18px}
+.process .mono{color:var(--grey);font-size:12px}
+</style>
+</head>
+<body>
+<div class="screen phone">
+  <div class="nav">
+    <div class="mark"><b></b>BLAKRA</div>
+    <div class="right"><span class="chip"><b>●</b>05 / 09</span><a class="pill ghost" style="padding:0 12px;font-size:12px">Start a project</a><span class="burger" aria-label="Menu"><i></i><i></i></span></div>
+  </div>
+    <div class="doc">
+    <div class="head">
+      <div class="eyebrow mono">05 / 09 · Proof</div>
+      <h2 class="h2">Five businesses. Five systems we built and launched.</h2>
+    </div>
+    <div class="ringline">
+      <div class="hole"><div class="disc"></div></div>
+      <p class="voice">Five missions flown. The one nearest yours wears the gold stitch.</p>
+    </div>
+    <div class="rows" id="rows"></div>
+    <div class="process"><div class="h3">Exact before expensive.</div><span class="mono">Scope · Build · Run</span></div>
+  </div>
+</div>
+<script src="./sb.js"></script>
+<script>
+const C=[
+ ['Retail · 12 stores','Twelve stores, counted by one system. The reorders arrive drafted.','40%','fewer stockouts',[3,2,5]],
+ ['Logistics · 25 drivers','Routes are planned for each driver. Dispatch sees the fleet live.','20%','more deliveries per shift',[3,2,5]],
+ ['Insurance brokerage','A client needs their policy. They open the portal instead of calling.','24/7','client self-service',[7,2,5]],
+ ['Manufacturing plant','A machine stops. The alert goes out as it happens, not hours later in a report.','Live','downtime seen as it happens',[2,5]],
+ ['E-commerce · 50,000 orders a month','Peak season, same questions. The assistant answers most of them.','65%','answered automatically',[7,3,2]]];
+document.getElementById('rows').innerHTML=C.map((c,i)=>`<div class="row ${i===2?'near':''}"><div><div class="ind mono">${c[0]}</div><div class="moment">${c[1]}</div></div><div class="out"><b>${c[2]}</b><span>${c[3]}</span><span class="uses" style="display:block;margin-top:6px;font-size:10px">Layers ${c[4].join(" ")}</span></div></div>`).join('');
+</script>
+</body>
+</html>

@@ -1,0 +1,66 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>BLAKRA storyboard — 02 The seven-layer stage (phone 390×844, hold 1.0 of 1.5)</title>
+<meta name="viewport" content="width=390">
+<link rel="stylesheet" href="./sb.css">
+<style>
+.words{position:absolute;left:0;top:40px;width:342px;padding:8px 20px 16px;background:var(--frame);z-index:6} /* opaque band: words never sit on the grid */
+.words .eyebrow{margin-bottom:14px;font-size:10px}
+.words .eyebrow::before{width:18px}
+.words .lede{margin-top:14px;font-size:14px;line-height:1.45}
+.hole.m{left:212px;top:500px;width:140px;height:140px}
+.orbits{position:absolute;inset:0;width:100%;height:100%}
+.labels span{position:absolute;background:var(--frame);padding-right:4px;color:var(--grey);font-family:var(--mono);font-size:12px;letter-spacing:.08em;text-transform:uppercase;white-space:nowrap;display:flex;align-items:center;gap:6px}
+.labels i{width:6px;height:6px;border-radius:50%;background:currentColor;opacity:1;box-shadow:0 0 7px currentColor}
+.labels span{color:var(--porcelain)}
+.station{position:absolute;left:20px;top:18px;color:var(--grey)}
+.station b{color:var(--accent);font-weight:600}
+.counter{position:absolute;right:20px;top:18px;color:var(--grey)}
+.counter b{color:var(--porcelain);font-weight:600}
+</style>
+</head>
+<body>
+<div class="screen phone">
+  <div class="nav">
+    <div class="mark"><b></b>BLAKRA</div>
+    <div class="right"><span class="chip"><b>●</b>03 / 09</span><a class="pill ghost" style="padding:0 12px;font-size:12px">Start a project</a><span class="burger" aria-label="Menu"><i></i><i></i></span></div>
+  </div>
+
+  <div class="frame">
+    <svg class="well" id="well"></svg>
+    <svg class="orbits" id="orbits" viewBox="0 0 342 740"></svg>
+    <div class="hole m"><div class="crescent"></div><div class="photon2"></div><div class="photon"></div><div class="disc"></div></div>
+    <div class="labels" id="labels"></div>
+    <div class="tag corner">03 / 09</div>
+    <div class="counter mono sm">In orbit <b>07 / 07</b></div>
+
+    <section class="words">
+      <div class="eyebrow mono">Capabilities</div>
+      <h2 class="h2">Seven layers. One team.</h2>
+      <p class="lede">Many organizations hire a separate vendor for each of these. We cover all seven and build them in order, from the foundation up, because each layer depends on the one beneath it.</p>
+    </section>
+    <div class="tag foot" style="left:20px;bottom:14px">Held 1.5 screens · the picker follows</div>
+  </div>
+  <div class="note" style="left:16px;top:812px;font-size:9px">Phone stage: CSS orbits, no figure; words scroll over the held frame</div>
+</div>
+<script src="./sb.js"></script>
+<script>
+const CX=212,CY=500;
+well(document.getElementById('well'),{w:342,h:740,cx:CX,cy:CY,rh:70,sigma:170,pull:.66,step:34,fadeLeft:0});
+const L=[['01 Cloud','--root'],['02 Data','--sacral'],['03 Bots','--solar'],['04 Design','--heart'],['05 Apps','--throat'],['06 Launch','--third'],['07 AI','--crown']];
+let o='',lab='';
+const a=-14*Math.PI/180, LX=12, LY0=380, DY=21;
+for(let k=0;k<7;k++){
+  const rx=80+k*12, ry=rx*.3, ly=LY0+k*DY;
+  o+=`<ellipse cx="${CX}" cy="${CY}" rx="${rx}" ry="${ry}" transform="rotate(-14 ${CX} ${CY})" fill="none" stroke="rgba(236,233,226,.26)" stroke-width="1"/>`;
+  let best=null; for(let i=0;i<360;i++){const t=i*Math.PI/180; const x=CX+rx*Math.cos(t)*Math.cos(a)-ry*Math.sin(t)*Math.sin(a), y=CY+rx*Math.cos(t)*Math.sin(a)+ry*Math.sin(t)*Math.cos(a); const d=Math.hypot(x-(LX+96),y-ly); if(!best||d<best.d)best={x,y,d};}
+  o+=`<path d="M${LX+80} ${ly} L${best.x} ${best.y}" stroke="rgba(236,233,226,.22)" stroke-width="1"/>`;
+  o+=`<circle cx="${best.x}" cy="${best.y}" r="3.2" fill="var(${L[k][1]})" style="filter:drop-shadow(0 0 5px var(${L[k][1]}))"/>`;
+  lab+=`<span style="left:${LX}px;top:${ly-6}px"><i style="color:var(${L[k][1]})"></i>${L[k][0]}</span>`;
+}
+document.getElementById('orbits').innerHTML=o; document.getElementById('labels').innerHTML=lab;
+</script>
+</body>
+</html>

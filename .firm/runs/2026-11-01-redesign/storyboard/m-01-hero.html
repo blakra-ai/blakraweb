@@ -1,0 +1,59 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>BLAKRA storyboard — 01 Hero (phone 390×844)</title>
+<meta name="viewport" content="width=390">
+<link rel="stylesheet" href="./sb.css">
+<style>
+.words{position:absolute;left:20px;top:52px;width:302px;z-index:6}
+.words .eyebrow{margin-bottom:18px;font-size:10px}
+.words .eyebrow::before{width:18px}
+.words .lede{margin-top:16px;font-size:14px;line-height:1.45}
+.words .actions{margin-top:20px;display:flex;align-items:center;gap:12px}
+.voicebox{position:absolute;left:20px;top:420px;width:300px;z-index:6}
+.voicebox .voice{font-size:18px}
+.hole.m{left:110px;top:585px;width:140px;height:140px}
+.layers{position:absolute;right:20px;top:18px;display:flex;gap:6px}
+.layers i{width:6px;height:6px;border-radius:50%;background:currentColor;opacity:.3}
+.layers i.on{opacity:1;box-shadow:0 0 7px currentColor}
+.station{position:absolute;left:20px;top:18px;color:var(--grey)}
+.station b{color:var(--accent);font-weight:600}
+</style>
+</head>
+<body>
+<div class="screen phone">
+  <div class="nav">
+    <div class="mark"><b></b>BLAKRA</div>
+    <div class="right"><span class="chip"><b>●</b>01 / 09</span><a class="pill ghost" style="padding:0 12px;font-size:12px">Start a project</a><span class="burger" aria-label="Menu"><i></i><i></i></span></div>
+  </div>
+
+  <div class="frame">
+    <svg class="well" id="well"></svg>
+    <div class="hole m"><div class="crescent"></div><div class="photon2"></div><div class="photon"></div><div class="disc"></div></div>
+    <div class="tag corner">01 / 09 · Hero</div>
+
+    <section class="words">
+      <div class="eyebrow mono">BLAKRA — Software with gravity.</div>
+      <h1 class="h1">We build what organizations run&nbsp;on.</h1>
+      <p class="lede">We design, build and run operations and inventory systems, admin panels and online shops, web and mobile apps, bots, and AI that works on your own data. Three principals lead each project, from the first scope to production.</p>
+      <div class="actions"><a class="pill cta">Start a project</a><span class="mono sm" style="color:var(--grey)">What do you need built? ↓</span></div>
+    </section>
+
+    <div class="voicebox">
+      <div class="voice-tag mono sm"><b>Navigator</b></div>
+      <p class="voice">I'm the Navigator. I've flown this descent before. Look into my eyes and see what I see.</p>
+    </div>
+    <div id="guide"></div>
+    <div class="tag foot" style="left:20px;bottom:12px;font-size:8px;letter-spacing:.06em">Founded 2024 &nbsp;·&nbsp; Fully remote &nbsp;·&nbsp; Reply within 24 hours</div>
+  </div>
+  <div class="note" style="left:16px;top:812px;font-size:9px">Phone: her rendered still + CSS rings; no WebGL under 768 px</div>
+</div>
+<script src="./sb.js"></script>
+<script>
+well(document.getElementById('well'),{w:342,h:740,cx:110,cy:585,rh:70,sigma:170,pull:.66,step:34,fadeLeft:.0});
+document.getElementById('guide').innerHTML=guide(262,628,.66,'left')+
+ '<div class="guide-label" style="left:150px;top:522px;max-width:170px;padding:6px 8px;font-size:10px"><b>Astraía · rendered still</b>Rings in CSS · her eyes hold the hole</div>';
+</script>
+</body>
+</html>

@@ -1,0 +1,1 @@
+- [Navigator figure decisions](project-navigator-figure.md) — GLB node-name contract, GLTFExporter placeholder script, pure steppers → nav.perf, hair Verlet, dive deferred

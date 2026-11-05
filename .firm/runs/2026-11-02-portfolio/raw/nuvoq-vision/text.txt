@@ -1,0 +1,340 @@
+Noyan
+STUDIO
+Work
+Services
+Process
+Studio
+Start a project
+All concept studies
+06
+CONCEPT STUDY · INSPECTION DASHBOARD FOR A PRODUCTION LINE
+Nuvoq
+
+A quality-control screen for a line that moves faster than a person can look.
+
+Designed for line operators and shift supervisors. It shows four camera feeds, the current defect call and the record for the batch.
+
+TYPE
+Concept study
+PLATFORMS (DESIGNED FOR)
+Desktop web and shop-floor screens
+APPROACH
+React components · Hand-written CSS · Sample detection data
+Application preview
+•••
+N
+Nuvoq
+WORKSPACE
+PRO
+Live inspection
+Batches
+Reports
+Models
+Help & documentation
+AC
+Alex Chen
+Personal workspace
+Nuvoq / Live inspection
+Search anything
+⌘ K
+AC
+Production line 04
+
+Edge device connected · Model v2.8 · 60 parts / min
+
+Line settings
+Inspected
+14,280
+● Live · Updated just now
+Pass rate
+98.6%
+● Live · Updated just now
+Defects detected
+200
+● Live · Updated just now
+Line status
+Running
+● Live · Updated just now
+CAM 01 · Front
+● LIVE
+Pass · 99.8%
+1920 × 1080   ·   30 FPS   ·   12 ms
+CAM 02 · Back
+● LIVE
+Pass · 99.8%
+1920 × 1080   ·   30 FPS   ·   12 ms
+CAM 03 · Left edge
+● LIVE
+Surface defect · 99.2%
+1920 × 1080   ·   30 FPS   ·   12 ms
+CAM 04 · Right edge
+● LIVE
+Pass · 99.8%
+1920 × 1080   ·   30 FPS   ·   12 ms
+Inspection events
+Surface defect
+10:42:18 · Part #2840
+Inspection passed
+10:42:17 · Part #2839
+Inspection passed
+10:42:16 · Part #2838
+Inspection passed
+10:42:15 · Part #2837
+Edge irregularity
+10:42:14 · Part #2836
+All cameras online
+
+Processing locally on edge hardware.
+
+Application preview
+•••
+N
+Nuvoq
+WORKSPACE
+PRO
+Live inspection
+Batches
+Reports
+Models
+Help & documentation
+AC
+Alex Chen
+Personal workspace
+Nuvoq / Reports
+Search anything
+⌘ K
+AC
+Batch inspection report
+
+Batch BT-2025-0842 · October 24, 2025
+
+Download report
+Inspected
+14,280
+● Live · Updated just now
+Pass rate
+98.6%
+● Live · Updated just now
+Defects detected
+200
+● Live · Updated just now
+Line status
+Running
+● Live · Updated just now
+CAM 01 · Front
+● LIVE
+Pass · 99.8%
+1920 × 1080   ·   30 FPS   ·   12 ms
+CAM 02 · Back
+● LIVE
+Pass · 99.8%
+1920 × 1080   ·   30 FPS   ·   12 ms
+CAM 03 · Left edge
+● LIVE
+Surface defect · 99.2%
+1920 × 1080   ·   30 FPS   ·   12 ms
+CAM 04 · Right edge
+● LIVE
+Pass · 99.8%
+1920 × 1080   ·   30 FPS   ·   12 ms
+Defect summary
+Surface defect
+10:42:18 · Part #2840
+Inspection passed
+10:42:17 · Part #2839
+Inspection passed
+10:42:16 · Part #2838
+Inspection passed
+10:42:15 · Part #2837
+Edge irregularity
+10:42:14 · Part #2836
+All cameras online
+
+Processing locally on edge hardware.
+
+THE PROBLEM
+
+Manual inspection at line speed is inconsistent, and the only record of it is a paper sheet. A missed defect is then found by the customer, after the batch has been packed and shipped.
+
+THE DESIGN
+01
+
+Four camera feeds are shown together, each labelled with its camera number and frame rate.
+
+02
+
+A detection box stays attached to the frame it belongs to and names the defect class and the confidence.
+
+03
+
+The summary row states inspected count, pass rate and defects for the current shift.
+
+04
+
+A batch report keeps the annotated image next to each recorded defect, so a call can be reviewed later.
+
+05
+
+States use shape as well as colour, because the screen is read in low light and at a glance.
+
+NOTE
+
+Concept work. Screens are design mockups, not a client deployment.
+
+Application preview
+•••
+N
+Nuvoq
+WORKSPACE
+PRO
+Live inspection
+Batches
+Reports
+Models
+Help & documentation
+AC
+Alex Chen
+Personal workspace
+Nuvoq / Live inspection
+Search anything
+⌘ K
+AC
+Production line 04
+
+Edge device connected · Model v2.8 · 60 parts / min
+
+Line settings
+Inspected
+14,280
+● Live · Updated just now
+Pass rate
+98.6%
+● Live · Updated just now
+Defects detected
+200
+● Live · Updated just now
+Line status
+Running
+● Live · Updated just now
+CAM 01 · Front
+● LIVE
+Pass · 99.8%
+1920 × 1080   ·   30 FPS   ·   12 ms
+CAM 02 · Back
+● LIVE
+Pass · 99.8%
+1920 × 1080   ·   30 FPS   ·   12 ms
+CAM 03 · Left edge
+● LIVE
+Surface defect · 99.2%
+1920 × 1080   ·   30 FPS   ·   12 ms
+CAM 04 · Right edge
+● LIVE
+Pass · 99.8%
+1920 × 1080   ·   30 FPS   ·   12 ms
+Inspection events
+Surface defect
+10:42:18 · Part #2840
+Inspection passed
+10:42:17 · Part #2839
+Inspection passed
+10:42:16 · Part #2838
+Inspection passed
+10:42:15 · Part #2837
+Edge irregularity
+10:42:14 · Part #2836
+All cameras online
+
+Processing locally on edge hardware.
+
+Live screen: four camera feeds with detection boxes and a shift summary.
+Application preview
+•••
+N
+Nuvoq
+WORKSPACE
+PRO
+Live inspection
+Batches
+Reports
+Models
+Help & documentation
+AC
+Alex Chen
+Personal workspace
+Nuvoq / Reports
+Search anything
+⌘ K
+AC
+Batch inspection report
+
+Batch BT-2025-0842 · October 24, 2025
+
+Download report
+Inspected
+14,280
+● Live · Updated just now
+Pass rate
+98.6%
+● Live · Updated just now
+Defects detected
+200
+● Live · Updated just now
+Line status
+Running
+● Live · Updated just now
+CAM 01 · Front
+● LIVE
+Pass · 99.8%
+1920 × 1080   ·   30 FPS   ·   12 ms
+CAM 02 · Back
+● LIVE
+Pass · 99.8%
+1920 × 1080   ·   30 FPS   ·   12 ms
+CAM 03 · Left edge
+● LIVE
+Surface defect · 99.2%
+1920 × 1080   ·   30 FPS   ·   12 ms
+CAM 04 · Right edge
+● LIVE
+Pass · 99.8%
+1920 × 1080   ·   30 FPS   ·   12 ms
+Defect summary
+Surface defect
+10:42:18 · Part #2840
+Inspection passed
+10:42:17 · Part #2839
+Inspection passed
+10:42:16 · Part #2838
+Inspection passed
+10:42:15 · Part #2837
+Edge irregularity
+10:42:14 · Part #2836
+All cameras online
+
+Processing locally on edge hardware.
+
+Report screen: defect list with annotated evidence.
+
+NEXT CONCEPT STUDY
+
+Tiravan — A dispatch screen and a driver app that share one view of the day.
+
+Noyan
+
+A small product studio designing and engineering apps, platforms and AI tools for teams that care about the details.
+
+NAVIGATE
+
+Concept studies
+Services
+Process
+Contact
+
+ELSEWHERE
+
+hello@noyan.studio
+Book an intro call
+Vitrin — concept study
+© 2026 Noyan Studio. All rights reserved.
+CONCEPT STUDIES · REGISTERED 2024

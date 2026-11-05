@@ -1,0 +1,111 @@
+# Example nginx server blocks for the static build in dist/.
+# Not applied automatically: copy, adapt the paths and certificates, test with `nginx -t`.
+#
+# The certificate must cover both names, or https://www.blakra.us shows a security warning:
+#   certbot certonly --nginx -d blakra.us -d www.blakra.us
+# Upload only the contents of dist/ to the root below, never the repository itself.
+
+# In the http {} block (nginx.conf): no version number in error pages and headers.
+#   server_tokens off;
+#
+# Access logs hold visitors' IP addresses. The Privacy page says they are deleted after 14 days,
+# so rotate them daily and keep 14 (in /etc/logrotate.d/nginx: `daily` and `rotate 14`).
+
+server {
+    listen 443 ssl;
+    # listen [::]:443 ssl;   # once the domain has an AAAA record
+    http2 on;
+    server_name blakra.us;
+
+    ssl_certificate     /etc/letsencrypt/live/blakra.us/fullchain.pem;
+    ssl_certificate_key /etc/letsencrypt/live/blakra.us/privkey.pem;
+    # Explicit, because nginx before 1.23.4 still enables TLS 1.0 and 1.1 by default.
+    ssl_protocols TLSv1.2 TLSv1.3;
+
+    root /var/www/blakra/dist;
+    index index.html;
+
+    gzip on;
+    gzip_vary on;
+    gzip_types text/css application/javascript image/svg+xml application/json application/xml text/plain;
+
+    # nginx drops server-level add_header lines inside any location that sets its own,
+    # so the security headers live in one snippet included everywhere.
+    include /etc/nginx/snippets/blakra-headers.conf;
+
+    # Hidden files and folders (.git, .env, editor files) are never served; ACME challenges are.
+    location ~ /\.(?!well-known/) {
+        return 404;
+    }
+
+    # security.txt (RFC 9116) and the web app manifest, with their own types.
+    location = /.well-known/security.txt {
+        include /etc/nginx/snippets/blakra-headers.conf;
+        default_type text/plain;
+        charset utf-8;
+    }
+    location = /site.webmanifest {
+        include /etc/nginx/snippets/blakra-headers.conf;
+        default_type application/manifest+json;
+    }
+
+    # Hashed build assets never change: cache them for a year.
+    location /assets/ {
+        include /etc/nginx/snippets/blakra-headers.conf;
+        add_header Cache-Control "public, max-age=31536000, immutable" always;
+        try_files $uri =404;
+    }
+
+    # Pages are prerendered folders: /investors/ -> investors/index.html.
+    location / {
+        include /etc/nginx/snippets/blakra-headers.conf;
+        add_header Cache-Control "no-cache" always;
+        try_files $uri $uri/ =404;
+    }
+
+    # Each language has its own 404 page.
+    location /de/ {
+        include /etc/nginx/snippets/blakra-headers.conf;
+        add_header Cache-Control "no-cache" always;
+        try_files $uri $uri/ =404;
+        error_page 404 /de/404.html;
+    }
+    location /fr/ {
+        include /etc/nginx/snippets/blakra-headers.conf;
+        add_header Cache-Control "no-cache" always;
+        try_files $uri $uri/ =404;
+        error_page 404 /fr/404.html;
+    }
+    location /es/ {
+        include /etc/nginx/snippets/blakra-headers.conf;
+        add_header Cache-Control "no-cache" always;
+        try_files $uri $uri/ =404;
+        error_page 404 /es/404.html;
+    }
+
+    error_page 404 /404.html;
+}
+
+# www over HTTPS: same certificate, one redirect to the main name.
+server {
+    listen 443 ssl;
+    http2 on;
+    server_name www.blakra.us;
+
+    ssl_certificate     /etc/letsencrypt/live/blakra.us/fullchain.pem;
+    ssl_certificate_key /etc/letsencrypt/live/blakra.us/privkey.pem;
+    ssl_protocols TLSv1.2 TLSv1.3;
+
+    include /etc/nginx/snippets/blakra-headers.conf;
+    return 301 https://blakra.us$request_uri;
+}
+
+# Plain HTTP: to HTTPS on the same name first (what HSTS preloading expects), then www goes to
+# the main name above.
+server {
+    listen 80;
+    server_name blakra.us www.blakra.us;
+    return 301 https://$host$request_uri;
+}
+
+# The header snippet is deploy/blakra-headers.conf: copy it to /etc/nginx/snippets/.

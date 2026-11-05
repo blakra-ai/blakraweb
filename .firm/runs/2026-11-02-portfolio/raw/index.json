@@ -1,0 +1,173 @@
+[
+ {
+  "slug": "vitrin-app",
+  "shots": [
+   {
+    "file": "01-phone.png",
+    "kind": "phone",
+    "caption": "Storefront screen: hero image, category filters and a two-column product grid.",
+    "w": 640,
+    "h": 1356
+   },
+   {
+    "file": "02-phone.png",
+    "kind": "phone",
+    "caption": "Product screen: photograph, price, size selection and stock state.",
+    "w": 640,
+    "h": 1356
+   },
+   {
+    "file": "03-phone.png",
+    "kind": "phone",
+    "caption": "Stockroom screen: shift totals, low-stock list and a scan field.",
+    "w": 640,
+    "h": 1356
+   }
+  ]
+ },
+ {
+  "slug": "veyra-money",
+  "shots": [
+   {
+    "file": "01-phone.png",
+    "kind": "phone",
+    "caption": "Wallet screen: balance, card and recent activity.",
+    "w": 640,
+    "h": 1356
+   },
+   {
+    "file": "02-phone.png",
+    "kind": "phone",
+    "caption": "Transfer screen: recipient, amount and keypad.",
+    "w": 640,
+    "h": 1356
+   },
+   {
+    "file": "03-phone.png",
+    "kind": "phone",
+    "caption": "Insights screen: monthly spend and category breakdown.",
+    "w": 640,
+    "h": 1356
+   }
+  ]
+ },
+ {
+  "slug": "vitrin-console",
+  "shots": [
+   {
+    "file": "01-browser.png",
+    "kind": "browser",
+    "caption": "Overview screen: revenue figures, seven-day chart and top products.",
+    "w": 2000,
+    "h": 1363
+   },
+   {
+    "file": "02-browser.png",
+    "kind": "browser",
+    "caption": "Orders screen: store and status filters, order table and status column.",
+    "w": 2000,
+    "h": 1363
+   }
+  ]
+ },
+ {
+  "slug": "flowline-automation",
+  "shots": [
+   {
+    "file": "01-browser.png",
+    "kind": "browser",
+    "caption": "Builder screen: four steps, one condition and the properties panel.",
+    "w": 2000,
+    "h": 1363
+   },
+   {
+    "file": "02-browser.png",
+    "kind": "browser",
+    "caption": "Runs screen: volume chart, result table and per-step history.",
+    "w": 2000,
+    "h": 1363
+   }
+  ]
+ },
+ {
+  "slug": "helya-ai",
+  "shots": [
+   {
+    "file": "01-browser.png",
+    "kind": "browser",
+    "caption": "Answer screen: prose answer, numbered source references and the source passage beside it.",
+    "w": 2000,
+    "h": 1363
+   }
+  ]
+ },
+ {
+  "slug": "nuvoq-vision",
+  "shots": [
+   {
+    "file": "01-browser.png",
+    "kind": "browser",
+    "caption": "Live screen: four camera feeds with detection boxes and a shift summary.",
+    "w": 2000,
+    "h": 1363
+   },
+   {
+    "file": "02-browser.png",
+    "kind": "browser",
+    "caption": "Report screen: defect list with annotated evidence.",
+    "w": 2000,
+    "h": 1363
+   }
+  ]
+ },
+ {
+  "slug": "tiravan-logistics",
+  "shots": [
+   {
+    "file": "01-browser.png",
+    "kind": "browser",
+    "caption": "Dispatch screen: routes on a map with completed and remaining stops.",
+    "w": 2000,
+    "h": 1363
+   },
+   {
+    "file": "02-phone.png",
+    "kind": "phone",
+    "caption": "Driver screen: next stop, arrival estimate and proof-of-delivery step.",
+    "w": 640,
+    "h": 1356
+   }
+  ]
+ },
+ {
+  "slug": "raah-learning",
+  "shots": [
+   {
+    "file": "01-browser.png",
+    "kind": "browser",
+    "caption": "Results screen: topic comparison, term trend and recent assessments.",
+    "w": 2000,
+    "h": 1363
+   },
+   {
+    "file": "02-phone.png",
+    "kind": "phone",
+    "caption": "Exam screen: timer, progress, four options and a saved state.",
+    "w": 640,
+    "h": 1356
+   }
+  ]
+ },
+ {
+  "slug": "kavira-platform",
+  "shots": []
+ },
+ {
+  "slug": "paperlight-game",
+  "shots": []
+ },
+ {
+  "slug": "driftlight-game",
+  "shots": []
+ }
+]

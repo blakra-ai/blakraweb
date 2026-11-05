@@ -1,0 +1,63 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>BLAKRA storyboard — 05 Contact (phone 390×844)</title>
+<meta name="viewport" content="width=390">
+<link rel="stylesheet" href="./sb.css">
+<style>
+.frame{bottom:auto;height:232px}
+.hole.m{left:272px;top:118px;width:120px;height:120px}
+.voicebox{position:absolute;left:20px;top:50px;width:178px;z-index:6}
+.voicebox .voice{font-size:16px;line-height:1.3}
+.station{position:absolute;left:20px;top:16px;color:var(--grey)}
+.station b{color:var(--accent);font-weight:600}
+.doc{position:absolute;left:24px;right:24px;top:330px;bottom:0}
+.doc .h2{font-size:28px}
+.doc .lede{margin-top:10px;font-size:13px;line-height:1.4}
+.doors{margin-top:14px;display:flex;flex-wrap:wrap;gap:6px}
+.doors .pill{height:32px;padding:0 12px;font-size:12px;border:1px solid var(--ctrl);color:var(--porcelain)}
+.doors .pill.on{box-shadow:inset 0 0 0 1px var(--porcelain);border-color:var(--porcelain)}
+.field{margin-top:8px}
+.field label{display:block;color:var(--grey);margin-bottom:4px}
+.field .in{height:40px;border:1px solid var(--ctrl);border-radius:4px;padding:0 10px;display:flex;align-items:center;color:var(--grey);font-size:13px}
+.field .in.area{height:50px;align-items:flex-start;padding-top:8px}
+.send{margin-top:12px;display:flex;align-items:center;gap:12px}
+.send .pill{height:40px}
+.send span{font-size:11px;color:var(--grey)}
+</style>
+</head>
+<body>
+<div class="screen phone">
+  <div class="nav">
+    <div class="mark"><b></b>BLAKRA</div>
+    <div class="right"><span class="chip"><b>●</b>09 / 09</span><a class="pill ghost" style="padding:0 12px;font-size:12px">Start a project</a><span class="burger" aria-label="Menu"><i></i><i></i></span></div>
+  </div>
+
+  <div class="frame">
+    <svg class="well" id="well"></svg>
+    <div class="hole m"><div class="crescent"></div><div class="photon2"></div><div class="photon"></div><div class="disc"></div></div>
+    <div class="tag corner">09 / 09 · Event horizon</div>
+    <div class="voicebox">
+      <div class="voice-tag mono sm" style="margin-bottom:6px"><b>Navigator</b></div>
+      <p class="voice">Your mission is written in. Send it, and an engineer who would build it answers within 24 hours.</p>
+    </div>
+  </div>
+
+  <div class="doc">
+    <div class="eyebrow mono" style="font-size:10px;margin-bottom:10px">Start here</div>
+    <h2 class="h2">Tell us what you need built.</h2>
+    <p class="lede">Within 24 hours, an engineer who would build it replies with a first read: what it involves, the risks we see and a sensible first step. No sales deck, no mailing list.</p>
+    <div class="doors"><span class="pill on">Commission a project</span><span class="pill">Partner with us</span><span class="pill">Sponsor or buy a product</span></div>
+    <div class="field"><label class="mono sm">Name or company</label><div class="in"></div></div>
+    <div class="field"><label class="mono sm">Email</label><div class="in"></div></div>
+    <div class="field"><label class="mono sm">What takes too much of your day?</label><div class="in area">For example: we re-type orders from email into our ERP by hand.</div></div>
+    <div class="send"><span class="pill solid">Send</span><span>Read by an engineer, not a sales team.</span></div>
+  </div>
+</div>
+<script src="./sb.js"></script>
+<script>
+well(document.getElementById('well'),{w:342,h:232,cx:272,cy:118,rh:60,sigma:150,pull:.66,step:30,fadeLeft:.3});
+</script>
+</body>
+</html>

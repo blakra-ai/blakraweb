@@ -1,0 +1,1185 @@
+Noyan
+STUDIO
+Work
+Services
+Process
+Studio
+Start a project
+INDEPENDENT STUDIO · REGISTERED 2024
+Products designed
+screen by screen.
+
+Noyan designs and builds mobile apps, operational platforms, AI tools and games. We work with small teams that need one group to own the product from the first flow to release, and we take on a few projects at a time so the same three people stay on the work. When a scope needs more hands, we bring in contractors for that part.
+
+View selected work
+Start a project
+CONCEPT STUDIES BELOW
+REPLY WITHIN 24 HOURS
+Vitrin Console / Overview
+•••
+V
+Vitrin
+WORKSPACE
+PRO
+Overview
+Orders
+Products
+Inventory
+Customers
+Analytics
+Help & documentation
+AC
+Alex Chen
+Personal workspace
+Vitrin / Overview
+Search anything
+⌘ K
+AC
+Store overview
+
+A clear view of your business, across every store.
+
+Export report
+Total revenue
+$52,435.89
+↗ +8.2% vs. last month
+Orders
+1,348
+↗ +5.1% vs. last month
+Conversion rate
+3.95%
+↗ +1.2% vs. last month
+Average order
+$138.20
+↗ +4.4% vs. last month
+Revenue over time
+Last 7 days
+
+Daily sales across all locations
+
+15k
+10k
+5k
+0
+Mon
+Tue
+Wed
+Thu
+Fri
+Sat
+Sun
+Top products
+01
+Everyday trench coat
+248 sold
+$70,680
+02
+Wool crewneck
+192 sold
+$27,840
+03
+Tailored blazer
+164 sold
+$42,640
+04
+Wide-leg trousers
+138 sold
+$24,840
+Recent orders
+All stores · October 2025
+Order	Customer	Items	Total	Status
+VT-1048	Olivia Martin	2 items	$285.00	Fulfilled
+VT-1047	James Wilson	1 item	$145.00	Processing
+VT-1046	Emma Davis	3 items	$425.00	Fulfilled
+VT-1045	Noah Taylor	2 items	$210.00	Processing
+9:41
+VITRIN
+THE SPRING EDIT
+Everyday, elevated.
+Explore collection 
+Discover
+Clothing
+Accessories
+
+Wool crewneck
+
+$145
+
+Tailored blazer
+
+$260
+
+Silk scarf
+
+$65
+
+Wide-leg trousers
+
+$180
+Home
+Search
+Saved
+Account
+FEATURED
+Vitrin — store & inventory
+REACT
+REACT NATIVE
+SWIFT
+KOTLIN
+UNITY
+NODE.JS
+PYTHON
+POSTGRESQL
+PGVECTOR
+TYPESCRIPT
+TAILWIND
+AWS
+REACT
+REACT NATIVE
+SWIFT
+KOTLIN
+UNITY
+NODE.JS
+PYTHON
+POSTGRESQL
+PGVECTOR
+TYPESCRIPT
+TAILWIND
+AWS
+CONCEPT STUDIES · ELEVEN
+Eleven concept studies, each drawn as a working interface.
+
+These are self-initiated studies, not client deployments. Every screen is a design mockup shown in the frame it is designed for: a phone for mobile products, a browser window for platforms. Each study states the problem it addresses and the decisions behind it.
+
+All studies
+Mobile apps
+Web platforms
+AI
+Games
+Developer tools
+9:41
+VITRIN
+THE ESSENTIALS COLLECTION
+Everyday trench coat
+$285
+
+A timeless layer. Made to go everywhere.
+
+Sand
+Select size
+Size guide
+XS
+S
+M
+L
+XL
+
+In stock · Free delivery over $100
+
+Add to bag
+Home
+Search
+Saved
+Account
+9:41
+VITRIN
+THE SPRING EDIT
+Everyday, elevated.
+Explore collection 
+Discover
+Clothing
+Accessories
+
+Wool crewneck
+
+$145
+
+Tailored blazer
+
+$260
+
+Silk scarf
+
+$65
+
+Wide-leg trousers
+
+$180
+Home
+Search
+Saved
+Account
+FEATURED CONCEPT STUDY
+Vitrin — A mobile storefront and a stockroom app for the same clothing shop.
+
+Designed for independent clothing shops that sell in store and online. The concept keeps the customer catalogue and the staff stock count in one system, so a size shown as available is a size that exists.
+
+CONCEPT STUDY · MOBILE STOREFRONT AND INVENTORY APP
+/
+IOS AND ANDROID
+Read the concept study
+9:41
+AC
+veyra.
+
+Total balance 
+
+$24,895.75
++$1,240.80 this month
+veyra
+••••   ••••   ••••   4281
+ALEX CHEN
+VISA
+Send
+Request
+Add money
+Recent activity
+View all
+Whole Foods
+Today, 10:30 AM
+−$142.50
+Blue Bottle
+Today, 9:15 AM
+−$6.75
+Monthly salary
+Yesterday
++$4,800.00
+Home
+Insights
+Cards
+More
+9:41
+AC
+veyra.
+Send money
+JL
+Jamie Lee
+Veyra account · 8032
+
+You send
+
+$250.00
+USD · No transfer fee
+1
+2
+3
+4
+5
+6
+7
+8
+9
+.
+0
+⌫
+Continue
+Home
+Insights
+Cards
+More
+02
+Veyra — A money app built around what can be spent now.
+
+CONCEPT STUDY · CONSUMER MONEY APP
+
+Application preview
+•••
+V
+Vitrin
+WORKSPACE
+PRO
+Overview
+Orders
+Products
+Inventory
+Customers
+Analytics
+Help & documentation
+AC
+Alex Chen
+Personal workspace
+Vitrin / Overview
+Search anything
+⌘ K
+AC
+Store overview
+
+A clear view of your business, across every store.
+
+Export report
+Total revenue
+$52,435.89
+↗ +8.2% vs. last month
+Orders
+1,348
+↗ +5.1% vs. last month
+Conversion rate
+3.95%
+↗ +1.2% vs. last month
+Average order
+$138.20
+↗ +4.4% vs. last month
+Revenue over time
+Last 7 days
+
+Daily sales across all locations
+
+15k
+10k
+5k
+0
+Mon
+Tue
+Wed
+Thu
+Fri
+Sat
+Sun
+Top products
+01
+Everyday trench coat
+248 sold
+$70,680
+02
+Wool crewneck
+192 sold
+$27,840
+03
+Tailored blazer
+164 sold
+$42,640
+04
+Wide-leg trousers
+138 sold
+$24,840
+Recent orders
+All stores · October 2025
+Order	Customer	Items	Total	Status
+VT-1048	Olivia Martin	2 items	$285.00	Fulfilled
+VT-1047	James Wilson	1 item	$145.00	Processing
+VT-1046	Emma Davis	3 items	$425.00	Fulfilled
+VT-1045	Noah Taylor	2 items	$210.00	Processing
+Application preview
+•••
+V
+Vitrin
+WORKSPACE
+PRO
+Overview
+Orders
+Products
+Inventory
+Customers
+Analytics
+Help & documentation
+AC
+Alex Chen
+Personal workspace
+Vitrin / Orders
+Search anything
+⌘ K
+AC
+Orders
+
+A clear view of your business, across every store.
+
+Create order
+Total revenue
+$52,435.89
+↗ +8.2% vs. last month
+Orders
+1,348
+↗ +5.1% vs. last month
+Conversion rate
+3.95%
+↗ +1.2% vs. last month
+Average order
+$138.20
+↗ +4.4% vs. last month
+All orders
+All stores · October 2025
+Order	Customer	Items	Total	Status
+VT-1048	Olivia Martin	2 items	$285.00	Fulfilled
+VT-1047	James Wilson	1 item	$145.00	Processing
+VT-1046	Emma Davis	3 items	$425.00	Fulfilled
+VT-1045	Noah Taylor	2 items	$210.00	Processing
+03
+Vitrin Console — A back office for a shop that runs across several locations.
+
+CONCEPT STUDY · STORE OPERATIONS DASHBOARD
+
+Application preview
+•••
+F
+Flowline
+WORKSPACE
+PRO
+Workflows
+Run history
+Connections
+Settings
+Help & documentation
+AC
+Alex Chen
+Personal workspace
+Flowline / Workflows
+Search anything
+⌘ K
+AC
+Purchase order approval
+
+Draft changes saved · Last edited 4 minutes ago
+
+Publish workflow
+WORKFLOW CANVAS
+Active
+New purchase order
+Webhook trigger
+Check order value
+Amount is greater than $5,000
+Manager approval
+Assigned to operations team
+Send confirmation
+Notify requester by email
+If approved
+STEP CONFIGURATION
+Check order value
+
+Continue only when the condition is met.
+
+Field
+order.total_amount
+Condition
+Is greater than
+Value
+5000
+
+Orders below this amount skip approval and proceed automatically.
+
+Application preview
+•••
+F
+Flowline
+WORKSPACE
+PRO
+Workflows
+Run history
+Connections
+Settings
+Help & documentation
+AC
+Alex Chen
+Personal workspace
+Flowline / Run history
+Search anything
+⌘ K
+AC
+Workflow activity
+
+Every run, every step, fully traceable.
+
+Export runs
+Total runs
+12,480
+Healthy · Last 30 days
+Success rate
+99.8%
+Healthy · Last 30 days
+Average duration
+1.4s
+Healthy · Last 30 days
+Time saved
+340 hrs
+Healthy · Last 30 days
+Run volume
+All systems operational
+15k
+10k
+5k
+0
+Mon
+Tue
+Wed
+Thu
+Fri
+Sat
+Sun
+Recent runs
+Run ID	Workflow	Started	Duration	Result
+#RUN-4820	Purchase order approval	 1 min ago	1.2s	Completed
+#RUN-4819	Daily stock sync	 2 min ago	1.3s	Completed
+#RUN-4818	Delivery status alert	 3 min ago	1.4s	Completed
+04
+Flowline — A canvas for approvals and hand-offs that would otherwise run through email.
+
+CONCEPT STUDY · WORKFLOW AUTOMATION TOOL
+
+Application preview
+•••
+H
+Helya
+WORKSPACE
+PRO
+Knowledge chat
+Documents
+Collections
+Activity
+Help & documentation
+AC
+Alex Chen
+Personal workspace
+Helya / Knowledge chat
+Search anything
+⌘ K
+AC
+Your knowledge, connected.
+
+Answers grounded in your team's documents.
+
+New conversation
+What is the approval process for equipment purchases over $10,000?
+Here’s the process outlined in your procurement policy.
+
+Equipment purchases above $10,000 require two levels of approval before a purchase order can be issued.
+
+Submit a purchase request. Include the vendor quote, cost centre, and business justification. 1
+Department head approval. Your department head reviews the request and confirms budget availability. 1
+Finance sign-off. Finance validates the spend and releases the purchase order. 2
+Typical turnaround: 2–3 business days after submission.
+1. Procurement Policy · p. 14
+2. Finance Handbook · p. 8
+Verified against 2 sources
+Ask a follow-up question…
+Answers include source references. Always review critical decisions.
+SOURCE DOCUMENTS
+Procurement Policy
+
+Version 3.2 · Updated Sep 12
+
+4.2 Equipment purchases
+
+All equipment expenditure exceeding $10,000 must be approved by the department head and the finance team prior to commitment.
+
+Page 14 of 32
+12,480 documents indexed
+05
+Helya — An assistant that answers from an organisation’s own documents and shows where the answer came from.
+
+CONCEPT STUDY · INTERNAL KNOWLEDGE ASSISTANT
+
+Application preview
+•••
+N
+Nuvoq
+WORKSPACE
+PRO
+Live inspection
+Batches
+Reports
+Models
+Help & documentation
+AC
+Alex Chen
+Personal workspace
+Nuvoq / Live inspection
+Search anything
+⌘ K
+AC
+Production line 04
+
+Edge device connected · Model v2.8 · 60 parts / min
+
+Line settings
+Inspected
+14,280
+● Live · Updated just now
+Pass rate
+98.6%
+● Live · Updated just now
+Defects detected
+200
+● Live · Updated just now
+Line status
+Running
+● Live · Updated just now
+CAM 01 · Front
+● LIVE
+Pass · 99.8%
+1920 × 1080   ·   30 FPS   ·   12 ms
+CAM 02 · Back
+● LIVE
+Pass · 99.8%
+1920 × 1080   ·   30 FPS   ·   12 ms
+CAM 03 · Left edge
+● LIVE
+Surface defect · 99.2%
+1920 × 1080   ·   30 FPS   ·   12 ms
+CAM 04 · Right edge
+● LIVE
+Pass · 99.8%
+1920 × 1080   ·   30 FPS   ·   12 ms
+Inspection events
+Surface defect
+10:42:18 · Part #2840
+Inspection passed
+10:42:17 · Part #2839
+Inspection passed
+10:42:16 · Part #2838
+Inspection passed
+10:42:15 · Part #2837
+Edge irregularity
+10:42:14 · Part #2836
+All cameras online
+
+Processing locally on edge hardware.
+
+Application preview
+•••
+N
+Nuvoq
+WORKSPACE
+PRO
+Live inspection
+Batches
+Reports
+Models
+Help & documentation
+AC
+Alex Chen
+Personal workspace
+Nuvoq / Reports
+Search anything
+⌘ K
+AC
+Batch inspection report
+
+Batch BT-2025-0842 · October 24, 2025
+
+Download report
+Inspected
+14,280
+● Live · Updated just now
+Pass rate
+98.6%
+● Live · Updated just now
+Defects detected
+200
+● Live · Updated just now
+Line status
+Running
+● Live · Updated just now
+CAM 01 · Front
+● LIVE
+Pass · 99.8%
+1920 × 1080   ·   30 FPS   ·   12 ms
+CAM 02 · Back
+● LIVE
+Pass · 99.8%
+1920 × 1080   ·   30 FPS   ·   12 ms
+CAM 03 · Left edge
+● LIVE
+Surface defect · 99.2%
+1920 × 1080   ·   30 FPS   ·   12 ms
+CAM 04 · Right edge
+● LIVE
+Pass · 99.8%
+1920 × 1080   ·   30 FPS   ·   12 ms
+Defect summary
+Surface defect
+10:42:18 · Part #2840
+Inspection passed
+10:42:17 · Part #2839
+Inspection passed
+10:42:16 · Part #2838
+Inspection passed
+10:42:15 · Part #2837
+Edge irregularity
+10:42:14 · Part #2836
+All cameras online
+
+Processing locally on edge hardware.
+
+06
+Nuvoq — A quality-control screen for a line that moves faster than a person can look.
+
+CONCEPT STUDY · INSPECTION DASHBOARD FOR A PRODUCTION LINE
+
+Application preview
+•••
+T
+Tiravan
+WORKSPACE
+PRO
+Dispatch
+Fleet
+Deliveries
+Analytics
+Help & documentation
+AC
+Alex Chen
+Personal workspace
+Tiravan / Dispatch
+Search anything
+⌘ K
+AC
+Dispatch control tower
+
+Friday, October 24 · Live fleet overview
+
+New delivery
+Active vehicles
+48 / 52
+Live fleet data
+Deliveries today
+1,284
+Live fleet data
+On-time rate
+96.8%
+Live fleet data
+Exceptions
+3
+Live fleet data
+1
+2
+3
+4
+5
+6
+7
+8
+DOWNTOWN
+BROOKLYN
+EAST RIVER
+WILLIAMSBURG
+● Active routes
+● Completed stops
+48 vehicles online
+Active routes
+48 live
+Alex Morgan
+Brooklyn East · TR-104
+8 / 14
+Sam Rivera
+Manhattan South · TR-105
+12 / 18
+Jamie Lee
+Queens North · TR-106
+6 / 12
+Taylor Park
+Brooklyn West · TR-107
+10 / 16
+Select a route to see stop details
+9:41
+Today's route
+On time
+8 of 14 stops complete
+57%
+1
+2
+3
+4
+5
+6
+7
+8
+DOWNTOWN
+BROOKLYN
+EAST RIVER
+WILLIAMSBURG
+NEXT STOP · DELIVERY 09
+48 Maple Avenue
+
+Brooklyn, NY 11201 · Apt 3B
+
+Olivia Martin
+2 packages · Leave at front desk
+6 min away
+1.2 mi · Arrival at 10:48 AM
+Start navigation
+Capture proof of delivery on arrival
+07
+Tiravan — A dispatch screen and a driver app that share one view of the day.
+
+CONCEPT STUDY · DELIVERY DISPATCH AND DRIVER APP
+
+Application preview
+•••
+R
+Raah
+WORKSPACE
+PRO
+Overview
+Assessments
+Students
+Reports
+Help & documentation
+AC
+Alex Chen
+Personal workspace
+Raah / Overview
+Search anything
+⌘ K
+AC
+Learning overview
+
+Mehr Academy · Autumn term 2025
+
+New assessment
+Active students
+1,248
+↑ Progress this term
+Average score
+78.4%
+↑ Progress this term
+Completion rate
+94.2%
+↑ Progress this term
+Improvement
++12.6%
+↑ Progress this term
+Student performance
+All cohorts
+
+Average assessment score over the term
+
+15k
+10k
+5k
+0
+Week 1
+Week 2
+Week 3
+Week 4
+Week 5
+Week 6
+Week 7
+Topic mastery
+Biology
+86%
+Mathematics
+78%
+Chemistry
+72%
+Physics
+68%
+Recent assessments
+Assessment	Cohort	Completed	Average score	Status
+Biology · Cell structures	Year 10	112 / 120 students	82%	Published
+Mathematics · Algebra II	Year 11	104 / 120 students	79%	Published
+Chemistry · Reactions	Year 12	96 / 120 students	76%	Published
+9:41
+42:18
+Biology · Mock exam
+Question 18 of 50
+Saved
+THE NITROGEN CYCLE
+Which process converts atmospheric nitrogen into a form plants can absorb?
+
+Select one answer.
+
+A
+Photosynthesis
+Nitrogen fixation
+C
+Cellular respiration
+D
+Decomposition
+Back
+Next
+
+Answers are saved automatically.
+
+08
+Raah — An exam app for students and a results view for teachers.
+
+CONCEPT STUDY · ASSESSMENT AND LEARNING ANALYTICS
+
+Application preview
+•••
+K
+Kavira
+WORKSPACE
+PRO
+Overview
+API keys
+Request logs
+Documentation
+Help & documentation
+AC
+Alex Chen
+Personal workspace
+Kavira / Overview
+Search anything
+⌘ K
+AC
+Project overview
+
+Production · All systems operational
+
+Create API key
+API requests
+2.48M
+Last 24 hours · Healthy
+Average latency
+42 ms
+Last 24 hours · Healthy
+Success rate
+99.98%
+Last 24 hours · Healthy
+Active API keys
+8
+Last 24 hours · Healthy
+Request volume
+Production · Last 7 days
+15k
+10k
+5k
+0
+Mon
+Tue
+Wed
+Thu
+Fri
+Sat
+Sun
+Recent requests
+View request logs →
+Method	Endpoint	Status	Latency	Time
+GET	/v1/projects	200 OK	38 ms	10:42:18
+POST	/v1/events	200 OK	44 ms	10:42:17
+GET	/v1/projects/proj_a1b2c3	200 OK	50 ms	10:42:16
+Application preview
+•••
+K
+Kavira
+WORKSPACE
+PRO
+Overview
+API keys
+Request logs
+Documentation
+Help & documentation
+AC
+Alex Chen
+Personal workspace
+Kavira / Documentation
+Search anything
+⌘ K
+AC
+API reference
+
+Everything you need to build with Kavira.
+
+Open playground
+GET
+List projects
+
+Retrieve a paginated list of projects in your workspace.
+
+/v1/projects
+Query parameters
+limit integer
+Number of results. Default: 20. Maximum: 100.
+cursor string
+Pagination cursor from the previous response.
+environment string
+Filter by production or staging environment.
+Response
+
+Returns a list of project objects and a pagination cursor.
+
+200 OK
+ Request
+curl -X GET \ 
+  https://api.example.com/v1/projects \ 
+  -H "Authorization: Bearer $API_KEY"
+RESPONSE BODY
+{
+  "data": [
+    {
+      "id": "proj_a1b2c3",
+      "name": "Storefront",
+      "environment": "production",
+      "status": "active"
+    }
+  ],
+  "has_more": false
+}
+09
+Kavira — A console and a reference for developers integrating with an API.
+
+CONCEPT STUDY · API CONSOLE AND DOCUMENTATION
+
+A LITTLE LIGHT. A LONG WAY HOME.
+A PAPER WORLD ADVENTURE
+Paperlight
+Continue adventure
+Chapter 02 · The crossing
+12 / 48 levels complete
+THE CROSSING
+Level 07
+10
+Paperlight — A puzzle platformer built around one carried object: a light.
+
+CONCEPT STUDY · MOBILE PUZZLE GAME
+
+NIGHT CIRCUIT
+ARCADE RACING
+DRIFTLIGHT
+Start race
+Weekly challenge
+Garage · 4 / 12 cars
+LAP
+3 / 4
+RACE TIME
+01:34.78
+188
+KM/H
+NITRO
+11
+Driftlight — An arcade racer built around drift handling and a dark track.
+
+CONCEPT STUDY · NIGHT RACING GAME
+
+WHAT WE DO
+Five disciplines, one small team.
+
+Design and engineering sit with the same three people, so the screen that is drawn is the screen that gets built and reviewed. When a project needs more hands — a native module, a game build, a model pipeline — we bring in contractors for that scope.
+
+Mobile engineering
+
+iOS and Android interfaces, built from a design file we can defend screen by screen. Offline handling, state and store submission are part of the scope, not an afterthought.
+
+SWIFT · KOTLIN · REACT NATIVE
+
+RELATED CONCEPT STUDIES
+
+Vitrin
+Veyra
+Tiravan
+Web platforms
+
+Operational software that people open every morning: dashboards, order flows, permissions and admin tooling. The layout is built around the decision the screen has to support.
+
+REACT · TYPESCRIPT · TAILWIND CSS
+
+RELATED CONCEPT STUDIES
+
+Vitrin Console
+Flowline
+Raah
+AI interfaces
+
+Screens for systems that answer from documents or camera feeds. Citations, confidence and the source passage are treated as part of the interface, because an answer that cannot be checked is not usable.
+
+PYTHON · RETRIEVAL · REACT
+
+RELATED CONCEPT STUDIES
+
+Helya
+Nuvoq
+Games
+
+Small games built around one mechanic: the controls, the level rule and the menu are designed together, and the interface is kept off the parts of the screen the player has to read.
+
+UNITY · C# · REACT
+
+RELATED CONCEPT STUDIES
+
+Paperlight
+Driftlight
+Developer tools
+
+Interfaces for engineers: API consoles, keys, request logs and references. The test is whether a developer can find the answer without opening a support ticket.
+
+TYPESCRIPT · REACT · OPENAPI
+
+RELATED CONCEPT STUDIES
+
+Kavira
+
+Need one group to take a product from the first flow to release?
+
+Start a conversation
+HOW WE WORK
+Small, senior, and visible.
+
+Three people carry the project. There is no account layer between you and the person writing the code, and no one learning your product on your budget.
+
+01
+Frame the product
+
+We start with the users, the constraints and the smallest version worth building. You leave with a scope and a phased plan, and a price for the first phase.
+
+02
+Design the system
+
+Flows, a prototype and a component library. Screens are checked against real content and empty states before production code is written.
+
+03
+Build in weekly releases
+
+A working build on a staging link each week. You can click through what changed and raise it in the same week it was built.
+
+04
+Ship and stay
+
+Store submission, analytics and monitoring. Support after release is agreed per project rather than assumed.
+
+THE STUDIO
+Three people, registered in 2024.
+
+Noyan is a designer and two engineers. We registered the studio in 2024; before that we worked together without a formal registration. When a project needs more hands, we hire on a temporary basis for a defined scope and close that access at handover.
+
+Three
+PEOPLE, FULL TIME
+2024
+REGISTERED AS A STUDIO
+Contract
+ADDITIONAL HANDS, PER PROJECT
+
+OPERATING PRINCIPLES
+
+Design and engineering share one file, one repository and one review.
+Every release is shown on a device, not on a slide.
+Accessibility and performance are checked before a release, not after it.
+Systems are handed over documented, so your team can maintain what we build.
+
+WHAT THIS SITE IS
+
+The eleven studies below are our own concept work. None of them is a client deployment, and no client name appears on this site.
+
+CONTACT
+
+Tell us what you are building.
+
+Send a short description of the product, who it is for and the date you need it live. We reply within 24 hours with a direct answer, including when we are not the right team for it.
+
+hello@noyan.studio
+
+HELPFUL TO INCLUDE
+
+What the product does, in one paragraph.
+Who uses it, and on what device.
+Anything already built or decided.
+The date it has to be live.
+RESPONSE TIME
+Within 24 hours
+Noyan
+
+A small product studio designing and engineering apps, platforms and AI tools for teams that care about the details.
+
+NAVIGATE
+
+Concept studies
+Services
+Process
+Contact
+
+ELSEWHERE
+
+hello@noyan.studio
+Book an intro call
+Vitrin — concept study
+© 2026 Noyan Studio. All rights reserved.
+CONCEPT STUDIES · REGISTERED 2024

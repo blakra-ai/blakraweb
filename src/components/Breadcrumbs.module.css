@@ -1,0 +1,25 @@
+.crumbs ol {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px 10px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  font-size: 13px;
+}
+.crumbs li + li::before {
+  content: '/';
+  margin-right: 10px;
+  color: var(--grey);
+}
+.crumbs a {
+  color: var(--grey);
+  text-decoration: none;
+}
+.crumbs a:hover {
+  color: inherit;
+  text-decoration: underline;
+}
+.crumbs [aria-current] {
+  color: inherit;
+}

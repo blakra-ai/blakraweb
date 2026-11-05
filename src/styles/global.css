@@ -1,0 +1,647 @@
+/* Fonts: self-hosted, latin subset, all three preloaded. Geist swaps in over a metric-matched
+   fallback (no shift); Geist Mono and Newsreader are `optional`: not there at first paint, never
+   swapped in later. Geist 300 is the display voice and 400 the text, Geist Mono the
+   instrument readouts, Newsreader italic only the guide's one spoken line per chapter (ADR-001 §3). */
+@font-face {
+  font-family: 'Geist';
+  src: url('../assets/fonts/geist-latin-wght-normal.woff2') format('woff2');
+  font-weight: 100 900;
+  font-style: normal;
+  font-display: swap;
+}
+/* Geist's metric twin: Arial sized to Geist's advance width and vertical metrics (measured in Chrome:
+   width ×1.0178, ascent 1.01 em, descent 0.30 em), so the swap moves nothing. */
+@font-face {
+  font-family: 'Geist Fallback';
+  src: local('Arial'), local('Liberation Sans'), local('Helvetica Neue');
+  size-adjust: 101.8%;
+  ascent-override: 99.2%;
+  descent-override: 29.5%;
+  line-gap-override: 0%;
+}
+@font-face {
+  font-family: 'Geist Mono';
+  src: url('../assets/fonts/geist-mono-latin-wght-normal.woff2') format('woff2');
+  font-weight: 100 900;
+  font-style: normal;
+  font-display: optional;
+}
+@font-face {
+  font-family: 'Newsreader';
+  src: url('../assets/fonts/newsreader-latin-wght-italic.woff2') format('woff2');
+  font-weight: 200 800;
+  font-style: italic;
+  font-display: optional;
+}
+
+/*
+ * The Observatory (ADR-001, storyboard round 2): a near-black instrument-grade world. Body
+ * #0b0b0d, porcelain #ece9e2, warm grey #8a8781, hairlines at 12 %, and ONE accent, gold #d9a441,
+ * used for state only (the marker, the caret, the ring's glow, a lit dot, Send): never for text
+ * and never for a control on porcelain (1.86 : 1). Contrast table: storyboard.md "Accessibility".
+ */
+:root {
+  --font-sans: 'Geist', 'Geist Fallback', ui-sans-serif, system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
+  --font-serif: 'Newsreader', 'Iowan Old Style', 'Palatino Linotype', Georgia, serif;
+  --font-mono: 'Geist Mono', ui-monospace, 'SF Mono', Menlo, Consolas, monospace;
+
+  /*
+   * Surfaces (art pass v2, "a light document with two dark windows"): the document is paper
+   * #f4f2ec with ink #0b0b0d, secondary #5f5c56 (5.9 : 1), hairlines at 14 % ink and ONE accent on
+   * paper, orange #ff5a1f, for state only (the thread, the caret, Send). The two dark windows (hero,
+   * contact) re-declare the same names in `.dark` below, so every component keeps one vocabulary:
+   * `--body` is the surface, `--porcelain` the text on it, `--grey` the secondary, `--accent` the state.
+   */
+  --body: #f4f2ec;
+  --panel: #ece9e2;
+  --porcelain: #0b0b0d;
+  --grey: #5f5c56;
+  --grey-on-light: #5f5c56;
+  --hair: rgba(11, 11, 13, 0.14);
+  --hair-2: rgba(11, 11, 13, 0.07);
+  --hair-ink: rgba(11, 11, 13, 0.14);
+  /* Control borders: ≥ 3 : 1 on their surface (revision-1 §10). */
+  --ctrl: #7a776f;
+  --ctrl-light: #7a776f;
+  --accent: #ff5a1f;
+  --accent-rgb: 255, 90, 31;
+  /* The seven layers, root to crown: only ever a lit dot where layers are the subject. */
+  --root: #e8352b;
+  --sacral: #f57a1f;
+  --solar: #f7c21b;
+  --heart: #2fb35a;
+  --throat: #2a9fe0;
+  --third: #4248c2;
+  --crown: #9a4fd0;
+
+  /* Type scale (1440 → 390), art pass v1: H1 112 → 40, H2 72 → 32, lead 22 → 16, body 17 → 16, mono 12, voice 32 → 20. */
+  --h1: clamp(2.5rem, 0.5rem + 7vw, 7rem);
+  --h2: clamp(2rem, 0.5rem + 4.5vw, 4.5rem);
+  --h3: 1.5rem;
+  --lead: clamp(1rem, 0.9rem + 0.5vw, 1.375rem);
+  --body-size: clamp(1rem, 0.9rem + 0.2vw, 1.0625rem);
+  --mono-size: 0.75rem;
+  --mono-track: 0.14em;
+  --voice: clamp(1.25rem, 0.75rem + 1.4vw, 2.125rem);
+
+  /* Measure: 12 columns, 64 px margin, 24 px gutter at 1440; the frames are inset by the 24 px gutter. */
+  --inset: 24px;
+  --margin: clamp(1rem, 0.2rem + 2.8vw, 2.5rem);
+  --gutter: 24px;
+  --header-h: 64px;
+  --max-w: 1600px;
+
+  /* Three radii: the window, the card, the pill (and a 4 px tag for small chrome). */
+  --r-window: 16px;
+  --r-card: 14px;
+  --r-pill: 999px;
+  --r-tag: 4px;
+  --radius: var(--r-card);
+  --hairline: 1px solid var(--hair);
+
+  /* One easing for everything that is scrubbed or timed (storyboard: cubic-bezier(.2,.7,.2,1)). */
+  --ease: cubic-bezier(0.2, 0.7, 0.2, 1);
+  --ease-out: var(--ease);
+  --ease-in-out: cubic-bezier(0.65, 0, 0.35, 1);
+
+  color-scheme: light;
+}
+/* The two dark windows and the panel on one of them: ink surface, porcelain text, gold state. */
+.dark {
+  --body: #0b0b0d;
+  --panel: #121216;
+  --porcelain: #ece9e2;
+  --grey: #8a8781;
+  --hair: rgba(236, 233, 226, 0.12);
+  --hair-2: rgba(236, 233, 226, 0.06);
+  --ctrl: #6b6963;
+  --accent: #d9a441;
+  --accent-rgb: 217, 164, 65;
+  color: var(--porcelain);
+  color-scheme: dark;
+}
+@media (max-width: 767px) {
+  :root {
+    --header-h: 56px;
+  }
+}
+
+/*
+ * Legacy tokens for the plain pages (src/pages/Simple.tsx) and the footer, which still read the
+ * paper world's names; they map onto the Observatory's values until those pages are restyled.
+ */
+:root {
+  --cta-bg: var(--porcelain);
+  --cta-ink: var(--body);
+  --step--1: 0.875rem;
+  --step-0: var(--body-size);
+  --step-1: var(--lead);
+  --step-2: 1.5rem;
+  --step-4: var(--h2);
+}
+[data-tone] {
+  --ink: var(--tone-ink);
+  --ink-2: var(--tone-ink-2);
+  --line: var(--tone-line);
+  --surface: var(--tone-surface);
+  --signal: var(--tone-signal);
+  color: var(--ink);
+}
+/* Legacy surfaces (the plain pages): paper is the body; ink sections take the dark scope's values. */
+[data-surface='paper'] {
+  background: var(--body);
+}
+[data-surface='ink'] {
+  background: #0b0b0d;
+}
+/* The one legacy label (composed by the old modules): mono, capitals, one tracking. */
+.label {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-family: var(--font-mono);
+  font-size: var(--mono-size);
+  font-weight: 500;
+  letter-spacing: var(--mono-track);
+  text-transform: uppercase;
+  color: var(--ink-2);
+}
+.label[data-live]::before {
+  content: '';
+  flex: none;
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: var(--accent);
+}
+
+/* ---------- the system's type ---------- */
+.h1 {
+  font-size: var(--h1);
+  font-weight: 300;
+  line-height: 0.98;
+  letter-spacing: -0.03em;
+  text-wrap: balance;
+}
+.h2 {
+  font-size: var(--h2);
+  font-weight: 300;
+  line-height: 1.02;
+  letter-spacing: -0.025em;
+  text-wrap: balance;
+  outline: none;
+}
+.h3 {
+  font-size: var(--h3);
+  font-weight: 400;
+  line-height: 1.2;
+  letter-spacing: -0.015em;
+}
+.lede {
+  font-size: var(--lead);
+  line-height: 1.5;
+  font-weight: 400;
+  color: var(--grey);
+}
+/* Mono readouts: 12 px is the floor; labels are shortened, never shrunk (revision-1 §13). */
+.mono {
+  font-family: var(--font-mono);
+  font-size: var(--mono-size);
+  font-weight: 500;
+  letter-spacing: var(--mono-track);
+  text-transform: uppercase;
+  line-height: 1.4;
+}
+/* The guide's line: the only serif on the page. The caret is one of a frame's ≤ 3 accent elements. */
+.voice {
+  font-family: var(--font-serif);
+  font-style: italic;
+  font-weight: 400;
+  font-size: var(--voice);
+  line-height: 1.3;
+  letter-spacing: -0.005em;
+  color: var(--porcelain);
+}
+.voice[data-caret]::after {
+  content: '';
+  display: inline-block;
+  width: 2px;
+  height: 0.9em;
+  margin-left: 6px;
+  vertical-align: -0.1em;
+  background: var(--accent);
+}
+/* The part of her line not yet typed (Line.tsx): in place, in transparent ink, so nothing reflows. */
+.voice-rest {
+  color: transparent;
+}
+/* The eyebrow: a 28 px rule, then the mono line. */
+.eyebrow {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  color: var(--grey);
+}
+.eyebrow::before {
+  content: '';
+  flex: none;
+  width: 28px;
+  height: 1px;
+  background: var(--grey);
+}
+.hairline {
+  height: 1px;
+  background: var(--hair);
+}
+
+/* The pill: one control shape. Ghost on the body, cta in porcelain, solid in gold with body ink (8.74 : 1). */
+.pill {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  height: 40px;
+  padding: 0 20px;
+  border: 1px solid var(--ctrl);
+  border-radius: var(--r-pill);
+  background: transparent;
+  color: var(--porcelain);
+  font: 500 0.875rem/1 var(--font-sans);
+  white-space: nowrap;
+  cursor: pointer;
+  transition: border-color 0.2s var(--ease), transform 0.3s var(--ease);
+}
+.pill:hover {
+  border-color: var(--porcelain);
+}
+.pill:active {
+  transform: scale(0.98);
+}
+.pill[data-cta] {
+  border-color: var(--porcelain);
+}
+.pill[data-solid] {
+  background: var(--accent);
+  border-color: var(--accent);
+  color: var(--body);
+}
+
+/* `.light` (the former porcelain screen): the whole document is paper now; the class is kept for the markup. */
+
+/* ---------- base ---------- */
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+html {
+  background: var(--body);
+  -webkit-text-size-adjust: 100%;
+  text-size-adjust: 100%;
+  scrollbar-gutter: stable;
+  /* Header 64 + the 24 px inset: an anchored station lands under the bar, never behind it. */
+  scroll-padding-top: 88px;
+}
+html.lenis,
+html.lenis body {
+  height: auto;
+}
+.lenis.lenis-smooth {
+  scroll-behavior: auto !important;
+}
+.lenis.lenis-stopped {
+  overflow: clip;
+}
+
+/* The body is paper with the hairline grid (24 px, 14 % ink); the document over it is transparent.
+   The world's canvas (fixed, z 0) sits between them and paints only inside the two dark windows. */
+body {
+  margin: 0;
+  min-height: 100svh;
+  background-color: var(--body);
+  background-image: linear-gradient(var(--hair-2) 1px, transparent 1px), linear-gradient(90deg, var(--hair-2) 1px, transparent 1px);
+  background-size: 24px 24px;
+  font-family: var(--font-sans);
+  font-size: var(--body-size);
+  line-height: 1.5;
+  font-weight: 400;
+  font-feature-settings: 'ss01', 'cv11';
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  text-rendering: optimizeLegibility;
+  color: var(--porcelain);
+  overflow-x: clip;
+}
+/* The world's one canvas sits ABOVE the paper (z 2) and paints only inside the dark windows and the
+   porthole, clearing everything else to transparent. The dark windows (z 3, transparent) lift their
+   words above it, so the canvas shows through them under their text; the paper's words never meet
+   it (the porthole keeps clear of them: porthole.ts). main and footer are positioned without a
+   z-index, so the windows and the canvas share one stacking context. */
+main,
+footer {
+  position: relative;
+}
+.obs-world {
+  position: fixed;
+  inset: 0;
+  z-index: 2;
+  pointer-events: none;
+}
+.obs-world canvas {
+  display: block;
+}
+
+h1,
+h2,
+h3,
+h4,
+p,
+figure,
+blockquote,
+dl,
+dd {
+  margin: 0;
+}
+h1,
+h2,
+h3,
+h4 {
+  font-weight: 300;
+  text-wrap: balance;
+}
+p {
+  text-wrap: pretty;
+}
+ul,
+ol {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+a {
+  color: inherit;
+  text-decoration: none;
+}
+button,
+input,
+textarea {
+  font: inherit;
+  color: inherit;
+}
+svg {
+  display: block;
+}
+img,
+svg,
+canvas {
+  max-width: 100%;
+}
+
+::selection {
+  background: var(--porcelain);
+  color: var(--body);
+}
+
+/* Focus: a 2 px ring in the surface's text colour with a 2 px gap (ink on paper, porcelain in the dark windows). */
+:focus-visible {
+  outline: 2px solid var(--porcelain);
+  outline-offset: 2px;
+  border-radius: var(--r-tag);
+}
+.pill:focus-visible {
+  border-radius: var(--r-pill);
+}
+
+.sr-only {
+  position: absolute !important;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
+  border: 0;
+}
+
+.skip {
+  position: fixed;
+  top: 0.75rem;
+  left: 0.75rem;
+  z-index: 100;
+  padding: 0.75rem 1rem;
+  border-radius: var(--r-pill);
+  background: var(--porcelain);
+  color: var(--body);
+  font-weight: 500;
+  transform: translateY(-200%);
+}
+.skip:focus-visible {
+  transform: none;
+}
+
+/* The custom cursor (mouse, motion on): a porcelain dot on the pointer and a trailing ring, each
+   outlined in the body colour so they read on the ring's glow and on porcelain alike. */
+html.custom-cursor,
+html.custom-cursor * {
+  cursor: none !important;
+}
+.cursor-dot,
+.cursor-ring {
+  position: fixed;
+  left: 0;
+  top: 0;
+  z-index: 200;
+  pointer-events: none;
+  border-radius: 50%;
+}
+html:not(.custom-cursor) .cursor-dot,
+html:not(.custom-cursor) .cursor-ring {
+  display: none;
+}
+.cursor-dot {
+  width: 8px;
+  height: 8px;
+  margin: -4px 0 0 -4px;
+  background: var(--porcelain);
+  box-shadow: 0 0 0 1.5px var(--body);
+}
+.cursor-ring {
+  width: 38px;
+  height: 38px;
+  margin: -19px 0 0 -19px;
+  border: 1.25px solid var(--porcelain);
+  box-shadow:
+    0 0 0 1px rgba(11, 11, 13, 0.7),
+    inset 0 0 0 1px rgba(11, 11, 13, 0.7);
+}
+
+@view-transition {
+  navigation: auto;
+}
+
+/* Reduced motion, and the page switch: the HTML is the final state. Nothing types, scrubs or
+   transitions; sticky holds become flow (the held sections opt in with [data-hold]). */
+@media (prefers-reduced-motion: reduce) {
+  @view-transition {
+    navigation: none;
+  }
+  *,
+  *::before,
+  *::after {
+    transition-duration: 0.01ms !important;
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    scroll-behavior: auto !important;
+  }
+  [data-hold] {
+    position: static !important;
+  }
+}
+html.motion-off [data-hold] {
+  position: static !important;
+}
+
+main:focus {
+  outline: none;
+}
+
+/* The porthole's margin (World.tsx sets the class and --porthole-gutter from porthole.ts, ≥ 1200 px):
+   the paper's right column stops short of it, so it never sits on a line. */
+html.porthole-margin main > section:not(#top) {
+  --porthole-pad: max(64px, var(--porthole-gutter, 0px));
+}
+
+/* ---------- Phones (run 2026-11-02-mobile, concept.md): everything below sits under 767 px ---------- */
+/* Desktop-only and phone-only twins: the phone shows the short copy, the desktop the full. */
+@media (min-width: 768px) {
+  .m-only {
+    display: none !important;
+  }
+}
+@media (max-width: 767px) {
+  .d-only {
+    display: none !important;
+  }
+  :root {
+    --gold: #d9a441;
+    --inset-phone: 12px;
+  }
+  /* Rhythm by surface: a section marked ink takes the dark window's tokens on phones only. */
+  html [data-m-surface='ink'] {
+    --body: #0b0b0d;
+    --panel: #121216;
+    --porcelain: #ece9e2;
+    --grey: #a9a59d;
+    --grey-on-light: #a9a59d;
+    --hair: rgba(236, 233, 226, 0.12);
+    --hair-2: rgba(236, 233, 226, 0.06);
+    --ctrl: #8a8781;
+    --accent: #d9a441;
+    --accent-rgb: 217, 164, 65;
+    background: #0b0b0d;
+    color: #ece9e2;
+    color-scheme: dark;
+  }
+  /* "Details +": a native disclosure, crawlable, no script. */
+  .m-details {
+    margin-top: 18px;
+    border-top: 1px solid var(--hair);
+  }
+  .m-details > summary {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    min-height: 44px;
+    list-style: none;
+    cursor: pointer;
+    font-family: var(--font-mono);
+    font-size: 0.75rem;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--porcelain);
+  }
+  .m-details > summary::-webkit-details-marker {
+    display: none;
+  }
+  .m-details > summary::after {
+    content: '+';
+    font-size: 1.125rem;
+    letter-spacing: 0;
+  }
+  .m-details[open] > summary::after {
+    content: '–';
+  }
+  .m-details > :not(summary) {
+    margin-top: 10px;
+    color: var(--grey);
+  }
+  /* Haptic press: a short scale on touch. */
+  .pill:active,
+  .m-press:active {
+    transform: scale(0.97);
+    transition: transform 120ms var(--ease);
+  }
+  /* The swipe rows (Swipe.tsx): scroll-snap, the next card peeking, never trapping vertical scroll. */
+  .m-swipe {
+    display: flex !important;
+    position: relative;
+    min-width: 0;
+    max-width: none;
+    gap: 12px;
+    margin-inline: calc(-1 * var(--swipe-pad, 20px));
+    padding: 4px var(--swipe-pad, 20px) 16px;
+    overflow-x: auto;
+    overscroll-behavior-x: contain;
+    scroll-snap-type: x mandatory;
+    scroll-padding-inline: var(--swipe-pad, 20px);
+    scrollbar-width: none;
+    list-style: none;
+  }
+  .m-swipe::-webkit-scrollbar {
+    display: none;
+  }
+  .m-swipe > * {
+    flex: 0 0 auto;
+    scroll-snap-align: start;
+    transition: transform 0.4s var(--ease);
+  }
+  .m-swipe:focus-visible {
+    outline-offset: -2px;
+  }
+  .m-count {
+    margin-top: 4px;
+    font-family: var(--font-mono);
+    font-size: 0.75rem;
+    letter-spacing: 0.14em;
+    color: var(--grey);
+  }
+}
+
+/* Phone loops (ripples, drift). Scroll-driven motion lives in each module, transform only, behind
+   @supports (animation-timeline: view()): Firefox, Safari and reduced motion keep the finished state. */
+@keyframes m-suck {
+  0% {
+    transform: scale(1.25);
+    opacity: 0;
+  }
+  25% {
+    opacity: 0.3;
+  }
+  100% {
+    transform: scale(1);
+    opacity: 0;
+  }
+}
+@keyframes m-drift {
+  to {
+    transform: translate3d(-10px, -6px, 0) scale(1.035);
+  }
+}
+@media (max-width: 767px) and (prefers-reduced-motion: no-preference) {
+  /* Loops stop while off screen (mobile.ts toggles data-paused). */
+  [data-paused],
+  [data-paused] * {
+    animation-play-state: paused !important;
+  }
+}

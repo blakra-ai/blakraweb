@@ -1,0 +1,5 @@
+/?gl=force canvas: true violations: 0
+/de/?gl=force canvas: true violations: 0
+/work/vitrin-app/ canvas: false violations: 0
+/privacy/ canvas: false violations: 0
+/legal/ canvas: false violations: 0

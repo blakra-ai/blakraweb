@@ -1,0 +1,44 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>BLAKRA storyboard — phone Menu panel (390×844)</title>
+<meta name="viewport" content="width=390">
+<link rel="stylesheet" href="./sb.css">
+<style>
+.panel{position:absolute;left:0;right:0;top:56px;bottom:0;background:var(--body);padding:24px 24px 28px;display:flex;flex-direction:column}
+.links{display:flex;flex-direction:column}
+.links a{display:flex;justify-content:space-between;align-items:center;padding:16px 0;border-top:1px solid var(--hair);font-size:24px;font-weight:300;letter-spacing:-.015em}
+.links a span{color:var(--grey);font-family:var(--mono);font-size:12px;letter-spacing:.08em}
+.links a:last-child{border-bottom:1px solid var(--hair)}
+.group{margin-top:22px}
+.group .mono{color:var(--grey);margin-bottom:10px}
+.langs{display:grid;grid-template-columns:repeat(4,1fr);gap:8px}
+.langs span{height:40px;border:1px solid var(--ctrl);border-radius:999px;display:flex;align-items:center;justify-content:center;font-family:var(--mono);font-size:12px;letter-spacing:.08em}
+.langs span.on{background:var(--porcelain);color:var(--body);border-color:var(--porcelain)}
+.toggle-row{display:flex;justify-content:space-between;align-items:center;border-top:1px solid var(--hair);border-bottom:1px solid var(--hair);padding:14px 0}
+.cta{margin-top:auto;display:flex;flex-direction:column;gap:12px}
+.cta .pill{height:48px;justify-content:center;font-size:15px}
+.cta .mono{color:var(--grey);text-align:center}
+.x{width:40px;height:40px;border:1px solid var(--ctrl);border-radius:999px;display:inline-flex;align-items:center;justify-content:center;font-size:18px}
+</style>
+</head>
+<body>
+<div class="screen phone">
+  <div class="nav">
+    <div class="mark"><b></b>BLAKRA</div>
+    <div class="right"><span class="chip"><b>●</b>01 / 09</span><span class="x" aria-label="Close menu">×</span></div>
+  </div>
+  <div class="panel" role="dialog" aria-modal="true" aria-label="Menu">
+    <nav class="links">
+      <a>Work<span>05</span></a><a>Capabilities<span>03</span></a><a>Products<span>07</span></a><a>People<span>08</span></a><a>Sponsors and buyers<span>↗</span></a>
+    </nav>
+    <div class="group"><div class="mono sm">Language</div><div class="langs" role="radiogroup"><span class="on" role="radio" aria-checked="true">EN</span><span>DE</span><span>FR</span><span>ES</span></div></div>
+    <div class="group"><div class="toggle-row"><span class="mono sm">Motion</span><button class="pill ghost toggle mono" aria-pressed="true"><i></i>On</button></div></div>
+    <div class="cta"><a class="pill solid">Start a project</a><a class="pill ghost">Tell us what you need built.</a><span class="mono sm">Reply within 24 hours</span></div>
+  </div>
+  <div class="note" style="left:16px;top:812px">Menu: focus trapped, Esc closes, links carry station numbers</div>
+</div>
+<script src="./sb.js"></script>
+</body>
+</html>

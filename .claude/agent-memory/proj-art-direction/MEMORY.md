@@ -1,0 +1,1 @@
+- [Phone-first](project_phone_first.md) — owner: most visitors on phones; 390 concept/prototype in run 2026-11-02-mobile

@@ -1,0 +1,296 @@
+Captured 2026-11-02T18:55:24.213Z from https://blakra.us/
+
+==== ROUTE /privacy status 200 url https://blakra.us/privacy sameAsHome=71 chars, first:
+404
+Page Not Found
+
+The page "privacy" could not be found.
+
+RETURN HOME
+
+==== ROUTE /terms status 200 url https://blakra.us/terms sameAsHome=69 chars, first:
+404
+Page Not Found
+
+The page "terms" could not be found.
+
+RETURN HOME
+
+==== ROUTE /cookies status 200 url https://blakra.us/cookies sameAsHome=71 chars, first:
+404
+Page Not Found
+
+The page "cookies" could not be found.
+
+RETURN HOME
+
+==== ROUTE /careers status 200 url https://blakra.us/careers sameAsHome=71 chars, first:
+404
+Page Not Found
+
+The page "careers" could not be found.
+
+RETURN HOME
+
+==== ROUTE /about status 200 url https://blakra.us/about sameAsHome=69 chars, first:
+404
+Page Not Found
+
+The page "about" could not be found.
+
+RETURN HOME
+
+==== ROUTE /blog status 200 url https://blakra.us/blog sameAsHome=68 chars, first:
+404
+Page Not Found
+
+The page "blog" could not be found.
+
+RETURN HOME
+
+==== ROUTE /sitemap.xml status 200 url https://blakra.us/sitemap.xml sameAsHome=253 chars, first:
+This XML file does not appear to have any style information associated with it. The document tree is shown below.
+
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+<url>
+<loc>https://blakra.us/</loc>
+<priority>1.0</priority>
+</url>
+</urlset>
+
+==== ROUTE /robots.txt status 200 url https://blakra.us/robots.txt sameAsHome=63 chars, first:
+User-agent: *
+Allow: /
+
+Sitemap: https://blakra.us/sitemap.xml
+
+
+==== CLICK "READ ARTICLE" #0 url https://blakra.us/ new lines:
+From Concept to Production — On Time
+> Inference pipeline: OPTIMAL
+> gradient.norm stable at 1.47e-4
+
+==== CLICK "READ ARTICLE" #1 url https://blakra.us/ new lines:
+> Attention heads: 96/96 active
+> checkpoint delta :: 0.0023 — WITHIN BOUNDS
+
+==== CLICK "READ ARTICLE" #2 url https://blakra.us/ new lines:
+Enterprise Software That Ships
+> Data ingestion: 12.4TB/day
+> attention.mechanism :: 96/96 heads active
+
+==== CLICK "Privacy Policy" #0 url https://blakra.us/ new lines:
+From Concept to Production — On Time
+> gradient.norm stable at 1.47e-4
+
+==== CLICK "Terms of Service" #0 url https://blakra.us/ new lines:
+> checkpoint delta :: 0.0023 — WITHIN BOUNDS
+
+==== CLICK "Cookies" #0 url https://blakra.us/ new lines:
+From Concept to Production — On Time
+> Inference pipeline: OPTIMAL
+> gradient.norm stable at 1.47e-4
+
+==== CLICK "CONNECT" #0 url https://blakra.us/ new lines:
+> gradient.norm stable at 1.47e-4
+
+==== CLICK "CONNECT" #1 url https://blakra.us/ new lines:
+From Concept to Production — On Time
+CAPABILITY 06 :: DEEP DIVE
+CLOSE
+4ms
+MESSAGE LATENCY
+UPTIME
+10K+
+DEVICES PER NODE
+<50mW
+POWER PROFILE
+IOT & EMBEDDED SYSTEMS ARCHITECTURE
+FIRMWARE
+Embedded C/Rust
+RTOS Drivers
+Bootloader & OTA
+Power Management
+CONNECTIVITY
+MQTT / CoAP
+BLE / Zigbee
+LoRaWAN / Cellular
+Protocol Bridging
+EDGE
+Edge AI Inference
+Real-time Control
+Data Aggregation
+Local State Sync
+Device Registry
+Telemetry Pipeline
+Fleet Management
+OTA Update Service
+> Inference pipeline: OPTIMAL
+> checkpoint delta :: 0.0023 — WITHIN BOUNDS
+
+==== CLICK "CONNECT" #2 url https://blakra.us/ new lines:
+> Attention heads: 96/96 active
+> attention.mechanism :: 96/96 heads active
+
+==== CLICK "Route Optimization" #0 url https://blakra.us/ new lines:
+From Concept to Production — On Time
+> gradient.norm stable at 1.47e-4
+20% more deliveries per shift
+PRODUCTIVITY
+Real-time driver tracking
+VISIBILITY
+Reduced fuel costs
+Digital proof-of-delivery
+ACCURACY
+Dispatchers assigned deliveries manually using printed lists and phone calls. No real-time visibility into driver locations or delivery status.
+Web-based dispatch interface with GPS tracking, optimized route assignment, and automated proof-of-delivery via driver mobile app.
+React & Mapbox for dispatch UI, Node.js routing engine, mobile app built with React Native.
+
+==== CLICK "Route Optimization" #1 url https://blakra.us/ new lines:
+> Inference pipeline: OPTIMAL
+> checkpoint delta :: 0.0023 — WITHIN BOUNDS
+
+==== CLICK "Document Processing" #0 url https://blakra.us/ new lines:
+From Concept to Production — On Time
+> gradient.norm stable at 1.47e-4
+Faster document processing
+24/7 client self-service
+Reduced paper storage costs
+Improved client satisfaction
+CX
+Paper-based policy management created slow response times. Clients had no self-service way to view documents or submit claims.
+Document digitization pipeline with OCR and a secure client portal for policy viewing, document uploads, and direct messaging with agents.
+Python OCR pipeline, React portal, AWS S3 for document storage, SendGrid for notifications.
+
+==== CLICK "Document Processing" #1 url https://blakra.us/ new lines:
+> Inference pipeline: OPTIMAL
+> checkpoint delta :: 0.0023 — WITHIN BOUNDS
+
+==== CLICK "Production Line Monitoring" #0 url https://blakra.us/ new lines:
+> Model alignment score: 0.994
+> data.pipeline :: 12.4TB/day ingested
+Reduced unplanned downtime
+RELIABILITY
+Real-time machine visibility
+OPERATIONS
+Faster problem response
+Data-driven maintenance
+PLANNING
+Operators lacked real-time visibility into machine status. Downtime events were reported hours after occurrence, delaying response.
+IoT sensor integration with a live monitoring dashboard showing machine status, cycle counts, and push alerts for anomalies or stoppages.
+MQTT sensor data pipeline, TimescaleDB, React dashboard with real-time WebSocket updates.
+
+==== CLICK "Customer Service AI" #0 url https://blakra.us/ new lines:
+From Concept to Production — On Time
+65% of queries automated
+Instant response 24/7
+CX
+Lower support team burnout
+RETENTION
+Scalable during peak season
+CAPACITY
+Support team was overwhelmed with repetitive order status and return queries during peak seasons, causing long wait times.
+AI chatbot handling common queries with order lookup, return initiation, and escalation to human agents for complex cases.
+LLM-based chatbot, order API integration, context routing, Slack handoff to human agents.
+
+==== CLICK "SUBSCRIBE" #0 url https://blakra.us/ new lines:
+From Concept to Production — On Time
+> gradient.norm stable at 1.47e-4
+
+==== CLICK "SUBSCRIBE" #1 url https://blakra.us/ new lines:
+> Inference pipeline: OPTIMAL
+> checkpoint delta :: 0.0023 — WITHIN BOUNDS
+
+==== CLICK "Request Confidential Investor Deck" #0 url https://blakra.us/ new lines:
+From Concept to Production — On Time
+> gradient.norm stable at 1.47e-4
+
+==== CLICK "DEEP DIVE" #0 url https://blakra.us/ new lines:
+From Concept to Production — On Time
+CAPABILITY 01 :: DEEP DIVE
+CLOSE
+TOKEN THROUGHPUT
+<8ms
+INFERENCE P95
+0.994
+ALIGNMENT SCORE
+AI SYSTEMS ARCHITECTURE
+DATA INGESTION
+Raw Data Sources
+Stream Processors
+Quality Checks
+MODEL LAYER
+Pre-training
+Fine-tuning Pipeline
+RLHF / Alignment
+Eval Framework
+INFERENCE
+Batched Serving
+Real-time API
+Edge Deployment
+OBSERVABILITY
+Drift Detection
+Latency Monitor
+Safety Guardrails
+> Inference pipeline: OPTIMAL
+> gradient.norm stable at 1.47e-4
+
+==== CLICK "DEEP DIVE" #1 url https://blakra.us/ new lines:
+CAPABILITY 02 :: DEEP DIVE
+78%
+OPS REDUCED
+0.03%
+ERROR RATE
+1.2s
+MEAN RESOLUTION
+1,200+
+CONCURRENT FLOWS
+AUTOMATION ORCHESTRATION ARCHITECTURE
+TRIGGER LAYER
+Event Bus
+Scheduled Jobs
+API Hooks
+DECISION ENGINE
+Rule Evaluator
+ML Classifier
+Priority Queue
+EXECUTION
+RPA Workers
+AI Agents
+Human-in-Loop
+AUDIT & RECOVERY
+Exception Router
+State Persistence
+Rollback Logic
+> Attention heads: 96/96 active
+> checkpoint delta :: 0.0023 — WITHIN BOUNDS
+
+==== CLICK "DEEP DIVE" #2 url https://blakra.us/ new lines:
+Enterprise Software That Ships
+CAPABILITY 03 :: DEEP DIVE
+14 wks
+AVG. DELIVERY
+<0.8%
+DEFECT RATE
+94%
+TEST COVERAGE
+UPTIME SLA
+CUSTOM SOFTWARE DELIVERY ARCHITECTURE
+DISCOVERY
+Problem Framing
+System Mapping
+Constraint Analysis
+DESIGN
+API Contracts
+Data Models
+Load Profiles
+BUILD
+Core Services
+Integration Layer
+Test Harness
+OPERATE
+CI/CD Pipeline
+Observability
+SLA Enforcement
+> Data ingestion: 12.4TB/day
+> attention.mechanism :: 96/96 heads active

@@ -1,31 +1,19 @@
-#env
-.env
-.env.*
-
-# Logs
-/logs
+node_modules/
+dist/
+dist-ssr/
+.env.local
 *.log
-npm-debug.log*
-yarn-debug.log*
-yarn-error.log*
-pnpm-debug.log*
-lerna-debug.log*
+e2e-shots/
 
-node_modules
-dist
-dist-ssr
-*.local
-
-# Editor directories and files
-.vscode/*
-!.vscode/extensions.json
-.idea
-.DS_Store
-*.suo
-*.ntvs*
-*.njsproj
-*.sln
-*.sw?
-
-.env
-.vite
+# Review frames stay on disk, not in history (the final set, review4, is kept)
+.firm/runs/*/review
+.firm/runs/*/review2
+.firm/runs/*/review3
+.firm/runs/*/wp6
+.firm/runs/*/wp7
+.firm/runs/*/review5
+.firm/runs/*/refs
+.firm/runs/*/systems/*.jpg
+.firm/runs/*/systems/*.woff2
+.firm/runs/*/storyboard/*.jpg
+.firm/runs/*/storyboard/*.woff2

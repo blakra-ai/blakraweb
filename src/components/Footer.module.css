@@ -1,0 +1,117 @@
+.footer {
+  display: grid;
+  gap: clamp(2rem, 5vw, 4rem);
+  padding: clamp(3rem, 6vw, 5rem) var(--margin) 2rem;
+  border-top: var(--hairline);
+}
+/* The footer follows the contact window at once: no end-card screen (art pass v1, the dead space). */
+
+.top {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: end;
+  justify-content: space-between;
+  gap: 1.5rem 3rem;
+}
+.line {
+  max-width: 22ch;
+  font-size: var(--step-2);
+  font-weight: 500;
+  letter-spacing: -0.02em;
+  line-height: 1.15;
+}
+.email {
+  font-size: var(--step-1);
+  border-bottom: var(--hairline);
+  padding-bottom: 0.2rem;
+  transition: border-color 0.3s;
+}
+.email:hover {
+  border-color: var(--ink);
+}
+.join {
+  margin-top: calc(-0.5 * clamp(2rem, 5vw, 4rem));
+  font-size: var(--step--1);
+  color: var(--ink-2);
+}
+.join a {
+  color: var(--ink);
+  border-bottom: var(--hairline);
+}
+
+.bottom {
+  display: grid;
+  grid-template-columns: 1fr auto auto auto;
+  align-items: end;
+  gap: 1rem 2.5rem;
+}
+/* The official logo, symbol and lettering, in ink. */
+.word {
+  display: inline-flex;
+  align-items: center;
+  gap: 12px;
+  color: var(--ink);
+}
+.wordMark {
+  width: 34px;
+  height: 22px;
+}
+.wordType {
+  width: 92px;
+  height: 8.3px;
+}
+.links {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem 1.5rem;
+  font-size: var(--step--1);
+}
+/* At least 24 px tall: standalone links, not text inside a sentence (WCAG 2.5.8). */
+.links a {
+  display: inline-flex;
+  align-items: center;
+  min-height: 24px;
+  color: var(--ink-2);
+  transition: color 0.3s;
+}
+.links a:hover {
+  color: var(--ink);
+}
+.end {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.75rem 1.5rem;
+}
+.motion {
+  padding: 0.35rem 0.8rem;
+  border: var(--hairline);
+  border-radius: var(--r-pill);
+  background: transparent;
+  font-size: var(--step--1);
+  color: var(--ink-2);
+  cursor: pointer;
+  transition: color 0.3s, border-color 0.3s;
+}
+.motion span {
+  color: var(--ink);
+}
+.motion:hover {
+  color: var(--ink);
+  border-color: var(--ink-2);
+}
+.legal {
+  font-size: var(--step--1);
+  color: var(--ink-2);
+}
+
+@media (max-width: 1099px) {
+  .bottom {
+    grid-template-columns: 1fr 1fr;
+  }
+}
+@media (max-width: 699px) {
+  .bottom {
+    grid-template-columns: 1fr;
+  }
+}

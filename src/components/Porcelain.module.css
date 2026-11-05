@@ -1,0 +1,305 @@
+/* The porcelain screen: the light surface from hairline to hairline; 12 columns from the 64 px margin. */
+.porcelain {
+  position: relative;
+  background: var(--body);
+  display: grid;
+  grid-template-columns: repeat(12, minmax(0, 1fr));
+  column-gap: var(--gutter);
+  padding: calc(var(--header-h) + 44px) 64px 56px;
+  border-top: 1px solid var(--hair-ink);
+}
+.porcelain > * {
+  position: relative;
+}
+.grid {
+  z-index: 0;
+}
+.col {
+  grid-column: 1 / 7;
+  display: grid;
+  gap: 44px;
+  max-width: 642px;
+}
+.block :global(.eyebrow) {
+  margin-bottom: 16px;
+}
+.h {
+  font-size: 1.875rem;
+  letter-spacing: -0.02em;
+  line-height: 1.15;
+  outline: none;
+}
+.lede {
+  margin-top: 12px;
+  font-size: 1rem;
+  max-width: 560px;
+}
+.rows {
+  margin-top: 18px;
+}
+.r {
+  display: grid;
+  grid-template-columns: 230px 1fr;
+  column-gap: var(--gutter);
+  padding: 14px 0;
+  border-top: 1px solid var(--hair-ink);
+}
+.r:last-child {
+  border-bottom: 1px solid var(--hair-ink);
+}
+.r b {
+  display: block;
+  font-weight: 500;
+  font-size: 0.9375rem;
+  line-height: 1.35;
+}
+.r span {
+  display: block;
+  font-size: 0.875rem;
+  line-height: 1.45;
+  color: var(--grey-on-light);
+}
+.r em {
+  display: block;
+  font-style: normal;
+  font-size: 0.8125rem;
+  color: var(--porcelain);
+  margin-top: 5px;
+}
+.stage,
+.uses {
+  margin-top: 6px;
+  letter-spacing: 0.06em;
+}
+.more,
+.bench {
+  margin-top: 14px;
+  font-size: 0.875rem;
+  line-height: 1.45;
+  color: var(--grey-on-light);
+}
+.link {
+  display: inline-block;
+  margin-top: 14px;
+  padding-bottom: 2px;
+  border-bottom: 1px solid var(--ctrl-light);
+  color: var(--porcelain);
+  font-size: 0.875rem;
+  transition: border-color 0.2s var(--ease);
+}
+.link:hover {
+  border-color: var(--porcelain);
+}
+
+/* The one large object: columns 8–12. */
+.object {
+  grid-column: 8 / 13;
+  position: relative;
+  display: grid;
+  grid-template-rows: auto 1fr auto;
+  align-self: start;
+  /* Held beside the rows while they scroll (static under reduced motion: global [data-hold]). */
+  position: sticky;
+  top: calc(var(--header-h) + var(--inset));
+  text-align: center;
+}
+.object {
+  grid-template-rows: auto auto auto;
+  justify-items: center;
+  row-gap: 22px;
+}
+.ring {
+  width: 200px;
+  height: 200px;
+}
+.cap {
+  color: var(--grey-on-light);
+  font-size: var(--body-size);
+  line-height: 1.5;
+}
+.cap em {
+  display: block;
+  font-family: var(--font-serif);
+  font-style: italic;
+  font-size: 1.375rem;
+  color: var(--porcelain);
+  margin-bottom: 4px;
+}
+.cap a {
+  color: var(--porcelain);
+  text-decoration: underline;
+  text-underline-offset: 0.3em;
+}
+
+@media (max-width: 1099px) {
+  .porcelain {
+    padding-left: var(--inset);
+    padding-right: var(--inset);
+  }
+  .r {
+    grid-template-columns: 180px 1fr;
+  }
+}
+/* Phones: one column, the object after the products (a reflow of the same DOM). */
+@media (max-width: 767px) {
+  .porcelain {
+    display: block;
+    padding: calc(var(--header-h) + 24px) var(--inset) 40px;
+  }
+  .col {
+    gap: 36px;
+    max-width: none;
+  }
+  .h {
+    font-size: 1.5rem;
+  }
+  .r {
+    grid-template-columns: 1fr;
+    row-gap: 6px;
+  }
+  .object {
+    position: static;
+    margin-top: 36px;
+  }
+  .ring {
+    width: 160px;
+    height: 160px;
+  }
+}
+/* The porthole's margin (≥ 1200 px with the world running): the right column stops short of it. */
+:global(html.porthole-margin) .porcelain {
+  padding-right: var(--porthole-pad, 64px);
+}
+
+/* 02 Our products: the ink stage alone, the hero's ink window above it kept apart by the paper. */
+.products {
+  display: block;
+  padding-top: calc(var(--header-h) + 24px);
+  border-top: 0;
+}
+.products > :last-child {
+  margin-bottom: 0;
+}
+
+/* ---------- Phones, run 2026-11-02-mobile (concept.md 08): ink; the roles as a swipe row, the practices as chips ---------- */
+.practices {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-top: 20px;
+  padding: 0;
+  list-style: none;
+}
+@media (max-width: 767px) {
+  .porcelain:not(.products) {
+    --swipe-pad: 20px;
+    padding: 64px 20px 56px;
+    border-top: 0;
+  }
+  .products {
+    padding: calc(var(--header-h) * 0 + 20px) 12px 28px;
+  }
+  .porcelain:not(.products) .h {
+    font-size: 2rem;
+    font-weight: 300;
+    line-height: 1.04;
+  }
+  .porcelain .grid {
+    display: none;
+  }
+  .col,
+  .block {
+    grid-template-columns: minmax(0, 1fr);
+    min-width: 0;
+  }
+  .rows {
+    margin-top: 24px;
+  }
+  .r,
+  .r:last-child {
+    width: 280px;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    padding: 22px 20px;
+    border: 1px solid var(--hair);
+    border-radius: var(--r-card);
+    background: var(--panel);
+  }
+  .r[data-active] {
+    transform: translateY(-8px);
+  }
+  .r b {
+    font-size: 1.25rem;
+    font-weight: 400;
+  }
+  .r span {
+    font-size: 1rem;
+    color: var(--grey);
+  }
+  .r em {
+    margin-top: auto;
+    padding-top: 12px;
+    border-top: 1px solid var(--hair);
+    font-family: var(--font-mono);
+    font-size: 0.75rem;
+    letter-spacing: 0.06em;
+    color: #d9a441;
+  }
+  .practices li {
+    padding: 8px 12px;
+    border: 1px solid var(--hair);
+    border-radius: var(--r-pill);
+    font-size: 0.6875rem;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+  }
+}
+
+/* 08 The founder's AI avatar: a dark plate with a gold halo, the bust cropped at the waist. */
+.holo {
+  grid-column: 8 / 13;
+  grid-row: 1;
+  position: relative;
+  justify-self: center;
+  width: min(100%, 340px);
+  aspect-ratio: 4 / 5;
+  margin-bottom: 40px;
+  overflow: hidden;
+  border-radius: 24px;
+  background: radial-gradient(circle at 50% 38%, #1a1408 0, #0a0a0a 62%);
+  box-shadow: inset 0 0 0 1px rgb(201 162 74 / 0.35);
+}
+.holo::before {
+  content: '';
+  position: absolute;
+  left: 50%;
+  top: 30%;
+  width: 72%;
+  aspect-ratio: 1;
+  translate: -50% -50%;
+  border-radius: 50%;
+  box-shadow: 0 0 0 2px #c9a24a, 0 0 40px rgb(243 210 122 / 0.45), inset 0 0 30px rgb(243 210 122 / 0.25);
+}
+.holoFig {
+  position: absolute;
+  left: 50%;
+  top: 6%;
+  width: 92%;
+  translate: -50% 0;
+}
+@media (min-width: 1100px) {
+  .holo + .object {
+    grid-row: 2;
+  }
+  :global(#people) > .col {
+    grid-row: 1 / span 2;
+  }
+}
+@media (max-width: 1099px) {
+  .holo {
+    grid-column: 1 / -1;
+    grid-row: auto;
+    margin: 36px auto 0;
+  }
+}

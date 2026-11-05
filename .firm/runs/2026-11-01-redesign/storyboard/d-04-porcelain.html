@@ -1,0 +1,83 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>BLAKRA storyboard — 04 The porcelain screen: products, people, the ring in ink (desktop 1440×900)</title>
+<meta name="viewport" content="width=1440">
+<link rel="stylesheet" href="./sb.css">
+<style>
+.doc{position:absolute;left:64px;right:64px;top:64px;bottom:0}
+.col{position:absolute;left:0;width:642px}
+.col .eyebrow{margin-bottom:16px}
+.col .lede{margin-top:12px;font-size:16px;max-width:560px}
+.rows{margin-top:18px}
+.r{display:grid;grid-template-columns:230px 1fr;column-gap:24px;padding:14px 0;border-top:1px solid var(--hair-ink)}
+.r:last-child{border-bottom:1px solid var(--hair-ink)}
+.r b{font-weight:500;font-size:15px;line-height:1.35;display:block}
+.r span{display:block;font-size:14px;line-height:1.45;color:var(--grey-on-light)}
+.r em{display:block;font-style:normal;font-size:13px;color:var(--body);margin-top:5px}
+.r .uses{color:var(--grey-on-light);margin-top:6px;display:block}
+.link{display:inline-block;color:var(--body);font-size:14px;border-bottom:1px solid var(--ctrl-light);padding-bottom:2px;margin-top:14px}
+/* the one large object: the ring in ink, the picked layers lit */
+.object{position:absolute;left:800px;top:70px;width:576px;height:700px}
+.object svg{position:absolute;inset:0;width:100%;height:100%}
+.object .cap{position:absolute;left:0;right:0;bottom:0;text-align:center;color:var(--grey-on-light)}
+.object .cap b{display:block;color:var(--body);font-weight:500;font-size:15px;letter-spacing:0;text-transform:none;font-family:var(--sans);margin-top:6px}
+.object .voicebox{position:absolute;left:0;right:0;top:0;text-align:center}
+.object .voice{font-size:22px}
+</style>
+</head>
+<body>
+<div class="screen light">
+  <div class="nav">
+    <div class="mark"><b></b>BLAKRA</div>
+    <nav class="mono"><span>Work</span><span>Capabilities</span><span>Products</span><span>People</span><span>Sponsors and buyers</span></nav>
+    <div class="right"><span class="mono lang" role="button" aria-haspopup="menu">EN</span><button class="pill ghost toggle mono" aria-pressed="true"><i style="background:var(--body)"></i>Motion on</button><a class="pill ghost">Start a project</a></div>
+  </div>
+  <div id="gauge"></div>
+
+  <div class="doc">
+    <div class="col" style="top:44px">
+      <div class="eyebrow mono">07 / 09 &nbsp;·&nbsp; Our products</div>
+      <h2 class="h3" style="font-size:30px">We also build products of our own.</h2>
+      <p class="lede">Alongside client work, we build software of our own, with the same principals and the same standards. Each product is open to a sponsor who will take it further, or a buyer who wants to own it outright.</p>
+      <div class="rows">
+        <div class="r"><div><b>An AI that analyzes facial skin and recommends professional products.</b><span class="mono sm" style="margin-top:6px">Working · open to offers</span></div><div><span>Written from scratch, with no third-party dependencies. Images are never sent to outside services. Demo under NDA.</span><em>On offer: sponsorship, a license, or outright sale with source code and IP</em><span class="uses mono sm">Uses layers 2, 5, 7</span></div></div>
+      </div>
+      <a class="link">For sponsors and buyers: what is on offer →</a>
+    </div>
+
+    <div class="col" style="top:416px">
+      <div class="eyebrow mono">08 / 09 &nbsp;·&nbsp; The people</div>
+      <h2 class="h3" style="font-size:30px">The people you meet are the people who build.</h2>
+      <div class="rows">
+        <div class="r"><b>Founder and Chief Technology Officer</b><div><span>AI strategy and systems architecture, from the first diagram to production.</span><em>Ask about: whether AI belongs in your process at all.</em></div></div>
+        <div class="r"><b>Senior Full-Stack Engineer and Backend Lead</b><div><span>The foundation of each system: backends, data platforms and reliability.</span><em>Ask about: data you can trust and systems that stay up.</em></div></div>
+        <div class="r"><b>Head of Operations and Corporate Compliance, United States</b><div><span>Corporate governance, compliance and vendors, so the business side runs as cleanly as the code.</span><em>Ask about: contracts, NDAs and data protection.</em></div></div>
+      </div>
+    </div>
+
+    <div class="object">
+      <div class="voicebox"><div class="voice-tag mono sm"><b>Navigator</b> · station 07 · the ring in ink answers</div><p class="voice">Our own payload: an AI that reads skin. Sealed, and shown under NDA.</p></div>
+      <svg viewBox="0 0 576 700" id="ring"></svg>
+      <div class="cap mono sm">Your choice, remembered: AI on your data<b>Uses layers 1, 2, 3, 7 — lit on the ring, lit again in her irises at 09</b></div>
+    </div>
+  </div>
+  <div class="note" style="left:600px;top:70px;background:var(--body);color:var(--porcelain)">Porcelain screen · DOM · stations 07 + 08 · one large object</div>
+</div>
+<script src="./sb.js"></script>
+<script>
+document.getElementById('gauge').innerHTML=gauge(7,'Products · people',{frac:.5});
+const cx=288,cy=390,R=170; const lit=[1,1,1,0,0,0,1]; const cols=['--root','--sacral','--solar','--heart','--throat','--third','--crown'];
+let g='';
+// the grid-well in ink hairlines, then the ring
+for(let k=1;k<=12;k++){const r=R+k*22; g+=`<circle cx="${cx}" cy="${cy}" r="${r}" fill="none" stroke="rgba(11,11,13,${(.16-k*.011).toFixed(3)})"/>`;}
+g+=`<circle cx="${cx}" cy="${cy}" r="${R}" fill="#0b0b0d"/><circle cx="${cx}" cy="${cy}" r="${R+6}" fill="none" stroke="#0b0b0d" stroke-width="1.5"/>`;
+for(let k=0;k<7;k++){const t=-Math.PI/2+k*(2*Math.PI/7); const x=cx+(R+30)*Math.cos(t), y=cy+(R+30)*Math.sin(t);
+  g+= lit[k] ? `<circle cx="${x}" cy="${y}" r="7" fill="var(${cols[k]})"/>` : `<circle cx="${x}" cy="${y}" r="5" fill="none" stroke="#7a776f" stroke-width="1.5"/>`;
+  const lx=cx+(R+58)*Math.cos(t), ly=cy+(R+58)*Math.sin(t);
+  g+=`<text x="${lx}" y="${ly+4}" text-anchor="middle" font-family="Geist Mono" font-size="12" letter-spacing="1" fill="${lit[k]?'#0b0b0d':'#5f5c56'}" font-weight="${lit[k]?600:500}">0${k+1}</text>`;}
+document.getElementById('ring').innerHTML=g;
+</script>
+</body>
+</html>

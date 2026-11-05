@@ -1,0 +1,12 @@
+home-default gl-live/gl-off/canvas/typed: [true,false,true,"I'm the Navigator. I've flown this descent before. Look into my eyes and see what I see."]
+home-default errors: [error] Failed to load resource: the server responded with a status of 404 (Not Found)
+home-gl-force gl-live/gl-off/canvas/typed: [true,false,true,"I'm the Navigator. I've flown this descent before. Look into my eyes and see what I see."]
+[info] [observatory] renderer ANGLE (Intel, Vulkan 1.4.305 (Intel(R) Graphics (ADL GT2) (0x00004628)), Intel open-source Mesa driver): dpr 1
+[info] [observatory] frame 2.75 ms cpu mean over 121 frames in 2.0 s (60 fps), dpr 1
+[info] [observatory] frame 2.83 ms cpu mean over 121 frames in 2.0 s (60 fps), dpr 1
+[info] [observatory] frame 2.00 ms cpu mean over 121 frames in 2.0 s (60 fps), dpr 1
+[info] [observatory] frame 2.82 ms cpu mean over 120 frames in 2.0 s (60 fps), dpr 1
+home-stage-pointer gl-live/gl-off/canvas/typed: [true,false,true,"I'm the Navigator. I've flown this descent before. Look into my eyes and see what I see."]
+frames during 2 s of pointer motion with no guide on screen: 0
+scrub rows=82 flagged=0 stations seen=1,2,3 anchor on at s=0: true, off after: 1
+[[0,1,0.01,1,673],[0.05,1,0.01,1,628],[0.1,1,0.02,1,583],[0.15,1,0.03,1,539],[0.2,1,0.03,1,494],[0.25,1,0.04,1,450],[0.3,1,0.05,1,406],[0.35,1,0.05,1,361],[0.4,1,0.06,1,317],[0.45,1,0.06,1,272],[0.5,1,0.07,1,228],[0.55,1,0.08,1,183],[0.6,1,0.08,1,139],[0.65,1,0.09,1,94],[0.7,1,0.09,1,50],[0.75,1,0.1,1,5],[0.8,1,0.11,1,-40],[0.85,1,0.11,1,-84],[0.9,1,0.12,1,-129],[0.95,1,0.12,1,-174],[1,2,0.13,0,-174],[1.05,2,0.14,0,-174],[1.1,2,0.14,0,-174],[1.15,2,0.15,0,-174],[1.2,2,0.16,0,-174],[1.25,2,0.16,0,-174],[1.3,2,0.17,0,-174],[1.35,2,0.18,0,-174],[1.4,2,0.18,0,-174],[1.45,2,0.19,0,-174],[1.5,2,0.19,0,-174],[1.55,2,0.2,0,-174],[1.6,2,0.21,0,-174],[1.65,2,0.21,0,-174],[1.7,2,0.22,0,-174],[1.75,2,0.23,0,-174],[1.8,2,0.23,0,-174],[1.85,2,0.24,0,-174],[1.9,2,0.24,0,-174],[1.95,3,0.25,0,-174],[2,3,0.26,0,-174]]

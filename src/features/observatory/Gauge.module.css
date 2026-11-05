@@ -1,0 +1,147 @@
+/* The thread: the left 24 px gutter carries an orange 2 px line drawn down with the scroll, a tick
+   and the station's number at each of the nine stations. */
+.gauge {
+  position: fixed;
+  left: 0;
+  top: var(--header-h);
+  bottom: var(--inset);
+  width: var(--inset);
+  z-index: 30;
+  pointer-events: none;
+}
+.thread {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  display: block;
+  overflow: visible;
+}
+.threadRest {
+  stroke: var(--hair);
+  stroke-width: 1;
+  vector-effect: non-scaling-stroke;
+}
+.threadLine {
+  stroke: var(--accent);
+  stroke-width: 2;
+  vector-effect: non-scaling-stroke;
+  will-change: stroke-dashoffset;
+}
+:global(html.motion-on) .gauge[data-mounted] .threadLine {
+  transition: stroke-dashoffset 0.3s var(--ease);
+}
+/* Each station: a tick across the thread and its number, passed stations in ink, the rest grey. */
+.station {
+  position: absolute;
+  left: 0;
+  width: 24px;
+  display: flex;
+  align-items: center;
+  transform: translateY(-50%);
+}
+.tickMark {
+  position: absolute;
+  left: 8px;
+  width: 8px;
+  height: 1px;
+  background: var(--grey);
+}
+.station[data-on] .tickMark {
+  background: var(--accent);
+  height: 2px;
+}
+/* The number stays inside the gutter: set along the thread, shown for the station the reader is at. */
+.station b {
+  display: none;
+  position: absolute;
+  left: 2px;
+  top: 10px;
+  writing-mode: vertical-rl;
+  color: var(--porcelain);
+  font-family: var(--font-mono);
+  font-size: 0.625rem;
+  letter-spacing: 0.12em;
+  font-weight: 600;
+  white-space: nowrap;
+}
+.station[data-now] b {
+  display: block;
+}
+
+/* Phones: a 2 px progress rule under the header, and the chip in the header. */
+.rule {
+  display: none;
+  position: fixed;
+  left: 0;
+  right: 0;
+  top: var(--header-h);
+  height: 2px;
+  z-index: 30;
+  pointer-events: none;
+  background: var(--hair);
+}
+.ruleFill {
+  position: absolute;
+  inset: 0;
+  background: var(--accent);
+  transform: scaleX(0);
+  transform-origin: left;
+  will-change: transform;
+}
+.chip {
+  display: inline-flex;
+  align-items: center;
+  height: 28px;
+  padding: 0 10px;
+  border: 1px solid var(--ctrl);
+  border-radius: var(--r-pill);
+  color: var(--porcelain);
+  font-family: var(--font-mono);
+  font-size: var(--mono-size);
+  letter-spacing: 0.08em;
+  white-space: nowrap;
+}
+.chipDot {
+  width: 6px;
+  height: 6px;
+  margin-right: 8px;
+  border-radius: 50%;
+  background: var(--porcelain);
+}
+
+@media (max-width: 767px) {
+  .gauge {
+    display: none;
+  }
+  .rule {
+    display: block;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .threadLine {
+    transition: none;
+  }
+}
+
+
+/* Phones (run 2026-11-02-mobile): the chip names the chapter, its dot takes the chapter's colour,
+   and the progress rule is gold. */
+.chipName {
+  display: none;
+}
+@media (max-width: 767px) {
+  .chip .chipDot {
+    background: var(--dot, var(--porcelain));
+  }
+  .chipName {
+    display: inline;
+    min-width: 0;
+    margin-left: 0.75em;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+  .ruleFill {
+    background: #d9a441;
+  }
+}

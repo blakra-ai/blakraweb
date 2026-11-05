@@ -1,0 +1,335 @@
+.header {
+  display: contents;
+}
+
+/* The bar: solid body colour over the scrolling page, the hairline inset by the gutter like the frames. */
+.bar {
+  position: fixed;
+  inset: 0 0 auto;
+  z-index: 40;
+  display: flex;
+  align-items: center;
+  gap: clamp(1rem, 2vw, 2rem);
+  height: var(--header-h);
+  padding: 0 var(--margin);
+  background: var(--body);
+  color: var(--porcelain);
+}
+.bar::after {
+  content: '';
+  position: absolute;
+  left: var(--inset);
+  right: var(--inset);
+  bottom: 0;
+  height: 1px;
+  background: var(--hair);
+}
+
+.brand {
+  display: inline-flex;
+  align-items: center;
+  gap: 12px;
+  padding: 0.5rem 0;
+  flex: none;
+}
+/* The official logo: the symbol (1721 x 1113) and the lettering (1889 x 171), in currentColor. */
+.mark {
+  width: 37px;
+  height: 24px;
+  flex: none;
+}
+.word {
+  width: 100px;
+  height: 9px;
+  flex: none;
+}
+
+/* The links: mono readouts in grey; the hovered or current one turns porcelain and underlines. */
+.nav {
+  margin: 0 auto;
+  color: var(--grey);
+}
+.nav ul {
+  display: flex;
+  gap: clamp(1.25rem, 2.1vw, 1.875rem);
+}
+.nav a {
+  display: inline-block;
+  padding: 0.5rem 0;
+  transition: color 0.2s var(--ease);
+}
+.nav a:hover,
+.nav a[aria-current] {
+  color: var(--porcelain);
+}
+.nav a[aria-current] {
+  text-decoration: underline;
+  text-underline-offset: 0.45em;
+}
+
+.right {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  margin-left: auto;
+  flex: none;
+}
+.chip {
+  display: none;
+}
+/* The motion switch: a ghost pill with a porcelain dot; pressed = motion on. */
+.toggle {
+  gap: 8px;
+  font-family: var(--font-mono);
+  font-size: var(--mono-size);
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+.toggleDot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: var(--grey);
+}
+.toggle[aria-pressed='true'] .toggleDot {
+  background: var(--porcelain);
+}
+.cta {
+  border-color: var(--porcelain);
+}
+
+/* The hamburger: two lines in a ghost circle; shown below 1100 px. */
+.burger {
+  display: none;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 5px;
+  width: 40px;
+  height: 40px;
+  padding: 0;
+  border: 1px solid var(--ctrl);
+  border-radius: var(--r-pill);
+  background: transparent;
+  color: var(--porcelain);
+  cursor: pointer;
+  transition: border-color 0.2s var(--ease);
+}
+.burger:hover {
+  border-color: var(--porcelain);
+}
+.burger i {
+  display: block;
+  width: 16px;
+  height: 1px;
+  background: currentColor;
+  transition: transform 0.3s var(--ease);
+}
+.burger[aria-expanded='true'] i:first-child {
+  transform: translateY(3px) rotate(45deg);
+}
+.burger[aria-expanded='true'] i:last-child {
+  transform: translateY(-3px) rotate(-45deg);
+}
+
+/* The Menu panel (m-menu.html): the whole screen under the bar, on the body colour. */
+.panel {
+  position: fixed;
+  left: 0;
+  right: 0;
+  top: var(--header-h);
+  bottom: 0;
+  z-index: 39;
+  display: flex;
+  flex-direction: column;
+  padding: var(--inset) var(--inset) 28px;
+  overflow-y: auto;
+  background: var(--body);
+  color: var(--porcelain);
+}
+.panel[hidden] {
+  display: none;
+}
+.links {
+  display: flex;
+  flex-direction: column;
+}
+.links a {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 16px 0;
+  border-top: 1px solid var(--hair);
+  font-size: 1.5rem;
+  font-weight: 300;
+  letter-spacing: -0.015em;
+}
+.links a:last-child {
+  border-bottom: 1px solid var(--hair);
+}
+.links a span {
+  color: var(--grey);
+  letter-spacing: 0.08em;
+}
+.links a[aria-current] {
+  text-decoration: underline;
+  text-underline-offset: 0.35em;
+}
+.group {
+  margin-top: 22px;
+}
+.groupTitle {
+  color: var(--grey);
+  margin-bottom: 10px;
+}
+.langs {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 8px;
+}
+.langs a {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 40px;
+  border: 1px solid var(--ctrl);
+  border-radius: var(--r-pill);
+  letter-spacing: 0.08em;
+}
+.langs a[aria-current] {
+  background: var(--porcelain);
+  border-color: var(--porcelain);
+  color: var(--body);
+}
+.toggleRow {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 14px 0;
+  border-top: 1px solid var(--hair);
+  border-bottom: 1px solid var(--hair);
+}
+.toggleRow .groupTitle {
+  margin: 0;
+}
+.panelCta {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  margin-top: auto;
+  padding-top: 28px;
+}
+.panelCta .pill,
+.panelCta :global(.pill) {
+  height: 48px;
+  font-size: 0.9375rem;
+}
+.facts {
+  color: var(--grey);
+  text-align: center;
+}
+
+/* Over the porcelain screen (stations 02 and 08) the bar is light: ink text, ink hairline, ink controls. */
+.bar[data-surface='light'] {
+  background: var(--porcelain);
+  color: var(--body);
+  color-scheme: light;
+}
+.bar[data-surface='light']::after {
+  background: var(--hair-ink);
+}
+.bar[data-surface='light'] .nav {
+  color: var(--grey-on-light);
+}
+.bar[data-surface='light'] .nav a:hover,
+.bar[data-surface='light'] .nav a[aria-current] {
+  color: var(--body);
+}
+.bar[data-surface='light'] :global(.pill),
+.bar[data-surface='light'] .burger,
+.bar[data-surface='light'] .chip {
+  border-color: var(--ctrl-light);
+  color: var(--body);
+}
+.bar[data-surface='light'] .cta,
+.bar[data-surface='light'] :global(.pill):hover,
+.bar[data-surface='light'] .burger:hover {
+  border-color: var(--body);
+}
+.bar[data-surface='light'] .toggleDot {
+  background: var(--body);
+}
+.bar[data-surface='light'] .lang button {
+  color: var(--grey-on-light);
+}
+.bar[data-surface='light'] :focus-visible {
+  outline-color: var(--body);
+}
+
+/* Tablet (768–1100): the links go into the panel; the bar keeps the chip, the switch and the call to action. */
+@media (max-width: 1099px) {
+  .nav {
+    display: none;
+  }
+  .burger {
+    display: inline-flex;
+  }
+  .lang {
+    display: none;
+  }
+  .chip {
+    display: inline-flex;
+  }
+}
+/* Phones: the switch moves into the panel; the call to action is compact from 360 px, gone below. */
+@media (max-width: 767px) {
+  .bar {
+    gap: 0.5rem;
+    padding: 0 12px;
+  }
+  .brand {
+    gap: 8px;
+  }
+  .right {
+    gap: 6px;
+  }
+  .motion {
+    display: none;
+  }
+  .chip {
+    height: 30px;
+    max-width: 210px;
+    min-width: 0;
+    padding: 0 10px;
+    font-size: 0.6875rem;
+    white-space: nowrap;
+    text-transform: uppercase;
+  }
+  .right {
+    min-width: 0;
+  }
+  /* The chip carries the chapter now; the bar keeps the brand, the chip and the menu. */
+  .cta {
+    display: none;
+  }
+  .bar {
+    transition: background-color 0.3s var(--ease), color 0.3s var(--ease);
+  }
+  .cta {
+    height: 34px;
+    padding: 0 10px;
+    font-size: 0.75rem;
+  }
+  .burger {
+    width: 34px;
+    height: 34px;
+  }
+}
+@media (max-width: 359px) {
+  .cta {
+    display: none;
+  }
+  .mark {
+    display: none;
+  }
+}

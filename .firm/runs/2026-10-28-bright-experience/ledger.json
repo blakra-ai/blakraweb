@@ -1,0 +1,58 @@
+{
+  "run_status": "done",
+  "tier": "T3",
+  "goal": "Upgrade blakra.us's presentation layer to an award-level immersive experience in a bright direction tied to the black hole and the seven chakras, keeping content, routes, SEO and the form backend; React Three Fiber + drei; full custom cursor; section by section with a commit after each.",
+  "phase": "rollout",
+  "updated": "2026-10-28",
+  "note": "Owner decisions 2026-10-28: bright direction (not the dark one), React Three Fiber + drei, continue on branch launch-fixes, fully custom cursor; then 'it should relate to the black hole and the chakras'. Prototype on the dev-only lab page (lab/index.html, src/lab/) with three heroes: A Chrome (inflated chrome BLAKRA, black hole with a chakra-colour disk behind, stickers), B Horizon (black hole swallowing the middle of the wordmark on paper white, chakra-colour disk tilting with the cursor), C Seven (seven glossy lotus chakras, traditional colours and petal counts, around a small black hole; the scroll lines them up on its axis). Waiting for the owner's pick before any production change. Known issue to fix in rollout: mobile LCP 3.0 s (hero lede fade delays its paint 1.2 s) against the brief's 2.5 s. Later on 2026-10-28: owner picked B for the hero and C's lotuses for Seven layers; then asked for a far more custom, cinematic, story-driven, innovative design, and then for real art direction ('direct it', a special personality and brand). Inventor + strategist produced the story 'Drawn in, built up, sent out' (spec.md); the treatment 'An Atlas of Gravity' (treatment.md) sets the personality: plates, live annotations, one axis, match cuts on circles. Style frames built in the lab (?v=atlas): Plate I (lensed wordmark, spaghettification, live labels, reticle), Plate III (spectra), Plate IV (lotus axis with labels). Waiting for the owner's approval of the art direction. The owner then interrupted the rollout: 'it must be much better; no clear goal or beauty; it needs to be creative, story-driven and cinematic, with correct, well-timed, smooth actions; the start and the end of the site must be a story's beginning and end'. Response: screenplay.md ('Gravity', one continuous shot, seven acts, beats keyed in t, each with an action and a reaction) and a full animatic in the lab (?v=film): scattered fragments → ignition shockwave → infall into a seven-colour disk → lensed BLAKRA → the visitor's need falls in → the seven centres bloom up the axis → charge → jet launch past five systems → pole-on ring (product) → orbit (terms) → three bodies (people) → the opening framing again with the whole system running and the visitor's need prefilled in the form. Film: scratchpad/lab/video/blakra-film.mp4. Waiting for the owner's verdict on the story and its timing before polishing scene by scene. Owner approved the screenplay and animatic ('excellent; make everything very smooth; implement it') and the film was rolled out on the real home page act by act on launch-fixes (21292c1 … 5a12a12): director mapping sections onto acts, held sections whose text prints at the film's moments, paper sheet behind text, old day/sky engine retired, ScrollTrigger removed. Lab archived outside the repo (scratchpad/lab-archive).",
+  "acceptance_criteria": [
+    {
+      "id": "B0",
+      "text": "Owner picks a hero direction",
+      "verified": true,
+      "evidence": "Owner, 2026-10-28: 'Go with B (black hole in the BLAKRA wordmark) for the hero, and use C's seven lotuses in the Seven layers section.'"
+    },
+    {
+      "id": "B1",
+      "text": "Owner approves the art direction (treatment + style frames) before the rollout",
+      "verified": true,
+      "evidence": "Owner, 2026-10-28: 'The Atlas of Gravity art direction is approved.'"
+    },
+    {
+      "id": "B2",
+      "text": "Owner approves the story and timing (animatic) before scene polish and rollout",
+      "verified": true,
+      "evidence": "Owner, 2026-10-28: 'عالی هستش خیلی سعی کن همچی نرم باشه پیاده سازیش کن' (excellent; make everything very smooth; implement it)."
+    },
+    {
+      "id": "R1",
+      "text": "Each act committed after build, no console errors, no overflow at 375/768/1440",
+      "verified": true,
+      "evidence": "Commits 21292c1…5a12a12; checks.mjs: no console errors, no overflow (375, 768, 1440 × /, /de/, /investors/, /legal/) after every act; npm run build OK."
+    },
+    {
+      "id": "R2",
+      "text": "Unit and e2e suites pass on the film",
+      "verified": true,
+      "evidence": "vitest 47/47 (new timeline and paper-contrast tests); npm run e2e 127/127 (reduced motion, links into held acts, short screens, no-JS copy in four languages, form, keyboard)."
+    },
+    {
+      "id": "R3",
+      "text": "Smooth on the owner's integrated GPU",
+      "verified": true,
+      "evidence": "Production build, Intel UHD, wheel scroll through the whole film: p50 16.7 ms, p95 16.7 ms, 0.2% of frames over 20 ms, none over 50 ms; CPU per frame p50 3.1 ms."
+    },
+    {
+      "id": "R4",
+      "text": "Lighthouse mobile >= 85 (charter: 90), LCP < 2.5 s",
+      "verified": false,
+      "evidence": "Lighthouse could not be installed (no network in the sandbox). Lab approximation with Lighthouse's mobile settings (412x823, 4x CPU, slow 4G, devtools throttling), 3 runs: FCP = LCP 1.09-1.35 s, TBT 259-275 ms, CLS 0-0.002, 261 kB. Needs a real Lighthouse or PageSpeed run by the owner."
+    },
+    {
+      "id": "R5",
+      "text": "Reduced motion: the same story as still frames, nothing held, all text visible",
+      "verified": true,
+      "evidence": "Still frames captured per act with reducedMotion=reduce; e2e AC2: no act holds, no text faded or clipped, all five cases visible."
+    }
+  ]
+}

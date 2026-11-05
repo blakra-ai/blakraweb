@@ -1,0 +1,40 @@
+{
+ "run": "2026-11-01-observatory-build",
+ "tier": "T3",
+ "run_status": "done",
+ "goal": "Build the Observatory redesign on branch observatory per ADR-001 and the revised storyboard",
+ "criteria": [
+  {
+   "id": 1,
+   "text": "Hero live: framed window, bent grid, lensing ring, guide with hole-eyes; 60 fps on the Intel UHD; Lighthouse mobile \u2265 90",
+   "verified": true,
+   "evidence": "wpC3/probe-log.txt: 60 fps, 2.0\u20132.8 ms CPU with pointer motion on Intel ADL GT2; lighthouse-mobile-2.json 97/100/100/100; wpC/home-default.png; scrub 82 rows 0 jumps; lighthouse-mobile-3.json 92/100/100/100; e2e 127/127"
+  },
+  {
+   "id": 2,
+   "text": "Stage held 2 screens, layers leave the grid into orbit, picker closes it",
+   "verified": true,
+   "evidence": "wpD frames; e2e 127/127"
+  },
+  {
+   "id": 3,
+   "text": "Proof rows, porcelain screen with one large object, contact window with form states",
+   "verified": true,
+   "evidence": "wpE + wpF frames; e2e 127/127; contrast listed"
+  },
+  {
+   "id": 4,
+   "text": "Phone and tablet per storyboard; reduced motion = still frames",
+   "verified": true,
+   "evidence": "wpC3/wpD/wpE/wpF phone frames; reduced-motion frame wpD/stage-reduced-motion.png"
+  },
+  {
+   "id": 5,
+   "text": "vitest, typecheck, build, e2e pass; three specialist reviews closed",
+   "verified": true,
+   "evidence": "tsc clean, vitest 110, build 16 pages, e2e 127/127; three specialist reviews closed on the hero (findings fixed in WP-C3)"
+  }
+ ],
+ "agents": [],
+ "note": "All six screens built and committed on observatory; Lighthouse mobile last measured 92/100/100/100 after the hero (re-measure before launch); Astra\u00eda not adopted (owner download pending)."
+}

@@ -1,0 +1,332 @@
+[
+ {
+  "page": "/",
+  "width": 1440,
+  "reduced": false,
+  "violations": [],
+  "incomplete": [
+   {
+    "id": "color-contrast",
+    "count": 60
+   }
+  ]
+ },
+ {
+  "page": "/work/vitrin-app/",
+  "width": 1440,
+  "reduced": false,
+  "violations": [],
+  "incomplete": [
+   {
+    "id": "color-contrast",
+    "count": 9
+   }
+  ]
+ },
+ {
+  "page": "/privacy/",
+  "width": 1440,
+  "reduced": false,
+  "violations": [],
+  "incomplete": [
+   {
+    "id": "color-contrast",
+    "count": 8
+   }
+  ]
+ },
+ {
+  "page": "/legal/",
+  "width": 1440,
+  "reduced": false,
+  "violations": [],
+  "incomplete": [
+   {
+    "id": "color-contrast",
+    "count": 8
+   }
+  ]
+ },
+ {
+  "page": "/404.html",
+  "width": 1440,
+  "reduced": false,
+  "violations": [],
+  "incomplete": [
+   {
+    "id": "color-contrast",
+    "count": 8
+   }
+  ]
+ },
+ {
+  "page": "/de/",
+  "width": 1440,
+  "reduced": false,
+  "violations": [],
+  "incomplete": [
+   {
+    "id": "color-contrast",
+    "count": 60
+   }
+  ]
+ },
+ {
+  "page": "/de/work/vitrin-app/",
+  "width": 1440,
+  "reduced": false,
+  "violations": [],
+  "incomplete": [
+   {
+    "id": "color-contrast",
+    "count": 8
+   }
+  ]
+ },
+ {
+  "page": "/de/privacy/",
+  "width": 1440,
+  "reduced": false,
+  "violations": [],
+  "incomplete": [
+   {
+    "id": "color-contrast",
+    "count": 7
+   }
+  ]
+ },
+ {
+  "page": "/de/legal/",
+  "width": 1440,
+  "reduced": false,
+  "violations": [],
+  "incomplete": [
+   {
+    "id": "color-contrast",
+    "count": 7
+   }
+  ]
+ },
+ {
+  "page": "/de/404.html",
+  "width": 1440,
+  "reduced": false,
+  "violations": [],
+  "incomplete": [
+   {
+    "id": "color-contrast",
+    "count": 7
+   }
+  ]
+ },
+ {
+  "page": "/",
+  "width": 1440,
+  "reduced": true,
+  "violations": [],
+  "incomplete": [
+   {
+    "id": "color-contrast",
+    "count": 64
+   }
+  ]
+ },
+ {
+  "page": "/work/vitrin-app/",
+  "width": 1440,
+  "reduced": true,
+  "violations": [],
+  "incomplete": [
+   {
+    "id": "color-contrast",
+    "count": 8
+   }
+  ]
+ },
+ {
+  "page": "/privacy/",
+  "width": 1440,
+  "reduced": true,
+  "violations": [],
+  "incomplete": [
+   {
+    "id": "color-contrast",
+    "count": 7
+   }
+  ]
+ },
+ {
+  "page": "/legal/",
+  "width": 1440,
+  "reduced": true,
+  "violations": [],
+  "incomplete": [
+   {
+    "id": "color-contrast",
+    "count": 7
+   }
+  ]
+ },
+ {
+  "page": "/404.html",
+  "width": 1440,
+  "reduced": true,
+  "violations": [],
+  "incomplete": [
+   {
+    "id": "color-contrast",
+    "count": 7
+   }
+  ]
+ },
+ {
+  "page": "/de/",
+  "width": 1440,
+  "reduced": true,
+  "violations": [],
+  "incomplete": [
+   {
+    "id": "color-contrast",
+    "count": 64
+   }
+  ]
+ },
+ {
+  "page": "/de/work/vitrin-app/",
+  "width": 1440,
+  "reduced": true,
+  "violations": [],
+  "incomplete": [
+   {
+    "id": "color-contrast",
+    "count": 7
+   }
+  ]
+ },
+ {
+  "page": "/de/privacy/",
+  "width": 1440,
+  "reduced": true,
+  "violations": [],
+  "incomplete": [
+   {
+    "id": "color-contrast",
+    "count": 6
+   }
+  ]
+ },
+ {
+  "page": "/de/legal/",
+  "width": 1440,
+  "reduced": true,
+  "violations": [],
+  "incomplete": [
+   {
+    "id": "color-contrast",
+    "count": 6
+   }
+  ]
+ },
+ {
+  "page": "/de/404.html",
+  "width": 1440,
+  "reduced": true,
+  "violations": [],
+  "incomplete": [
+   {
+    "id": "color-contrast",
+    "count": 6
+   }
+  ]
+ },
+ {
+  "page": "/",
+  "width": 390,
+  "reduced": false,
+  "violations": [],
+  "incomplete": [
+   {
+    "id": "color-contrast",
+    "count": 56
+   }
+  ]
+ },
+ {
+  "page": "/work/vitrin-app/",
+  "width": 390,
+  "reduced": false,
+  "violations": [],
+  "incomplete": [
+   {
+    "id": "color-contrast",
+    "count": 1
+   }
+  ]
+ },
+ {
+  "page": "/privacy/",
+  "width": 390,
+  "reduced": false,
+  "violations": [],
+  "incomplete": []
+ },
+ {
+  "page": "/legal/",
+  "width": 390,
+  "reduced": false,
+  "violations": [],
+  "incomplete": []
+ },
+ {
+  "page": "/404.html",
+  "width": 390,
+  "reduced": false,
+  "violations": [],
+  "incomplete": []
+ },
+ {
+  "page": "/de/",
+  "width": 390,
+  "reduced": false,
+  "violations": [],
+  "incomplete": [
+   {
+    "id": "color-contrast",
+    "count": 55
+   }
+  ]
+ },
+ {
+  "page": "/de/work/vitrin-app/",
+  "width": 390,
+  "reduced": false,
+  "violations": [],
+  "incomplete": [
+   {
+    "id": "color-contrast",
+    "count": 1
+   }
+  ]
+ },
+ {
+  "page": "/de/privacy/",
+  "width": 390,
+  "reduced": false,
+  "violations": [],
+  "incomplete": []
+ },
+ {
+  "page": "/de/legal/",
+  "width": 390,
+  "reduced": false,
+  "violations": [],
+  "incomplete": []
+ },
+ {
+  "page": "/de/404.html",
+  "width": 390,
+  "reduced": false,
+  "violations": [],
+  "incomplete": []
+ }
+]

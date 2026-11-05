@@ -1,0 +1,318 @@
+Noyan
+STUDIO
+Work
+Services
+Process
+Studio
+Start a project
+All concept studies
+03
+CONCEPT STUDY · STORE OPERATIONS DASHBOARD
+Vitrin Console
+
+A back office for a shop that runs across several locations.
+
+Designed for store managers who need the morning picture before the first customer. It shows what sold, what is running low and which orders need a decision.
+
+TYPE
+Concept study
+PLATFORMS (DESIGNED FOR)
+Desktop web
+APPROACH
+React components · Hand-written CSS · Inline SVG charts
+Application preview
+•••
+V
+Vitrin
+WORKSPACE
+PRO
+Overview
+Orders
+Products
+Inventory
+Customers
+Analytics
+Help & documentation
+AC
+Alex Chen
+Personal workspace
+Vitrin / Overview
+Search anything
+⌘ K
+AC
+Store overview
+
+A clear view of your business, across every store.
+
+Export report
+Total revenue
+$52,435.89
+↗ +8.2% vs. last month
+Orders
+1,348
+↗ +5.1% vs. last month
+Conversion rate
+3.95%
+↗ +1.2% vs. last month
+Average order
+$138.20
+↗ +4.4% vs. last month
+Revenue over time
+Last 7 days
+
+Daily sales across all locations
+
+15k
+10k
+5k
+0
+Mon
+Tue
+Wed
+Thu
+Fri
+Sat
+Sun
+Top products
+01
+Everyday trench coat
+248 sold
+$70,680
+02
+Wool crewneck
+192 sold
+$27,840
+03
+Tailored blazer
+164 sold
+$42,640
+04
+Wide-leg trousers
+138 sold
+$24,840
+Recent orders
+All stores · October 2025
+Order	Customer	Items	Total	Status
+VT-1048	Olivia Martin	2 items	$285.00	Fulfilled
+VT-1047	James Wilson	1 item	$145.00	Processing
+VT-1046	Emma Davis	3 items	$425.00	Fulfilled
+VT-1045	Noah Taylor	2 items	$210.00	Processing
+Application preview
+•••
+V
+Vitrin
+WORKSPACE
+PRO
+Overview
+Orders
+Products
+Inventory
+Customers
+Analytics
+Help & documentation
+AC
+Alex Chen
+Personal workspace
+Vitrin / Orders
+Search anything
+⌘ K
+AC
+Orders
+
+A clear view of your business, across every store.
+
+Create order
+Total revenue
+$52,435.89
+↗ +8.2% vs. last month
+Orders
+1,348
+↗ +5.1% vs. last month
+Conversion rate
+3.95%
+↗ +1.2% vs. last month
+Average order
+$138.20
+↗ +4.4% vs. last month
+All orders
+All stores · October 2025
+Order	Customer	Items	Total	Status
+VT-1048	Olivia Martin	2 items	$285.00	Fulfilled
+VT-1047	James Wilson	1 item	$145.00	Processing
+VT-1046	Emma Davis	3 items	$425.00	Fulfilled
+VT-1045	Noah Taylor	2 items	$210.00	Processing
+THE PROBLEM
+
+Managers of several locations usually assemble that picture from exports and messages. The same figure arrives in a different format from each place, and the version on screen is rarely the current one.
+
+THE DESIGN
+01
+
+Four figures sit at the top — revenue, orders, conversion and average order value — each with the period it is compared to.
+
+02
+
+Revenue is drawn over seven days, and the table below stays filtered to the same range.
+
+03
+
+Orders can be filtered by store and status, with the count of matches stated above the list.
+
+04
+
+Loading and empty states are designed, because a quiet morning is a normal state for a dashboard.
+
+05
+
+Table text is set at a readable size first; density is added around the type rather than into it.
+
+NOTE
+
+Concept work. Screens are design mockups, not a client deployment.
+
+Application preview
+•••
+V
+Vitrin
+WORKSPACE
+PRO
+Overview
+Orders
+Products
+Inventory
+Customers
+Analytics
+Help & documentation
+AC
+Alex Chen
+Personal workspace
+Vitrin / Overview
+Search anything
+⌘ K
+AC
+Store overview
+
+A clear view of your business, across every store.
+
+Export report
+Total revenue
+$52,435.89
+↗ +8.2% vs. last month
+Orders
+1,348
+↗ +5.1% vs. last month
+Conversion rate
+3.95%
+↗ +1.2% vs. last month
+Average order
+$138.20
+↗ +4.4% vs. last month
+Revenue over time
+Last 7 days
+
+Daily sales across all locations
+
+15k
+10k
+5k
+0
+Mon
+Tue
+Wed
+Thu
+Fri
+Sat
+Sun
+Top products
+01
+Everyday trench coat
+248 sold
+$70,680
+02
+Wool crewneck
+192 sold
+$27,840
+03
+Tailored blazer
+164 sold
+$42,640
+04
+Wide-leg trousers
+138 sold
+$24,840
+Recent orders
+All stores · October 2025
+Order	Customer	Items	Total	Status
+VT-1048	Olivia Martin	2 items	$285.00	Fulfilled
+VT-1047	James Wilson	1 item	$145.00	Processing
+VT-1046	Emma Davis	3 items	$425.00	Fulfilled
+VT-1045	Noah Taylor	2 items	$210.00	Processing
+Overview screen: revenue figures, seven-day chart and top products.
+Application preview
+•••
+V
+Vitrin
+WORKSPACE
+PRO
+Overview
+Orders
+Products
+Inventory
+Customers
+Analytics
+Help & documentation
+AC
+Alex Chen
+Personal workspace
+Vitrin / Orders
+Search anything
+⌘ K
+AC
+Orders
+
+A clear view of your business, across every store.
+
+Create order
+Total revenue
+$52,435.89
+↗ +8.2% vs. last month
+Orders
+1,348
+↗ +5.1% vs. last month
+Conversion rate
+3.95%
+↗ +1.2% vs. last month
+Average order
+$138.20
+↗ +4.4% vs. last month
+All orders
+All stores · October 2025
+Order	Customer	Items	Total	Status
+VT-1048	Olivia Martin	2 items	$285.00	Fulfilled
+VT-1047	James Wilson	1 item	$145.00	Processing
+VT-1046	Emma Davis	3 items	$425.00	Fulfilled
+VT-1045	Noah Taylor	2 items	$210.00	Processing
+Orders screen: store and status filters, order table and status column.
+
+NEXT CONCEPT STUDY
+
+Flowline — A canvas for approvals and hand-offs that would otherwise run through email.
+
+Noyan
+
+A small product studio designing and engineering apps, platforms and AI tools for teams that care about the details.
+
+NAVIGATE
+
+Concept studies
+Services
+Process
+Contact
+
+ELSEWHERE
+
+hello@noyan.studio
+Book an intro call
+Vitrin — concept study
+© 2026 Noyan Studio. All rights reserved.
+CONCEPT STUDIES · REGISTERED 2024

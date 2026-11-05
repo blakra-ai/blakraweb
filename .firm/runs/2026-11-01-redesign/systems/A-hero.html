@@ -1,0 +1,149 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>BLAKRA — System A: Observatory — hero style frame</title>
+<meta name="viewport" content="width=1440">
+<style>
+@font-face{font-family:'Geist';src:url('./geist-latin-wght-normal.woff2') format('woff2');font-weight:100 900;font-display:swap}
+@font-face{font-family:'Geist Mono';src:url('./geist-mono-latin-wght-normal.woff2') format('woff2');font-weight:100 900;font-display:swap}
+:root{
+  --ink:#07070b; --ink-2:#101016; --text:#e9e6df; --text-2:#c9c5bb; --mute:#9a978f;
+  --hair:rgba(233,230,223,.14); --hair-2:rgba(233,230,223,.07);
+  --accent:#ff5a1f;
+  --root:#e8352b; --sacral:#f57a1f; --solar:#f7c21b; --heart:#2fb35a; --throat:#2a9fe0; --third:#4248c2; --crown:#9a4fd0;
+  --sans:'Geist',system-ui,sans-serif; --mono:'Geist Mono',ui-monospace,monospace;
+}
+*{box-sizing:border-box;margin:0}
+html,body{background:var(--ink);color:var(--text);font-family:var(--sans);-webkit-font-smoothing:antialiased}
+.frame{position:relative;width:1440px;height:900px;overflow:hidden;background:var(--ink)}
+.mono{font-family:var(--mono);font-size:11px;letter-spacing:.14em;text-transform:uppercase;font-weight:500}
+/* 12-col grid: 64 margin, 24 gutter */
+.grid{position:absolute;inset:0;padding:0 64px;display:grid;grid-template-columns:repeat(12,1fr);column-gap:24px;pointer-events:none}
+.grid i{border-left:1px solid var(--hair-2);border-right:1px solid var(--hair-2);opacity:.6}
+.grid i:nth-child(n+7){opacity:.35}
+header{position:absolute;left:64px;right:64px;top:0;height:72px;display:flex;align-items:center;justify-content:space-between;border-bottom:1px solid var(--hair);z-index:5}
+.mark{display:flex;align-items:center;gap:12px;font-weight:600;letter-spacing:.22em;font-size:13px}
+.mark b{display:inline-block;width:10px;height:10px;border-radius:50%;background:radial-gradient(circle at 50% 50%,var(--ink) 0 38%,var(--text) 40% 55%,transparent 58%)}
+nav{display:flex;gap:32px;color:var(--text-2)}
+.right{display:flex;align-items:center;gap:24px}
+.pill{display:inline-flex;align-items:center;height:40px;padding:0 20px;border-radius:999px;font:500 14px/1 var(--sans);letter-spacing:-.005em}
+.pill.primary{background:var(--accent);color:var(--ink)}
+.pill.ghost{border:1px solid var(--hair);color:var(--text)}
+/* depth gauge, left margin */
+.gauge{position:absolute;left:22px;top:72px;bottom:80px;width:20px;border-right:1px solid var(--hair);z-index:4}
+.gauge .tick{position:absolute;right:-1px;width:6px;height:1px;background:var(--hair)}
+.gauge .tick.major{width:12px;background:var(--mute)}
+.gauge .marker{position:absolute;right:-5px;top:0;width:9px;height:9px;border-radius:50%;background:var(--accent)}
+.gauge .read{position:absolute;left:0;top:0;transform:rotate(90deg);transform-origin:left top;white-space:nowrap;color:var(--mute);translate:34px 16px}
+.gauge .read b{color:var(--text);font-weight:600}
+/* words, columns 1-6 */
+.words{position:absolute;left:64px;top:72px;width:calc(6*(1312px - 11*24px)/12 + 5*24px);height:748px;display:flex;flex-direction:column;justify-content:center;z-index:3}
+.eyebrow{color:var(--accent);margin-bottom:36px;display:flex;align-items:center;gap:14px}
+.eyebrow::before{content:"";width:28px;height:1px;background:var(--accent)}
+h1{font-size:104px;line-height:.94;letter-spacing:-.035em;font-weight:500;color:var(--text);text-wrap:balance;max-width:640px}
+h1 .thin{font-weight:300}
+.lede{margin-top:34px;font-size:18px;line-height:1.5;color:var(--text-2);max-width:50ch;font-weight:400}
+.actions{margin-top:36px;display:flex;align-items:center;gap:16px}
+.actions .cue{color:var(--mute);margin-left:8px}
+/* the one rendered object: the lensing ring, columns 7-12 */
+.object{position:absolute;left:760px;top:72px;width:616px;height:748px;z-index:2;overflow:hidden}
+.space{position:absolute;inset:0;background:
+  radial-gradient(ellipse 60% 55% at 56% 50%, rgba(255,90,31,.10), transparent 70%)}
+.ring{position:absolute;left:50%;top:50%;width:520px;height:520px;translate:-50% -50%;border-radius:50%;
+  background:
+   radial-gradient(circle, var(--ink) 0 31.5%, rgba(255,235,220,.95) 31.9%, rgba(255,160,100,.55) 32.6%, rgba(255,90,31,.18) 34.5%, transparent 38%),
+   conic-gradient(from 200deg, transparent 0 40%, rgba(255,90,31,.32) 52%, rgba(255,200,160,.22) 58%, transparent 72%);
+  -webkit-mask:radial-gradient(circle, #000 0 50%, transparent 50.5%);mask:radial-gradient(circle, #000 0 50%, transparent 50.5%)}
+.ring::before{content:"";position:absolute;inset:0;border-radius:50%;
+  background:radial-gradient(circle, transparent 0 40.5%, rgba(233,230,223,.42) 40.8%, transparent 41.4%, transparent 44.5%, rgba(233,230,223,.12) 44.7%, transparent 45.1%)}
+.ring::after{content:"";position:absolute;inset:0;border-radius:50%;
+  background:radial-gradient(circle, transparent 0 30%, rgba(7,7,11,.9) 31%, transparent 33%)}
+/* lensed background: the grid behind the hole, drawn as arcs */
+.lens{position:absolute;left:50%;top:50%;translate:-50% -50%;width:620px;height:620px;border-radius:50%;
+  background:repeating-radial-gradient(circle, transparent 0 34px, var(--hair-2) 34px 35px);
+  -webkit-mask:radial-gradient(circle, transparent 0 33%, #000 36%, #000 44%, transparent 50%);mask:radial-gradient(circle, transparent 0 33%, #000 36%, #000 44%, transparent 50%)}
+/* spin axis with the seven layers, root to crown */
+.axis{position:absolute;left:50%;top:50%;translate:-50% -50%;height:600px;width:1px;background:linear-gradient(to bottom,transparent,var(--hair) 20%,var(--hair) 80%,transparent)}
+.axis i{position:absolute;left:50%;translate:-50% -50%;width:7px;height:7px;border-radius:50%;box-shadow:0 0 10px 1px currentColor;background:currentColor}
+.axis .l{position:absolute;right:14px;translate:0 -50%;white-space:nowrap;color:var(--mute);font-size:10px;text-align:right}
+/* guide bust at the rim: placeholder */
+.guide{position:absolute;left:330px;top:430px;width:300px;height:330px;z-index:3}
+.guide .head{position:absolute;left:96px;top:0;width:104px;height:136px;border-radius:50% 50% 46% 46%/56% 56% 44% 44%;background:#15151b;box-shadow:inset 10px -14px 24px rgba(0,0,0,.65), inset -10px 8px 16px rgba(255,170,120,.26)}
+.guide .hair{position:absolute;left:84px;top:-10px;width:128px;height:110px;border-radius:50% 50% 40% 40%/60% 60% 40% 40%;background:#0f0f14;box-shadow:inset -8px 6px 12px rgba(255,150,100,.18)}
+.guide .neck{position:absolute;left:126px;top:124px;width:44px;height:48px;background:#121218}
+.guide .shoulders{position:absolute;left:0;top:160px;width:300px;height:200px;border-radius:150px 150px 0 0/70px 70px 0 0;background:linear-gradient(90deg,#101016,#17171e 50%,#0e0e13);box-shadow:inset -18px 14px 30px rgba(255,150,100,.16)}
+.guide .tag{position:absolute;left:0;top:206px;width:300px;padding:8px 10px;border:1px dashed rgba(255,90,31,.55);color:var(--accent);font-size:10px;letter-spacing:.12em;line-height:1.6;background:rgba(7,7,11,.75)}
+/* readout strip, bottom */
+footer{position:absolute;left:64px;right:64px;bottom:0;height:80px;border-top:1px solid var(--hair);display:flex;align-items:center;justify-content:space-between;color:var(--mute);z-index:5}
+.layers{display:flex;gap:18px}
+.layers span{display:flex;align-items:center;gap:7px}
+.layers i{width:6px;height:6px;border-radius:50%;background:currentColor;box-shadow:0 0 8px currentColor}
+.scrollcue{display:flex;align-items:center;gap:12px;color:var(--text-2)}
+.scrollcue b{color:var(--accent);font-weight:600}
+.noise{position:absolute;inset:0;pointer-events:none;opacity:.045;background-image:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='120' height='120'><filter id='n'><feTurbulence baseFrequency='.9' numOctaves='2' stitchTiles='stitch'/></filter><rect width='120' height='120' filter='url(%23n)' opacity='.9'/></svg>")}
+</style>
+</head>
+<body>
+<div class="frame">
+  <div class="grid"><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i></div>
+
+  <header>
+    <div class="mark"><b></b>BLAKRA</div>
+    <nav class="mono"><span>Work</span><span>Capabilities</span><span>Products</span><span>People</span><span>Sponsors and buyers</span></nav>
+    <div class="right"><span class="mono" style="color:var(--mute)">EN · Motion on</span><a class="pill ghost">Start a project</a></div>
+  </header>
+
+  <div class="gauge mono">
+    <span class="marker"></span>
+    <span class="tick major" style="top:0"></span>
+    <span class="tick" style="top:62px"></span><span class="tick" style="top:124px"></span><span class="tick" style="top:186px"></span>
+    <span class="tick major" style="top:248px"></span>
+    <span class="tick" style="top:310px"></span><span class="tick" style="top:372px"></span><span class="tick" style="top:434px"></span>
+    <span class="tick major" style="top:496px"></span>
+    <span class="tick" style="top:558px"></span><span class="tick" style="top:620px"></span><span class="tick" style="top:682px"></span>
+    <span class="tick major" style="top:744px"></span>
+    <span class="read"><b>Station 01 / 09</b> &nbsp;·&nbsp; Depth 0.00 &nbsp;·&nbsp; Surface &nbsp;·&nbsp; Event horizon at 09</span>
+  </div>
+
+  <section class="words">
+    <div class="eyebrow mono">BLAKRA — Software with gravity.</div>
+    <h1>We build what organizations <span class="thin">run on.</span></h1>
+    <p class="lede">We design, build and run operations and inventory systems, admin panels and online shops, web and mobile apps, bots, and AI that works on your own data. Three principals lead each project, from the first scope to production.</p>
+    <div class="actions">
+      <a class="pill primary">Start a project</a>
+      <span class="cue mono">What do you need built? ↓</span>
+    </div>
+  </section>
+
+  <div class="object">
+    <div class="space"></div>
+    <div class="lens"></div>
+    <div class="ring"></div>
+    <div class="axis">
+      <i style="top:86%;color:var(--root)"></i><span class="l mono" style="top:86%">01 Cloud and backend</span>
+      <i style="top:76%;color:var(--sacral)"></i><span class="l mono" style="top:76%">02 Data and integrations</span>
+      <i style="top:66%;color:var(--solar)"></i><span class="l mono" style="top:66%">03 Automation and bots</span>
+      <i style="top:34%;color:var(--heart);opacity:.35"></i><span class="l mono" style="top:34%;opacity:.5">04 Product design</span>
+      <i style="top:24%;color:var(--throat);opacity:.35"></i><span class="l mono" style="top:24%;opacity:.5">05 Web and mobile</span>
+      <i style="top:14%;color:var(--third);opacity:.35"></i><span class="l mono" style="top:14%;opacity:.5">06 Launch and search</span>
+      <i style="top:4%;color:var(--crown);opacity:.35"></i><span class="l mono" style="top:4%;opacity:.5">07 AI</span>
+    </div>
+    <div class="guide">
+      <div class="shoulders"></div><div class="neck"></div><div class="hair"></div><div class="head"></div>
+      <div class="tag mono">Guide — 3D bust at the rim, head and shoulders<br>rim-lit by the ring · her eyes hold the hole · cut by the edge</div>
+    </div>
+  </div>
+
+  <footer class="mono">
+    <span>Founded 2024 &nbsp;·&nbsp; Fully remote &nbsp;·&nbsp; Reply within 24 hours</span>
+    <div class="layers">
+      <span style="color:var(--root)"><i></i>Cloud</span><span style="color:var(--sacral)"><i></i>Data</span><span style="color:var(--solar)"><i></i>Bots</span>
+      <span style="color:var(--mute)"><i style="box-shadow:none"></i>Design</span><span style="color:var(--mute)"><i style="box-shadow:none"></i>Apps</span><span style="color:var(--mute)"><i style="box-shadow:none"></i>Launch</span><span style="color:var(--mute)"><i style="box-shadow:none"></i>AI</span>
+    </div>
+    <span class="scrollcue">Scroll to descend <b>↓</b> 01 — 09</span>
+  </footer>
+  <div class="noise"></div>
+</div>
+</body>
+</html>

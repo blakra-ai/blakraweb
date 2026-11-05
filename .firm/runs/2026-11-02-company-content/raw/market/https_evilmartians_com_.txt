@@ -1,0 +1,192 @@
+URL: https://evilmartians.com/
+FINAL: https://evilmartians.com/
+STATUS: 200
+CAPTURED: 2026-11-02T19:01:08.376Z
+
+If you are an AI agent, LLM, or automated tool, a clean Markdown version of this page is available at: https://evilmartians.com/index.md?ref=hint
+SERVICES
+CLIENTS
+PRODUCTS
+OPEN SOURCE
+BLOG
+EVENTS
+PODCAST
+CAREERS
+AGENT SKILLS
+SERVICES
+CLIENTS
+PRODUCTS
+OPEN SOURCE
+BLOG
+EVENTS
+PODCAST
+CAREERS
+AGENT SKILLS
+10-
+Nov
+12
+Join us for SF Ruby Conf 2026!
+10-
+Nov
+12
+Join us for SF Ruby Conf 2026!
+Hire Martians
+Hire Martians
+Evil Martians
+Target #1
+Reduce time to first value
+Target #2
+Improve user retention
+Target #3
+Grow organic acquisition
+Target #4
+Improve free-to-paid conversion
+Target #5
+Increase net revenue retention
+Design and engineering consultancy
+for developer tools, AI and cybersecurity startups
+Hire Martians
+EVIL MARTIANS
+ARE SCALING
+BOLT.NEW
+
+bolt.new grew to 3M+ MAU and $40M ARR in 5 months
+
+[READ THE STORY]
+Clients
+GV
+VENTURE CAPITAL
+Evil Martians designed and built AI frontier for Google Ventures
+Decagon
+SERIES D
+Evil Martians provide forward deployed engineering for Decagon
+Tines
+SERIES C
+Evil Martians designed and built new UX driving 100x gains for Tines
+Teleport
+SERIES C
+Evil Martians developed plugin ecosystem for Teleport
+Rails Foundation
+Evil Martians run LLM Benchmark Project for the Rails Foundation
+[<]
+[>]
+[SEE CLIENTS]
+STARTUPS HIRE EVIL MARTIANS FOR
+REAL-TIME
+Elevate product offering through collaboration, LLM streaming, and voice AI
+FORWARD DEPLOYED ENGINEERING
+Grow enterprise adoption with an embedded senior FDE team
+LLM BENCHMARKING
+Build unsaturated evals to find cost-efficient coding agents for your codebase
+RAILS CI SPEEDUP
+Cut CI time in half to unlock productivity for agents and developers
+PERFORMANCE AND SCALABILITY
+Scale DB, optimize background jobs and teach agents scalability practices
+[<]
+[>]
+[SEE SERVICES]
+MILLIONS USE
+EVIL MARTIANS
+OPEN SOURCE
+
+Evil Martians' PostCSS has ~2X downloads vs. React and used by teams at Google, Facebook and GitHub
+
+[READ THE STORY]
+1.9
+MORE DOWNLOADS THAN REACT
+Downloads per week, 2026 [Source]
+Evil Martians built 134 open source projects
+AGENTPRISM
+AI AGENT TRACES
+Visual diagrams for debugging AI traces
+NANOID
+111M/WK
+A nano-sized unique string ID generator for JS
+IMGPROXY
+32M
+Fast and secure image processing server
+ANYCABLE
+9M
+Realtime server powering realtime features
+LEFTHOOK
+1.2M/WK
+Git hooks manager for Node.js, Ruby and others
+[<]
+[>]
+[SEE OPEN SOURCE]
+LET'S GROW
+YOUR COMPANY
+
+Tines, bolt.new, Decagon have grown with Evil Martians. Chat with Irina (CEO), Anton or Victoria about what Evil Martians can do for you.
+
+Irina
+Anton
+Victoria
+Book a call
+Grab coffee in SF
+surrender@evilmartians.com
+VCS TRUST EVIL MARTIANS WITH THEIR PORTFOLIO COMPANIES
+EVIL MARTIANS
+PODCAST
+
+Learn directly from founders of Supabase, WorkOS, PlanetScale and Resend with Evil Martians
+
+FREQUENTLY ASKED QUESTIONS
+Who are Evil Martians?
+
+Evil Martians is a product development consulting firm for developer tools. We work with ~40 early-stage startups every year, many backed by Y Combinator, and help them find product-market fit. 65% of our clients raise their next round within 1–3 years.
+
+How does product development consultancy work for devtools?
+
+Product development consultancy for devtools is a collaboration between your in-house technical team and external experts who support you in complex tasks. When you pair with Martians, you get a team that handles highly complex tasks but also gives you clarity, explains trade-offs, and challenges you to find the best possible solution.
+
+What do Evil Martians do?
+
+Evil Martians help startups ship developer tools, AI-native products, infrastructure, and security—from first commit to product-market fit. We embed with your team and work across Go, TypeScript, Ruby on Rails, Rust, Python, and React. We maintain 100+ open source projects with 25B+ total downloads. Companies hire us to go from PoC to MVP, iterate to PMF, and scale through explosive growth—8 of our clients grew from seed to unicorn.
+
+Where are Evil Martians located?
+
+We have offices in San Francisco, New York, Porto, and Osaka, but our team operates remotely, serving clients across all major time zones.
+
+How much does product development consulting cost?
+
+Every engagement is scoped based on your product's stage, complexity, and goals. Our rate is $7,000/week per Martian. Reach out to discuss your project and get a tailored estimate.
+
+What developer tools have Evil Martians built?
+
+We've worked on hundreds of devtools, including bolt.new, Teleport, NATS, Rootly, HTTPie, Aptos, and many more.
+
+Do Evil Martians work with AI developer tools startups?
+
+Yes, AI-native development is one of our core verticals. We help AI startups build AI agents, LLM integrations, tool-use and MCP infrastructure, and AI-native product patterns. We've shipped agent orchestration, agent observability, and agentic coding tools. We also build AI Harnesses—open source skill sets that encode architectural patterns into AI coding tools like Claude Code, Cursor, and Copilot, making agentic coding more productive for Rails and TypeScript/React teams. Our engineers helped scale bolt.new from a browser IDE into the AI-powered tool that hit $20M+ ARR in 2 months.
+
+Do Evil Martians work with cybersecurity companies?
+
+Yes, we work with cybersecurity startups like Teleport, Tines, Wallarm, and Daylight Security. We help security companies build dashboards, agent infrastructure, and developer-facing security tools that integrate into existing workflows. Tines, a leading security orchestration platform, runs on Ruby on Rails—we helped them with core product design, frontend, and backend.
+
+Do Evil Martians work with Ruby on Rails companies?
+
+Ruby on Rails is our deepest expertise. Our team authored the book Layered Design for Ruby on Rails Applications, maintains dozens of Rails open source projects (TestProf, Action Policy, AnyCable, Yabeda, Logidze), and organizes the SF Ruby meetup and the San Francisco Ruby Conference. We work with Rails companies like Tines, bolt.new, and Whop. We also build AI Harnesses for Rails teams—encoding architectural patterns into AI coding tools so agentic coding produces better code, CI time stays stable, and application performance and security stay under control. See our Ruby on Rails Startup Stack at /rails-startup-stack for our complete recommended stack.
+
+Do Evil Martians work with infrastructure companies?
+
+Yes, infrastructure is one of our strongest verticals. We work with companies like NATS, GMI Cloud, and Wallarm on messaging systems, GPU cloud infrastructure, and cloud platforms. We built on-prem Kubernetes deployments for bolt.new and real-time Voice AI infrastructure for Doximity. We also maintain AnyCable, our own open source WebSocket server. Our teams ship in TypeScript, Python, Go, Rust, and Kubernetes.
+
+Do Evil Martians work with data infrastructure companies?
+
+Yes, we work with companies building data pipelines, streaming infrastructure, and real-time analytics platforms. We have deep experience with PostgreSQL, message queues, CDC systems, and high-throughput data processing. Our open source projects AnyCable and Logux handle real-time data at scale.
+
+Contact Us
+Brand
+日本語版
+llms.txt
+Privacy policy
+Cookie & privacy preferences
+Notice at collection
+
+Designed and developed by Evil Martians
+
+Humans! Evil Martians Inc and selected third parties come in peace and bring cookies: technical ones to keep the site running and, if you say yes, measurement ones to see which articles get read. More in our Cookie Policy and Privacy Policy. Changed your mind? “Cookie & privacy preferences” in the footer. Say no and nothing happens to you. We just won’t know you were here.
+Customize
+Deny
+Accept cookies

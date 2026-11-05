@@ -1,0 +1,100 @@
+URL: https://basecamp.com/about
+FINAL: https://basecamp.com/about
+STATUS: 200
+CAPTURED: 2026-11-02T19:01:31.191Z
+
+Skip to main content
+Where we came from
+
+Born out of desperate necessity to stop embarrassing ourselves in front of our clients, the story of how Basecamp was born is likely your story, too.
+
+Hey there, I’m Jason Fried, one of the co-founders here. I’ve been running 37signals — the business that makes Basecamp — for 27 years.
+
+People often ask me why we built Basecamp. They’ve never seen anything like it before, so they’re curious where the idea came from.
+
+I wish I could credit a spark of genius, or some deep insight. But I can’t. Truth is, we built Basecamp out of desperate necessity. We needed it bad. Without it, we were embarrassing ourselves.
+
+Way back when, we used to be a design firm. As we grew, we kept taking on more and more projects. We thought we could handle it, while still providing the same level of service, but we couldn’t. We were fooling ourselves. Sound familiar?
+
+It wasn’t that we didn’t have the skills — we just didn’t have the right tools, nor the method, to juggle the additional workload. We were disorganized, we were dropping balls, and stuff was slipping.
+
+Quality was suffering, and, as is often the case in situations like this, our clients noticed before we noticed. That was the especially painful and uncomfortable part.
+
+We needed a better way to manage projects, track feedback, and make progress. Email, chat, spreadsheets, calls, scattered documents, information here, there, and everywhere just wasn’t cutting it. Systems like that work for a minute, and then they fall apart fast — especially as you grow and add more people to the mix.
+
+We looked around and tried a few things, but the popular tools we tried simply didn’t cut it. So we had to build our own project management system from scratch.
+
+We focused on building a simple, straightforward collection of tools that could track work so everyone knew who was doing what, keep feedback and revisions on the record, centralize communication so no one missed anything, and schedule important milestones.
+
+We started using the system with our clients. They kept asking “What is this? We could totally use this for our own projects!” And that’s when the lightbulb went on — maybe this is a product for others, and not just for us? If we need it, surely others need it.
+
+So we tweaked it, tightened it up, polished the rough edges, and put it on the market. It was an instant hit.
+
+Turns out, tens of thousands of other companies had similar struggles managing their projects, and needed what we needed.
+
+And about a year or so after we first released it, it was generating more revenue for us than our web design business. So we stopped doing web design and have been focused on building Basecamp ever since.
+
+Based on feedback, and our own ideas, we’ve made thousands of improvements over the years, with so much more to come. Basecamp defined a category, and continues to constantly push that category forward in innovative ways.
+
+It’s been an incredible ride so far, and we have so many people to thank. But most of all, we feel a deep sense of responsibility to continue to make the best product we can for companies who desperately seek a better way to work. We’re here for them, 23 years and running.
+
+Thanks for reading, and for giving Basecamp a try. You can always contact me directly if you have any questions at jason@basecamp.com. I look forward to hearing from you.
+
+Jason Fried, jason@basecamp.com
+Co-founder & CEO
+Have a top-notch day!
+
+Join more than 200,000 people who get our email newsletter. We’ll share product updates, thoughts, new releases, and other tidbits we think you’ll find interesting.
+
+Subscribe
+Basecamp 5 is here
+NEW!
+Bring your AI agents to Basecamp
+NEW!
+Where we came from
+Features and benefits
+Reliable to the core
+Friendly folks, standing by
+The people’s path to Basecamp
+Apps for every platform
+Integrations
+What changed for the better?
+Learn Basecamp
+With Basecamp, it’s a Yes!
+Come small, come all
+We stand with the underdogs
+Leaving the Cloud
+How we make decisions
+Group chat problems
+Why we choose profit
+Seven shipping principles
+How we communicate
+Night & day
+Bootstrapped, profitable, & proud
+Basecamp community
+Free live classes
+Books we’ve written
+Kill overkill
+Breakfast with Basecamp
+Basecamp help
+Discounts
+Basecamp accessibility
+Keyboard shortcuts
+Can we stay in touch?
+See where projects really stand
+Getting Real
+Shape Up
+Manager Playbook
+Employee Handbook
+
+ Basecamp™ is designed, built, and backed by  37signals™, the people behind  HEY™ and  Fizzy™
+
+Status
+Support
+Policies
+Privacy
+Security
+Reliability
+Sign in
+© 37signals LLC. All rights reserved.
+Try Basecamp free

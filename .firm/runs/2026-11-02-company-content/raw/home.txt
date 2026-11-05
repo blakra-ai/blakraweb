@@ -1,0 +1,770 @@
+URL: https://blakra.us/
+TITLE: Custom Software Engineering Company | BLAKRA — Mobile, AI, Web & IoT
+CAPTURED: 2026-11-02T18:51:44.260Z
+
+SKIP TO CONTENT
+BLAKRA
+PRINCIPLES
+CAPABILITIES
+WORK
+TEAM
+LAB
+INVESTORS
+CONTACT
+CONNECT
+CUSTOM SOFTWARE ENGINEERING FOR IOS, ANDROID, WEB, WINDOWS & AI
+B
+L
+A
+K
+R
+A
+
+From Concept to Production — On Time
+
+Enterprise Software That Ships
+
+We engineer custom software for iOS, Android, Windows, Mac, web, and embedded systems. From AI agents and automation to full-stack applications — we build technology that scales with your business.
+
+Book a Free Discovery Call
+VIEW OUR WORK
+IOS · ANDROID · WEB · AI · IOT
+SCROLL
+ENGINEERING PRINCIPLES
+Precisionengineering,realresults.
+
+Webuildsoftwarethatships—ontime,onbudget,acrosseveryplatform.
+
+We build software that works across every platform your customers use \u2014 mobile, desktop, web, IoT, and beyond. Every project is engineered for reliability, designed for scale, and delivered on time.
+
+CRAFT OVER COMPLEXITY
+01
+Craft over Complexity
+
+Every line of code we write serves a purpose. We design systems for clarity, maintainability, and long-term value — not architectural theater.
+
+CLEAN ARCHITECTURE
+FULL TEST COVERAGE
+DOCUMENTED BY DEFAULT
+ACTIVE
+PLATFORM-FIRST THINKING
+02
+Platform-First Thinking
+
+We build native, cross-platform, and hybrid solutions that work flawlessly on iOS, Android, Windows, Mac, and the web — because your users deserve a great experience everywhere.
+
+IOS & ANDROID
+WINDOWS & MAC
+WEB & PWA
+ACTIVE
+MEASURABLE IMPACT
+03
+Measurable Impact
+
+Every engagement has clear KPIs, delivery milestones, and business outcomes. We don't just deliver code — we deliver results you can measure.
+
+ON-TIME DELIVERY
+99.97% UPTIME
+ROI GUARANTEED
+ACTIVE
+CAPABILITIES
+Software that Scales.Teams that Deliver.
+
+CUSTOM SOFTWARE · AI · MOBILE · WEB
+
+01
+DEEP DIVE
+AI Systems & Agent Development
+
+Intelligence that delivers measurable ROI.
+
+We build custom AI agents, intelligent applications, and specialized AI systems for every type of business. From customer-facing AI apps to autonomous agent workflows — we engineer AI that actually works in production.
+
+Custom AI agents & chatbots
+AI-powered mobile & web apps
+Specialized industry AI systems
+LLM fine-tuning & RAG pipelines
+02
+DEEP DIVE
+Automation Engineering
+
+Turn manual processes into autonomous revenue.
+
+Intelligent orchestration across your enterprise. We build automation that cuts operational costs, eliminates manual errors, and adapts as your business evolves.
+
+AI workflow orchestration
+Cognitive RPA
+Cross-system integration
+Autonomous exception handling
+03
+DEEP DIVE
+Custom Software Development
+
+Built for your business, engineered to scale.
+
+Full-stack software tailored to your operational realities — from robust backends and real-time platforms to internal tools that integrate seamlessly with your existing stack.
+
+Systems & backend architecture
+Real-time data platforms
+API design & integration
+Enterprise internal tooling
+04
+DEEP DIVE
+Mobile & Web Application Development
+
+Native experiences. Cross-platform reach.
+
+We build production-grade applications for iOS, Android, Windows, Mac, and the web. Native performance with cross-platform efficiency — your users get a flawless experience on every device.
+
+iOS (Swift, SwiftUI)
+Android (Kotlin, Jetpack)
+Cross-platform (React Native, Flutter)
+Responsive web & PWA
+05
+DEEP DIVE
+Robotics Integration
+
+Physical intelligence deployed at scale.
+
+Bridging perception, control, and fleet operations. We deliver production-ready robotics systems where on-device intelligence and cloud coordination work as one.
+
+Perception & sensor fusion
+Motion planning & control
+Fleet management systems
+Edge-deployed AI models
+06
+DEEP DIVE
+IoT & Embedded Systems
+
+Connected intelligence for the real world.
+
+We build embedded software, firmware, and IoT platforms that connect devices, sensors, and machines. From smart products to industrial telemetry — we engineer systems that bridge digital and physical.
+
+Embedded firmware (C, Rust)
+IoT sensor networks & telemetry
+Edge AI & real-time control
+Device fleet management & OTA
+07
+DEEP DIVE
+Data Intelligence Platforms
+
+Turn raw data into a strategic asset.
+
+Reliable pipelines that transform raw data into operational insight — powering predictive analytics, anomaly detection, and automated decision-making at scale.
+
+Real-time streaming pipelines
+Predictive analytics engines
+Multi-source data fusion
+Decision intelligence dashboards
+08
+DEEP DIVE
+Enterprise System Architecture
+
+Infrastructure that accelerates your business.
+
+Strategic modernization that reduces technical debt, enables rapid scaling, and aligns technology with business outcomes and compliance requirements — designed for the next decade.
+
+Legacy modernization
+Microservices & event-driven design
+Multi-cloud & hybrid infrastructure
+Security & compliance frameworks
+VALIDATED IN PRODUCTION WITH INTEGRATION AND OPERATIONAL RUNBOOKS
+ENGAGEMENT MODELS
+How we workwith your team.
+
+We engage only when we're confident we can deliver measurable value. Every engagement begins with a technical architecture assessment — no commitments, no sales pressure. If it's not the right fit, we'll tell you.
+
+EM.01
+Team Extension
+
+AUGMENT YOUR TEAM WITH SENIOR ENGINEERS. NO TRAINING OVERHEAD.
+
+We embed experienced software engineers, AI specialists, and solutions architects directly into your existing teams. You retain full control of your roadmap and product direction — we provide the talent, discipline, and delivery velocity.
+
+Same-day onboarding
+Senior-level talent (not juniors)
+Compatible with your existing workflows
+Scales up or down in 2 weeks
+EM.02
+Project-Based Delivery
+
+FIXED SCOPE, FIXED PRICE, ON-TIME DELIVERY.
+
+For well-defined initiatives — a mobile app, a backend migration, an AI integration — we quote firm pricing and deliver against a clear milestone schedule. No scope creep, no surprises, no excuses.
+
+Fixed-price contracts
+Milestone-based payments
+Full documentation & handover
+Source code ownership
+EM.03
+Product Squad
+
+LONG-TERM OWNERSHIP. CONTINUOUS DELIVERY.
+
+For companies that need sustained engineering velocity without the hiring overhead. We assign a dedicated squad — product manager, engineers, QA — that operates as your team, owns the backlog, and ships continuously.
+
+Dedicated product manager
+Agile ceremonies included
+Continuous deployment pipeline
+SLAs with penalty terms
+Ready to build?
+
+Every engagement starts with a free technical architecture assessment. No pitch decks. No sales quotas.
+
+REQUEST ARCHITECTURE ASSESSMENT
+RESEARCH & DEVELOPMENT
+What we're
+building next.
+
+Our lab runs experiments that feed directly into production systems. We don't do research for its own sake — everything we investigate has a deployment path.
+
+LIVE DEPLOYMENT METRICS
+INFERENCE LATENCY
+0.8ms
+-12%
+MODEL ACCURACY
+99.4%
++0.3%
+THROUGHPUT
+847K/s
++18%
+ENERGY EFFICIENCY
+94.7%
++2.1%
+NEURAL_SIGNAL_MONITOR :: LIVE
+REC
+SYSTEM ACTIVITY LOG
+> Neural mesh sync: COMPLETE
+> Gradient norm: 1.47e-4
+> Token throughput: 847K/s
+> Memory utilization: 67.3%
+> Model alignment score: 0.994
+> Inference pipeline: OPTIMAL
+> Attention heads: 96/96 active
+R&D.01
+ACTIVE RESEARCH
+Adaptive Reasoning Under Uncertainty
+
+LLM architectures that maintain coherent reasoning with incomplete or conflicting data. Target market: high-stakes enterprise decision systems — financial services, healthcare, legal.
+
+R&D.02
+PROTOTYPE STAGE
+Autonomous Exception Resolution
+
+AI agents that identify, diagnose, and resolve operational exceptions in enterprise workflows without human escalation. Currently validated in financial reconciliation — significant cost reduction potential.
+
+R&D.03
+EARLY RESEARCH
+Embodied AI for Unstructured Environments
+
+Simulation-to-reality transfer for robotics in high-variability environments. Target markets: logistics warehousing, healthcare facilities, manufacturing floors.
+
+INVESTOR RELATIONS
+Building the
+infrastructure
+of intelligent systems.
+THE MARKET PROBLEM
+
+Enterprise AI adoption is stalled between consultancies that don't ship products and product companies that don't understand enterprise operations. The result: custom software projects that overrun budgets, miss deadlines, and fail to scale.
+
+THE BLAKRA THESIS
+
+A single engineering organization that operates at two speeds: client delivery (funding the engine) and internal product incubation (building equity). Every client engagement generates revenue, product insight, and reusable technology — each feeding the other.
+
+THE ASK
+
+We're raising a Seed round to scale two internal products that have completed enterprise pilots. Our unfair advantage is the BLAKRA engineering engine — we build at 3x the velocity of traditional startups because our infrastructure, talent, and enterprise pipeline already exist.
+
+SEED ROUND
+PROVEN TRACTION
+DE-RISKED TECH
+Request Confidential Investor Deck
+
+Encrypted data room · Signed NDA required
+
+TRACTION & SCALE
+48+
+Enterprise clients
+Including Fortune 1000 and growth-stage
+22
+Countries
+Active deployments across NA, EMEA, APAC
+35+
+Engineers & researchers
+Full-time across delivery and R&D
+99.97%
+Production uptime
+Across all client platforms
+COMPETITIVE MOAT
+01
+Built-in Engineering Engine
+
+Our parent company operates as a production-grade software development firm with 35+ engineers. Internal startups skip the "hiring and building infra" phase — they launch on a fully operational stack.
+
+02
+Production-De-risked Technology
+
+Every internal startup leverages platforms, models, and infrastructure already validated across 48+ enterprise deployments. What would take a standalone startup 18 months to build and test is already running in production.
+
+03
+Customer-Backed Product Direction
+
+Our pipeline of internal products emerges directly from real enterprise problems we've solved for clients. We don't guess the market — we build what the market has already paid us to understand.
+
+This communication is intended for qualified investors and accredited persons only. It does not constitute an offer or solicitation for investment. Confidentiality is required.
+
+IMPACT RECORD
+Numbers that do the talking.
+VERIFIED
+5+
+Projects delivered
+Custom software shipped to real clients since founding
+VERIFIED
+91%
+Avg. process improvement
+Measured across automation and AI projects
+VERIFIED
+100%
+System uptime
+Production SLA across all deployed platforms
+VERIFIED
+100%
+On-time delivery
+Every project delivered on agreed timeline
+VERIFIED
+24h
+Response time
+We respond to every inquiry within one business day
+VERIFIED
+2019
+Founded
+Serving clients globally
+
+"BLAKRA delivered a system that cut our document review time by 91%. On time, no surprises."
+
+CLIENT — FINANCIAL SERVICES
+
+"Their team understood our logistics problem deeply and built exactly what we needed. The results speak for themselves."
+
+CLIENT — EUROPEAN LOGISTICS
+ENGINEERING ARCHITECTURE
+How we think
+about systems.
+01
+Systems over features
+
+We design for outcomes, not checklists. Every component we build is architected to generate business value from day one.
+
+02
+Explainability by default
+
+AI must be auditable and trustworthy. We instrument every decision point so stakeholders — and regulators — retain full visibility.
+
+03
+Fail-safe, not fail-proof
+
+Complex systems fail. We design graceful degradation, human escalation protocols, and recovery mechanisms from the first line of code.
+
+04
+Speed as a feature
+
+Time to market matters. We deliver working systems in weeks, not months — without sacrificing quality or long-term maintainability.
+
+DATA FLOW ARCHITECTURE
+LIVE
+L1
+INTELLIGENCE LAYER
+Custom LLMs & fine-tuning
+Multi-modal reasoning
+Reinforcement learning
+Model evaluation & alignment
+L2
+ORCHESTRATION LAYER
+Multi-agent frameworks
+Workflow state machines
+Event-driven pipelines
+Real-time decision routing
+L3
+DATA LAYER
+Stream processing at scale
+Vector & relational stores
+Feature engineering pipelines
+Data quality enforcement
+L4
+INFRASTRUCTURE LAYER
+Multi-cloud Kubernetes
+GPU cluster management
+Edge deployment
+CI/CD for AI systems
+LEADERSHIP
+The engineers, researchersand architects
+who make it real.
+FOUNDED 2024
+35+ COMBINED YEARS
+MID-MARKET TO ENTERPRISE
+OUR ORIGIN
+
+BLAKRA was founded on a simple observation: most software firms either write elegant code that never ships, or ship quickly with quality as an afterthought. We built a company that does both — disciplined engineering that delivers at enterprise scale. What started as a focused engineering initiative in 2024 has scaled into a 35+ person operation serving 48+ enterprise clients across 22 countries.
+
+BY THE NUMBERS
+48+
+ENTERPRISE CLIENTS
+35+
+ENGINEERS & RESEARCHERS
+99.97%
+PRODUCTION UPTIME
+22
+COUNTRIES SERVED
+WE WRITE CODE, NOT JUST PROPOSALS
+
+Every engagement is led by engineers who still ship. Our founders, architects, and senior delivery leads run active production code and conduct architecture reviews in person. We don't write proposals and hand them off — the team that presents is the team that builds.
+
+Hamid Reza Alizadeh (Ashen)
+
+FOUNDER & CHIEF TECHNOLOGY OFFICER
+
+AI strategy, systems architecture, full‑stack engineering, product delivery
+
+15+ years in software engineering and AI systems
+
+01
+Mehdi Jannatipour
+
+SENIOR FULL‑STACK ENGINEER & BACKEND LEAD
+
+Backend systems, data platforms, reliability engineering
+
+10+ years in backend and full‑stack engineering
+
+02
+Habiburahman Karokhi
+
+HEAD OF OPERATIONS & CORPORATE COMPLIANCE (UNITED STATES)
+
+Corporate governance, compliance, vendor management
+
+10+ years in operations and compliance leadership
+
+03
+COMPANY JOURNEY
+Two years in
+building forward.
+R&D ACTIVITY FEED
+> alignment.score :: 0.994 ↑
+> model.quantization :: INT8 :: OK
+> data.pipeline :: 12.4TB/day ingested
+> gradient.norm stable at 1.47e-4
+> checkpoint delta :: 0.0023 — WITHIN BOUNDS
+> attention.mechanism :: 96/96 heads active
+2024
+FOUNDED
+
+Founded to bring systems‑level engineering to enterprise AI and automation — with a focus on disciplined architecture, rapid delivery, and measurable outcomes from day one.
+
+SYS LOG
+> org.bootstrap :: INIT
+> thesis.formalized :: TRUE
+> first_architecture :: FULL
+2025
+FIRST ENTERPRISE CLIENTS
+
+Secured initial enterprise engagements delivering AI workflow automation, data platforms, and document intelligence — proving the model works across regulated industries.
+
+SYS LOG
+> contract.won :: TRUE
+> delivery.time :: optimized
+> reliability.proven :: TRUE
+2025
+PRESENT DAY
+
+Operating where AI engineering meets enterprise delivery — building maintainable systems and repeatable operational practices for long‑running production services.
+
+SYS LOG
+> operations.focus :: PRODUCTION
+> clients.active :: ACTIVE
+> uptime :: PRODUCTION‑GRADE
+2024
+2025
+2025
+SELECTED WORK
+Proof of Execution.
+Inventory & Reorder Management System
+2024
+
+REGIONAL RETAIL CHAIN — 12 LOCATIONS
+
+Route Optimization & Dispatch Dashboard
+2024
+
+LOCAL DELIVERY FLEET — 25 DRIVERS
+
+Document Processing & Client Portal
+2024
+
+INDEPENDENT INSURANCE BROKERAGE
+
+Production Line Monitoring Dashboard
+2024
+
+MID-SIZE MANUFACTURING PLANT
+
+Customer Service AI Assistant
+2024
+
+E-COMMERCE BRAND — 50K MONTHLY ORDERS
+
+Reduced stockouts by 40%
+AVAILABILITY
+3 hours saved daily
+EFFICIENCY
+Lower carrying costs
+COST
+Faster reorder cycles
+SPEED
+PROBLEM
+
+Manual inventory tracking across stores caused frequent stockouts and overstock. No visibility into supplier lead times or seasonal demand patterns.
+
+SOLUTION
+
+Custom inventory dashboard with low-stock alerts, purchase order generation, and sales trend analysis. Integrated with existing POS and accounting systems.
+
+TECHNICAL APPROACH
+
+React dashboard, Node.js API, PostgreSQL, REST integration with POS and QuickBooks.
+
+REGIONAL RETAIL CHAIN — 12 LOCATIONS
+FEATURED PROJECTS
+More work.
+
+A broader view of projects across different domains and industries.
+
+ALL
+AUTOMATION SYSTEMS
+ARTIFICIAL INTELLIGENCE
+ENTERPRISE SOFTWARE
+DATA INTELLIGENCE
+MOBILE APPLICATIONS
+E-COMMERCE PLATFORMS
+WORKFLOW AUTOMATION
+ADMIN DASHBOARDS
+SOCIAL MEDIA AUTOMATION
+ADMIN DASHBOARDS
+Inventory Tracking Dashboard
+
+Real-time inventory dashboard for a mid-size retailer tracking stock across 4 warehouses with automated reorder alerts and supplier performance metrics.
+
+ARTIFICIAL INTELLIGENCE
+Customer Support Chatbot
+
+AI-powered chatbot handling FAQ, ticket routing, and order status for an e-commerce brand. Integrated with existing CRM and reduced response time by 60%.
+
+AUTOMATION SYSTEMS
+Restaurant Order Management System
+
+Cloud-based order management for a restaurant group across 12 locations. Online ordering, kitchen display integration, and delivery dispatch coordination.
+
+ENTERPRISE SOFTWARE
+Real Estate Lead Management Platform
+
+Custom CRM for a regional real estate agency managing listings, agent pipelines, and automated follow-up sequences with SMS and email integration.
+
+SOCIAL MEDIA AUTOMATION
+Social Media Content Scheduler
+
+Multi-platform content scheduling tool for small marketing agencies. Supports Instagram, LinkedIn, and Twitter with visual calendar and draft collaboration.
+
+E-COMMERCE PLATFORMS
+Membership Billing Portal
+
+Subscription management and recurring billing portal for a fitness chain with 8 locations. Supports plan changes, freezes, and automated payment recovery.
+
+MOBILE APPLICATIONS
+Field Service Inspection App
+
+Offline-capable inspection app for HVAC technicians to log site visits, capture photos, generate PDF reports, and sync when connectivity is available.
+
+DATA INTELLIGENCE
+Manufacturing Line Monitor
+
+IoT sensor data pipeline and alerting system for a small manufacturer monitoring temperature, vibration, and cycle times across 3 production lines.
+
+ENTERPRISE SOFTWARE
+Contractor Compliance Portal
+
+Document management and compliance tracking system for a construction firm managing subcontractor certifications, insurance renewals, and project documentation.
+
+WORKFLOW AUTOMATION
+Employee Onboarding Workflow
+
+Automated onboarding sequence for an HR department processing 30+ new hires per month. Digital forms, equipment requests, and training schedule coordination.
+
+ARTIFICIAL INTELLIGENCE
+Retail Analytics Dashboard
+
+Sales forecasting and inventory planning tool for a boutique retail chain using historical transaction data and seasonal trend analysis across 6 stores.
+
+ENTERPRISE SOFTWARE
+Medical Records Portal
+
+Secure patient document portal for a mid-size clinic allowing upload, sharing, and e-signature of medical forms with audit logging and access controls.
+
+AUTOMATION SYSTEMS
+Parking Availability Tracker
+
+Sensor-based parking occupancy monitoring for a municipal lot with real-time availability displayed on a web dashboard and mobile-friendly interface.
+
+MOBILE APPLICATIONS
+Delivery Route Optimizer
+
+Mobile app for a local delivery fleet with GPS route optimization, proof-of-delivery photo capture, and real-time driver tracking for dispatchers.
+
+E-COMMERCE PLATFORMS
+Vendor Invoice Processing System
+
+Automated invoice intake and approval workflow for a procurement department handling 200+ vendor invoices monthly with OCR data extraction.
+
+DATA INTELLIGENCE
+Network Access Audit Tool
+
+Log aggregation and alerting system for a company's IT team monitoring login attempts, permission changes, and unusual access patterns across internal systems.
+
+ARTIFICIAL INTELLIGENCE
+Contract Review Assistant
+
+AI document analysis tool for a legal firm to extract key clauses, deadlines, and obligations from standard contracts and highlight risk language.
+
+WORKFLOW AUTOMATION
+Energy Usage Monitor
+
+Utility consumption tracking dashboard for a commercial property manager monitoring electricity, water, and gas across 10 buildings with anomaly alerts.
+
+SOCIAL MEDIA AUTOMATION
+Brand Asset Library
+
+Centralized digital asset manager for a marketing team to store, organize, and share brand assets with version control and expiration tracking.
+
+ADMIN DASHBOARDS
+Staff Scheduling Dashboard
+
+Shift planning and labor cost management tool for a hospitality group coordinating schedules across 5 restaurant locations with conflict detection.
+
+INSIGHTS & ARTICLES
+Engineeringknowledge.
+
+Practical insights on custom software development, AI, mobile engineering, and enterprise architecture — from the team that builds it every day.
+
+AI AGENTS
+ENTERPRISE
+AUTOMATION
+Building Custom AI Agents for Enterprise Workflows
+
+AI agents are transforming how businesses handle complex workflows. Learn how BLAKRA designs, trains, and deploys custom AI agents that integrate with your existing systems — from document processing and customer support to automated decision-making and anomaly detection.
+
+READ ARTICLE →
+MOBILE DEVELOPMENT
+IOS
+ANDROID
+CROSS-PLATFORM
+Cross-Platform App Development: iOS, Android & Beyond
+
+Choosing the right approach for building apps across iOS, Android, Windows, and Mac depends on your performance needs, team structure, and timeline. We break down native vs. cross-platform tradeoffs and share real project patterns that work in production.
+
+READ ARTICLE →
+ENTERPRISE ARCHITECTURE
+CLOUD
+MIGRATION
+From Legacy to Modern: Enterprise System Migration Strategies
+
+Migrating legacy systems without disrupting operations is one of the hardest challenges in technology. We outline a phased approach to modernization — including microservices decomposition, API-first design, and cloud-native migration — proven across mid-market and enterprise clients.
+
+READ ARTICLE →
+GET IN TOUCH
+Let's
+Work Together.
+
+Tell us what you're building. We'll respond within 24 hours with a clear plan for how we can help.
+
+EMAIL
+hello@blakra.us
+SERVICES
+Custom Software · AI · Mobile · Web
+BLAKRA · Contact Form
+LIVE
+YOUR NAME OR COMPANY
+EMAIL ADDRESS
+TELL US ABOUT YOUR PROJECT
+0/2000
+Send Message
+WE RESPOND WITHIN 24 HOURS
+BLAKRA
+
+IOS · ANDROID · WEB · AI · IOT · AUTOMATION
+
+PRINCIPLES
+CAPABILITIES
+PROJECTS
+R&D LAB
+INVESTORS
+CONTACT
+Subscribe to insights
+SUBSCRIBE
+© 2024-2025 BLAKRA. All rights reserved.
+Privacy Policy
+Terms of Service
+Cookies
+
+--- LINKS ---
+https://blakra.us/#main-content | SKIP TO CONTENT
+https://blakra.us/#contact | Book a Free Discovery Call
+https://github.com/blakra | 
+https://linkedin.com/company/blakra | 
+https://twitter.com/blakra | 
+
+--- JSON-LD ---
+
+    {
+      "@context": "https://schema.org",
+      "@type": "WebSite",
+      "name": "BLAKRA",
+      "url": "https://blakra.us",
+      "description": "Enterprise software development company building custom mobile apps, AI agents, and cross-platform systems for iOS, Android, Web, Windows, and IoT."
+    }
+    
+
+    {
+      "@context": "https://schema.org",
+      "@type": "Organization",
+      "name": "BLAKRA",
+      "url": "https://blakra.us",
+      "description": "Enterprise software development company. We build custom mobile apps, AI systems, cross-platform applications, and IoT solutions for mid-market to enterprise organizations.",
+      "foundingDate": "2019",
+      "email": "hello@blakra.us",
+      "sameAs": [],
+      "hasOfferCatalog": {
+        "@type": "OfferCatalog",
+        "name": "Software Engineering Services",
+        "itemListElement": [
+          { "@type": "Offer", "itemOffered": { "@type": "Service", "name": "AI Systems & Agent Development" } },
+          { "@type": "Offer", "itemOffered": { "@type": "Service", "name": "Automation Engineering" } },
+          { "@type": "Offer", "itemOffered": { "@type": "Service", "name": "Custom Software Development" } },
+          { "@type": "Offer", "itemOffered": { "@type": "Service", "name": "Mobile & Web Application Development" } },
+          { "@type": "Offer", "itemOffered": { "@type": "Service", "name": "Robotics Integration" } },
+          { "@type": "Offer", "itemOffered": { "@type": "Service", "name": "IoT & Embedded Systems" } },
+          { "@type": "Offer", "itemOffered": { "@type": "Service", "name": "Data Intelligence Platforms" } },
+          { "@type": "Offer", "itemOffered": { "@type": "Service", "name": "Enterprise System Architecture" } }
+        ]
+      },
+      "seeks": {
+        "@type": "InvestmentOrFunding",
+        "name": "BLAKRA Internal Startup Investment",
+        "description": "BLAKRA is seeking seed and Series A investment for its internal AI and automation startups. Our unfair advantage: a fully operational engineering engine with 35+ engineers, 48+ enterprise clients, and proven technology de-risked through production deployments.",
+        "amount": {
+          "@type": "MonetaryAmount",
+          "currency": "USD",
+          "minValue": "500000",
+          "maxValue": "5000000"
+        }
+      }
+    }
+    

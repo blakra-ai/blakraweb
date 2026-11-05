@@ -1,0 +1,278 @@
+Noyan
+STUDIO
+Work
+Services
+Process
+Studio
+Start a project
+All concept studies
+04
+CONCEPT STUDY · WORKFLOW AUTOMATION TOOL
+Flowline
+
+A canvas for approvals and hand-offs that would otherwise run through email.
+
+Designed for operations teams whose approval chains pass through a shared mailbox. It gives each request a visible state and a named owner.
+
+TYPE
+Concept study
+PLATFORMS (DESIGNED FOR)
+Desktop web
+APPROACH
+React components · Hand-written CSS · Inline SVG connectors
+Application preview
+•••
+F
+Flowline
+WORKSPACE
+PRO
+Workflows
+Run history
+Connections
+Settings
+Help & documentation
+AC
+Alex Chen
+Personal workspace
+Flowline / Workflows
+Search anything
+⌘ K
+AC
+Purchase order approval
+
+Draft changes saved · Last edited 4 minutes ago
+
+Publish workflow
+WORKFLOW CANVAS
+Active
+New purchase order
+Webhook trigger
+Check order value
+Amount is greater than $5,000
+Manager approval
+Assigned to operations team
+Send confirmation
+Notify requester by email
+If approved
+STEP CONFIGURATION
+Check order value
+
+Continue only when the condition is met.
+
+Field
+order.total_amount
+Condition
+Is greater than
+Value
+5000
+
+Orders below this amount skip approval and proceed automatically.
+
+Application preview
+•••
+F
+Flowline
+WORKSPACE
+PRO
+Workflows
+Run history
+Connections
+Settings
+Help & documentation
+AC
+Alex Chen
+Personal workspace
+Flowline / Run history
+Search anything
+⌘ K
+AC
+Workflow activity
+
+Every run, every step, fully traceable.
+
+Export runs
+Total runs
+12,480
+Healthy · Last 30 days
+Success rate
+99.8%
+Healthy · Last 30 days
+Average duration
+1.4s
+Healthy · Last 30 days
+Time saved
+340 hrs
+Healthy · Last 30 days
+Run volume
+All systems operational
+15k
+10k
+5k
+0
+Mon
+Tue
+Wed
+Thu
+Fri
+Sat
+Sun
+Recent runs
+Run ID	Workflow	Started	Duration	Result
+#RUN-4820	Purchase order approval	 1 min ago	1.2s	Completed
+#RUN-4819	Daily stock sync	 2 min ago	1.3s	Completed
+#RUN-4818	Delivery status alert	 3 min ago	1.4s	Completed
+THE PROBLEM
+
+An approval that lives in email loses its state. Nobody can say which request is waiting on whom without reading a thread, and a request that stalls leaves no trace of where it stopped.
+
+THE DESIGN
+01
+
+Steps are placed on a canvas in the order they run, with a connector between each.
+
+02
+
+A condition step states its field, operator and value in a properties panel beside the canvas.
+
+03
+
+Approval steps name the person or role responsible, so a waiting request has an owner.
+
+04
+
+Run history records each step with a timestamp and a result.
+
+05
+
+A failed run is retried from the step that failed, not from the start.
+
+NOTE
+
+Concept work. Screens are design mockups, not a client deployment.
+
+Application preview
+•••
+F
+Flowline
+WORKSPACE
+PRO
+Workflows
+Run history
+Connections
+Settings
+Help & documentation
+AC
+Alex Chen
+Personal workspace
+Flowline / Workflows
+Search anything
+⌘ K
+AC
+Purchase order approval
+
+Draft changes saved · Last edited 4 minutes ago
+
+Publish workflow
+WORKFLOW CANVAS
+Active
+New purchase order
+Webhook trigger
+Check order value
+Amount is greater than $5,000
+Manager approval
+Assigned to operations team
+Send confirmation
+Notify requester by email
+If approved
+STEP CONFIGURATION
+Check order value
+
+Continue only when the condition is met.
+
+Field
+order.total_amount
+Condition
+Is greater than
+Value
+5000
+
+Orders below this amount skip approval and proceed automatically.
+
+Builder screen: four steps, one condition and the properties panel.
+Application preview
+•••
+F
+Flowline
+WORKSPACE
+PRO
+Workflows
+Run history
+Connections
+Settings
+Help & documentation
+AC
+Alex Chen
+Personal workspace
+Flowline / Run history
+Search anything
+⌘ K
+AC
+Workflow activity
+
+Every run, every step, fully traceable.
+
+Export runs
+Total runs
+12,480
+Healthy · Last 30 days
+Success rate
+99.8%
+Healthy · Last 30 days
+Average duration
+1.4s
+Healthy · Last 30 days
+Time saved
+340 hrs
+Healthy · Last 30 days
+Run volume
+All systems operational
+15k
+10k
+5k
+0
+Mon
+Tue
+Wed
+Thu
+Fri
+Sat
+Sun
+Recent runs
+Run ID	Workflow	Started	Duration	Result
+#RUN-4820	Purchase order approval	 1 min ago	1.2s	Completed
+#RUN-4819	Daily stock sync	 2 min ago	1.3s	Completed
+#RUN-4818	Delivery status alert	 3 min ago	1.4s	Completed
+Runs screen: volume chart, result table and per-step history.
+
+NEXT CONCEPT STUDY
+
+Helya — An assistant that answers from an organisation’s own documents and shows where the answer came from.
+
+Noyan
+
+A small product studio designing and engineering apps, platforms and AI tools for teams that care about the details.
+
+NAVIGATE
+
+Concept studies
+Services
+Process
+Contact
+
+ELSEWHERE
+
+hello@noyan.studio
+Book an intro call
+Vitrin — concept study
+© 2026 Noyan Studio. All rights reserved.
+CONCEPT STUDIES · REGISTERED 2024

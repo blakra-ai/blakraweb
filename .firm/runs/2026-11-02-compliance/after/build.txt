@@ -1,0 +1,120 @@
+
+> blakra-site@1.0.0 build
+> vite build && vite build --ssr src/entry-server.tsx --outDir dist-ssr && node scripts/prerender.mjs
+
+vite v8.3.5 building client environment for production...
+transforming...
+✓ 662 modules transformed.
+rendering chunks...
+computing gzip size...
+dist/index.html                                              1.34 kB │ gzip:   0.76 kB
+dist/.vite/manifest.json                                     5.83 kB │ gzip:   1.03 kB
+dist/third-party-licenses.md                                16.89 kB
+dist/assets/02-phone-BlWK7nbu.webp                          20.29 kB
+dist/assets/geist-mono-latin-wght-normal-XN7g48iV.woff2     23.12 kB
+dist/assets/03-phone-B8NRTzea.webp                          27.03 kB
+dist/assets/01-phone-aq764a1U.webp                          27.94 kB
+dist/assets/geist-latin-wght-normal-BgDaEnEv.woff2          29.40 kB
+dist/assets/03-phone-BEuL-Tvs.webp                          29.86 kB
+dist/assets/02-phone-CBuYO-vC.webp                          31.05 kB
+dist/assets/02-phone-sB3AWFUL.webp                          32.38 kB
+dist/assets/01-phone-pkHo8aNy.webp                          32.39 kB
+dist/assets/02-phone-Ci1X03Or.webp                          34.28 kB
+dist/assets/hero-still-phone-CW52jFzu.webp                  35.88 kB
+dist/assets/01-browser-D9DJ37G8.webp                        57.29 kB
+dist/assets/01-browser-C_R9zVC5.webp                        60.69 kB
+dist/assets/01-browser-Cn7Iu2tM.webp                        63.21 kB
+dist/assets/newsreader-latin-wght-italic-Bxi8ein9.woff2     64.52 kB
+dist/assets/01-browser-DPIrb-z_.webp                        68.91 kB
+dist/assets/01-browser-Bt5TLvap.webp                        74.86 kB
+dist/assets/01-browser-C24vBJE4.webp                        85.64 kB
+dist/assets/hero-still-BEXwBhZJ.jpg                         99.04 kB
+dist/assets/navigator-CkFd6Ddg.glb                       1,057.86 kB
+dist/assets/index-X7Eeev_i.css                              43.87 kB │ gzip:  10.13 kB
+dist/assets/lenis-D8KRuS-9.js                               18.64 kB │ gzip:   5.38 kB
+dist/assets/en-BSXuORqh.js                                  24.51 kB │ gzip:   9.77 kB
+dist/assets/de-CfF8Ov2k.js                                  27.88 kB │ gzip:  11.09 kB
+dist/assets/es-2PSZECV3.js                                  27.88 kB │ gzip:  10.69 kB
+dist/assets/fr-Bfw2ecL6.js                                  29.53 kB │ gzip:  11.33 kB
+dist/assets/pulse-BNQ_qtYr.js                               97.67 kB │ gzip:  37.65 kB
+dist/assets/index-Di4uXb72.js                              255.47 kB │ gzip:  79.02 kB
+dist/assets/World-DL6thqDb.js                            1,102.02 kB │ gzip: 306.68 kB
+
+✓ built in 3.17s
+[plugin builtin:vite-reporter] 
+(!) Some chunks are larger than 500 kB after minification. Consider:
+- Using dynamic import() to code-split the application
+- Use build.rolldownOptions.output.codeSplitting to improve chunking: https://rolldown.rs/reference/OutputOptions.codeSplitting
+- Adjust chunk size limit for this warning via build.chunkSizeWarningLimit.
+vite v8.3.5 building ssr environment for production...
+transforming...
+✓ 90 modules transformed.
+rendering chunks...
+computing gzip size...
+dist-ssr/third-party-licenses.md     0.06 kB
+dist-ssr/.vite/manifest.json         1.45 kB │ gzip:  0.49 kB
+dist-ssr/assets/World-D-ef9woW.js  106.23 kB │ gzip: 36.94 kB
+dist-ssr/entry-server.js           242.48 kB │ gzip: 73.88 kB
+
+[33m[INEFFECTIVE_DYNAMIC_IMPORT] [0msrc/content/locales/de.ts is dynamically imported by src/i18n.tsx but also statically imported by src/entry-server.tsx, dynamic import will not move module into another chunk.
+
+[33m[INEFFECTIVE_DYNAMIC_IMPORT] [0msrc/content/locales/en.ts is dynamically imported by src/i18n.tsx but also statically imported by src/entry-server.tsx, dynamic import will not move module into another chunk.
+
+[33m[INEFFECTIVE_DYNAMIC_IMPORT] [0msrc/content/locales/es.ts is dynamically imported by src/i18n.tsx but also statically imported by src/entry-server.tsx, dynamic import will not move module into another chunk.
+
+[33m[INEFFECTIVE_DYNAMIC_IMPORT] [0msrc/content/locales/fr.ts is dynamically imported by src/i18n.tsx but also statically imported by src/entry-server.tsx, dynamic import will not move module into another chunk.
+
+✓ built in 1.06s
+prerendered / -> dist/index.html (34.4 kB)
+prerendered /investors/ -> dist/investors/index.html (11.4 kB)
+prerendered /privacy/ -> dist/privacy/index.html (13.1 kB)
+prerendered /legal/ -> dist/legal/index.html (9.7 kB)
+prerendered /work/vitrin-app/ -> dist/work/vitrin-app/index.html (12.9 kB)
+prerendered /work/veyra-money/ -> dist/work/veyra-money/index.html (12.6 kB)
+prerendered /work/vitrin-console/ -> dist/work/vitrin-console/index.html (12.0 kB)
+prerendered /work/flowline-automation/ -> dist/work/flowline-automation/index.html (12.0 kB)
+prerendered /work/helya-ai/ -> dist/work/helya-ai/index.html (12.0 kB)
+prerendered /work/nuvoq-vision/ -> dist/work/nuvoq-vision/index.html (12.0 kB)
+prerendered /work/tiravan-logistics/ -> dist/work/tiravan-logistics/index.html (12.6 kB)
+prerendered /work/raah-learning/ -> dist/work/raah-learning/index.html (12.5 kB)
+prerendered /404 -> dist/404.html (8.7 kB)
+prerendered /de/ -> dist/de/index.html (35.4 kB)
+prerendered /de/investors/ -> dist/de/investors/index.html (11.7 kB)
+prerendered /de/privacy/ -> dist/de/privacy/index.html (13.9 kB)
+prerendered /de/legal/ -> dist/de/legal/index.html (9.8 kB)
+prerendered /de/work/vitrin-app/ -> dist/de/work/vitrin-app/index.html (13.4 kB)
+prerendered /de/work/veyra-money/ -> dist/de/work/veyra-money/index.html (13.0 kB)
+prerendered /de/work/vitrin-console/ -> dist/de/work/vitrin-console/index.html (12.4 kB)
+prerendered /de/work/flowline-automation/ -> dist/de/work/flowline-automation/index.html (12.5 kB)
+prerendered /de/work/helya-ai/ -> dist/de/work/helya-ai/index.html (12.3 kB)
+prerendered /de/work/nuvoq-vision/ -> dist/de/work/nuvoq-vision/index.html (12.3 kB)
+prerendered /de/work/tiravan-logistics/ -> dist/de/work/tiravan-logistics/index.html (13.0 kB)
+prerendered /de/work/raah-learning/ -> dist/de/work/raah-learning/index.html (13.0 kB)
+prerendered /de/404 -> dist/de/404.html (8.8 kB)
+prerendered /fr/ -> dist/fr/index.html (35.8 kB)
+prerendered /fr/investors/ -> dist/fr/investors/index.html (11.8 kB)
+prerendered /fr/privacy/ -> dist/fr/privacy/index.html (14.2 kB)
+prerendered /fr/legal/ -> dist/fr/legal/index.html (9.9 kB)
+prerendered /fr/work/vitrin-app/ -> dist/fr/work/vitrin-app/index.html (13.5 kB)
+prerendered /fr/work/veyra-money/ -> dist/fr/work/veyra-money/index.html (13.2 kB)
+prerendered /fr/work/vitrin-console/ -> dist/fr/work/vitrin-console/index.html (12.5 kB)
+prerendered /fr/work/flowline-automation/ -> dist/fr/work/flowline-automation/index.html (12.5 kB)
+prerendered /fr/work/helya-ai/ -> dist/fr/work/helya-ai/index.html (12.4 kB)
+prerendered /fr/work/nuvoq-vision/ -> dist/fr/work/nuvoq-vision/index.html (12.4 kB)
+prerendered /fr/work/tiravan-logistics/ -> dist/fr/work/tiravan-logistics/index.html (13.1 kB)
+prerendered /fr/work/raah-learning/ -> dist/fr/work/raah-learning/index.html (13.2 kB)
+prerendered /fr/404 -> dist/fr/404.html (8.8 kB)
+prerendered /es/ -> dist/es/index.html (35.6 kB)
+prerendered /es/investors/ -> dist/es/investors/index.html (11.8 kB)
+prerendered /es/privacy/ -> dist/es/privacy/index.html (13.8 kB)
+prerendered /es/legal/ -> dist/es/legal/index.html (9.9 kB)
+prerendered /es/work/vitrin-app/ -> dist/es/work/vitrin-app/index.html (13.5 kB)
+prerendered /es/work/veyra-money/ -> dist/es/work/veyra-money/index.html (13.1 kB)
+prerendered /es/work/vitrin-console/ -> dist/es/work/vitrin-console/index.html (12.4 kB)
+prerendered /es/work/flowline-automation/ -> dist/es/work/flowline-automation/index.html (12.5 kB)
+prerendered /es/work/helya-ai/ -> dist/es/work/helya-ai/index.html (12.4 kB)
+prerendered /es/work/nuvoq-vision/ -> dist/es/work/nuvoq-vision/index.html (12.4 kB)
+prerendered /es/work/tiravan-logistics/ -> dist/es/work/tiravan-logistics/index.html (13.0 kB)
+prerendered /es/work/raah-learning/ -> dist/es/work/raah-learning/index.html (13.1 kB)
+prerendered /es/404 -> dist/es/404.html (8.9 kB)
+sitemap: 48 urls

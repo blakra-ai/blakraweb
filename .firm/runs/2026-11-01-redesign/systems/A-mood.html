@@ -1,0 +1,62 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><title>BLAKRA — System A: Observatory — mood sheet</title><meta name="viewport" content="width=1440">
+<style>
+@font-face{font-family:'Geist';src:url('./geist-latin-wght-normal.woff2') format('woff2');font-weight:100 900;font-display:swap}
+@font-face{font-family:'Geist Mono';src:url('./geist-mono-latin-wght-normal.woff2') format('woff2');font-weight:100 900;font-display:swap}
+@font-face{font-family:'Newsreader';src:url('./newsreader-latin-wght-italic.woff2') format('woff2');font-weight:200 800;font-style:italic;font-display:swap}
+*{box-sizing:border-box;margin:0}
+body{background:#07070b;color:#e9e6df;font-family:'Geist',system-ui,sans-serif;-webkit-font-smoothing:antialiased}
+.frame{width:1440px;height:900px;padding:40px 64px;display:grid;grid-template-columns:repeat(12,1fr);column-gap:24px;grid-template-rows:auto 1fr auto;row-gap:24px;overflow:hidden}
+.mono{font-family:'Geist Mono',monospace;font-size:10px;letter-spacing:.12em;text-transform:uppercase;font-weight:500;color:#9a978f}
+.head{grid-column:1/13;display:flex;justify-content:space-between;align-items:flex-end;border-bottom:1px solid rgba(233,230,223,.14);padding-bottom:16px}
+.head h1{font-size:40px;font-weight:500;letter-spacing:-.03em;line-height:1}
+.head h1 small{font-family:'Geist Mono',monospace;font-size:12px;letter-spacing:.14em;color:#ff5a1f;display:block;margin-bottom:10px;font-weight:500}
+.head p{max-width:52ch;font-size:15px;line-height:1.45;color:#9a978f;text-align:right}
+.col{display:flex;flex-direction:column;gap:12px;min-width:0}
+.c1{grid-column:1/5}.c2{grid-column:5/9}.c3{grid-column:9/13}
+h2{font-size:11px;letter-spacing:.14em;text-transform:uppercase;font-family:'Geist Mono',monospace;font-weight:600;color:#e9e6df;border-bottom:1px solid rgba(233,230,223,.14);padding-bottom:8px}
+.sws{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}
+.sw{font-size:11px;line-height:1.35}.sw .chip{height:44px;border-radius:4px;margin-bottom:6px}
+.sw b{display:block;font-weight:600}.sw span{font-family:'Geist Mono',monospace;font-size:10px;color:#9a978f}.sw em{display:block;font-style:normal;color:#9a978f;font-size:10px}
+table{width:100%;border-collapse:collapse;font-size:12px}td{padding:5px 0;border-bottom:1px solid rgba(233,230,223,.14);vertical-align:middle}td:nth-child(2){font-size:11px;padding-right:10px}.num{padding-left:14px}
+.num{font-family:'Geist Mono',monospace;font-size:11px;text-align:right;white-space:nowrap}
+.pv{display:inline-block;width:24px;height:20px;line-height:20px;text-align:center;border-radius:3px;margin-right:8px;font-size:11px;font-weight:600}
+.ok{color:#e9e6df;text-align:right;font-family:'Geist Mono',monospace;font-size:10px}.bad{color:#ff5a1f;text-align:right;font-family:'Geist Mono',monospace;font-size:10px}
+.lits{display:grid;grid-template-columns:repeat(7,1fr);gap:4px}.lit{font-size:10px;text-align:center}.lit i{display:block;width:12px;height:12px;border-radius:50%;margin:0 auto 4px}.lit small{display:block;font-family:'Geist Mono',monospace;font-size:8px;color:#9a978f;letter-spacing:0}
+.spec{display:flex;flex-direction:column;gap:2px}
+.spec .d{font-size:44px;line-height:1;letter-spacing:-.04em;font-weight:500}
+.spec .d i{font-family:'Newsreader',serif;font-style:italic;font-weight:400;display:none}
+.spec .h{font-size:24px;font-weight:500;letter-spacing:-.02em}
+.spec .b{font-size:14px;line-height:1.5;color:#e9e6df}
+.spec .m{font-family:'Geist Mono',monospace;font-size:10px;letter-spacing:.12em;text-transform:uppercase;color:#9a978f}
+.note{font-size:12px;line-height:1.45;color:#9a978f}
+.gridv{height:44px;display:grid;grid-template-columns:repeat(12,1fr);gap:4px}.gridv i{background:rgba(233,230,223,.14);border-radius:2px}.gridv i:nth-child(n+7){background:#ff5a1f;opacity:.45}
+.surfs{display:flex;gap:10px}.surf{flex:1;font-size:11px}.surf .chip{height:28px;border-radius:4px;margin-bottom:5px}.surf b{display:block;font-weight:600}.surf span{color:#9a978f;font-size:10px}
+ul{padding-left:14px;font-size:12px;line-height:1.4;display:flex;flex-direction:column;gap:5px}
+.strip{grid-column:1/13;border-top:1px solid rgba(233,230,223,.14);padding-top:14px}
+.bar{display:flex;gap:3px;height:84px}
+.ch{border-radius:4px;padding:8px;display:flex;flex-direction:column;justify-content:space-between;font-size:11px;min-width:0}
+.ch b{font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.ch span{font-family:'Geist Mono',monospace;font-size:10px;opacity:.8}
+.ch.p{background:rgba(233,230,223,.08);color:#e9e6df}
+.ch.i{background:#e9e6df;color:#e9e6df}
+.ch.i{background:#101016;border:1px solid rgba(233,230,223,.14)}
+.strip .mono{margin-top:8px;display:flex;justify-content:space-between}
+</style></head><body><div class="frame">
+<div class="head"><h1><small>System A · mood sheet</small>Observatory</h1><p>An instrument-grade dark world: one rendered black hole, one hot accent, and a page that is a measured descent.</p></div>
+<div class="col c1">
+ <h2>Palette</h2><div class="sws"><div class="sw"><div class="chip" style="background:#07070b;border:1px solid rgba(233,230,223,.14)"></div><b>Ink</b><span>#07070b</span><em>surface</em></div><div class="sw"><div class="chip" style="background:#e9e6df;border:1px solid rgba(233,230,223,.14)"></div><b>Bone</b><span>#e9e6df</span><em>text</em></div><div class="sw"><div class="chip" style="background:#c9c5bb;border:1px solid rgba(233,230,223,.14)"></div><b>Bone 2</b><span>#c9c5bb</span><em>text 2</em></div><div class="sw"><div class="chip" style="background:#9a978f;border:1px solid rgba(233,230,223,.14)"></div><b>Mute</b><span>#9a978f</span><em>labels</em></div><div class="sw"><div class="chip" style="background:#101016;border:1px solid rgba(233,230,223,.14)"></div><b>Ink 2</b><span>#101016</span><em>panels</em></div><div class="sw"><div class="chip" style="background:#ff5a1f;border:1px solid rgba(233,230,223,.14)"></div><b>Orange</b><span>#ff5a1f</span><em>action, readouts</em></div></div>
+ <h2>Contrast (WCAG 2.2)</h2><table><tr><td><span class="pv" style="color:#e9e6df;background:#07070b;border:1px solid rgba(233,230,223,.14)">Aa</span>Bone on Ink</td><td class="num">16.13 : 1</td><td class="ok">AA</td></tr><tr><td><span class="pv" style="color:#c9c5bb;background:#07070b;border:1px solid rgba(233,230,223,.14)">Aa</span>Bone 2 on Ink</td><td class="num">11.67 : 1</td><td class="ok">AA</td></tr><tr><td><span class="pv" style="color:#9a978f;background:#07070b;border:1px solid rgba(233,230,223,.14)">Aa</span>Mute on Ink</td><td class="num">6.89 : 1</td><td class="ok">AA</td></tr><tr><td><span class="pv" style="color:#ff5a1f;background:#07070b;border:1px solid rgba(233,230,223,.14)">Aa</span>Orange on Ink</td><td class="num">6.45 : 1</td><td class="ok">AA</td></tr><tr><td><span class="pv" style="color:#07070b;background:#ff5a1f;border:1px solid rgba(233,230,223,.14)">Aa</span>Ink on Orange (button)</td><td class="num">6.45 : 1</td><td class="ok">AA</td></tr><tr><td><span class="pv" style="color:#e9e6df;background:#101016;border:1px solid rgba(233,230,223,.14)">Aa</span>Bone on Ink 2</td><td class="num">15.21 : 1</td><td class="ok">AA</td></tr></table>
+ <div class="note">Lit layers on Ink (dots and glows, never text):</div><div class="lits"><div class="lit"><i style="background:#e8352b;box-shadow:0 0 10px #e8352b"></i><span>Cloud</span><small>#e8352b · 4.76:1</small></div><div class="lit"><i style="background:#f57a1f;box-shadow:0 0 10px #f57a1f"></i><span>Data</span><small>#f57a1f · 7.36:1</small></div><div class="lit"><i style="background:#f7c21b;box-shadow:0 0 10px #f7c21b"></i><span>Bots</span><small>#f7c21b · 12.15:1</small></div><div class="lit"><i style="background:#2fb35a;box-shadow:0 0 10px #2fb35a"></i><span>Design</span><small>#2fb35a · 7.39:1</small></div><div class="lit"><i style="background:#2a9fe0;box-shadow:0 0 10px #2a9fe0"></i><span>Apps</span><small>#2a9fe0 · 6.83:1</small></div><div class="lit"><i style="background:#4248c2;box-shadow:0 0 10px #4248c2"></i><span>Launch</span><small>#4248c2 · 2.81:1</small></div><div class="lit"><i style="background:#9a4fd0;box-shadow:0 0 10px #9a4fd0"></i><span>AI</span><small>#9a4fd0 · 4.22:1</small></div></div>
+</div>
+<div class="col c2">
+ <h2>Type · Geist · ratio 1.5</h2>
+ <div class="spec"><div class="d">We build <i>run on.</i></div><div class="h">Seven layers. One team.</div><div class="b">Exact before expensive. Software runs over budget when the spending starts before the problem is exact.</div><div class="m">Station 04 / 09 · Reply within 24 hours</div></div>
+ <table><tr class="mono"><td>Role</td><td>Face</td><td class="num">1440 px</td><td class="num">390 px</td></tr><tr><td>Display</td><td>Geist 500</td><td class="num">104 / 0.94 / −0.035em</td><td class="num">52</td></tr><tr><td>H2</td><td>Geist 500</td><td class="num">64</td><td class="num">36</td></tr><tr><td>Lead</td><td>Geist 400</td><td class="num">22</td><td class="num">18</td></tr><tr><td>Body</td><td>Geist 400</td><td class="num">18 / 1.5</td><td class="num">16</td></tr><tr><td>Readout</td><td>Geist Mono 500</td><td class="num">11 / .14em caps</td><td class="num">10</td></tr></table>
+ <div class="note">Scale: 1.5 (perfect fifth) from 18 → 27 → 40 → 64 → 104; one jump to display. No serif. The display face carries the voice; mono carries the instrument.</div>
+</div>
+<div class="col c3">
+ <h2>Grid and whitespace</h2><div class="gridv"><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i></div><div class="note">12 columns · 64 px margin · 24 px gutter · column 87 px · words 1–6 · object 7–12 · 20 px depth gauge in the left margin · baseline 8 px</div>
+ <h2>Surfaces</h2><div class="surfs"><div class="surf"><div class="chip" style="background:#07070b;border:1px solid rgba(233,230,223,.14)"></div><b>Ink</b><span>every chapter</span></div><div class="surf"><div class="chip" style="background:#101016;border:1px solid rgba(233,230,223,.14)"></div><b>Ink 2</b><span>panels, form</span></div><div class="surf"><div class="chip" style="background:#ff5a1f;border:1px solid rgba(233,230,223,.14)"></div><b>Orange</b><span>one button, the gauge marker, one accent word</span></div></div>
+ <h2>Motion grammar</h2><ul><li>Moves: the ring (scale, tilt, 1 beat per chapter), the gauge marker, the bust (gaze, breath, blink), the seven lit dots on the axis.</li><li>Never: body text, headline position, text opacity, backgrounds.</li><li>Hand-over: the depth gauge ticks over at each hairline; the ring recedes 8% per station.</li><li>Hover: a card lifts 4 px, its layer dots light; a readout re-types.</li><li>Click: the ring snaps toward the chosen need; the lit layers answer.</li><li>Reduced motion: still frame of the ring, gauge shows the index, no re-typing.</li></ul>
+</div>
+<div class="strip"><h2>Section rhythm · nine chapters · 10.3 screens at 1440×900</h2><div class="bar" style="margin-top:10px"><div class="ch i" style="flex:1"><b>01 Hero</b><span>1 scr</span></div><div class="ch i" style="flex:1"><b>02 Manifesto</b><span>1 scr</span></div><div class="ch i" style="flex:1.2"><b>03 Mission</b><span>1.2 scr</span></div><div class="ch i" style="flex:1.6"><b>04 Systems</b><span>1.6 scr</span></div><div class="ch i" style="flex:1.3"><b>05 Proof</b><span>1.3 scr</span></div><div class="ch i" style="flex:1"><b>06 Checklist</b><span>1 scr</span></div><div class="ch i" style="flex:1"><b>07 Payload</b><span>1 scr</span></div><div class="ch i" style="flex:1"><b>08 Crew</b><span>1 scr</span></div><div class="ch i" style="flex:1.2"><b>09 Contact</b><span>1.2 scr</span></div></div><div class="mono"><span>Block width = screens per chapter · dark blocks are ink chapters</span><span>Owner rule: 1–1.3 screens per section, systems ≤ 1.8, no dead band over 150 px</span></div></div>
+</div></body></html>

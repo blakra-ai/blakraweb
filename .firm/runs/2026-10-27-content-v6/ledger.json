@@ -1,0 +1,46 @@
+{
+  "run_status": "done",
+  "tier": "T2",
+  "goal": "Rewrite blakra.us copy and structure so a visitor concludes 'a real, professional, trustworthy engineering company', serving three goals: brand trust, client projects, sponsors or buyers for BLAKRA's own products.",
+  "phase": "done",
+  "updated": "2026-10-27",
+  "note": "Owner interview (owner-answers.md), strategy.md, psych.md, copy-deck.md. Owner answered the four blocking questions on 2026-10-27: support after launch yes; skin AI working and ready; written from scratch and images never sent outside; offer sponsorship, license and outright sale. Other open items take the deck defaults (FACTS.md 'Open items').",
+  "acceptance_criteria": [
+    {
+      "id": "C1",
+      "text": "Every string on the site follows copy-deck.md (or the owner's later answers) in en; de, fr and es translate it",
+      "verified": true,
+      "evidence": "src/content/locales/en.ts follows copy-deck.md plus the owner's 2026-10-27 answers (skin AI working, images never sent outside, three offers); de/fr/es translated by one translator each; tsc clean; tests/locales.test.ts 13/13 (same keys and order, scene budgets); e2e 2026-10-27 final build: 106/106 (scratchpad e2e9.log) AC1 finds the new copy in all four languages."
+    },
+    {
+      "id": "C2",
+      "text": "No unconfirmed claim ships: placeholder products, roadmap, seed round, deck and data room removed; every claim traces to FACTS.md",
+      "verified": true,
+      "evidence": "Removed from types, data and copy: products coach/commerce/ops/live, roadmap, seed round, deck contents, data room, 'engine every project inherits'; grep finds none in src. FACTS.md has a row for every new claim (team model, support after launch, NDA policy, Also delivered, skin AI facts and offer, name origin, privacy corrections) and lists open items with defaults."
+    },
+    {
+      "id": "C3",
+      "text": "Metaphor only in visuals and one caption; no chakra labels in body copy",
+      "verified": true,
+      "evidence": "engine.chakras removed (type and UI; colour dots only); pulse.note removed; one caption explains the name (engine.symbol); 'Software with gravity.' kept as tagline only; 404 keeps its horizon line by design."
+    },
+    {
+      "id": "C4",
+      "text": "New structure works: hero fact strip, eight pulse options lighting their layers and linking proof, Also delivered list, one product card plus NDA card, sponsors page, footer join line",
+      "verified": true,
+      "evidence": "Verified on the built site (real GPU screenshots in scratchpad v6/): hero fact strip; eight pulse options light their layers and link their case or Also delivered (e2e P1 and F1 via the panel answer → #h17); Also delivered panel #delivered; one product card + NDA card; sponsors page with thesis, products, offer, NDA package, founder contact; footer join line; contact prefill from the pulse."
+    },
+    {
+      "id": "C5",
+      "text": "All checks pass on the final build: typecheck, unit tests, build, full e2e; Lighthouse mobile performance >= 90 and a11y/best practices/SEO 100 on /, /de/, /investors/",
+      "verified": true,
+      "evidence": "typecheck clean; npm test 92/92; build 16 pages + sitemap; e2e 2026-10-27 final build: 106/106 (scratchpad e2e9.log); Lighthouse mobile final build: / 92 (TBT 60 ms, CLS 0); /de/ 89, 93, 91 over three runs (median 91; TBT 90-180 ms); /investors/ 95; accessibility, best practices and SEO 100 on all three."
+    },
+    {
+      "id": "C6",
+      "text": "Layout holds in all four languages: hero H1 on two lines at 1440 and 900, no overflow at 375/768/1440",
+      "verified": true,
+      "evidence": "Hero H1 two lines at 1440 and 1100 in all four languages and at 900 in en/de/fr; Spanish wraps to three lines at 900 (reads cleanly, no overflow; recorded as a risk). No horizontal overflow on 64 pages (375/768/1440/1920 × 4 languages × 4 pages)."
+    }
+  ]
+}

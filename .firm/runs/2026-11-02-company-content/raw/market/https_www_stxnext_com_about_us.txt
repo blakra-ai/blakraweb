@@ -1,0 +1,296 @@
+URL: https://www.stxnext.com/about-us
+FINAL: https://www.stxnext.com/about-us
+STATUS: 200
+CAPTURED: 2026-11-02T19:00:04.269Z
+
+Services
+Industries
+Case Studies
+Accelerators
+Blog
+AI-Native SDLC
+About us
+Careers
+LET'S TALK
+About STX Next
+
+We are engineering and business sparring partners for leadership teams in the Industrial and Financial sectors.
+
+We sort out complex underlying cloud and data architectures to unlock and maximize AI potential by integrating intelligent solutions in your everyday operations.
+
+At a Glance
+AI Philosophy
+Heritage
+Values
+Team
+History
+Security
+Newsroom
+STX Next at a Glance
+HEADQUARTERS
+Poznań, Poland
+OFFICES
+Poznań • Gliwice • London • Houston • Merida • Eschborn
+CORE EXPERTISE
+Data Engineering • AI & ML • AI-native Software Engineering • Cloud Infrastructure
+INDUSTRIES SERVED
+Industrial (manufacturing, oil & gas, energy)
+Financial (financial services, insurance, private equity)
+MARKETS SERVED
+Europe (incl. UK&I) and North America
+2005
+Founded
+450
++
+Specialists
+1,000
++
+Projects delivered
+400
++
+Clients worldwide
+OUR AI PHILOSOPHY
+A Reasonable
+‍AI Approach
+
+
+Four principles that keep AI spend accountable to outcomes, in the order we apply them on every engagement.
+
+EXPLORE AI SERVICES
+MINDSET
+Honest & Grounded Advisory
+
+We scrutinize project briefs to protect your budget and industry regulations. If a mandate asks for AI where standard deterministic software or automation tools work better or safer, we explain the trade-offs and recommend the best fit. We'd rather lose the AI scope than deliver something you regret in six months.
+
+BASELINE
+Value-First Implementation
+
+We embed AI strictly inside workflows where automation drives direct financial returns, lowering operating costs and/or accelerating execution. During discovery, we run custom ROI calculators and create prototypes against your real data to forecast value and ensure we understand (and challenge) your end goal before you commit a budget. 
+
+IMPLEMENTATION
+Infrastructure Before Intelligence
+
+We refactor flawed data and cloud architecture at the foundation level. Preparing your data layer ensures AI workloads process queries with high model accuracy, real-time context and grounding. Optimized, modern cloud layer delivers elastic compute and cost-efficient infrastructure required to scale workload seamlessly across your organization. If your industry regulations or company prefers it, we work with Sovereign Cloud partners and with on-premise deployments as well.
+
+TEAM MODEL
+Direct Senior Ownership
+
+Instead of being handed off from one team to another and changing contact points through every stage, one senior engineer stays with your system from day one of our conversations through deployment. 
+
+‍
+
+They start by scrutinizing your operational pain to ensure we only build what matters. Supported by targeted domain experts and our Agentic Engineering / AI-native SDLC framework which speeds up development by 2-10x (2x-5x for brownfield, 10x+ for greenfield), a tight AI Pod with an FDE outpaces a traditional team of ten.
+
+OUR HERITAGE
+Build on Python Excellence
+
+Python has become the undisputed lingua franca of modern artificial intelligence, especially for AI Agents. At STX Next, we have been building, scaling, and optimizing in Python for over two decades now.
+
+That long-term focus means your AI initiatives are engineered by teams who know the language inside and out, delivering secure, scalable software from day-to-day model integration to enterprise data pipelines.
+
+OUR APPROACH
+Our Core Values
+Partnership Built on Freedom
+Show, Not Tell
+Your Product, Treated as Ours
+Unfiltered Transparency
+01
+PARTNERSHIP BUILT ON FREEDOM
+
+We believe technical autonomy requires secure infrastructure and internal operational confidence. We deploy sovereign platforms, transfer system know-how to your engineers, and stay by your side as strategic sparring partners when new technical challenges surface.
+
+THE TEAM
+Leadership
+
+Our leaders bring together engineering, delivery, and business expertise to help clients move faster without taking on unnecessary risk.
+THE BOARD
+SUPERVISORY BOARD AND ADVISORS
+EXECUTIVE TEAM
+Yuriy Adamchuk
+CEO
+
+As CEO, I lead our organization with a commitment to growth, operational excellence, and innovation. Together with a talented executive team, we bring diverse perspectives to harness the transformative power of data and artificial intelligence.
+
+Łukasz Koczwara
+CTO
+
+I’m responsible for ensuring an outstanding customer experience, developing staff, streamlining processes, and maintaining efficient operations. I also manage budgets, business partners, and contracts as needed.
+
+Karol Kleszcz
+CFO
+
+I act as the business co-pilot—shaping financial strategy to maximize company value while ensuring appropriate risk management. I leverage my experience leading finance teams in global organizations, international positions and private equity to drive STX Next's strategic growth.
+
+Matthew Harris
+CCO
+
+I’m the first point of contact for new potential business partners, with considerable experience in the fintech space. Having lived and worked on four different continents, I appreciate the unique challenges of our customers.
+
+OUR JOURNEY
+Two decades of Python-first growth
+
+From a Polish branch of a Dutch consultancy to a partner with 450+ specialists — drag or scroll through the milestones.
+2005
+
+Founded by Maciej Dziergwa, Peter Valkenburg, and Andrzej Mleczko as the Polish branch of Alt Control Communicatie B.V.
+
+2008
+
+Transitioned to 100% Polish ownership and rebranded to STX Next.
+
+2013
+
+Expanded internationally into the UK and US markets.
+
+2014–2018
+
+Added Product Design, QA, and DevOps to core engineering services.
+
+2020
+
+Innova Capital acquired a majority stake to accelerate growth.
+
+2022
+
+Opened a nearshore delivery center in Mexico and acquired AI/NLP specialist Ermlab; partnered with Squirro.
+
+2023
+
+Scaled to AWS Advanced Tier Partner status and established official partnerships with Snowflake and Databricks.
+
+2024
+
+STX Next acquired Brainhub, integrating 100+ specialists with expertise in React, .NET, and AWS.
+
+2025
+
+Appointed Yuriy Adamchuk as CEO to guide the company's next phase of scale.
+
+SECURITY
+ISO 27001 and TISAX certified
+
+STX Next expanded its risk management framework by earning ISO 27001 certification in 2024, followed by official TISAX validation in 2025. By combining global compliance frameworks with agile delivery practices, we provide european and global enterprise clients with validated, highly regulated software environments.
+
+NEWSROOM
+See what STX Next has been up to lately
+
+Company announcements, partnership news, and awards.
+
+VISIT NEWSROOM
+STX Next Has Achieved the Select Partner Tier in the Claude Partner Network Services Track
+READ MORE
+STX Next Renews AWS Advanced Tier Partner Status, Strengthening Cloud Partnership
+READ MORE
+Making a difference
+
+Our Corporate Social Responsibility (CSR)
+
+The success of our customers and co-workers depends on smooth processes and informed decision-making. We have a roster of seasoned leaders applying the best management and communication practices on the market to our work.
+
+We hold the EcoVadis Bronze Medal, placing us in the top 35% of sustainable companies globally. It validates our commitment to green energy and responsible operations.
+
+Environmental Sustainability
+
+From 2024, we are using 100% green energy to power our Poznań office.
+
+We organized a Sports Challenge with points translating into 300 trees planted in Żabno near Poznań.
+
+Since early 2025, our welcome packs have featured eco-friendly, top-quality products designed to last for years—and we plant a tree for every new team member.
+
+Engaged Team
+
+We provided many D&I initiatives, promoting a stronger and more innovative team.
+
+Our Growth Review process and transparent salary grading ensure tailored development plans and clear paths to career growth and salary raises.
+
+Each year, we come together to support the Szlachetna Paczka initiative, helping families living in poverty.
+
+Social Responsibility
+
+We organize open PAIDA and DevDuck knowledge sharing events to support local communities.
+
+We extend our global reach through aid and support for Ukraine, including fundraising, equipment donations and housing assistance.
+
+We engage in CSR sports events such as Wings4Life and Poland Business Run, demonstrating our commitment to social responsibility and team spirit.
+
+Our customers love to work with us
+
+GET IN TOUCH
+business@stxnext.com
+Follow us
+Menu
+About us
+Services
+Portfolio
+Careers
+Resources
+Blog
+Delivery Centers
+Poznań (HQ)
+
+ul. Mostowa 38
+61-854 Poznań
+Poland
+
+Merida
+
+C.11 310 Col. Santa Gertrudis Copo
+Merida, 97305
+Mexico
+
+Offices
+London
+
+10 York Rd
+London SE1 7ND
+United Kingdom
+
+Eschborn
+
+c/o Rödl RAe, Taunus Tower, Mergenthalerallee 73-75
+65760 Eschborn
+Germany
+
+Houston
+
+City Place 1401 Lake Plaza Dr, Ste. 200
+Spring, TX 77389
+United States
+
+Our Services →
+AI Development Services
+Machine Learning Development Services
+Data Engineering Services
+Data Lakehouse Development
+Microsoft Fabric Development
+Amazon Bedrock & AgentCore Development
+Enterprise n8n Development
+Copilot Studio & Foundry Development
+Cloud Infrastructure Services
+Sovereign Cloud
+Product Design Services
+AI-Native SDLC
+Enterprise RAG Development
+OCR and Intelligent Document Processing
+Python Development Services
+Web App Development Services
+Open Lakehouse Development Services
+Snowflake Migration Services
+AWS Migration Services
+Industries we Serve →
+Financial Services
+Insurance
+Industrials
+Manufacturing
+Oil & Gas
+Adtech & Martech
+Transportation & Logistics
+Our Partners →
+AWS Advanced Tier Partner Consulting
+Snowflake Consulting Services
+Databricks Consulting & Development Services
+Azure Consulting Services
+© 2005-2026 STX Next, All rights reserved
+Cookies policy
+Privacy policy
+Code of conduct

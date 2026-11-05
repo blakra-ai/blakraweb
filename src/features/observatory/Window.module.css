@@ -1,0 +1,105 @@
+/* The frame: 24 px inset (the page's gutter), 16 px radius, one hairline; it grows with its words. */
+.window {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  min-height: calc(100svh - var(--header-h) - var(--inset));
+  height: auto;
+  margin: 0 var(--inset) var(--inset);
+  border: 1px solid var(--hair);
+  border-radius: var(--r-window);
+  /* One of the two dark windows: transparent, so the world's canvas (under the document) shows through;
+     the world paints the ink inside the frame, and the still carries it when the world does not run. */
+  background: transparent;
+  overflow: hidden;
+  isolation: isolate;
+  /* Above the world's canvas (z 2): transparent, so the canvas shows through under the words. */
+  z-index: 3;
+}
+
+/* The still: the final state before the world runs, and for every visitor it never runs for. */
+.still {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
+  overflow: hidden;
+  background: var(--body);
+}
+/* The handover to the world: a crossfade, then out of the way (the world draws the same frame). */
+:global(html.gl-live) .still {
+  opacity: 0;
+  visibility: hidden;
+  transition: opacity 0.6s cubic-bezier(0.4, 0, 0.2, 1), visibility 0s linear 0.6s;
+}
+.stillImage {
+  position: absolute;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  width: 50%;
+  height: 100%;
+  object-fit: cover;
+  object-position: right center;
+}
+/* The rendered still already holds the ring; the CSS ring stands in only where there is no still. */
+.stillImage + .hole {
+  display: none;
+}
+
+/* The lensing ring in CSS (sb.css .hole): a dark disc, the photon rings, the accretion crescent. */
+.hole {
+  position: absolute;
+  left: var(--ring-x, 70%);
+  top: var(--ring-y, 42%);
+  width: calc(var(--ring-r, 150px) * 2);
+  height: calc(var(--ring-r, 150px) * 2);
+  border-radius: 50%;
+  transform: translate(-50%, -50%);
+}
+.hole i {
+  position: absolute;
+  display: block;
+  border-radius: 50%;
+}
+.disc {
+  inset: 0;
+  background: var(--body);
+  box-shadow:
+    0 0 0 1.5px rgba(236, 233, 226, 0.92),
+    0 0 18px 2px rgba(var(--accent-rgb), 0.55),
+    0 0 70px 20px rgba(var(--accent-rgb), 0.14),
+    inset 0 0 40px 12px rgba(0, 0, 0, 1);
+}
+.photon {
+  inset: -7%;
+  border: 1px solid rgba(236, 233, 226, 0.22);
+}
+.photon2 {
+  inset: -16%;
+  border: 1px solid rgba(236, 233, 226, 0.08);
+}
+.crescent {
+  inset: -5%;
+  background: conic-gradient(from 150deg, transparent 0 55%, rgba(var(--accent-rgb), 0.55) 70%, rgba(255, 236, 200, 0.35) 78%, transparent 92%);
+  -webkit-mask: radial-gradient(circle, transparent 0 47%, #000 48%, #000 52%, transparent 54%);
+  mask: radial-gradient(circle, transparent 0 47%, #000 48%, #000 52%, transparent 54%);
+  filter: blur(1.5px);
+}
+
+/* Phones: the still is the window's lower band (--still-h); without a still the CSS ring stands there. */
+@media (max-width: 767px) {
+  /* No WebGL on phones: the window carries its own ink, and the object is the CSS ring in the band below. */
+  .window {
+    background: var(--body);
+  }
+  .still {
+    top: auto;
+    height: var(--still-h, 260px);
+  }
+  /* The phone still (the hero's bust crop: the ring left, her right) fills the band; a window without one keeps the CSS ring. */
+  .stillImage {
+    width: 100%;
+    object-position: center center;
+  }
+}

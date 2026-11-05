@@ -1,0 +1,209 @@
+Noyan
+STUDIO
+Work
+Services
+Process
+Studio
+Start a project
+All concept studies
+01
+CONCEPT STUDY · MOBILE STOREFRONT AND INVENTORY APP
+Vitrin
+
+A mobile storefront and a stockroom app for the same clothing shop.
+
+Designed for independent clothing shops that sell in store and online. The concept keeps the customer catalogue and the staff stock count in one system, so a size shown as available is a size that exists.
+
+TYPE
+Concept study
+PLATFORMS (DESIGNED FOR)
+iOS and Android
+APPROACH
+React components · Hand-written CSS · Sample data in a static file
+9:41
+VITRIN
+THE SPRING EDIT
+Everyday, elevated.
+Explore collection 
+Discover
+Clothing
+Accessories
+
+Wool crewneck
+
+$145
+
+Tailored blazer
+
+$260
+
+Silk scarf
+
+$65
+
+Wide-leg trousers
+
+$180
+Home
+Search
+Saved
+Account
+9:41
+VITRIN
+THE ESSENTIALS COLLECTION
+Everyday trench coat
+$285
+
+A timeless layer. Made to go everywhere.
+
+Sand
+Select size
+Size guide
+XS
+S
+M
+L
+XL
+
+In stock · Free delivery over $100
+
+Add to bag
+Home
+Search
+Saved
+Account
+THE PROBLEM
+
+A shop that sells in two places usually records sales in one tool and stock in another. Size availability lags behind the shop floor, and a delivery is counted on paper before anyone types it in.
+
+THE DESIGN
+01
+
+Product screens read availability from the record the staff app writes, so the two views cannot disagree.
+
+02
+
+The stockroom screen opens on a scan field; a barcode returns the item, the size and the current count.
+
+03
+
+Low-stock items are listed above full inventory and ordered by how quickly they sell.
+
+04
+
+Stock receipts are entered per size rather than as one total, which keeps the count usable after the delivery.
+
+05
+
+Staff controls sit in a separate mode, so a customer holding the phone cannot open them.
+
+NOTE
+
+Concept work. Screens are design mockups, not a client deployment.
+
+9:41
+VITRIN
+THE SPRING EDIT
+Everyday, elevated.
+Explore collection 
+Discover
+Clothing
+Accessories
+
+Wool crewneck
+
+$145
+
+Tailored blazer
+
+$260
+
+Silk scarf
+
+$65
+
+Wide-leg trousers
+
+$180
+Home
+Search
+Saved
+Account
+Storefront screen: hero image, category filters and a two-column product grid.
+9:41
+VITRIN
+THE ESSENTIALS COLLECTION
+Everyday trench coat
+$285
+
+A timeless layer. Made to go everywhere.
+
+Sand
+Select size
+Size guide
+XS
+S
+M
+L
+XL
+
+In stock · Free delivery over $100
+
+Add to bag
+Home
+Search
+Saved
+Account
+Product screen: photograph, price, size selection and stock state.
+9:41
+Stockroom
+Inventory
+
+Downtown store 
+
+Total units
+2,480
+Low stock
+12
+Search products or scan a barcode
+Wool crewneck
+SKU VT-0024 · All sizes
+24 units
+Tailored blazer
+SKU VT-0025 · All sizes
+4 left
+Silk scarf
+SKU VT-0026 · All sizes
+36 units
+Wide-leg trousers
+SKU VT-0027 · All sizes
+42 units
+Receive stock
+Home
+Search
+Saved
+Account
+Stockroom screen: shift totals, low-stock list and a scan field.
+
+NEXT CONCEPT STUDY
+
+Veyra — A money app built around what can be spent now.
+
+Noyan
+
+A small product studio designing and engineering apps, platforms and AI tools for teams that care about the details.
+
+NAVIGATE
+
+Concept studies
+Services
+Process
+Contact
+
+ELSEWHERE
+
+hello@noyan.studio
+Book an intro call
+Vitrin — concept study
+© 2026 Noyan Studio. All rights reserved.
+CONCEPT STUDIES · REGISTERED 2024

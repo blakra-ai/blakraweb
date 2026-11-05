@@ -1,0 +1,144 @@
+/* BLAKRA redesign, round-2 storyboard. Shared system: Observatory (ADR-001), refined.
+   Tokens: body #0b0b0d · porcelain #ece9e2 · warm grey #8a8781 · hairlines 12 % · ONE accent (gold by default; ?accent=orange). */
+@font-face{font-family:'Geist';src:url('./geist-latin-wght-normal.woff2') format('woff2');font-weight:100 900;font-display:block}
+@font-face{font-family:'Geist Mono';src:url('./geist-mono-latin-wght-normal.woff2') format('woff2');font-weight:100 900;font-display:block}
+@font-face{font-family:'Newsreader';src:url('./newsreader-latin-wght-italic.woff2') format('woff2');font-weight:200 800;font-style:italic;font-display:block}
+:root{
+  --body:#0b0b0d; --frame:#0d0d10; --panel:#121216;
+  --porcelain:#ece9e2; --grey:#8a8781; --grey-on-light:#5f5c56;
+  --hair:rgba(236,233,226,.12); --hair-2:rgba(236,233,226,.06); --hair-ink:rgba(11,11,13,.14);
+  --ctrl:#6b6963; --ctrl-light:#7a776f; /* control borders, ≥ 3:1 on their surface */
+  --accent:#d9a441; --accent-rgb:217,164,65;
+  --root:#e8352b; --sacral:#f57a1f; --solar:#f7c21b; --heart:#2fb35a; --throat:#2a9fe0; --third:#4248c2; --crown:#9a4fd0;
+  --sans:'Geist',system-ui,sans-serif; --mono:'Geist Mono',ui-monospace,monospace; --serif:'Newsreader',Georgia,serif;
+  --ease:cubic-bezier(.2,.7,.2,1);
+}
+:root[data-accent="orange"]{--accent:#ff5a1f;--accent-rgb:255,90,31}
+*{box-sizing:border-box;margin:0;padding:0}
+html,body{background:var(--body);color:var(--porcelain);font-family:var(--sans);-webkit-font-smoothing:antialiased;font-weight:400}
+a{color:inherit;text-decoration:none}
+.screen{position:relative;width:1440px;height:900px;overflow:hidden;background:var(--body)}
+.screen.phone{width:390px;height:844px}
+
+/* type */
+.mono{font-family:var(--mono);font-size:12px;letter-spacing:.08em;text-transform:uppercase;font-weight:500;line-height:1.4}
+.mono.sm{font-size:12px;letter-spacing:.08em} /* mono floor 12 px: labels are shortened, never shrunk */
+.h1{font-weight:300;font-size:84px;line-height:.98;letter-spacing:-.03em;text-wrap:balance}
+.h2{font-weight:300;font-size:56px;line-height:1.02;letter-spacing:-.025em;text-wrap:balance}
+.h3{font-weight:400;font-size:24px;line-height:1.2;letter-spacing:-.015em}
+.lede{font-size:18px;line-height:1.5;color:var(--grey);font-weight:400}
+.body{font-size:16px;line-height:1.5;color:var(--grey)}
+.voice{font-family:var(--serif);font-style:italic;font-weight:400;font-size:26px;line-height:1.3;color:var(--porcelain);letter-spacing:-.005em}
+.voice::after{content:"";display:inline-block;width:2px;height:.9em;background:var(--accent);margin-left:6px;vertical-align:-.1em} /* the caret: one of the ≤ 3 accent elements; static under reduced motion */
+.voice-tag{color:var(--grey);margin-bottom:10px}
+.voice-tag b{color:var(--porcelain);font-weight:600}
+.phone .h1{font-size:40px;line-height:1.02}
+.phone .h2{font-size:32px}
+.phone .lede{font-size:16px}
+.phone .voice{font-size:20px}
+.phone .mono{font-size:12px}
+
+/* nav */
+.nav{position:absolute;left:24px;right:24px;top:0;height:64px;display:flex;align-items:center;justify-content:space-between;padding:0 40px;z-index:20}
+.nav::after{content:"";position:absolute;left:0;right:0;bottom:0;height:1px;background:var(--hair)}
+.mark{display:flex;align-items:center;gap:12px;font-weight:600;letter-spacing:.22em;font-size:13px}
+.mark b{display:inline-block;width:11px;height:11px;border-radius:50%;background:radial-gradient(circle at 50% 50%,var(--body) 0 36%,var(--porcelain) 40% 56%,transparent 60%)}
+.nav nav{display:flex;gap:30px;color:var(--grey)}
+.nav .right{display:flex;align-items:center;gap:22px;color:var(--grey)}
+.pill{display:inline-flex;align-items:center;height:40px;padding:0 20px;border-radius:999px;font:500 14px/1 var(--sans);white-space:nowrap}
+.pill.ghost{border:1px solid var(--ctrl);color:var(--porcelain)}
+.pill.cta{border:1px solid var(--porcelain);color:var(--porcelain)}
+.pill.toggle{gap:8px;background:transparent;color:var(--porcelain);cursor:pointer}
+.light .pill.toggle{color:var(--body);border-color:var(--ctrl-light)}.pill.toggle i{width:8px;height:8px;border-radius:50%;background:var(--porcelain)}
+.lang{display:inline-flex;align-items:center;gap:6px}.lang::after{content:"";width:6px;height:6px;border-right:1px solid currentColor;border-bottom:1px solid currentColor;transform:rotate(45deg) translateY(-2px)}
+.chip{display:inline-flex;align-items:center;white-space:nowrap;height:28px;padding:0 9px;border:1px solid var(--ctrl);border-radius:999px;color:var(--porcelain);font-family:var(--mono);font-size:12px;letter-spacing:.08em}
+.chip b{color:var(--accent);font-weight:600;margin-right:6px}
+.burger{width:40px;height:40px;border:1px solid var(--ctrl);border-radius:999px;display:inline-flex;align-items:center;justify-content:center;flex-direction:column;gap:5px}.burger i{width:16px;height:1px;background:var(--porcelain)}
+.pill.solid{background:var(--accent);color:var(--body)}
+.phone .nav{height:56px;padding:0 16px}
+.phone .nav nav{display:none}
+.phone .pill{height:36px;padding:0 14px;font-size:13px}
+.phone .nav .right{gap:8px}
+.phone .mark{font-size:12px;letter-spacing:.16em;gap:8px}
+.phone .chip{font-size:11px;height:26px}
+.phone .burger{width:34px;height:34px}
+
+/* depth gauge: the left gutter is a ruler; the frame's left edge is its baseline */
+.gauge{position:absolute;left:0;top:88px;bottom:24px;width:24px;z-index:30}
+.gauge .t{position:absolute;right:1px;width:5px;height:1px;background:var(--hair)}
+.gauge .t.M{width:9px;background:var(--grey)}
+.gauge .marker{position:absolute;right:-1px;width:9px;height:9px;border-radius:50%;background:var(--accent);box-shadow:0 0 10px 2px rgba(var(--accent-rgb),.45)}
+.gauge .marker.ring{background:transparent;border:1.5px solid var(--accent);box-shadow:0 0 10px 1px rgba(var(--accent-rgb),.5)}
+.gauge .read{position:absolute;left:13px;top:14px;transform:rotate(90deg);transform-origin:left top;white-space:nowrap;color:var(--grey);font-family:var(--mono);font-size:9px;letter-spacing:.14em;text-transform:uppercase;font-weight:500}
+.gauge .read b{color:var(--porcelain);font-weight:600}
+.light .gauge .t{background:var(--hair-ink)}
+.light .gauge .t.M{background:var(--grey-on-light)}
+.light .gauge .read{color:var(--grey-on-light)}
+.light .gauge .read b{color:var(--body)}
+.light .gauge .marker{background:var(--body);box-shadow:none}
+
+/* framed canvas: 24 px inset, 16 px radius; everything inside is the stage */
+.frame{position:absolute;left:24px;right:24px;top:88px;bottom:24px;border:1px solid var(--hair);border-radius:16px;overflow:hidden;background:var(--frame);z-index:5}
+.frame svg.well{position:absolute;inset:0;width:100%;height:100%;display:block}
+.frame .tag{position:absolute;color:var(--grey);font-family:var(--mono);font-size:12px;letter-spacing:.08em;text-transform:uppercase;line-height:1.5}
+.frame .tag.corner{left:40px;top:28px}
+.frame .tag.corner-r{right:40px;top:28px;text-align:right}
+.frame .tag.foot{left:40px;bottom:28px}
+.frame .tag.foot-r{right:40px;bottom:28px;text-align:right}
+.phone .frame{top:80px}
+.phone .frame .tag.corner{left:20px;top:18px}.phone .frame .tag.corner-r{right:20px;top:18px}
+.phone .frame .tag.foot{left:20px;bottom:18px}.phone .frame .tag.foot-r{right:20px;bottom:18px}
+
+/* the lensing ring (CSS, over the warped grid) */
+.hole{position:absolute;border-radius:50%;transform:translate(-50%,-50%)}
+.hole .disc{position:absolute;inset:0;border-radius:50%;background:var(--body);box-shadow:0 0 0 1.5px rgba(236,233,226,.92),0 0 18px 2px rgba(var(--accent-rgb),.55),0 0 70px 20px rgba(var(--accent-rgb),.14),inset 0 0 40px 12px rgba(0,0,0,1)}
+.hole .photon{position:absolute;inset:-7%;border-radius:50%;border:1px solid rgba(236,233,226,.22)}
+.hole .photon2{position:absolute;inset:-16%;border-radius:50%;border:1px solid rgba(236,233,226,.08)}
+.hole .crescent{position:absolute;inset:-5%;border-radius:50%;background:conic-gradient(from 150deg,transparent 0 55%,rgba(var(--accent-rgb),.55) 70%,rgba(255,236,200,.35) 78%,transparent 92%);-webkit-mask:radial-gradient(circle,transparent 0 47%,#000 48%,#000 52%,transparent 54%);mask:radial-gradient(circle,transparent 0 47%,#000 48%,#000 52%,transparent 54%);filter:blur(1.5px)}
+
+/* guide placeholder label */
+.guide-label{position:absolute;padding:8px 10px;border:1px dashed var(--grey);color:var(--porcelain);font-family:var(--mono);font-size:12px;letter-spacing:.06em;text-transform:uppercase;line-height:1.5;background:var(--body);max-width:320px}
+.guide-label b{color:var(--grey);font-weight:500;display:block}
+
+/* document furniture */
+.eyebrow{display:flex;align-items:center;gap:14px;color:var(--grey)}
+.eyebrow::before{content:"";width:28px;height:1px;background:var(--grey)}
+.light .eyebrow{color:var(--body)}
+.light .eyebrow::before{background:var(--body)}
+.hairline{height:1px;background:var(--hair)}
+.light{background:var(--porcelain);color:var(--body)}
+.light .lede,.light .body{color:var(--grey-on-light)}
+.light .nav::after,.light .hairline{background:var(--hair-ink)}
+.light .mark b{background:radial-gradient(circle at 50% 50%,var(--porcelain) 0 36%,var(--body) 40% 56%,transparent 60%)}
+.light .nav nav,.light .nav .right{color:var(--grey-on-light)}
+.light .pill.ghost{border-color:var(--ctrl-light);color:var(--body)}
+.light .pill.solid{background:var(--body);color:var(--porcelain)}
+.light .voice{color:var(--body)}
+.light .voice-tag{color:var(--grey-on-light)}
+.light .voice-tag b{color:var(--body)}
+.light .voice::after{background:var(--body)}
+
+/* lit layers: dots are aria-hidden; every dot row has a mono text equivalent ("Uses layers 2, 3, 5") */
+.uses{color:var(--grey);font-family:var(--mono);font-size:12px;letter-spacing:.06em;text-transform:uppercase}
+.dots{display:flex;gap:10px;align-items:center}
+.dots i{width:7px;height:7px;border-radius:50%;background:currentColor;opacity:.28}
+.dots i.on{opacity:1;box-shadow:0 0 8px currentColor}
+.dots i:nth-child(1){color:var(--root)}.dots i:nth-child(2){color:var(--sacral)}.dots i:nth-child(3){color:var(--solar)}.dots i:nth-child(4){color:var(--heart)}.dots i:nth-child(5){color:var(--throat)}.dots i:nth-child(6){color:var(--third)}.dots i:nth-child(7){color:var(--crown)}
+
+/* nav over scrolling content */
+.nav.solid{background:var(--body)}
+/* storyboard annotation (not part of the site) */
+.note{position:absolute;z-index:40;font-family:var(--mono);font-size:12px;letter-spacing:.06em;color:var(--body);background:var(--grey);padding:4px 8px;border-radius:4px;text-transform:uppercase}
+
+/* windows grow with content: min-height 100svh, height auto; the scissor follows on reflow */
+.grow{min-height:100svh;height:auto}
+/* form states */
+.field .in{border-color:var(--ctrl)}
+.field.err .in{border-color:var(--porcelain);box-shadow:inset 0 0 0 1px var(--porcelain)}
+.field .msg{display:flex;gap:8px;align-items:center;margin-top:6px;font-size:13px;color:var(--porcelain)}
+.field .msg::before{content:"!";display:inline-flex;width:14px;height:14px;border-radius:50%;border:1px solid var(--porcelain);font-size:10px;align-items:center;justify-content:center;font-weight:600}
+.summary{border:1px solid var(--porcelain);border-radius:4px;padding:12px 14px;font-size:14px;line-height:1.45;margin-top:18px}
+.summary b{display:block;font-weight:500;margin-bottom:4px}
+.summary u{text-decoration:underline;text-underline-offset:3px;display:block;color:var(--porcelain)}
+.status{border:1px solid var(--ctrl);border-radius:4px;padding:14px 16px;font-size:15px;line-height:1.45;background:var(--body);outline:2px solid var(--porcelain);outline-offset:2px}
+.doors .pill.on::before{content:"";width:6px;height:11px;border-right:1.5px solid var(--porcelain);border-bottom:1.5px solid var(--porcelain);transform:rotate(45deg) translate(-1px,-2px);margin-right:10px}

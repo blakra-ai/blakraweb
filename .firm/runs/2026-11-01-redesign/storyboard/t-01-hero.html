@@ -1,0 +1,53 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>BLAKRA storyboard — 01 Hero (tablet 1024×768)</title>
+<meta name="viewport" content="width=1024">
+<link rel="stylesheet" href="./sb.css">
+<style>
+.screen.tab{width:1024px;height:768px}
+.tab .nav{padding:0 24px}
+.tab .nav nav{display:none}
+.tab .h1{font-size:clamp(40px,6.4vw,64px)}
+.words{position:absolute;left:24px;top:96px;width:470px;z-index:6}
+.words .eyebrow{margin-bottom:22px}
+.words .lede{margin-top:22px;font-size:16px;max-width:440px}
+.words .actions{margin-top:26px;display:flex;align-items:center;gap:14px}
+.hole.t{left:760px;top:220px;width:230px;height:230px}
+.voicebox{position:absolute;left:540px;top:372px;width:300px;z-index:6}
+.voicebox .voice{font-size:21px}
+</style>
+</head>
+<body>
+<div class="screen tab">
+  <div class="nav">
+    <div class="mark"><b></b>BLAKRA</div>
+    <div class="right"><span class="chip"><b>●</b>01 / 09</span><a class="pill ghost">Start a project</a><span class="burger" aria-label="Menu"><i></i><i></i></span></div>
+  </div>
+  <div class="frame">
+    <svg class="well" id="well"></svg>
+    <div class="hole t"><div class="crescent"></div><div class="photon2"></div><div class="photon"></div><div class="disc"></div></div>
+    <div class="tag corner">01 / 09 · Hero · 768–1100: hamburger, her line stacked under the ring</div>
+    <section class="words">
+      <div class="eyebrow mono">BLAKRA — Software with gravity.</div>
+      <h1 class="h1">We build what organizations run&nbsp;on.</h1>
+      <p class="lede">We design, build and run operations and inventory systems, admin panels and online shops, web and mobile apps, bots, and AI that works on your own data. Three principals lead each project, from the first scope to production.</p>
+      <div class="actions"><a class="pill cta">Start a project</a><span class="mono" style="color:var(--grey)">What do you need built? ↓</span></div>
+    </section>
+    <div class="voicebox">
+      <div class="voice-tag mono sm"><b>Navigator</b></div>
+      <p class="voice">I'm the Navigator. I've flown this descent before. Look into my eyes and see what I see.</p>
+    </div>
+    <div id="guide"></div>
+    <div class="tag foot">Founded 2024 &nbsp;·&nbsp; Fully remote &nbsp;·&nbsp; Reply within 24 hours</div>
+  </div>
+</div>
+<script src="./sb.js"></script>
+<script>
+well(document.getElementById('well'),{w:976,h:656,cx:736,cy:132,rh:115,sigma:240,pull:.66,step:46,fadeLeft:.45});
+document.getElementById('guide').innerHTML=guide(880,470,.85,'left')+
+ '<div class="guide-label" style="left:540px;top:540px;max-width:300px"><b>Astraía · rendered still</b>At the rim, cut by the frame; WebGL from 768 px when the GPU is capable</div>';
+</script>
+</body>
+</html>

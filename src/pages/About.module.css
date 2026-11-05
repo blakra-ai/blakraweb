@@ -1,0 +1,249 @@
+/* /about: paper, the 64 px margin, a 12-column reading grid; each block a mono label (columns 1–4) and its text (6–12). */
+.page {
+  max-width: var(--max-w);
+  margin: 0 auto;
+  padding: calc(var(--header-h) + clamp(4rem, 10vh, 7rem)) 64px clamp(5rem, 10vw, 8rem);
+}
+.crumbs {
+  margin-bottom: 32px;
+}
+.intro {
+  display: grid;
+  gap: 24px;
+  max-width: 980px;
+  padding-bottom: clamp(3rem, 6vw, 5rem);
+}
+.title {
+  max-width: 18ch;
+  hyphens: auto;
+  overflow-wrap: break-word;
+}
+.story {
+  display: grid;
+  gap: 1rem;
+  max-width: 62ch;
+  margin-top: 12px;
+  font-size: var(--lead);
+  line-height: 1.5;
+}
+/* The orange thread marks where the story starts. */
+.story p:first-child {
+  position: relative;
+  padding-left: 18px;
+}
+.story p:first-child::before {
+  content: '';
+  position: absolute;
+  left: 0;
+  top: 0.3em;
+  bottom: 0.3em;
+  width: 2px;
+  background: var(--accent);
+}
+.story p + p {
+  color: var(--grey);
+}
+
+.block {
+  display: grid;
+  grid-template-columns: repeat(12, minmax(0, 1fr));
+  column-gap: var(--gutter);
+  padding: 40px 0 56px;
+  border-top: 1px solid var(--hair);
+}
+.block > :first-child {
+  grid-column: 1 / 5;
+}
+.block > :last-child {
+  grid-column: 6 / 13;
+  max-width: 720px;
+}
+.label {
+  display: grid;
+  align-content: start;
+  gap: 10px;
+}
+.label :global(.mono) {
+  color: var(--grey);
+}
+.h2 {
+  font-size: 1.875rem;
+  font-weight: 400;
+  letter-spacing: -0.02em;
+  line-height: 1.15;
+  max-width: 14ch;
+}
+.lead {
+  font-size: 1.125rem;
+  line-height: 1.5;
+}
+.lead a,
+.note a {
+  color: inherit;
+  text-decoration: underline;
+  text-decoration-thickness: 1px;
+  text-underline-offset: 3px;
+}
+.note {
+  margin-top: 18px;
+  font-size: 0.9375rem;
+  line-height: 1.5;
+  color: var(--grey);
+}
+
+.rows {
+  margin-top: 4px;
+}
+.lead + .rows {
+  margin-top: 24px;
+}
+.rows li {
+  display: grid;
+  grid-template-columns: minmax(0, 15rem) minmax(0, 1fr);
+  gap: 6px var(--gutter);
+  padding: 16px 0;
+  border-top: 1px solid var(--hair);
+}
+.rows li:first-child {
+  border-top: 0;
+  padding-top: 0;
+}
+.lead + .rows li:first-child {
+  border-top: 1px solid var(--hair);
+  padding-top: 16px;
+}
+.rows b {
+  font-weight: 500;
+  line-height: 1.35;
+}
+.rows span {
+  color: var(--grey);
+  line-height: 1.5;
+}
+
+/* The commitments: a numbered column of short lines, each on its hairline. */
+.trust {
+  counter-reset: t;
+}
+.trust li {
+  counter-increment: t;
+  display: grid;
+  grid-template-columns: 2.5rem minmax(0, 1fr);
+  padding: 14px 0;
+  border-top: 1px solid var(--hair);
+  font-size: 1.0625rem;
+  line-height: 1.45;
+}
+.trust li:first-child {
+  border-top: 0;
+  padding-top: 0;
+}
+.trust li::before {
+  content: counter(t, decimal-leading-zero);
+  font: 400 var(--mono-size) / 2 var(--font-mono);
+  letter-spacing: var(--mono-track);
+  color: var(--accent-ink, var(--grey));
+}
+
+.tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+.tags li {
+  padding: 7px 14px;
+  border: 1px solid var(--hair);
+  border-radius: var(--r-pill);
+  font-size: 0.9375rem;
+}
+
+/* The FAQ: native disclosures on hairlines; the marker is a plus that turns. */
+.faq details {
+  border-top: 1px solid var(--hair);
+}
+.faq details:last-child {
+  border-bottom: 1px solid var(--hair);
+}
+.faq summary {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 20px;
+  gap: var(--gutter);
+  align-items: center;
+  padding: 18px 0;
+  font-size: 1.0625rem;
+  font-weight: 500;
+  line-height: 1.35;
+  cursor: pointer;
+  list-style: none;
+  border-radius: 4px;
+}
+.faq summary::-webkit-details-marker {
+  display: none;
+}
+.faq summary::after {
+  content: '+';
+  font: 300 1.5rem/1 var(--font-sans);
+  text-align: center;
+  color: var(--grey);
+  transition: transform 0.3s var(--ease);
+}
+.faq details[open] summary::after {
+  transform: rotate(45deg);
+  color: var(--accent);
+}
+.faq summary:focus-visible {
+  outline: 2px solid var(--porcelain);
+  outline-offset: 4px;
+}
+.faq details p {
+  max-width: 60ch;
+  padding: 0 44px 22px 0;
+  color: var(--grey);
+  line-height: 1.55;
+}
+
+.cta {
+  margin-top: 28px;
+  height: 48px;
+  padding: 0 24px;
+  gap: 8px;
+  background: var(--porcelain);
+  border-color: var(--porcelain);
+  color: var(--body);
+}
+.cta:hover {
+  background: #26262e;
+}
+.cta:focus-visible {
+  outline: 2px solid var(--porcelain);
+  outline-offset: 3px;
+}
+
+@media (max-width: 899px) {
+  .page {
+    padding-left: var(--margin);
+    padding-right: var(--margin);
+  }
+  .block {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr);
+    row-gap: 20px;
+    padding: 32px 0 44px;
+  }
+  .block > :first-child,
+  .block > :last-child {
+    grid-column: 1;
+  }
+  .h2 {
+    font-size: 1.5rem;
+    max-width: none;
+  }
+  .rows li {
+    grid-template-columns: minmax(0, 1fr);
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .faq summary::after {
+    transition: none;
+  }
+}
