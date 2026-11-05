@@ -2,7 +2,7 @@ import { useEffect, useRef, useState, useSyncExternalStore } from 'react'
 import type { CSSProperties } from 'react'
 import { useI18n } from '../../i18n'
 import { onReflow } from '../../motion/reflow'
-import { STATIONS, chip, markerY, progressFrom, stationY } from './gauge'
+import { STATIONS, chip, markerY, progressFrom, stationY } from './gaugeMath'
 import { obs } from './state'
 import s from './Gauge.module.css'
 
