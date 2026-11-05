@@ -1,4 +1,5 @@
 import { createContext, useContext, type ReactNode } from 'react'
+import { stripBase } from './base'
 import type { Dict } from './content/types'
 
 /**
@@ -16,7 +17,7 @@ export type Locale = keyof typeof locales
 export const localeCodes = Object.keys(locales) as Locale[]
 
 export function localeFromPath(pathname: string): Locale {
-  const first = pathname.split('/')[1]
+  const first = stripBase(pathname).split('/')[1]
   return availableLocales.find((l) => l !== 'en' && l === first) ?? 'en'
 }
 

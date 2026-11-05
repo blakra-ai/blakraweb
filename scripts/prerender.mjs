@@ -11,7 +11,7 @@ const ssrDir = join(root, 'dist-ssr')
 
 const template = await readFile(join(dist, 'index.html'), 'utf8')
 const manifest = JSON.parse(await readFile(join(dist, '.vite/manifest.json'), 'utf8'))
-const { render, routes, llms } = await import(pathToFileURL(join(ssrDir, 'entry-server.js')).href)
+const { render, routes, llms, BASE, stripBase, withBase } = await import(pathToFileURL(join(ssrDir, 'entry-server.js')).href)
 
 // Preload the fonts that paint the first screen: Geist (swap, with a metric fallback), Newsreader and Geist Mono (optional).
 const assets = await readdir(join(dist, 'assets'))
@@ -20,13 +20,13 @@ if (!geist) throw new Error('prerender: Geist font asset not found in dist/asset
 // The headline's italic ("gravity") is Newsreader: preloaded too, so the H1 never repaints late.
 const newsreader = assets.find((f) => f.startsWith('newsreader-latin-wght-italic') && f.endsWith('.woff2'))
 const mono = assets.find((f) => f.startsWith('geist-mono-latin-wght-normal') && f.endsWith('.woff2'))
-const fontPreload = [geist, newsreader, mono].filter(Boolean).map((f) => `<link rel="preload" href="/assets/${f}" as="font" type="font/woff2" crossorigin>`)
+const fontPreload = [geist, newsreader, mono].filter(Boolean).map((f) => `<link rel="preload" href="${BASE}assets/${f}" as="font" type="font/woff2" crossorigin>`)
 // The hero's phone still is the first screen's largest paint on phones: it starts with the HTML.
 const phoneStill = assets.find((f) => f.startsWith('hero-still-phone') && /\.(jpg|webp)$/.test(f))
-const stillPreload = phoneStill ? [`<link rel="preload" href="/assets/${phoneStill}" as="image" media="(max-width: 767px)" fetchpriority="high">`] : []
+const stillPreload = phoneStill ? [`<link rel="preload" href="${BASE}assets/${phoneStill}" as="image" media="(max-width: 767px)" fetchpriority="high">`] : []
 // The desktop still too: the brand loader waits on it, and it is the first screen until the world runs.
 const deskStill = assets.find((f) => /^hero-still-[\w-]+\.jpg$/.test(f) && !f.startsWith('hero-still-phone'))
-if (deskStill) stillPreload.push(`<link rel="preload" href="/assets/${deskStill}" as="image" media="(min-width: 768px)" fetchpriority="high">`)
+if (deskStill) stillPreload.push(`<link rel="preload" href="${BASE}assets/${deskStill}" as="image" media="(min-width: 768px)" fetchpriority="high">`)
 const preload = [...fontPreload, ...stillPreload].join('\n    ')
 
 const images = new Map()
@@ -34,13 +34,13 @@ for (const route of routes) {
   const { html, head, lang, locale } = render(route.path)
   // Preload this page's language chunk so hydration never waits on a second round trip.
   const dict = manifest[`src/content/locales/${locale}.ts`]?.file
-  const dictPreload = dict ? `\n    <link rel="modulepreload" href="/${dict}">` : ''
+  const dictPreload = dict ? `\n    <link rel="modulepreload" href="${BASE}${dict}">` : ''
   const page = template
     .replace('<html lang="en">', `<html lang="${lang}">`)
     .replace('<!--head-->', `${head}\n    ${preload}${dictPreload}`)
     .replace('<!--app-->', html)
   // The page's content images (described ones only, decorative alt="" skipped) for the image sitemap.
-  images.set(route.path, [...html.matchAll(/<img src="(\/assets\/[^"]+)"[^>]*alt="([^"]+)"/g)].map((m) => m[1]))
+  images.set(route.path, [...html.matchAll(/<img src="([^"]*\/assets\/[^"]+)"[^>]*alt="([^"]+)"/g)].map((m) => stripBase(m[1])))
   const out = join(dist, route.file)
   await mkdir(dirname(out), { recursive: true })
   await writeFile(out, page)
@@ -91,6 +91,14 @@ if (llms) {
   await writeFile(join(dist, 'llms.txt'), llms(false))
   await writeFile(join(dist, 'llms-full.txt'), llms(true))
   console.log('llms.txt, llms-full.txt')
+}
+
+// The web app manifest is a plain file from public/: under a sub-path its own URLs move with the site.
+if (BASE !== '/') {
+  const webmanifest = JSON.parse(await readFile(join(dist, 'site.webmanifest'), 'utf8'))
+  webmanifest.start_url = webmanifest.scope = BASE
+  for (const icon of webmanifest.icons) icon.src = withBase(icon.src)
+  await writeFile(join(dist, 'site.webmanifest'), `${JSON.stringify(webmanifest, null, 2)}\n`)
 }
 
 await rm(ssrDir, { recursive: true, force: true })

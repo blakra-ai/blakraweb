@@ -4,6 +4,7 @@ import type { Intent } from '../content/types'
 import { Window } from '../features/observatory/Window'
 import { obs } from '../features/observatory/state'
 import { locales, useI18n } from '../i18n'
+import { pathFor } from '../routes'
 import { intents, limits, sendContact, validate, type ContactFields, type FieldErrors } from '../lib/contact'
 import { onPulse } from '../motion/pulse'
 import { Section } from './Section'
@@ -241,7 +242,7 @@ export function Contact() {
                 {sending ? c.submitting : door.submit}
               </button>
               <p id="contact-privacy" className={s.privacy}>
-                {c.privacy} <a href={`${locales[locale].prefix}/privacy/`}>{c.privacyLink}</a>
+                {c.privacy} <a href={pathFor('privacy', locale)}>{c.privacyLink}</a>
               </p>
             </div>
             <p className={s.after}>{c.horizon}</p>

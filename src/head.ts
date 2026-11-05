@@ -1,9 +1,13 @@
+import { stripBase, withBase } from './base'
 import { aiTools, company, products } from './content/shared'
 import type { Dict } from './content/types'
 import { shotUrl, work } from './content/work'
 import { availableLocales, locales, type Locale } from './i18n'
 import { breadcrumbs } from './crumbs'
 import { translatePath, type Route } from './routes'
+
+/** The public address of one of our paths: always blakra.us at the root, whatever the build's base. */
+const abs = (path: string) => `${company.url}${stripBase(path)}`
 
 const esc = (s: string) => s.replace(/&/g, '&amp;').replace(/"/g, '&quot;').replace(/</g, '&lt;')
 
@@ -51,7 +55,7 @@ const verification = [
 /** Everything that goes into <head> for one route, as an HTML string for the prerenderer. */
 export function renderHead(route: Route, t: Dict): string {
   const { title, description } = titleFor(route, t)
-  const url = `${company.url}${translatePath(route, route.locale)}`
+  const url = abs(translatePath(route, route.locale))
   const image = `${company.url}${ogImage(route)}`
   const imageAlt = route.id === 'home' ? t.meta.ogAlt : title
   const tags = [
@@ -59,10 +63,10 @@ export function renderHead(route: Route, t: Dict): string {
     `<meta name="description" content="${esc(description)}">`,
     '<meta name="theme-color" content="#05060a">',
     '<meta name="color-scheme" content="dark light">',
-    '<link rel="icon" href="/favicon.ico" sizes="32x32">',
-    '<link rel="icon" href="/favicon.svg" type="image/svg+xml">',
-    '<link rel="manifest" href="/site.webmanifest">',
-    '<link rel="apple-touch-icon" href="/apple-touch-icon.png">',
+    `<link rel="icon" href="${withBase('/favicon.ico')}" sizes="32x32">`,
+    `<link rel="icon" href="${withBase('/favicon.svg')}" type="image/svg+xml">`,
+    `<link rel="manifest" href="${withBase('/site.webmanifest')}">`,
+    `<link rel="apple-touch-icon" href="${withBase('/apple-touch-icon.png')}">`,
     ...verification.filter(([, v]) => v).map(([name, v]) => `<meta name="${name}" content="${esc(String(v))}">`),
     '<meta property="og:type" content="website">',
     `<meta property="og:site_name" content="${company.name}">`,
@@ -84,8 +88,8 @@ export function renderHead(route: Route, t: Dict): string {
   ]
   if (route.indexable) {
     tags.push(`<link rel="canonical" href="${url}">`)
-    for (const l of availableLocales) tags.push(`<link rel="alternate" hreflang="${locales[l].lang}" href="${company.url}${translatePath(route, l)}">`)
-    tags.push(`<link rel="alternate" hreflang="x-default" href="${company.url}${translatePath(route, 'en')}">`)
+    for (const l of availableLocales) tags.push(`<link rel="alternate" hreflang="${locales[l].lang}" href="${abs(translatePath(route, l))}">`)
+    tags.push(`<link rel="alternate" hreflang="x-default" href="${abs(translatePath(route, 'en'))}">`)
     tags.push(`<script type="application/ld+json">${JSON.stringify(structuredData(route, t)).replace(/</g, '\\u003c')}</script>`)
   } else {
     tags.push('<meta name="robots" content="noindex">')
@@ -180,7 +184,7 @@ function pageType(route: Route): string | string[] {
 
 export function structuredData(route: Route, t: Dict): Node {
   const { title, description } = titleFor(route, t)
-  const url = `${site}${translatePath(route, route.locale)}`
+  const url = abs(translatePath(route, route.locale))
   const lang = locales[route.locale].lang
   const pageId = `${url}#webpage`
   const crumbs = breadcrumbs(route, t)
@@ -202,7 +206,7 @@ export function structuredData(route: Route, t: Dict): Node {
     graph.push({
       '@type': 'BreadcrumbList',
       '@id': `${url}#breadcrumb`,
-      itemListElement: crumbs.map((c, i) => ({ '@type': 'ListItem', position: i + 1, name: c.name, item: `${site}${c.href}` })),
+      itemListElement: crumbs.map((c, i) => ({ '@type': 'ListItem', position: i + 1, name: c.name, item: abs(c.href) })),
     })
   }
 
@@ -237,7 +241,7 @@ export function structuredData(route: Route, t: Dict): Node {
         genre: w.category,
         inLanguage: lang,
         url,
-        image: project.shots.map((s, i) => ({ '@type': 'ImageObject', contentUrl: `${site}${shotUrl(project.slug, s.file)}`, width: s.width, height: s.height, caption: w.shots[i] })),
+        image: project.shots.map((s, i) => ({ '@type': 'ImageObject', contentUrl: abs(shotUrl(project.slug, s.file)), width: s.width, height: s.height, caption: w.shots[i] })),
         creator: { '@id': ids.organization },
         mainEntityOfPage: { '@id': pageId },
       })
