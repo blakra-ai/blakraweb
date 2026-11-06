@@ -1,0 +1,33 @@
+# One address for everything: the web app at https://DOMAIN and the API at https://DOMAIN/api.
+# Same site means the sign-in cookie works without third-party-cookie problems.
+# Caddy gets and renews the HTTPS certificate from Let's Encrypt by itself (free).
+{
+	email {$ACME_EMAIL}
+}
+
+# Old domains that redirect here, written by change-domain.sh (none at first).
+import /etc/caddy/redirects/*.caddy
+
+{$DOMAIN} {
+	encode zstd gzip
+
+	header {
+		Strict-Transport-Security "max-age=31536000; includeSubDomains"
+		X-Frame-Options "SAMEORIGIN"
+		-Server
+	}
+
+	# The API (OAuth callbacks, Meta deletion callbacks, sign-in) under /api; the prefix is removed.
+	handle_path /api/* {
+		reverse_proxy api:8000
+	}
+
+	handle {
+		reverse_proxy web:8080
+	}
+
+	log {
+		output stdout
+		format console
+	}
+}

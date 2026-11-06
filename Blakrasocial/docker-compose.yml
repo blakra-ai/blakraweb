@@ -1,0 +1,62 @@
+# Local stack (direct mode): migrations, API, worker, PostgreSQL, Redis and the frontend build.
+# File storage is an external S3-compatible bucket (e.g. Cloudflare R2): set STORAGE_* in backend/.env.
+x-backend: &backend
+  build: ./backend
+  env_file: ./backend/.env
+  environment:
+    DATABASE_URL: postgresql+asyncpg://blakra:blakra@db:5432/blakrasocial
+    REDIS_URL: redis://redis:6379/0
+  read_only: true
+  tmpfs: [/tmp]
+  security_opt: ["no-new-privileges:true"]
+
+services:
+  db:
+    image: postgres:17-alpine
+    environment:
+      POSTGRES_USER: blakra
+      POSTGRES_PASSWORD: blakra  # local only; use a managed database and a real secret in production
+      POSTGRES_DB: blakrasocial
+    volumes: [pgdata:/var/lib/postgresql/data]
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U blakra -d blakrasocial"]
+      interval: 5s
+      retries: 10
+  redis:
+    image: redis:8-alpine
+    command: ["redis-server", "--save", "", "--appendonly", "no"]
+  migrate:
+    <<: *backend
+    command: ["alembic", "upgrade", "head"]
+    depends_on:
+      db: { condition: service_healthy }
+    restart: "no"
+  api:
+    <<: *backend
+    environment:
+      DATABASE_URL: postgresql+asyncpg://blakra:blakra@db:5432/blakrasocial
+      REDIS_URL: redis://redis:6379/0
+      RUN_WORKER_IN_API: "false"
+    ports: ["8000:8000"]
+    depends_on:
+      migrate: { condition: service_completed_successfully }
+      redis: { condition: service_started }
+  worker:
+    <<: *backend
+    command: ["python", "-m", "blakrasocial.worker"]
+    environment:
+      DATABASE_URL: postgresql+asyncpg://blakra:blakra@db:5432/blakrasocial
+      REDIS_URL: redis://redis:6379/0
+    healthcheck: { disable: true }
+    depends_on:
+      migrate: { condition: service_completed_successfully }
+  web:
+    build:
+      context: ./frontend
+      args:
+        VITE_API_BASE_URL: http://localhost:8000
+    ports: ["5173:8080"]
+    depends_on: [api]
+
+volumes:
+  pgdata:

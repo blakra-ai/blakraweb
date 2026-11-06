@@ -1,0 +1,350 @@
+{
+  "common": {
+    "cancel": "Cancel",
+    "retry": "Try again",
+    "remove": "Remove"
+  },
+  "nav": {
+    "main": "Main navigation",
+    "skip": "Skip to content",
+    "compose": "Create post",
+    "connections": "Connections",
+    "posts": "Posts",
+    "language": "Change language",
+    "admin": "Customers",
+    "account": "My account",
+    "signOut": "Sign out"
+  },
+  "errors": {
+    "title": "Something went wrong",
+    "generic": "Something went wrong. Please try again.",
+    "session": "Your session has ended. Please sign in again.",
+    "network": "Can't reach the server. Check your connection."
+  },
+  "connections": {
+    "title": "Connected accounts",
+    "description": "Connect your social accounts once. You log in on each network's own page and approve access; we never see your password.",
+    "connected": "Connected",
+    "notConnected": "Not connected",
+    "needsReconnect": "Reconnect needed",
+    "reconnect": "Reconnect",
+    "connect": "Connect",
+    "disconnect": "Disconnect",
+    "disconnectTitle": "Disconnect {{name}}?",
+    "disconnectBody": "You can connect it again at any time. Scheduled posts for this network may fail.",
+    "disconnected": "Account disconnected",
+    "popupBlocked": "Your browser blocked the window. Allow pop-ups for this site and try again.",
+    "popupOpen": "Finish connecting in the window that opened. This page updates when you close it.",
+    "notAvailable": "This network isn't set up for this service yet."
+  },
+  "platforms": {
+    "instagram": {
+      "requirement": "An Instagram professional account (Business or Creator).",
+      "rules": "Feed (4:5 to 1.91:1), Reels and Stories in 9:16. Reels 3s to 15min, Stories up to 60s. Max 2,200 characters, 5 hashtags, 3 mentions. Stories need a Business account."
+    },
+    "facebook": {
+      "requirement": "A Facebook Page you manage.",
+      "rules": "Posts with up to 10 images or one video. Reels: 9:16, 3 to 90s. Stories: 9:16, video up to 60s."
+    },
+    "tiktok": {
+      "requirement": "Personal or business TikTok account. Re-authorize once a year.",
+      "rules": "One 9:16 video (3s to 10min) or up to 35 JPG photos. Max 2,200 characters. Choose who can see the post."
+    },
+    "linkedin": {
+      "requirement": "Your personal LinkedIn profile. LinkedIn asks you to reconnect every 60 days.",
+      "rules": "Text, up to 9 images, or one video. Max 3,000 characters. 'Connections only' works on personal profiles."
+    },
+    "whatsapp": {
+      "requirement": "WhatsApp Business number. Messages to contacts only.",
+      "setup": "WhatsApp is set up by our team after Meta approves your business number.",
+      "rules": "Send a message with optional photos or videos to specific contacts.",
+      "noticeTitle": "How WhatsApp works here",
+      "noStatus": "WhatsApp Status can't be published. WhatsApp doesn't allow it through its API.",
+      "window": "A contact gets your message only if they wrote to you in the last 24 hours.",
+      "noSchedule": "Messages are sent right away and can't be scheduled."
+    }
+  },
+  "contentTypes": {
+    "post": "Post",
+    "reel": "Reel",
+    "story": "Story",
+    "carousel": "Carousel",
+    "video": "Video",
+    "photo": "Photo post",
+    "document": "Document",
+    "message": "Message"
+  },
+  "media": {
+    "choose": "Choose images or videos",
+    "drop": "Drag photos and videos here, or click to choose",
+    "dropNow": "Drop to upload",
+    "hint": "JPG, PNG, MP4 or MOV. Files go straight to secure storage.",
+    "rejected_one": "{{count}} file was skipped (unsupported type or too large).",
+    "rejected_other": "{{count}} files were skipped (unsupported type or too large).",
+    "listLabel": "Uploaded files",
+    "uploading": "Uploading",
+    "uploaded": "Uploaded",
+    "failed": "Upload failed",
+    "moveUp": "Move up",
+    "moveDown": "Move down"
+  },
+  "composer": {
+    "title": "Create a post",
+    "description": "Write once, publish to every network, and see how it will look before it goes live.",
+    "content": "Content",
+    "caption": "Caption",
+    "captionPlaceholder": "What do you want to share?",
+    "where": "Where to publish",
+    "networks": "Networks",
+    "contentType": "Content type",
+    "connectFirst": "Some selected networks aren't connected yet.",
+    "preview": "Preview",
+    "checks": "Checks",
+    "allGood": "Everything looks good.",
+    "when": "When to publish",
+    "publishNow": "Now",
+    "schedule": "Schedule",
+    "scheduleAt": "Date and time",
+    "scheduleHelp": "Time zone: {{tz}}",
+    "publishCta": "Publish now",
+    "scheduleCta": "Schedule post",
+    "waitUploads": "Waiting for uploads…",
+    "published": "Published! Track it on the Posts page.",
+    "sending": "Sent! The networks are publishing it now. Track it on the Posts page.",
+    "scheduled": "Scheduled! You'll find it on the Posts page.",
+    "partial_one": "Published, but {{count}} network failed. See Posts for details.",
+    "partial_other": "Published, but {{count}} networks failed. See Posts for details.",
+    "errors": {
+      "noTargets": "Choose at least one network.",
+      "scheduleFuture": "Pick a time at least {{minutes}} minutes from now.",
+      "recipients": "Enter phone numbers with country code, e.g. +989121234567."
+    }
+  },
+  "options": {
+    "shareReelsToFeed": "Also show the Reel in the main feed",
+    "videoTitle": "Video title (optional)",
+    "privacy": "Who can see this",
+    "tiktokVisibility": {
+      "public": "Everyone",
+      "friends": "Friends",
+      "followers": "Followers (private accounts)",
+      "private": "Only me"
+    },
+    "disableComments": "Turn off comments",
+    "disableDuet": "Turn off Duet",
+    "disableStitch": "Turn off Stitch",
+    "aiGenerated": "Label as AI-generated",
+    "brandedContent": "Paid partnership",
+    "brandOrganic": "Promoting my own brand",
+    "visibility": "Visibility",
+    "linkedinVisibility": {
+      "public": "Anyone",
+      "connections": "Connections only",
+      "loggedin": "LinkedIn members"
+    },
+    "recipients": "Recipients",
+    "recipientsHelp": "Phone numbers with country code, separated by commas or new lines."
+  },
+  "preview": {
+    "mediaAlt": "Preview of the first file",
+    "noMedia": "Your photo or video shows here",
+    "pickNetwork": "Choose a network to see the preview."
+  },
+  "issues": {
+    "content_type_unsupported": "This network doesn't support '{{contentType}}'.",
+    "whatsapp_status_unsupported": "WhatsApp Status can't be published. Use 'Message' to send to contacts.",
+    "account_not_connected": "Account isn't connected.",
+    "account_type_unsupported": "Needs a {{expected}} account (yours: {{actual}}).",
+    "media_required": "Add at least one photo or video.",
+    "media_count": "Allows {{min}} to {{max}} files (you have {{actual}}).",
+    "media_mixed_kinds": "Can't mix photos and videos.",
+    "media_kind": "File {{index}}: {{kind}} isn't accepted here.",
+    "media_format": "File {{index}}: .{{actual}} isn't accepted. Use {{allowed}}.",
+    "file_too_large": "File {{index}} is {{actualMb}} MB; the limit is {{maxMb}} MB.",
+    "duration_too_short": "Video {{index}} is {{actual}}s; it must be at least {{min}}s.",
+    "duration_too_long": "Video {{index}} is {{actual}}s; the limit is {{max}}s.",
+    "duration_unknown": "Couldn't read the video length.",
+    "aspect_ratio": "File {{index}} must be {{expected}} (yours: {{actual}}).",
+    "resolution_too_low": "File {{index}} is {{actual}}; minimum is {{min}}.",
+    "caption_too_long": "Caption is {{actual}} characters; the limit is {{max}}.",
+    "caption_required": "Write some text or add a file.",
+    "caption_ignored": "Captions aren't shown on this format; the text will be skipped.",
+    "too_many_hashtags": "Use at most {{max}} hashtags (you have {{actual}}).",
+    "too_many_mentions": "Use at most {{max}} @mentions (you have {{actual}}).",
+    "recipients_required": "Add at least one recipient.",
+    "schedule_unsupported": "Can't be scheduled; it's sent right away.",
+    "schedule_in_past": "Pick a time at least {{minMinutes}} minutes from now.",
+    "option_invalid": "{{detail}}",
+    "privacy_required": "Choose who can see this {{platform}} post.",
+    "branded_content_private": "Branded content visibility cannot be set to private.",
+    "media_rejected": "A file couldn't be used. Upload it again.",
+    "invalid_value": "Please check this value.",
+    "invalid_request": "Please check this value.",
+    "tiktok_cannot_post": "{{reason}}",
+    "tiktok_privacy_unavailable": "This TikTok account doesn't offer the chosen audience. Pick another one.",
+    "tiktok_disclosure_choice": "Choose 'Your brand', 'Branded content' or both, or turn off the disclosure."
+  },
+  "states": {
+    "published": "Published",
+    "failed": "Failed",
+    "pending": "Processing",
+    "scheduled": "Scheduled",
+    "partial": "Partly failed",
+    "deleted": "Deleted"
+  },
+  "posts": {
+    "title": "Posts",
+    "description": "Status of every post on each network. Processing posts refresh automatically.",
+    "network": "Network",
+    "allNetworks": "All networks",
+    "period": "Period",
+    "lastDays_one": "Last {{count}} day",
+    "lastDays_other": "Last {{count}} days",
+    "empty": "No posts in this period yet.",
+    "noCaption": "No caption",
+    "viewLive": "View",
+    "delete": "Delete",
+    "deleteTitle": "Delete this post?",
+    "cancelTitle": "Cancel this scheduled post?",
+    "deleteBody": "It will be removed from the networks where that's possible. Instagram and TikTok don't allow deleting published posts through the API.",
+    "deleted": "Post deleted",
+    "tiktokInbox": "In your TikTok inbox: post it from the TikTok app"
+  },
+  "tiktok": {
+    "loadingCreator": "Checking your TikTok account…",
+    "postingAs": "Posting to TikTok as",
+    "creatorError": "Couldn't read your TikTok settings. Try again in a moment.",
+    "cannotPost": "TikTok isn't accepting posts from this account right now. Try again later.",
+    "choosePrivacy": "Choose who can see it",
+    "privateBlocked": "not allowed for branded content",
+    "allowUsers": "Allow users to",
+    "allowComments": "Comment",
+    "allowDuet": "Duet",
+    "allowStitch": "Stitch",
+    "disabledInApp": "Turned off in your TikTok app settings",
+    "disclose": "Disclose commercial content",
+    "discloseHelp": "Turn on if this post promotes yourself, a third party, or both.",
+    "yourBrand": "Your brand",
+    "yourBrandHelp": "You are promoting yourself or your own business.",
+    "brandedContent": "Branded content",
+    "brandedContentHelp": "You are promoting another brand or a third party.",
+    "label": {
+      "promotional": "Your post will be labeled as 'Promotional content'.",
+      "paidPartnership": "Your post will be labeled as 'Paid partnership'."
+    },
+    "processingNotice": "After publishing, it can take a few minutes for the post to appear on your TikTok profile.",
+    "consentPrefix": "By posting, you agree to TikTok's",
+    "and": "and",
+    "consentSuffix": ".",
+    "musicUsage": "Music Usage Confirmation",
+    "brandedPolicy": "Branded Content Policy",
+    "delivery": "How to post on TikTok",
+    "deliveryMode": {
+      "direct": "Post directly",
+      "inbox": "Send to TikTok inbox"
+    },
+    "deliveryHelp": {
+      "direct": "Posted straight to the profile. Until TikTok completes its review of our app, only as \"Only me\".",
+      "inbox": "The video goes to your TikTok app. You get a notification and post it with one tap, to any audience."
+    },
+    "inboxNotice": "After sending, open the \"video is ready\" notification in the TikTok app. Choose the caption, audience and promotional label there, then post."
+  },
+  "auth": {
+    "signInTitle": "Sign in",
+    "signInDescription": "Use the email and password for your Blakrasocial account.",
+    "email": "Email",
+    "password": "Password",
+    "signIn": "Sign in",
+    "forgot": "Forgot your password? Ask your account manager for a new set-password link.",
+    "badLogin": "Email or password is incorrect.",
+    "tooMany": "Too many attempts. Please wait a few minutes and try again.",
+    "linkExpired": "This link has expired or was already used. Ask for a new one.",
+    "linkProblemTitle": "Link not valid",
+    "goToSignIn": "Go to sign in",
+    "welcomeTitle": "Welcome! Choose a password",
+    "welcomeDescription": "Set a password to activate your account.",
+    "resetTitle": "Choose a new password",
+    "resetDescription": "Your old password stops working and other devices are signed out.",
+    "newPassword": "New password",
+    "confirmPassword": "Repeat the new password",
+    "currentPassword": "Current password",
+    "passwordHelp": "At least {{min}} characters. A short sentence is easy to remember and hard to guess.",
+    "passwordLength": "The password must be at least {{min}} characters.",
+    "passwordWeak": "This password is too easy to guess. Try a longer phrase.",
+    "passwordMismatch": "The two passwords don't match.",
+    "savePassword": "Save password",
+    "currentWrong": "The current password is incorrect.",
+    "accountTitle": "My account",
+    "profile": "Profile",
+    "changePassword": "Change password",
+    "changePasswordHelp": "Other devices will be signed out.",
+    "passwordChanged": "Password changed.",
+    "about": {
+      "title": "What is Blakrasocial?",
+      "body": "Blakrasocial, by {{company}}, lets businesses write a post once and publish or schedule it to their own Instagram professional account, Facebook Page, TikTok account and LinkedIn profile.",
+      "control": "Each account is connected through the network's own sign-in page and can be disconnected at any time. Nothing is posted unless the user presses Publish or schedules the post.",
+      "access": "Accounts are created by invitation for our customers.",
+      "contact": "Questions or access requests:"
+    }
+  },
+  "admin": {
+    "title": "Customers",
+    "description": "Create accounts and send each customer their personal set-password link. Every account has its own connections and posts.",
+    "newCustomer": "New account",
+    "newCustomerHelp": "You get a link to send to the person yourself (email, WhatsApp…). It works once, for 7 days.",
+    "name": "Name",
+    "role": "Role",
+    "roles": {
+      "customer": "Customer",
+      "admin": "Admin"
+    },
+    "create": "Create",
+    "exists": "An account with this email already exists.",
+    "invalid": "Check the name and email.",
+    "linkReady": "Link for {{name}}",
+    "linkHelp": "Send this link only to this person. It works once and expires in {{days}} days.",
+    "link": "Set-password link",
+    "copy": "Copy",
+    "copied": "Copied",
+    "done": "Done",
+    "status": {
+      "active": "Active",
+      "invited": "Invited",
+      "disabled": "Disabled"
+    },
+    "lastLogin": "Last sign-in {{when}}",
+    "neverSignedIn": "Has not signed in yet",
+    "newLink": "New invite link",
+    "resetLink": "Password reset link",
+    "enable": "Enable",
+    "disable": "Disable",
+    "disableTitle": "Disable {{name}}?",
+    "disableHelp": "They are signed out everywhere and can't sign in until you enable the account again. Scheduled posts stay scheduled.",
+    "whatsappTitle": "WhatsApp number for {{name}}",
+    "whatsappHelp": "From Meta's WhatsApp Manager: the phone number ID and a permanent System User token with whatsapp_business_messaging. The token is stored encrypted and never shown again.",
+    "whatsappPhoneId": "Phone number ID",
+    "whatsappToken": "Access token",
+    "whatsappName": "Display name",
+    "whatsappPhone": "Phone number (optional, for display)",
+    "whatsappSaved": "WhatsApp number saved and verified.",
+    "save": "Save",
+    "delete": "Delete",
+    "deleteTitle": "Delete {{name}} permanently?",
+    "deleteHelp": "This removes the account, its connected social accounts, scheduled and past posts, and uploaded files. Posts already published on the networks stay there. This cannot be undone.",
+    "deleteConfirm": "Delete permanently",
+    "deleted": "{{name}} was deleted."
+  },
+  "legal": {
+    "updated": "Last updated",
+    "back": "Back to the app",
+    "privacy": {
+      "title": "Privacy policy"
+    },
+    "terms": {
+      "title": "Terms of service"
+    },
+    "deletion": {
+      "title": "Data deletion"
+    }
+  }
+}
