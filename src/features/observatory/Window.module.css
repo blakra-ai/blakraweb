@@ -43,7 +43,7 @@
   object-position: right center;
 }
 /* The rendered still already holds the ring; the CSS ring stands in only where there is no still. */
-.stillImage + .hole {
+picture + .hole {
   display: none;
 }
 
