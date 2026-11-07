@@ -1,5 +1,9 @@
-/* 09 Contact: the window and the panel share one grid cell; the panel stands over the window's left columns. */
+/* 10 Contact: the window and the panel share one grid cell; the panel stands over the window's left columns.
+   --r and --w are the world's disk (windows.ts): 74 % across and centred, its radius the lesser of 24 % of
+   the window's width and 42 % of its height. */
 .contact {
+  --w: calc(100vw - 2 * var(--inset));
+  --r: min(calc(var(--w) * 0.24), calc((100svh - var(--header-h) - var(--inset)) * 0.42));
   position: relative;
   display: grid;
   grid-template-columns: minmax(0, 1fr);
@@ -9,7 +13,7 @@
   grid-area: 1 / 1;
   --ring-x: 74%;
   --ring-y: 50%;
-  --ring-r: 330px;
+  --ring-r: var(--r);
 }
 .tag {
   position: absolute;
@@ -17,44 +21,54 @@
   top: 28px;
   color: var(--grey);
 }
+/* Her line: on the disk's ink, left of its centre and under her ear and chin, where the chord is still wide.
+   The position reads the section (the stack is not positioned), the window's frame being inset by --inset. */
 .voice {
+  --voice: clamp(1.25rem, 1.75vw, 1.625rem);
   position: absolute;
-  left: 46%;
-  bottom: 40px;
-  width: 360px;
-  max-width: 28%;
+  left: calc(var(--inset) + var(--w) * 0.74 - 0.74 * var(--r));
+  top: calc(50% + 0.14 * var(--r));
+  width: calc(0.68 * var(--r));
+}
+.voice :global(.voice) {
+  text-wrap: pretty;
 }
 
-/* The panel: #121216, a hairline, 14 px radius; 556 px wide at 40 px in. */
-.panel {
+/* The panel and, under 1200 px, her line below it: over the window's left columns, level with its middle. */
+.stack {
   grid-area: 1 / 1;
   z-index: 4; /* above the dark window (z 3) and the world canvas (z 2) */
-  display: flex;
-  flex-direction: column;
-  width: 556px;
-  max-width: calc(100% - 2 * var(--inset) - 80px);
-  margin: calc(var(--inset) + 44px) 0 calc(var(--inset) + 44px) calc(var(--inset) + 40px);
-  padding: 30px 32px;
+  align-self: center;
+  display: grid;
+  row-gap: 20px;
+  /* It stops short of the disk's bright edge, which stands at about half the page's width. */
+  width: min(580px, calc(50vw - var(--page-x) - 24px));
+  margin: calc(var(--inset) + 28px) 0 calc(var(--inset) + 28px) var(--page-x);
+}
+/* The panel hugs its content: #121216, a hairline, 14 px radius. */
+.panel {
+  padding: 28px 32px 26px;
   border: 1px solid var(--hair);
   border-radius: var(--r-card);
   background: var(--panel);
 }
 .panel :global(.eyebrow) {
-  margin-bottom: 18px;
+  margin-bottom: 16px;
 }
 .title {
-  font-size: clamp(1.75rem, 1rem + 2vw, 2.75rem);
   outline: none;
+  hyphens: auto;
+  overflow-wrap: break-word;
 }
 .lede {
   margin-top: 14px;
-  font-size: 0.9375rem;
-  max-width: 480px;
+  font-size: var(--body-size);
+  line-height: 1.5;
 }
-.form {
-  display: flex;
-  flex-direction: column;
-  flex: 1;
+.direct {
+  margin-top: 10px;
+  font-size: var(--small);
+  color: var(--grey);
 }
 .form fieldset {
   margin: 0;
@@ -62,14 +76,13 @@
   border: 0;
   min-width: 0;
 }
-
 /* The error summary: focused on submit; each line leads to its field. */
 .summary {
   margin-top: 18px;
   padding: 12px 14px;
   border: 1px solid var(--porcelain);
   border-radius: var(--r-tag);
-  font-size: 0.875rem;
+  font-size: var(--small);
   line-height: 1.45;
 }
 .summary b {
@@ -85,8 +98,8 @@
 }
 
 /* The doors: a radio group of pills; the chosen one carries a check mark, never colour alone. */
-.doors {
-  margin-top: 22px;
+.form .doors {
+  margin-top: 18px;
 }
 .label {
   display: block;
@@ -99,9 +112,9 @@
   gap: 8px;
 }
 .door {
-  height: 36px;
-  padding: 0 14px;
-  font-size: 0.8125rem;
+  height: auto;
+  min-height: 44px;
+  padding: 0 16px;
 }
 .door[aria-checked='true'] {
   border-color: var(--porcelain);
@@ -117,14 +130,25 @@
   transform: rotate(45deg) translate(-1px, -2px);
 }
 .hint {
-  margin-top: 10px;
-  font-size: 0.8125rem;
+  margin-top: 8px;
+  font-size: var(--small);
+  line-height: 1.4;
   color: var(--grey);
 }
 
-/* The fields: 44 px controls with #6b6963 borders (3.58 : 1 on the body, 3.40 on the panel). */
+/* The fields: 44 px controls with #6b6963 borders (3.58 : 1 on the body, 3.40 on the panel). Two short
+   ones side by side, the message under them, so the panel fits a screen. */
+.fields {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(190px, 1fr));
+  column-gap: 14px;
+}
 .field {
-  margin-top: 16px;
+  margin-top: 14px;
+  min-width: 0;
+}
+.field:last-child {
+  grid-column: 1 / -1;
 }
 .field .label {
   margin-bottom: 6px;
@@ -138,7 +162,7 @@
   border-radius: var(--r-tag);
   background: transparent;
   color: var(--porcelain);
-  font-size: 0.9375rem;
+  font-size: 1rem;
   line-height: 1.4;
   transition: border-color 0.2s var(--ease);
 }
@@ -167,7 +191,8 @@ textarea.control {
   gap: 8px;
   align-items: center;
   margin-top: 6px;
-  font-size: 0.8125rem;
+  font-size: var(--small);
+  line-height: 1.35;
   color: var(--porcelain);
 }
 .error::before {
@@ -195,12 +220,14 @@ textarea.control {
   display: flex;
   flex-wrap: wrap;
   align-items: center;
-  gap: 16px;
-  margin-top: auto;
-  padding-top: 22px;
+  gap: 12px 16px;
+  padding-top: 18px;
 }
 .submit {
   gap: 10px;
+  height: 48px;
+  padding: 0 28px;
+  font-size: 1rem;
 }
 .submit:disabled {
   cursor: default;
@@ -219,7 +246,9 @@ textarea.control {
   }
 }
 .privacy {
-  font-size: 0.75rem;
+  flex: 1 1 200px;
+  font-size: var(--small);
+  line-height: 1.35;
   color: var(--grey);
 }
 .privacy a {
@@ -232,7 +261,7 @@ textarea.control {
 }
 .failure:not(:empty) {
   margin-top: 16px;
-  font-size: 0.875rem;
+  font-size: var(--small);
   color: var(--porcelain);
 }
 
@@ -243,90 +272,88 @@ textarea.control {
   border: 1px solid var(--ctrl);
   border-radius: var(--r-tag);
   background: var(--body);
-  font-size: 0.9375rem;
+  font-size: var(--small);
   line-height: 1.45;
+}
+.form .done {
+  margin-top: 16px;
 }
 .done:focus-visible {
   outline: 2px solid var(--porcelain);
   outline-offset: 2px;
 }
 .after {
-  margin-top: 14px;
-  max-width: 380px;
-  font-size: 0.9375rem;
+  margin-top: 12px;
+  font-size: var(--small);
   color: var(--grey);
 }
 
-@media (max-width: 1099px) {
-  .panel {
-    width: 480px;
-    margin-left: calc(var(--inset) + 24px);
-  }
+/* Under 1200 px her ear reaches across the disk's left half: the line goes under the panel, on clear ink. */
+@media (max-width: 1199px) {
   .voice {
-    left: 50%;
+    --voice: 1.25rem;
+    position: static;
+    width: auto;
+    padding: 0 8px;
+  }
+  .panel {
+    padding: 24px 24px 22px;
   }
 }
 
-/* Phones (m-05): a 232 px band holds the hole and her line; the form is plain DOM below it. */
+/* Phones (m-05): a band holds the ring at 70 vw with her line inside it; the form is plain DOM below it. */
 @media (max-width: 767px) {
   .contact {
+    --band: calc(70vw + 72px);
     display: block;
   }
   .window {
-    --ring-x: 80%;
-    --ring-y: 51%;
-    --ring-r: 60px;
-    --still-h: 232px;
+    --ring-x: 50%;
+    --ring-y: 50%;
+    --ring-r: 35vw;
+    --still-h: var(--band);
     min-height: 0;
-    height: 232px;
+    height: var(--band);
   }
   .tag {
     left: 20px;
     right: auto;
     top: 16px;
   }
+  .stack {
+    display: block;
+    width: auto;
+    margin: 0;
+  }
+  /* In the disk: centred on it, inside the circle whatever the language. */
   .voice {
-    left: 20px;
-    top: 40px;
-    bottom: auto;
-    width: 190px;
-    max-width: none;
+    --voice: 1.0625rem;
+    position: absolute;
+    z-index: 4;
+    left: 50%;
+    top: calc(12px + var(--band) / 2);
+    width: 49vw;
+    padding: 0;
+    transform: translate(-50%, -50%);
+    text-align: center;
   }
   .voice :global(.voice) {
-    font-size: 1.125rem;
-    line-height: 1.3;
+    line-height: 1.28;
+    text-wrap: balance;
   }
   .panel {
-    width: auto;
-    max-width: none;
-    margin: 16px var(--inset) 0;
+    margin: 28px 20px 0;
     padding: 0;
     border: 0;
     border-radius: 0;
     background: transparent;
   }
-  .lede {
-    margin-top: 10px;
-    font-size: 0.8125rem;
-    line-height: 1.4;
-  }
-  .doors {
-    margin-top: 14px;
-  }
-  .door {
-    height: 32px;
-    padding: 0 12px;
-    font-size: 0.75rem;
-  }
   .field {
-    margin-top: 8px;
+    margin-top: 10px;
   }
   .send {
     gap: 12px;
-    padding-top: 12px;
-  }
-  .send::after {
-    content: attr(data-foot);
+    padding-top: 14px;
   }
 }
 
@@ -339,14 +366,9 @@ textarea.control {
     margin: 0 12px;
     border-radius: var(--r-window);
   }
-  .panel {
-    margin: 28px 20px 0;
-  }
   .title {
     margin-top: 6px;
     color: var(--porcelain);
-    font-size: 2rem;
-    font-weight: 300;
   }
   .lede {
     font-size: 1rem;
@@ -354,10 +376,10 @@ textarea.control {
     color: var(--grey);
   }
   .door {
-    min-height: 44px;
-    height: auto;
+    padding: 8px 14px;
+    white-space: normal;
   }
-  .doors {
+  .form .doors {
     margin-top: 28px;
   }
 }

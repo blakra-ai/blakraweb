@@ -1,8 +1,7 @@
-import { PerformanceMonitor } from '@react-three/drei'
 import { Canvas, useFrame, useThree } from '@react-three/fiber'
 import { useEffect, useMemo, useRef, useState } from 'react'
 import { createPortal } from 'react-dom'
-import { Color, Group, OrthographicCamera, PerspectiveCamera, Scene } from 'three'
+import { Color, DoubleSide, Mesh, NearestFilter, OrthographicCamera, PerspectiveCamera, PlaneGeometry, Scene, ShaderMaterial, WebGLRenderTarget, type Texture } from 'three'
 import { useMotion } from '../../motion/MotionProvider'
 import { onPulse } from '../../motion/pulse'
 import { needs } from '../../content/shared'
@@ -14,6 +13,7 @@ import { ORBIT_END } from './orbit'
 import { obs } from './state'
 import { createGuideHandle, fitGuideCamera, Guide, placeGuide } from './Guide'
 import { GOLD, springStep } from './guidePose'
+import { createGovernor, idlePeriodMs, SKY_HZ, stepGovernor, type Governor } from './pacing'
 import { apertureBetween, BUST_EYE_DROP, bustPlace, contactExpansion, contactSpan, heroContraction, paperColumn, portholeBlocked, portholeLayout, stepFade, type PortholeLayout } from './porthole'
 import { createPorthole } from './shaders/porthole'
 
@@ -21,9 +21,9 @@ import { createPorthole } from './shaders/porthole'
 export const pickedLayers = () => (obs.picker ? (obs.picker === 'all' ? LAYERS : needs[obs.picker].layers).map((l) => LAYERS.indexOf(l)) : null)
 import { createRing, fitRing, glowAt } from './shaders/ring'
 import { createWell, fitWell } from './shaders/well'
-import { bendAt, FRAME_RADIUS, getWindows, GRID_CELL, holeFor, onScreen, onWindows, stickyOf, stickyViewY, toGl, type Rect, type Sticky } from './windows'
+import { BEND_MS, bendAt, FRAME_RADIUS, getWindows, GRID_CELL, holeFor, onScreen, onWindows, stickyOf, stickyViewY, toGl, type Rect, type Sticky } from './windows'
 import { LAYERS_N } from './orbit'
-import { onWorldReady } from './ready'
+import { markHandover, onWorldReady } from './ready'
 
 /*
  * The Observatory's world: ONE fixed, full-viewport canvas behind the document, drawing the one
@@ -35,10 +35,13 @@ import { onWorldReady } from './ready'
  * z 0), in the two windows whose framing places her (hero, contact).
  *
  * frameloop="demand": a frame is drawn on scroll, pointer move (her gaze), reflow and while the
- * load device or a pulse plays; while she is on screen her idle clip keeps the frames coming.
- * dpr 1 … 1.25, lowered to 1 by the PerformanceMonitor when continuous frames fall under 40 fps.
- * `?profile` logs the frame's CPU time every 2 s. Nothing here reads layout: the scroll is one
- * number per frame, the rects come from the registry.
+ * load device or a pulse plays, at every animation frame; while only her life and the sky move, at
+ * the idle rate (pacing.ts). With nothing on screen no GL call is made and the canvas leaves the
+ * compositor. The well, the costliest pass, is shaded into a per-window texture at SKY_HZ and copied
+ * on the other frames (the copy follows the scroll). Passes that change no pixel are skipped.
+ * dpr 1 … 1.25, moved by the governor (pacing.ts) when frames stay late or on time. `?profile` logs the
+ * frame's CPU time every 2 s. Layout is read rarely: the scroll is one number per frame, the rects
+ * come from the registry, and her reading point re-reads its line only when something moved it.
  */
 
 const PROFILE = typeof location !== 'undefined' && new URLSearchParams(location.search).has('profile')
@@ -48,6 +51,50 @@ const SCROLL_V_DAMP = 8
 /** The dpr cap for discrete GPUs; integrated ones (Intel UHD/Iris, Mali, Adreno, Apple) start and stay at 1. */
 const DPR_MAX = 1.25
 const INTEGRATED = /intel|uhd|iris|mali|adreno|apple|powervr/i
+/** A window larger than this (device px) is shaded live: its copy would cost more memory than it saves. */
+const SKY_MAX_PX = 12_000_000
+/** A window's copy is freed this long after it left the screen. */
+const SKY_KEEP_MS = 4000
+/** Her head turning faster than this (deg/s) draws at the full rate; her slow drift does not. */
+const TURNING = 0.6
+
+/** One window's shaded well: the texture, what it was shaded from, when. */
+interface SkyCopy {
+  rt: WebGLRenderTarget
+  sig: number[]
+  at: number
+  seen: number
+}
+
+/** The copy pass: the texture's pixels 1:1; the rounded corners stay out as the well's `discard` left them. */
+function createSkyBlit() {
+  const uTex = { value: null as Texture | null }
+  const material = new ShaderMaterial({
+    uniforms: { uTex },
+    side: DoubleSide,
+    depthTest: false,
+    depthWrite: false,
+    vertexShader: /* glsl */ `
+varying vec2 vUv;
+void main() {
+  vUv = vec2(uv.x, 1.0 - uv.y);
+  gl_Position = projectionMatrix * modelViewMatrix * vec4(position, 1.0);
+}`,
+    fragmentShader: /* glsl */ `
+precision highp float;
+uniform sampler2D uTex;
+varying vec2 vUv;
+void main() {
+  vec4 c = texture2D(uTex, vUv);
+  if (c.a < 0.5) discard;
+  gl_FragColor = c;
+}`,
+  })
+  const mesh = new Mesh(new PlaneGeometry(1, 1), material)
+  mesh.frustumCulled = false
+  mesh.name = 'SkyBlit'
+  return { mesh, uTex, scene: new Scene().add(mesh) as Scene }
+}
 
 /** The GPU's name from the live context (no extra context is created). */
 function rendererName(gl: { getContext(): WebGLRenderingContext | WebGL2RenderingContext }): string {
@@ -106,38 +153,59 @@ const ease = (t: number) => t * t * (3 - 2 * t)
  * from when it became the current line; a new line of it marks a nod. Reads one element's rects per frame.
  */
 const READ_CPS = 34
-function readingPoint(r: { host: HTMLElement | null; start: number; line: number; nodAt: number }, vh: number, clock: number, still: boolean) {
-  let best: HTMLElement | null = null
-  let bestD = Infinity
-  let bestRect: DOMRect | null = null
-  // Her line where there is one (hero, contact); on the paper sections, the section heading.
-  for (const sel of ['.voice[data-caret]', 'main :is(h1, h2)']) {
-    for (const el of document.querySelectorAll<HTMLElement>(sel)) {
-      const host = el.parentElement?.matches('p.voice') ? el.parentElement : el
-      const b = host.getBoundingClientRect()
-      if (b.height <= 0 || b.bottom < 70 || b.top > vh - 20) continue
-      const d = Math.abs(b.top + b.height / 2 - 0.55 * vh)
-      if (d < bestD) {
-        bestD = d
-        best = host
-        bestRect = b
+/** How long a reading of the line stands while the scroll stays put (a reflow drops it at once). */
+const READ_STALE_MS = 400
+interface ReadState {
+  host: HTMLElement | null
+  start: number
+  line: number
+  nodAt: number
+  /** The last reading of the layout: at which scroll and when, the line's box, its line boxes and length. */
+  y: number
+  at: number
+  box: DOMRect | null
+  rects: DOMRect[]
+  chars: number
+}
+function readingPoint(r: ReadState, vh: number, clock: number, still: boolean, scrollY: number, now: number) {
+  if (scrollY !== r.y || now - r.at > READ_STALE_MS) {
+    r.y = scrollY
+    r.at = now
+    let found: HTMLElement | null = null
+    let bestD = Infinity
+    let foundRect: DOMRect | null = null
+    // Her line where there is one (hero, contact); on the paper sections, the section heading.
+    for (const sel of ['.voice[data-caret]', 'main :is(h1, h2)']) {
+      for (const el of document.querySelectorAll<HTMLElement>(sel)) {
+        const host = el.parentElement?.matches('p.voice') ? el.parentElement : el
+        const b = host.getBoundingClientRect()
+        if (b.height <= 0 || b.bottom < 70 || b.top > vh - 20) continue
+        const d = Math.abs(b.top + b.height / 2 - 0.55 * vh)
+        if (d < bestD) {
+          bestD = d
+          found = host
+          foundRect = b
+        }
       }
+      if (found) break
     }
-    if (best) break
+    r.box = foundRect
+    if (found && r.host !== found) {
+      r.start = clock
+      r.line = 0
+    }
+    r.host = found
+    if (found) {
+      r.rects = [...found.getClientRects()].filter((q) => q.width > 2)
+      r.chars = found.textContent?.length ?? 0
+    }
   }
-  if (!best || !bestRect) {
-    r.host = null
-    return { host: null, x: 0, y: 0, bottom: 0, typing: false }
-  }
-  if (r.host !== best) {
-    r.host = best
-    r.start = clock
-    r.line = 0
-  }
-  const rects = [...best.getClientRects()].filter((q) => q.width > 2)
-  const text = best.textContent ?? ''
+  const best = r.host
+  const bestRect = r.box
+  if (!best || !bestRect) return { host: null, x: 0, y: 0, bottom: 0, typing: false }
+  const rects = r.rects
   const total = rects.reduce((a, q) => a + q.width, 0) || 1
-  const p = still ? 1 : Math.min(1, ((clock - r.start) * READ_CPS) / Math.max(1, text.length))
+  const p = still ? 1 : Math.min(1, ((clock - r.start) * READ_CPS) / Math.max(1, r.chars))
   let left = p * total
   let x = bestRect.right
   let y = bestRect.bottom
@@ -158,13 +226,21 @@ function readingPoint(r: { host: HTMLElement | null; start: number; line: number
   return { host: best, x, y, bottom: bestRect.bottom, typing: p < 1 }
 }
 
-function Passes({ handle }: { handle: ReturnType<typeof createGuideHandle> }) {
+function Passes({ handle, onDpr }: { handle: ReturnType<typeof createGuideHandle>; onDpr: (dpr: number) => void }) {
   const { gl, scene, size, invalidate } = useThree()
-  const flat = useRef<Group>(null)
   const ortho = useMemo(() => new OrthographicCamera(0, 1, 0, 1, -10, 10), [])
   const persp = useMemo(() => new PerspectiveCamera(30, 1, 1, 20000), [])
-  const well = useMemo(createWell, [])
-  const ring = useMemo(createRing, [])
+  // The flat quads have their own scenes: drawing them never walks her 50 nodes.
+  const well = useMemo(() => {
+    const w = createWell()
+    return { ...w, scene: new Scene().add(w.mesh) as Scene }
+  }, [])
+  const ring = useMemo(() => {
+    const r = createRing()
+    return { ...r, scene: new Scene().add(r.mesh) as Scene }
+  }, [])
+  const blit = useMemo(createSkyBlit, [])
+  const skies = useMemo(() => new Map<string, SkyCopy>(), [])
   // One scene per quad, made with them (StrictMode may run a memo twice: a mesh has one parent).
   const port = useMemo(() => {
     const p = createPorthole()
@@ -172,7 +248,7 @@ function Passes({ handle }: { handle: ReturnType<typeof createGuideHandle> }) {
     return { ...p, scenes: { bg: make(p.bg), mask: make(p.mask), fade: make(p.fade) } }
   }, [])
   const portScenes = port.scenes
-  const t = useRef({ last: 0, lastY: 0, bendStart: -1, inputAt: 0, frames: 0, ms: 0, since: 0, raf: 0, guideShown: false, viewport: { w: 1, h: 1 }, opacity: 1, paper: 0, layout: null as PortholeLayout | null, cy: NaN, cyV: 0, read: { host: null as HTMLElement | null, start: 0, line: 0, nodAt: -10 } })
+  const t = useRef({ last: 0, lastY: 0, bendStart: -1, inputAt: 0, frames: 0, ms: 0, since: 0, kicked: false, timer: 0, period: 0, drew: true, shown: true, maxScroll: 0, governor: null as Governor | null, guideShown: false, viewport: { w: 1, h: 1 }, opacity: 1, paper: 0, layout: null as PortholeLayout | null, cy: NaN, cyV: 0, read: { host: null, start: 0, line: 0, nodAt: -10, y: NaN, at: 0, box: null, rects: [], chars: 0 } as ReadState })
 
   useEffect(() => {
     gl.autoClear = false
@@ -180,13 +256,13 @@ function Passes({ handle }: { handle: ReturnType<typeof createGuideHandle> }) {
     const s = t.current
     s.last = performance.now()
     s.lastY = window.scrollY
-    // One frame per animation frame however many events arrive (pointermove can fire at 1 kHz).
+    // One frame per animation frame however many events arrive (pointermove can fire at 1 kHz; each
+    // invalidate adds a frame in R3F's demand loop, so only the first since the last frame asks).
     const input = () => {
       s.inputAt = performance.now()
-      if (!s.raf) s.raf = requestAnimationFrame(() => {
-        s.raf = 0
-        invalidate()
-      })
+      if (s.kicked) return
+      s.kicked = true
+      invalidate()
     }
     // The cursor moves only her gaze: without her on screen a move needs no frame.
     const move = (e: PointerEvent) => {
@@ -221,6 +297,8 @@ function Passes({ handle }: { handle: ReturnType<typeof createGuideHandle> }) {
       root.classList.toggle('porthole-margin', l.mode === 'margin')
       root.style.setProperty('--porthole-gutter', `${l.gutter}px`)
       measureObstacles()
+      s.maxScroll = Math.max(0, root.scrollHeight - window.innerHeight)
+      s.read.y = NaN
       input()
     }
     relayout()
@@ -243,20 +321,22 @@ function Passes({ handle }: { handle: ReturnType<typeof createGuideHandle> }) {
       offWindows()
       offPulse()
       offReflow()
-      cancelAnimationFrame(s.raf)
-      s.raf = 0
+      clearTimeout(s.timer)
+      s.timer = 0
     }
   }, [gl, invalidate])
 
   // The quads' geometry and materials go with the world.
   useEffect(
     () => () => {
-      for (const m of [well.mesh, ring.mesh, port.bg, port.mask, port.fade]) {
+      for (const m of [well.mesh, ring.mesh, blit.mesh, port.bg, port.mask, port.fade]) {
         m.geometry.dispose()
         ;(m.material as { dispose(): void }).dispose()
       }
+      for (const c of skies.values()) c.rt.dispose()
+      skies.clear()
     },
-    [well, ring, port],
+    [well, ring, blit, skies, port],
   )
 
   useFrame(() => {
@@ -264,7 +344,13 @@ function Passes({ handle }: { handle: ReturnType<typeof createGuideHandle> }) {
     const now = performance.now()
     const t0 = now
     frames.n++
-    const dt = Math.min(0.1, (now - s.last) / 1000)
+    s.kicked = false
+    const gap = now - s.last
+    // The render scale follows the frames (a change re-allocates the canvas once). Started after a second: by then the renderer's dpr is settled.
+    if (!s.governor && obs.clock > 1) s.governor = createGovernor(gl.getPixelRatio(), now)
+    const scale = s.governor ? stepGovernor(s.governor, gap, s.period, now) : null
+    if (scale !== null) onDpr(scale)
+    const dt = Math.min(0.1, gap / 1000)
     s.last = now
     obs.clock += dt
     nav.clock = obs.clock
@@ -295,9 +381,16 @@ function Passes({ handle }: { handle: ReturnType<typeof createGuideHandle> }) {
     for (let k = 0; k < LAYERS_N; k++) lit[k] = picked ? (picked.includes(k) ? 1 : 0.2) : 1
     const bandsAt = still ? LAYERS_N : Math.min(LAYERS_N, obs.hold / ORBIT_END * LAYERS_N)
 
-    gl.setScissorTest(false)
-    gl.setViewport(0, 0, size.width, size.height)
-    gl.clear(true, true, false)
+    // The canvas is cleared by whatever draws first; with nothing to draw it is cleared once and left alone.
+    let cleared = false
+    const clearOnce = () => {
+      if (cleared) return
+      cleared = true
+      gl.setScissorTest(false)
+      gl.setViewport(0, 0, size.width, size.height)
+      gl.clear(true, true, false)
+    }
+    const pixelRatio = gl.getPixelRatio()
     const guide = handle.group
     if (guide) guide.visible = false
     type Framed = { view: Rect; rect: Rect; g: NonNullable<ReturnType<typeof getWindows>[number]['framing']['guide']> }
@@ -310,6 +403,7 @@ function Passes({ handle }: { handle: ReturnType<typeof createGuideHandle> }) {
       if (w.kind === 'contact' && g) contact = { view, rect: w.rect, g }
       const on = onScreen(w.rect, y, viewport, w.sticky)
       if (!on) continue
+      clearOnce()
       const { clip } = on
       const vp = toGl(on.view, size.height, 1)
       const sc = toGl(clip, size.height, 1)
@@ -344,23 +438,82 @@ function Passes({ handle }: { handle: ReturnType<typeof createGuideHandle> }) {
       well.uniforms.uSky.value = w.kind === 'stage' ? 0 : 1
       well.uniforms.uRing.value = rr
       well.uniforms.uTime.value = still ? 0 : obs.clock
+      drawWell(w.id, on.view, vp, sc)
       fitRing(ring.mesh, ring.uniforms, rx, ry, rr)
       ring.uniforms.uGlow.value = glow
       ring.uniforms.uTime.value = still ? 0 : obs.clock
       ring.uniforms.uBands.value = w.kind === 'stage' ? bandsAt * (1 - hv) : 0
       ring.uniforms.uRipple.value = w.kind === 'stage' ? 0 : w.kind === 'contact' ? 1.4 : 1
-      if (flat.current) flat.current.visible = true
-      gl.render(scene, ortho)
-      if (flat.current) flat.current.visible = false
+      gl.render(ring.scene, ortho)
+    }
+    // A copy off screen for a while gives its memory back.
+    for (const [id, c] of skies) {
+      if (now - c.seen < SKY_KEEP_MS) continue
+      c.rt.dispose()
+      skies.delete(id)
+    }
+
+    /** The well for this window: its copy, shaded again when the sky is due or anything but the clock changed. */
+    function drawWell(id: string, view: Rect, vp: Rect, sc: Rect) {
+      const u = well.uniforms
+      const rw = Math.ceil(view.w * pixelRatio)
+      const rh = Math.ceil(view.h * pixelRatio)
+      if (rw * rh > SKY_MAX_PX) {
+        gl.render(well.scene, ortho)
+        return
+      }
+      let c = skies.get(id)
+      if (c && (c.rt.width !== rw || c.rt.height !== rh)) {
+        c.rt.dispose()
+        skies.delete(id)
+        c = undefined
+      }
+      if (!c) {
+        c = { rt: new WebGLRenderTarget(rw, rh, { depthBuffer: false, stencilBuffer: false, generateMipmaps: false, minFilter: NearestFilter, magFilter: NearestFilter }), sig: [], at: -Infinity, seen: now }
+        skies.set(id, c)
+      }
+      c.seen = now
+      const sig = [u.uCentre.value[0], u.uCentre.value[1], u.uSigma.value, u.uPull.value, u.uBend.value, u.uHole.value, u.uFade.value, u.uSky.value, u.uRing.value, view.w, view.h]
+      const before = c.sig
+      const moved = sig.some((v, i) => v !== before[i])
+      const due = u.uSky.value > 0 && !still && now - c.at >= 1000 / SKY_HZ
+      if (moved || due) {
+        c.sig = sig
+        c.at = now
+        gl.setRenderTarget(c.rt)
+        // The clear value is whatever the last render left (the environment's capture leaves it opaque).
+        gl.setClearColor(0x000000, 0)
+        gl.clear(true, false, false)
+        gl.render(well.scene, ortho)
+        gl.setRenderTarget(null)
+      }
+      // 1:1 onto device pixels (the viewport is in CSS px; the renderer multiplies it back).
+      const dx = Math.floor(view.x * pixelRatio)
+      const dy = Math.floor((size.height - view.y - view.h) * pixelRatio)
+      gl.setViewport(dx / pixelRatio, dy / pixelRatio, rw / pixelRatio, rh / pixelRatio)
+      blit.uTex.value = c.rt.texture
+      blit.mesh.position.set(view.w / 2, view.h / 2, 0)
+      blit.mesh.scale.set(view.w, view.h, 1)
+      gl.render(blit.scene, ortho)
+      gl.setViewport(vp.x, vp.y, vp.w, vp.h)
+      gl.setScissor(sc.x, sc.y, sc.w, sc.h)
     }
 
     // The porthole's pass: she is drawn ONLY here, framed as the hero (t 0), docked as a bust (t 1 … q 0) or framed as the contact (q 1).
     // Reading: the guide's line nearest the porthole (or the window's own), swept left to right at the typing pace.
-    const read = readingPoint(s.read, size.height, obs.clock, still)
+    const read = readingPoint(s.read, size.height, obs.clock, still, y, now)
     const guideShown = guide ? drawGuide() : false
     gl.setScissorTest(false)
     s.guideShown = guideShown
     if (!guideShown) nav.anchor.on = false
+    // Nothing of the world on screen: one clear, then the canvas leaves the compositor (and no GL call is made) until something shows.
+    const drew = cleared
+    if (!drew && s.drew) clearOnce()
+    s.drew = drew
+    if (drew !== s.shown) {
+      s.shown = drew
+      gl.domElement.style.visibility = drew ? '' : 'hidden'
+    }
 
     function drawGuide(): boolean {
       const base = s.layout ?? portholeLayout(size.width, size.height)
@@ -377,7 +530,7 @@ function Passes({ handle }: { handle: ReturnType<typeof createGuideHandle> }) {
         l = { ...base, cy: s.cy }
       }
       const hidden = l.mode === 'hidden'
-      const maxScroll = Math.max(0, document.documentElement.scrollHeight - size.height)
+      const maxScroll = s.maxScroll
       let tH = hero ? heroContraction(y, hero.rect.h) : 1
       let qC = contact ? contactExpansion(contact.view.y, l, contactSpan(contact.rect.y, l, maxScroll)) : 0
       if (still) {
@@ -497,14 +650,28 @@ function Passes({ handle }: { handle: ReturnType<typeof createGuideHandle> }) {
         sx0 = Math.max(0, Math.min(sx0, col))
         sx1 = size.width
       }
-      const scx = Math.floor(sx0)
-      const scy = Math.floor(H - sy1)
+      // Framed by a dark window at rest, the three porthole quads change no pixel: the background and
+      // the shadow have no alpha, every pixel of the window passes the mask and the fade multiplies
+      // by 1, and what lies outside the window is theirs to erase. She is scissored to the window instead.
+      const framed = win !== null && u.uWinOpen.value > 0.5 && u.uBgOn.value <= 0 && out <= 0 && s.opacity >= 0.999
+      if (win && framed) {
+        sx0 = Math.max(0, win.view.x)
+        sy0 = Math.max(0, win.view.y)
+        sx1 = Math.min(size.width, win.view.x + win.view.w)
+        sy1 = Math.min(size.height, win.view.y + win.view.h)
+        if (sx1 <= sx0 || sy1 <= sy0) return false
+      }
+      clearOnce()
+      const scx = framed ? Math.round(sx0 * px) / px : Math.floor(sx0)
+      const scy = framed ? Math.round((H - sy1) * px) / px : Math.floor(H - sy1)
+      const scw = framed ? Math.round(sx1 * px) / px - scx : Math.ceil(sx1) - scx
+      const sch = framed ? Math.round((H - sy0) * px) / px - scy : Math.ceil(H - sy0) - scy
       gl.setViewport(0, 0, size.width, size.height)
-      gl.setScissor(scx, scy, Math.ceil(sx1) - scx, Math.ceil(H - sy0) - scy)
+      gl.setScissor(scx, scy, scw, sch)
       gl.setScissorTest(true)
-      gl.render(portScenes.bg, ortho)
+      if (!framed) gl.render(portScenes.bg, ortho)
       gl.clearDepth()
-      gl.render(portScenes.mask, ortho)
+      if (!framed) gl.render(portScenes.mask, ortho)
 
       // Her: the whole viewport is the camera's view; the mask clips her to the opening.
       const view = { x: 0, y: 0, w: size.width, h: size.height }
@@ -515,7 +682,7 @@ function Passes({ handle }: { handle: ReturnType<typeof createGuideHandle> }) {
       gl.render(scene, persp)
       guide!.visible = false
       u.uOpacity.value = s.opacity
-      if (s.opacity < 0.999 || u.uRamp.value > 0.5 || out > 0 || u.uBgOn.value < 0.999) gl.render(portScenes.fade, ortho)
+      if (!framed && (s.opacity < 0.999 || u.uRamp.value > 0.5 || out > 0 || u.uBgOn.value < 0.999)) gl.render(portScenes.fade, ortho)
 
       // Her life's inputs for the next step.
       const mode = win === contact && qC > 0.5 ? 'contact' : win === hero && tH < 0.5 ? 'hero' : 'porthole'
@@ -549,7 +716,28 @@ function Passes({ handle }: { handle: ReturnType<typeof createGuideHandle> }) {
     const fading = s.opacity > 0.002 && s.opacity < 0.998
     const moving = (!still && (bend < 1 || glow > 0 || Math.abs(nav.scrollV) > 0 || sinceInput < INPUT_HOLD_S || sky)) || alive || fading
     if (PROFILE) frames.why = moving ? `bend${bend < 1 ? 1 : 0} glow${glow > 0 ? 1 : 0} scroll${nav.scrollV !== 0 ? 1 : 0} input${sinceInput < INPUT_HOLD_S ? 1 : 0} guide${alive ? 1 : 0}` : 'idle'
-    if (moving) invalidate()
+    if (moving) {
+      // At every animation frame while the reader acts or something travels; at rest only the sky and her slow life move.
+      const pose = handle.pose
+      const turning = guideShown && !!pose && Math.abs(pose.yawV) + Math.abs(pose.pitchV) > TURNING
+      const acting = still || bend < 1 || glow > 0 || Math.abs(nav.scrollV) > 0 || sinceInput < INPUT_HOLD_S || fading || turning
+      if (acting) {
+        s.period = 0
+        if (!s.kicked) {
+          s.kicked = true
+          invalidate()
+        }
+      } else {
+        s.period = idlePeriodMs(sinceInput)
+        // Early by a few ms: the timer only asks, the next animation frame draws, so the rate holds on the display's grid.
+        if (!s.timer) s.timer = window.setTimeout(() => {
+          s.timer = 0
+          if (s.kicked) return
+          s.kicked = true
+          invalidate()
+        }, Math.max(0, s.period - (performance.now() - now) - 6))
+      }
+    } else s.period = 0
 
     if (PROFILE) {
       s.ms += performance.now() - t0
@@ -564,27 +752,13 @@ function Passes({ handle }: { handle: ReturnType<typeof createGuideHandle> }) {
     }
   }, 1)
 
-  return (
-    <group ref={flat} visible={false}>
-      <primitive object={well.mesh} />
-      <primitive object={ring.mesh} />
-    </group>
-  )
-}
-
-/**
- * The dpr governor: a decline counts only when the frames were continuous (a demand loop's gaps
- * are not slowness), and it is one-way: a machine that fell under 40 fps at the cap stays at 1.
- */
-function Governor({ burst, onDpr }: { burst: () => number; onDpr: (dpr: number) => void }) {
-  return <PerformanceMonitor ms={500} iterations={6} onDecline={() => burst() > 60 && onDpr(1)} />
+  return null
 }
 
 export default function World() {
   const { enabled } = useMotion()
   const handle = useMemo(createGuideHandle, [])
   const [dpr, setDpr] = useState<number | [number, number]>([1, DPR_MAX])
-  const burstRef = useRef(0)
   useEffect(() => {
     obs.still = !enabled
   }, [enabled])
@@ -593,9 +767,18 @@ export default function World() {
     nav.pointer = obs.pointer
     // The still hands over only once her first frame is on screen (the world's ready), and fades
     // (Window.module.css): flipping it at mount showed an empty ring until her GLB arrived.
-    const off = onWorldReady(() => document.documentElement.classList.add('gl-live'))
+    // Not before the grid's load bend (BEND_MS from the first frame) has ended: the still shows it finished.
+    const since = performance.now()
+    let wait = 0
+    const off = onWorldReady(() => {
+      wait = window.setTimeout(() => {
+        markHandover()
+        document.documentElement.classList.add('gl-live')
+      }, Math.max(0, BEND_MS + 100 - (performance.now() - since)))
+    })
     return () => {
       off()
+      clearTimeout(wait)
       document.documentElement.classList.remove('gl-live')
     }
   }, [])
@@ -610,26 +793,15 @@ export default function World() {
         onCreated={({ gl }) => {
           const name = rendererName(gl)
           if (INTEGRATED.test(name)) setDpr(1)
+          // The driver's logs are never read in production, and asking for them waits on every link.
+          if (import.meta.env.PROD) gl.debug.checkShaderErrors = false
           if (PROFILE) console.info(`[observatory] renderer ${name}: dpr ${INTEGRATED.test(name) ? 1 : `1 … ${DPR_MAX}`}`)
         }}
       >
-        <Governor burst={() => burstRef.current} onDpr={setDpr} />
         <Guide handle={handle} />
-        <Passes handle={handle} />
-        <Burst to={burstRef} />
+        <Passes handle={handle} onDpr={setDpr} />
       </Canvas>
     </div>,
     document.body,
   )
-}
-
-/** Counts continuous frames (reset by a gap over 100 ms) for the governor. */
-function Burst({ to }: { to: React.RefObject<number> }) {
-  const last = useRef(0)
-  useFrame(() => {
-    const now = performance.now()
-    to.current = now - last.current < 100 ? to.current + 1 : 0
-    last.current = now
-  })
-  return null
 }

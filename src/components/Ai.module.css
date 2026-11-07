@@ -1,59 +1,136 @@
-/* AI: paper, the proof's 64 px margin; six capabilities on hairlines, then one ink window for the two ways to build. */
+/* AI: the boldest stage between the windows. One ink card on the paper, in the products' place and gutter. */
 .ai {
   position: relative;
   background: var(--body);
-  max-width: var(--max-w);
-  margin: 0 auto;
-  padding: 112px 64px 96px;
+  padding: var(--section-top) var(--page-r) var(--section-bottom) var(--page-x);
 }
+.card {
+  --pad: 56px;
+  position: relative;
+  container-type: inline-size;
+  isolation: isolate;
+  padding: var(--pad) var(--pad) 0;
+  overflow: hidden;
+  border-radius: var(--r-window);
+  background: var(--body);
+  color: var(--porcelain);
+}
+
+/* The neon arc: the hero's ring in CSS, its centre past the card's top right corner. A hot edge, the
+   gold falling off outward, a black hole inside, and the two faint photon rings. Static; never moves. */
+.arc {
+  --d: 860px;
+  position: absolute;
+  z-index: -1;
+  top: calc(var(--d) / -2 - 20px);
+  right: calc(var(--d) / -2 - 170px);
+  width: var(--d);
+  height: var(--d);
+  pointer-events: none;
+}
+.arc i {
+  position: absolute;
+  display: block;
+  border-radius: 50%;
+}
+.neon {
+  inset: 0;
+  background: radial-gradient(
+    closest-side,
+    #000 0 91.6%,
+    rgba(255, 244, 214, 0.98) 92.4%,
+    #ffd98a 93%,
+    #e9a93f 93.9%,
+    rgba(232, 150, 50, 0.62) 95%,
+    rgba(217, 130, 45, 0.28) 96.8%,
+    rgba(217, 130, 45, 0.1) 98.4%,
+    rgba(217, 130, 45, 0) 100%
+  );
+}
+.photon {
+  inset: -4.5%;
+  border: 1px solid rgba(233, 169, 63, 0.3);
+}
+.photon2 {
+  inset: -10%;
+  border: 1px solid rgba(233, 169, 63, 0.14);
+}
+
 .head {
   display: grid;
-  gap: 18px;
-  max-width: 820px;
+  gap: 20px;
 }
+/* Three lines at most: the size is H1, or what three lines of this language's headline allow beside the arc. */
 .title {
-  font-size: clamp(2rem, 0.5rem + 3.6vw, 3.75rem);
+  /* 100cqw is the card's content box: the arc's corner comes off it. */
+  --line: calc(100cqw - 200px);
+  max-width: var(--line);
+  font-size: min(var(--h1), calc(var(--line) * 3 / (var(--chars, 52) * 0.52)));
+  line-height: 1;
   outline: none;
   hyphens: auto;
   overflow-wrap: break-word;
 }
 .lede {
-  max-width: 620px;
-  font-size: 1rem;
+  max-width: calc(100cqw - 130px);
+  font-size: 1.125rem;
+  line-height: 1.55;
 }
 
 .grid {
   display: grid;
   grid-template-columns: repeat(3, minmax(0, 1fr));
-  gap: 0 var(--gutter);
-  margin-top: 56px;
+  gap: 12px;
+  margin-top: 36px;
 }
 .cell {
+  position: relative;
   display: grid;
   align-content: start;
   gap: 10px;
-  padding: 24px 0 36px;
-  border-top: 1px solid var(--hair);
+  padding: 24px 24px 26px;
+  border: 1px solid var(--hair);
+  border-radius: var(--r-card);
+  background: var(--panel);
+  transition: border-color 0.25s var(--ease), transform 0.35s var(--ease);
 }
-/* The orange thread runs along the first row's top edge, the length of its number. */
+/* The hover's gold glow: its own layer, faded in (composited); the card itself only lifts. */
+.cell::after {
+  content: '';
+  position: absolute;
+  inset: -1px;
+  z-index: -1;
+  border-radius: inherit;
+  box-shadow: 0 0 34px -4px rgba(217, 164, 65, 0.5);
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.3s var(--ease);
+}
+@media (hover: hover) {
+  .cell:hover {
+    border-color: rgba(217, 164, 65, 0.6);
+    transform: translateY(-3px);
+  }
+  .cell:hover::after {
+    opacity: 1;
+  }
+}
 .n {
-  position: relative;
-  color: var(--grey);
+  color: var(--accent);
 }
 .name {
-  font-size: 1.25rem;
-  font-weight: 500;
-  letter-spacing: -0.01em;
-  line-height: 1.25;
+  font-size: 1.4375rem;
+  font-weight: 400;
+  letter-spacing: -0.015em;
+  line-height: 1.2;
 }
 .text {
-  max-width: 40ch;
-  font-size: 0.9375rem;
+  font-size: var(--body-size);
   line-height: 1.5;
-  color: var(--grey);
+  color: #a9a59d;
 }
 .proof {
-  font-size: 0.875rem;
+  font-size: var(--small);
   font-weight: 500;
 }
 .proof a {
@@ -67,42 +144,41 @@
   text-decoration-thickness: 2px;
 }
 
-/* The ink window: the two ways side by side, a hairline between them. */
-.window {
-  margin-top: 40px;
-  padding: 40px 48px 44px;
-  border-radius: var(--r-window);
-  background: var(--body);
-  color: var(--porcelain);
+/* The closing band: full bleed inside the card, a gold hairline over it. */
+.band {
+  margin: 36px calc(-1 * var(--pad)) 0;
+  padding: 32px var(--pad) 36px;
+  border-top: 1px solid rgba(217, 164, 65, 0.45);
+  background: linear-gradient(180deg, #16140f 0, #0b0b0d 100%);
 }
 .ways {
-  color: var(--grey);
+  color: var(--accent);
 }
 .split {
   display: grid;
   grid-template-columns: repeat(2, minmax(0, 1fr));
-  margin-top: 28px;
+  margin-top: 20px;
 }
 .way {
   display: grid;
   align-content: start;
-  gap: 16px;
-  padding-right: 48px;
+  gap: 14px;
+  padding-right: 40px;
 }
 .way + .way {
-  padding: 0 0 0 48px;
+  padding: 0 0 0 40px;
   border-left: 1px solid var(--hair);
 }
 .wayName {
-  font-size: 1.875rem;
+  font-size: clamp(1.875rem, 1rem + 1.6vw, 2.5rem);
   font-weight: 300;
   letter-spacing: -0.02em;
-  line-height: 1.1;
+  line-height: 1.05;
 }
 .tools {
   display: flex;
   flex-wrap: wrap;
-  gap: 8px;
+  gap: 6px;
 }
 .tools li {
   padding: 6px 12px;
@@ -112,39 +188,35 @@
   letter-spacing: 0.02em;
 }
 .wayText {
-  max-width: 46ch;
-  font-size: 0.9375rem;
+  font-size: var(--body-size);
   line-height: 1.5;
-  color: var(--grey);
+  color: #a9a59d;
 }
-
 .foot {
   display: flex;
   flex-wrap: wrap;
   align-items: center;
   justify-content: space-between;
-  gap: 20px 40px;
-  margin-top: 32px;
+  gap: 18px 40px;
+  margin-top: 24px;
+  padding-top: 24px;
+  border-top: 1px solid var(--hair);
 }
 .closer {
+  flex: 1 1 380px;
   max-width: 56ch;
   font-family: var(--font-serif);
   font-style: italic;
-  font-size: 1.375rem;
-  line-height: 1.35;
+  font-size: 1.5rem;
+  line-height: 1.3;
 }
 .cta {
-  height: 48px;
-  padding: 0 24px;
-  gap: 8px;
-  background: var(--porcelain);
-  border-color: var(--porcelain);
-  color: var(--body);
-  white-space: normal;
-  text-align: center;
+  flex: none;
+  max-width: 100%;
 }
 .cta:hover {
-  background: #26262e;
+  background: #e8b55a;
+  border-color: #e8b55a;
 }
 .cta:focus-visible,
 .proof a:focus-visible {
@@ -152,36 +224,103 @@
   outline-offset: 3px;
 }
 
-/* The porthole's margin (≥ 1200 px with the world running): the right column stops short of it. */
-:global(html.porthole-margin) .ai {
-  padding-right: var(--porthole-pad, 64px);
-}
-
 @media (max-width: 1099px) {
-  .ai {
-    padding: 88px var(--inset) 80px;
+  .card {
+    --pad: 36px;
   }
   .grid {
     grid-template-columns: repeat(2, minmax(0, 1fr));
   }
+  .arc {
+    --d: 640px;
+    right: calc(var(--d) / -2 - 150px);
+  }
+  .title {
+    --line: calc(100cqw - 120px);
+  }
 }
+
+/* ---------- Phones, run 2026-11-02-mobile (concept.md 05): ink; the six capabilities as a swipe row ---------- */
 @media (max-width: 767px) {
   .ai {
-    padding: 64px var(--inset) 64px;
+    --swipe-pad: 20px;
+    padding: calc(var(--section-top) + 24px) 20px var(--section-bottom);
+  }
+  .card {
+    padding: 0;
+    overflow: visible;
+    container-type: normal;
+    border-radius: 0;
+    background: transparent;
+  }
+  /* The arc keeps to the section's corner on a phone: above the headline, past the eyebrow's end. */
+  .ai {
+    overflow: clip;
+  }
+  .arc {
+    --d: 420px;
+    top: calc(var(--d) / -2 - 170px);
+    right: calc(var(--d) / -2 - 60px);
+  }
+  .photon2 {
+    display: none;
+  }
+  .title {
+    max-width: none;
+    font-size: var(--h1);
+    line-height: 1.02;
+  }
+  .lede {
+    max-width: none;
+    font-size: 1rem;
+    line-height: 1.5;
   }
   .grid {
     grid-template-columns: minmax(0, 1fr);
-    margin-top: 36px;
+    margin-top: 28px;
+    gap: 12px;
   }
   .cell {
-    padding: 20px 0 24px;
+    width: 280px;
+    min-height: 300px;
+    padding: 22px 20px;
+  }
+  .cell::after {
+    display: none;
+  }
+  .cell[data-active] {
+    transform: translateY(-8px);
+  }
+  .n {
+    color: var(--grey);
+  }
+  .cell[data-active] .n {
+    color: #d9a441;
+  }
+  .name {
+    font-size: 1.5rem;
+    font-weight: 300;
+  }
+  .text {
+    color: var(--grey);
+  }
+  .band {
+    display: contents;
   }
   .window {
+    margin-top: 24px;
     padding: 28px 22px 30px;
+    border: 1px solid var(--hair);
+    border-radius: var(--r-window);
+    background: var(--body);
+  }
+  .ways {
+    color: var(--grey);
   }
   .split {
     grid-template-columns: minmax(0, 1fr);
     gap: 28px;
+    margin-top: 28px;
   }
   .way,
   .way + .way {
@@ -195,52 +334,19 @@
   .wayName {
     font-size: 1.5rem;
   }
-  .closer {
-    font-size: 1.1875rem;
-  }
-  .cta {
-    height: auto;
-    min-height: 48px;
-    padding: 12px 22px;
-  }
-}
-
-/* ---------- Phones, run 2026-11-02-mobile (concept.md 05): ink; the six capabilities as a swipe row ---------- */
-@media (max-width: 767px) {
-  .ai {
-    --swipe-pad: 20px;
-    padding: 64px 20px 56px;
-  }
-  .grid {
-    margin-top: 28px;
-  }
-  .cell {
-    width: 280px;
-    min-height: 300px;
-    padding: 22px 20px;
-    border: 1px solid var(--hair);
-    border-radius: var(--r-card);
-    background: var(--panel);
-  }
-  .cell[data-active] {
-    transform: translateY(-8px);
-  }
-  .cell[data-active] .n {
-    color: #d9a441;
-  }
-  .name {
-    font-size: 1.5rem;
-    font-weight: 300;
+  .wayText {
+    color: var(--grey);
   }
   .foot {
     display: block;
+    margin-top: 24px;
+    padding-top: 0;
+    border-top: 0;
   }
   .foot :global(.m-details) {
     margin-bottom: 20px;
   }
-  .window {
-    margin-top: 24px;
-    border: 1px solid var(--hair);
-    border-radius: var(--r-window);
+  .cta {
+    width: 100%;
   }
 }

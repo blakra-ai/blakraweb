@@ -56,6 +56,8 @@ export default defineConfig({
     target: 'es2022',
     manifest: true,
     assetsInlineLimit: 0,
+    // One stylesheet, linked by the page, though the app's code is a dynamic import (src/entry-client.tsx).
+    cssCodeSplit: false,
     // The bundled packages' licence texts (MIT and others ask for their notice to travel with the code).
     license: { fileName: 'third-party-licenses.md' },
   },

@@ -29,6 +29,11 @@ export function reflowNow() {
 
 if (typeof window !== 'undefined') {
   window.addEventListener('resize', reflow)
-  window.addEventListener('load', reflow)
-  document.fonts?.ready.then(reflow)
+  // After `load`: reading document.fonts.ready forces a full layout.
+  const fonts = () => void document.fonts?.ready.then(reflow)
+  window.addEventListener('load', () => {
+    reflow()
+    fonts()
+  })
+  if (document.readyState === 'complete') fonts()
 }

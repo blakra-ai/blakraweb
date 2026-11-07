@@ -11,6 +11,7 @@ import {
   MeshStandardMaterial,
   Object3D,
   ShaderMaterial,
+  type Skeleton,
   Sprite,
   SpriteMaterial,
   Vector3,
@@ -19,7 +20,7 @@ import { GLTFLoader, type GLTF } from 'three/examples/jsm/loaders/GLTFLoader.js'
 import { MeshoptDecoder } from 'three/examples/jsm/libs/meshopt_decoder.module.js'
 import { clone as cloneSkeleton } from 'three/examples/jsm/utils/SkeletonUtils.js'
 import { glowTexture } from '../figure'
-import { lens, withLens } from '../lens'
+import { lens } from '../lens'
 import { eyeFragment, eyeVertex } from '../visor'
 import { CHAKRAS } from '../yantra'
 import { afterReveal } from '../../observatory/ready'
@@ -88,6 +89,25 @@ function meshesUnder(o: Object3D): Mesh[] {
   return out
 }
 
+/**
+ * The skeleton clone gives every skinned mesh its own skeleton: seven bone textures uploaded per frame
+ * for one set of bones. Meshes on the same bones with the same bind matrices share one. Her skinned
+ * meshes are never culled: the bounding sphere a skinned mesh computes for it walks every vertex on the
+ * first frame, and the frame almost always shows her.
+ */
+function shareSkeletons(root: Object3D) {
+  const kept: Skeleton[] = []
+  root.traverse((o) => {
+    const mesh = o as SkinnedMesh
+    if (!mesh.isSkinnedMesh) return
+    mesh.frustumCulled = false
+    const own = mesh.skeleton
+    const same = kept.find((k) => k.bones.length === own.bones.length && k.bones.every((b, i) => b === own.bones[i]) && k.boneInverses.every((m, i) => m.equals(own.boneInverses[i])))
+    if (same) mesh.skeleton = same
+    else kept.push(own)
+  })
+}
+
 /** What `loadFigure` adds beyond the contract, for the component that applies the performance. */
 export interface LoadedFigure extends Figure {
   /** The glow sprites' materials, one per system (opacity follows the light). */
@@ -114,6 +134,7 @@ export async function loadFigure(url: string): Promise<LoadedFigure> {
 
   const root = cloneSkeleton(gltf.scene) as Group
   root.name = 'NavigatorFigure'
+  shareSkeletons(root)
   const named = byName(root)
   const need = (name: string) => {
     const o = named.get(name)
@@ -160,7 +181,6 @@ export async function loadFigure(url: string): Promise<LoadedFigure> {
     const mat = src instanceof MeshStandardMaterial ? src.clone() : new MeshStandardMaterial({ color: '#111114' })
     mat.emissive.set(CHAKRAS[i].color)
     mat.emissiveIntensity = 0.3
-    withLens(mat, 'outside')
     if (mesh) mesh.material = mat
     sysMats.push(mat)
     const glow = new SpriteMaterial({ map: glowMap, color: CHAKRAS[i].color, transparent: true, opacity: 0.12, blending: AdditiveBlending, depthWrite: false })
@@ -184,7 +204,7 @@ export async function loadFigure(url: string): Promise<LoadedFigure> {
       if (CONTRACT.inner.test(p.name)) insideSet = true
     }
     const mats = Array.isArray(mesh.material) ? mesh.material : [mesh.material]
-    const cloned = mats.map((m) => withLens(m.clone(), insideSet ? 'inside' : 'outside'))
+    const cloned = mats.map((m) => m.clone())
     mesh.material = Array.isArray(mesh.material) ? cloned : cloned[0]
     ;(insideSet ? inner : outer).push(mesh)
   })
@@ -252,21 +272,29 @@ export async function loadFigure(url: string): Promise<LoadedFigure> {
 
   // Metrics, in world space with the root at rest (identity transform): nothing here is a constant.
   root.updateMatrixWorld(true)
-  // A skinned mesh's bounds come from its bones, not its node: update the skeletons first and
-  // let Box3 use the skinned bounding boxes (precise), else a rigged model measures as its bind
-  // buffer in the exporter's units.
-  root.traverse((o) => {
-    const sk = o as SkinnedMesh
-    if (sk.isSkinnedMesh) {
-      sk.skeleton.update()
-      sk.computeBoundingBox()
-    }
-  })
-  const box = new Box3().setFromObject(root, true)
-  const height = box.max.y - box.min.y
-  // The head's top includes the hair when the model names it: a face mesh often stops at the brow.
-  const hairNode = named.get('Hair')
-  const headTop = Math.max(new Box3().setFromObject(face, true).max.y, hairNode ? new Box3().setFromObject(hairNode, true).max.y : -Infinity)
+  // Her height and head's top need every skinned vertex, a long task on the main thread: the asset
+  // carries them (scripts/navigator-slim.mjs); a model without them is measured here.
+  const baked = gltf.scene.userData.metrics as { height: number; headTop: number } | undefined
+  let height: number
+  let headTop: number
+  if (baked) ({ height, headTop } = baked)
+  else {
+    // A skinned mesh's bounds come from its bones, not its node: update the skeletons first and
+    // let Box3 use the skinned bounding boxes (precise), else a rigged model measures as its bind
+    // buffer in the exporter's units.
+    root.traverse((o) => {
+      const sk = o as SkinnedMesh
+      if (sk.isSkinnedMesh) {
+        sk.skeleton.update()
+        sk.computeBoundingBox()
+      }
+    })
+    const box = new Box3().setFromObject(root, true)
+    height = box.max.y - box.min.y
+    // The head's top includes the hair when the model names it: a face mesh often stops at the brow.
+    const hairNode = named.get('Hair')
+    headTop = Math.max(new Box3().setFromObject(face, true).max.y, hairNode ? new Box3().setFromObject(hairNode, true).max.y : -Infinity)
+  }
   const headAt = bones.Head.getWorldPosition(new Vector3())
   // The Head bone sits at the skull's base (the jaw line), so base → top of the Face mesh is the head's height.
   const headHeight = Math.max(1e-3, headTop - headAt.y)
@@ -277,6 +305,12 @@ export async function loadFigure(url: string): Promise<LoadedFigure> {
   const mouthAt = mouth.getWorldPosition(new Vector3())
   const mouthY = named.get('Mouth') || bones.Jaw ? mouthAt.y : eyeMid.y - 0.35 * headHeight
   const metrics = { height, headHeight, eyeY: eyeMid.y, mouthY, headZ: eyeMid.z }
+
+  // The X-ray lens never opens on this site and her seven lights stay off (the world hides them each
+  // frame): neither the inner set nor the systems are drawn, so they leave the scene. No draw calls, no
+  // programs to compile, no glow texture to upload, and no material carries the lens's `discard`,
+  // which pushed depth testing late and shaded every hidden layer of the mecha.
+  for (const o of [...systems, ...inner]) o.removeFromParent()
 
   const figure: LoadedFigure = {
     root,

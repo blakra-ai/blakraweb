@@ -10,7 +10,7 @@ const root = join(dirname(fileURLToPath(import.meta.url)), '..')
 // Inline the fonts: a page made with setContent cannot read file:// URLs.
 const font = (f) => `data:font/woff2;base64,${readFileSync(join(root, 'src/assets/fonts', f)).toString('base64')}`
 // The background is the film's last frame, the whole system running (scripts/og-frame.mjs, real GPU).
-const hero = `data:image/jpeg;base64,${readFileSync(join(root, 'src/assets/observatory/hero-still.jpg')).toString('base64')}`
+const hero = `data:image/jpeg;base64,${readFileSync(join(root, 'src/assets/observatory/og-still.jpg')).toString('base64')}`
 const ink = '#0b0b10'
 const paper = '#f2f0eb'
 // The official logo (src/assets/brand): the symbol and the BLAKRA lettering, in ink.

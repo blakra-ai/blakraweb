@@ -5,8 +5,9 @@ import { Studio } from '../experience/objects/Studio'
 import { Figure, type FigureRig } from '../navigator/figure/Figure'
 import { nav } from '../navigator/state'
 import { obs } from './state'
-import { createPose, GOLD, poseSettling, stepPose, type PoseInput, type PoseState } from './guidePose'
-import type { Rect } from './windows'
+import { createPose, GOLD, POSE, poseSettling, stepPose, type PoseInput, type PoseState } from './guidePose'
+import { isHandedOver } from './ready'
+import { getWindows, type Rect } from './windows'
 
 /*
  * The guide: the Navigator's figure from the navigator pipeline (loadFigure + Figure, variant
@@ -35,6 +36,8 @@ export interface GuideHandle {
   input: PoseInput
   /** True while something of hers is moving: the world keeps the frames coming. */
   moving: () => boolean
+  /** From the still's place to her own (px, px, scale); undefined until measured on her first frame, then null once done. */
+  glide?: { dx: number; dy: number; k: number } | null
 }
 
 export function createGuideHandle(): GuideHandle {
@@ -58,6 +61,8 @@ export function createGuideHandle(): GuideHandle {
 
 const FOV = 30
 const DEG = Math.PI / 180
+/** The world clock (s) in the hero's still; 140 s is whole periods of the ring's shimmer and ripples, so a reduced-motion frame (clock 0) agrees too. */
+const SKY_AT_STILL = 140
 /** The key light's stand-off on x (its side flips per window) and the fill's: world units are px here, the lights are directional. */
 const KEY_X = 3
 
@@ -89,14 +94,45 @@ export interface GuidePlace {
 }
 
 /**
+ * Her place in the hero's still, measured by scripts/hero-still.mjs at the window it was captured in:
+ * her eyes from the ring's centre and her height, in ring radii (the still is scaled by the ring).
+ */
+export const STILL_FRAMING = { w: 1377, h: 868.78, eyeX: 0.1085, eyeY: 0.0652, figure: 6.3429 }
+/** At any other size she starts where the still shows her, and glides to her own framing once the crossfade is over. */
+const GLIDE_AFTER_S = 0.5
+const GLIDE_S = 1.1
+
+/** What takes her from her own place to the still's, measured on her first frame (null: nothing to do). */
+function measureGlide(_h: GuideHandle, place: GuidePlace): GuideHandle['glide'] {
+  const hero = getWindows().find((w) => w.kind === 'hero')
+  if (!hero || obs.still || window.scrollY > 0 || !nav.anchor.on) return null
+  if (Math.abs(hero.rect.w - STILL_FRAMING.w) < 1 && Math.abs(hero.rect.h - STILL_FRAMING.h) < 1) return null
+  const { x, y, r } = hero.framing.ring
+  const figure = STILL_FRAMING.figure * r
+  // Her eyes sit off the group's origin by a share of her height (the model and the camera's angle).
+  const ax = (nav.anchor.eyes.x - place.x) / place.figurePx
+  const ay = (nav.anchor.eyes.y - place.y) / place.figurePx
+  return { dx: hero.rect.x + x + STILL_FRAMING.eyeX * r - ax * figure - place.x, dy: hero.rect.y + y + STILL_FRAMING.eyeY * r - ay * figure - place.y, k: figure / place.figurePx }
+}
+
+/**
  * Put her at `place` (viewport px) through a camera that draws the viewport rect `view` with
  * world units = CSS px: her eyes at (x, y), her whole height `figurePx`, banked and pitched.
  * Writes where her eyes are on screen (`nav.anchor`) for the gaze. Returns false when she is not ready.
  */
-export function placeGuide(h: GuideHandle, place: GuidePlace, view: Rect, camera: PerspectiveCamera): boolean {
+export function placeGuide(h: GuideHandle, placed: GuidePlace, view: Rect, camera: PerspectiveCamera): boolean {
   const g = h.group
   const m = h.rig.metrics
   if (!g || !m) return false
+  const place = { ...placed }
+  if (h.glide) {
+    const t = h.pose ? Math.min(1, Math.max(0, (obs.clock - h.pose.born - GLIDE_AFTER_S) / GLIDE_S)) : 0
+    const e = 1 - t * t * (3 - 2 * t)
+    place.x += h.glide.dx * e
+    place.y += h.glide.dy * e
+    place.figurePx *= 1 + (h.glide.k - 1) * e
+    if (t >= 1) h.glide = null
+  }
   const s = place.figurePx / m.height
   const x = place.x - view.x - view.w / 2
   const y = view.h / 2 - (place.y - view.y)
@@ -123,6 +159,7 @@ export function placeGuide(h: GuideHandle, place: GuidePlace, view: Rect, camera
     nav.anchor.eyes.y = view.y + ((1 - EYE.y) / 2) * view.h
     nav.anchor.headPx = 0.25 * place.figurePx
     nav.anchor.on = true
+    if (h.glide === undefined) h.glide = measureGlide(h, place)
   }
   return true
 }
@@ -147,6 +184,9 @@ export function Guide({ handle }: { handle: GuideHandle }) {
     handle.key = key.current
     // The world's figure never docks here: Figure then leaves the anchor to placeGuide.
     nav.atDock = true
+    // The still's pose, from the very first frame.
+    nav.perf.head.yaw = -POSE.restYaw
+    nav.perf.eyes.yaw = -POSE.restYaw / 3
     return () => {
       nav.atDock = false
       nav.anchor.on = false
@@ -155,8 +195,12 @@ export function Guide({ handle }: { handle: GuideHandle }) {
 
   useFrame((_, dt) => {
     handle.group = group.current
-    if (!handle.rig.metrics) return
-    if (!handle.pose) handle.pose = createPose(7, obs.clock)
+    // Until the still starts to fade she is exactly its picture (scripts/hero-still.mjs): her life starts at the handover, with the sky's clock at the still's moment.
+    if (!handle.rig.metrics || !isHandedOver()) return
+    if (!handle.pose) {
+      obs.clock = Math.max(obs.clock, SKY_AT_STILL)
+      handle.pose = createPose(7, obs.clock, true)
+    }
     const i = handle.input
     i.clock = obs.clock
     i.dt = Math.min(0.1, dt)

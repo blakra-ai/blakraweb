@@ -1,12 +1,12 @@
 import { useFrame, useThree } from '@react-three/fiber'
 import { useEffect, useMemo, useRef, useState } from 'react'
-import { Bone, type Camera, Euler, Group, type Material, Matrix4, MeshStandardMaterial, Object3D, Quaternion, type Scene, Texture, Vector3, type WebGLRenderer } from 'three'
+import { Bone, type Camera, Color, Euler, Group, type Material, Matrix4, MeshStandardMaterial, Object3D, Quaternion, type Scene, Texture, Vector3, type WebGLRenderer } from 'three'
 import { createHair, segmentQuaternion, stepHair, type HairState } from '../hair'
 import { nav } from '../state'
 import { CHAKRAS } from '../yantra'
 import { GLB_URL, HAIR_BONES, type Figure as FigureData } from './contract'
 import { loadFigure, type LoadedFigure } from './loadFigure'
-import { afterReveal, markWorldReady } from '../../observatory/ready'
+import { afterReveal, isHandedOver, markWorldReady } from '../../observatory/ready'
 
 /** What the world asks of the figure each frame. */
 export interface FigureRig {
@@ -30,9 +30,51 @@ const SHARE = { Head: 0.6, Neck: 0.3, Spine2: 0.1 } as const
 const BREATH_M = 0.004
 /** Breathing as scale on the chest (Spine2, which carries the neck): 0.5 % at the breath's peak. */
 const BREATH_SCALE = 0.005
-/** The emissive strips' materials (the GLB's E_Neck, E_Head, E_Eyes and the chest strip). */
-const STRIPS = /^(E_Eyes|E_Head|E_Neck|Material\.002)$/
+/** The colour of all her lights (eyes, strips, chest, bottles), in the windows and the porthole: the ring's neon gold. */
+export const LIGHT = '#ffb84d'
+/** The emissive strips' materials (the GLB's E_Neck, E_Head, E_Eyes, the chest strip and the bottles). */
+const STRIPS = /^(E_Eyes|E_Head|E_Neck|Material\.002|Bottles)$/
+/** The authored lights run at up to 10, which tone-maps to white: capped here they read as gold, with a paler core. */
+const LIGHT_MAX = 3
 const COLLAR_TURN = 0.006 // map offset per second
+
+const lit = new WeakSet<Material>()
+/**
+ * Her lights in one colour. The GLB paints them magenta, in the emissive map and on the base colour
+ * under them: the map keeps only its brightness (LIGHT sets the hue), and magenta paint turns gold.
+ * Before the warm-up, so the programs compile once, with this in them.
+ */
+function goldLights(root: Object3D) {
+  const light = new Color(LIGHT)
+  const paint = /* glsl */ `#include <map_fragment>
+  #ifdef USE_MAP
+    float lightPaint = smoothstep(0.03, 0.2, min(diffuseColor.r, diffuseColor.b) - diffuseColor.g);
+    diffuseColor.rgb = mix(diffuseColor.rgb, vec3(${light.r.toFixed(4)}, ${light.g.toFixed(4)}, ${light.b.toFixed(4)}) * max(diffuseColor.r, diffuseColor.b), lightPaint);
+  #endif`
+  const mask = /* glsl */ `#ifdef USE_EMISSIVEMAP
+    vec3 lightTexel = texture2D(emissiveMap, vEmissiveMapUv).rgb;
+    totalEmissiveRadiance *= max(lightTexel.r, max(lightTexel.g, lightTexel.b));
+  #endif`
+  root.traverse((o) => {
+    const mats = (o as { material?: Material | Material[] }).material
+    for (const mat of Array.isArray(mats) ? mats : mats ? [mats] : []) {
+      if (!(mat instanceof MeshStandardMaterial) || lit.has(mat)) continue
+      lit.add(mat)
+      if (STRIPS.test(mat.name)) {
+        mat.emissive.copy(light)
+        mat.emissiveIntensity = Math.min(mat.emissiveIntensity, LIGHT_MAX)
+      }
+      if (mat.name === 'Bottles') mat.color.copy(light)
+      const compile = mat.onBeforeCompile
+      const key = mat.customProgramCacheKey()
+      mat.onBeforeCompile = (shader, renderer) => {
+        compile.call(mat, shader, renderer)
+        shader.fragmentShader = shader.fragmentShader.replace('#include <map_fragment>', paint).replace('#include <emissivemap_fragment>', mask)
+      }
+      mat.customProgramCacheKey = () => `${key}-light`
+    }
+  })
+}
 
 /* Hair: the Verlet chains (hair.ts) live in the head's space in metres and are carried into world
  * units by the Head bone's world matrix, so gravity and the wind scale with the figure. */
@@ -205,6 +247,7 @@ export function Figure({ rig, variant }: { rig: FigureRig; variant: 'world' | 'd
   const w = useMemo(() => new Vector3(), [])
   const show = useRef(0)
   const firstFrame = useRef(false)
+  const floatFrom = useRef(-1)
   const collarOffset = useRef(0)
   const hair = useRef<HairRig | null>(null)
   /** Single hair bones (HairSway_n, a model's own dynamic-hair joints): a damped spring per bone that lags her turns. */
@@ -215,7 +258,10 @@ export function Figure({ rig, variant }: { rig: FigureRig; variant: 'world' | 'd
     figureFor(variant).then(
       // Her textures and programs are made ready first, off the frame that first draws her: done in
       // that frame they stalled it for most of a second (just as the brand loader lifted).
-      (f) => warmUp(gl, f.root, camera, scene).then(() => live && setFigure(f)),
+      (f) => {
+        goldLights(f.root)
+        return warmUp(gl, f.root, camera, scene).then(() => live && setFigure(f))
+      },
       (e: unknown) => {
         // The still (the drawn face in the hero) stays; in dev the error also surfaces.
         document.documentElement.classList.add('gl-off')
@@ -253,12 +299,12 @@ export function Figure({ rig, variant }: { rig: FigureRig; variant: 'world' | 'd
       const qb = bone.getWorldQuaternion(new Quaternion()).premultiply(rootInv)
       earAxes.push({ bone, axis: new Vector3(0, 0, 1).applyQuaternion(qb.invert()).normalize(), side })
     }
-    const strips: { mat: MeshStandardMaterial; r: number; g: number; b: number; i: number }[] = []
+    const strips: { mat: MeshStandardMaterial; i: number }[] = []
     // By material name (the strips' materials are cloned per mesh by the loader; their names survive).
     figure.root.traverse((m) => {
       const mats = (m as { material?: unknown }).material
       for (const mat of Array.isArray(mats) ? mats : [mats]) {
-        if (mat instanceof MeshStandardMaterial && STRIPS.test(mat.name) && !strips.some((s) => s.mat === mat)) strips.push({ mat, r: mat.emissive.r, g: mat.emissive.g, b: mat.emissive.b, i: mat.emissiveIntensity })
+        if (mat instanceof MeshStandardMaterial && STRIPS.test(mat.name) && !strips.some((s) => s.mat === mat)) strips.push({ mat, i: mat.emissiveIntensity })
       }
     })
     const collar = figure.root.getObjectByName('Collar') as { material?: MeshStandardMaterial } | undefined
@@ -363,12 +409,8 @@ export function Figure({ rig, variant }: { rig: FigureRig; variant: 'world' | 'd
     figure.jaw(p.jaw)
     figure.bones.Spine2.position.z = rest.spine2Z + BREATH_M * p.breath
     figure.bones.Spine2.scale.setScalar(1 + BREATH_SCALE * p.breath)
-    // The strips' light: toward the tint, times the gain.
-    const tint = p.tint
-    for (const s of rest.strips) {
-      s.mat.emissive.setRGB(s.r + (tint.r - s.r) * tint.mix, s.g + (tint.g - s.g) * tint.mix, s.b + (tint.b - s.b) * tint.mix)
-      s.mat.emissiveIntensity = s.i * tint.gain
-    }
+    // The strips' light: one colour (LIGHT), only its gain moves.
+    for (const s of rest.strips) s.mat.emissiveIntensity = s.i * p.tint.gain
 
     // Ears: prick (tips rise toward vertical), the cursor-side ear turns toward it, tips glow while she types.
     const earL = figure.bones.Ear_L
@@ -394,7 +436,9 @@ export function Figure({ rig, variant }: { rig: FigureRig; variant: 'world' | 'd
       collarOffset.current = (collarOffset.current + dt * COLLAR_TURN) % 1
       rest.collarMap.offset.x = collarOffset.current
     }
-    rig.float = still ? 0 : Math.sin(t * 0.6) * 0.02 * figure.metrics.headHeight
+    // Her float starts from level at the still's handover, where the still shows her (no jump in the crossfade).
+    if (floatFrom.current < 0 && isHandedOver()) floatFrom.current = t
+    rig.float = still || floatFrom.current < 0 ? 0 : Math.sin((t - floatFrom.current) * 0.6) * 0.02 * figure.metrics.headHeight
 
     // Hair: lags her turns, lifts with the scroll; still (reduced motion) keeps the rest pose.
     const h = hair.current

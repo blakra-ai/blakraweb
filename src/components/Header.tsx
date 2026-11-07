@@ -66,7 +66,8 @@ export function Header({ route }: { route: Route }) {
     mq.addEventListener('change', sync)
     return () => mq.removeEventListener('change', sync)
   }, [])
-  const light = home && !phone && (station === 2 || station === 8)
+  // Desktop: the bar goes ink over the two ink stages between the windows (products, AI).
+  const light = home && !phone && (station === 2 || station === 6)
   const inkBar = home && phone && INK_CHAPTERS.includes(station)
   const panelRef = useRef<HTMLDivElement>(null)
   const burgerRef = useRef<HTMLButtonElement>(null)

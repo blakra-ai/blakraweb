@@ -29,6 +29,11 @@ export const POSE = {
   enter: { deg: -10, dur: 0.5 },
   /** A successful Send: 1.2 s of head up, ears up, lights brighter. */
   sent: { dur: 1.2, pitch: 7, prick: 10, gain: 1.9 },
+  /** Her head at rest in the hero, with no cursor or line to read: the pose the hero's still is captured in. */
+  restYaw: -6,
+  /** From her first frame she holds that pose this long (s), then eases out of it over `wakeS`: the still's crossfade plays over a head that does not move. */
+  holdS: 0.7,
+  wakeS: 0.9,
 } as const
 
 /** Warm gold #d9a441, linear. */
@@ -75,6 +80,10 @@ export interface PoseState {
   enterAt: number
   /** The idle glance at the viewer: when the next one starts (clock s). */
   glance: number
+  /** Her first frame (clock s): the breath starts there, from its zero. */
+  born: number
+  /** When her head may leave the still's pose (clock s); −Infinity: from the start. */
+  wakeAt: number
   rng: () => number
 }
 
@@ -93,10 +102,11 @@ function prng(seed: number) {
 const between = (rng: () => number, r: { min: number; max: number }) => r.min + rng() * (r.max - r.min)
 const clamp = (v: number, lo: number, hi: number) => Math.min(hi, Math.max(lo, v))
 
-export function createPose(seed = 7, clock = 0): PoseState {
+/** `fromStill`: she starts in the pose the hero's still holds, and stays in it through the crossfade (POSE.holdS). */
+export function createPose(seed = 7, clock = 0, fromStill = false): PoseState {
   const rng = prng(seed)
   return {
-    yaw: 0,
+    yaw: fromStill ? POSE.restYaw : 0,
     yawV: 0,
     pitch: 0,
     pitchV: 0,
@@ -113,6 +123,8 @@ export function createPose(seed = 7, clock = 0): PoseState {
     station: 0,
     enterAt: -10,
     glance: clock + 6 + rng() * 4,
+    born: clock,
+    wakeAt: fromStill ? clock + POSE.holdS : -Infinity,
     rng,
   }
 }
@@ -172,7 +184,7 @@ export function headTarget(i: PoseInput): { yaw: number; pitch: number } {
     const c = aim(i.pointer.x, i.pointer.y, 0.3)
     return { yaw: clamp(look.yaw + c.yaw, -POSE.yawMax, POSE.yawMax), pitch: clamp(look.pitch + c.pitch, -POSE.pitchMax, POSE.pitchMax) }
   }
-  if (!i.pointer.on || i.still) return { yaw: -6, pitch: 0 }
+  if (!i.pointer.on || i.still) return { yaw: POSE.restYaw, pitch: 0 }
   return aim(i.pointer.x, i.pointer.y, 1)
 }
 
@@ -192,8 +204,15 @@ export function stepPose(s: PoseState, i: PoseInput, out: Perf): void {
       target.pitch = 0
     }
   }
+  // Out of the still's pose: held through the crossfade, then eased toward what the frame asks.
+  if (!i.still && t < s.wakeAt + POSE.wakeS) {
+    const w = clamp((t - s.wakeAt) / POSE.wakeS, 0, 1)
+    const k = w * w * (3 - 2 * w)
+    target.yaw = POSE.restYaw + (target.yaw - POSE.restYaw) * k
+    target.pitch *= k
+  }
   // A line break: a tiny nod (down and back, 0.35 s).
-  const nod = i.still ? 0 : -3 * pulse(t - i.nodAt, 0.35)
+  const nod = i.still || t < s.wakeAt ? 0 : -3 * pulse(t - i.nodAt, 0.35)
   const back = earBackFor(i.depth)
   if (s.station !== i.station) {
     if (s.station !== 0) s.enterAt = t
@@ -237,7 +256,7 @@ export function stepPose(s: PoseState, i: PoseInput, out: Perf): void {
     }
     const b = t - s.blink.at
     out.lids = b < POSE.blink.close ? b / POSE.blink.close : b < POSE.blink.close + POSE.blink.open ? 1 - (b - POSE.blink.close) / POSE.blink.open : 0
-    out.breath = Math.sin(2 * Math.PI * POSE.breathHz * t)
+    out.breath = Math.sin(2 * Math.PI * POSE.breathHz * (t - s.born))
   }
 
   // The rig turns the head to screen right for a positive bone yaw: the performance's sign is flipped

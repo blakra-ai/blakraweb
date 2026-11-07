@@ -1,28 +1,28 @@
-import { StrictMode } from 'react'
-import { hydrateRoot, createRoot } from 'react-dom/client'
-import { App } from './App'
 import { boot } from './boot'
-import { loadDict, locales } from './i18n'
-import { resolveRoute } from './routes'
 
-// The brand loader counts from the first module run, before the language file and hydration.
+// The brand loader counts from the first module run, before the app.
 boot()
 
-const root = document.getElementById('root')!
-const route = resolveRoute(location.pathname)
-// The page's language file is preloaded by the prerendered HTML, so this resolves at once.
-const dict = await loadDict(route.locale)
-const app = (
-  <StrictMode>
-    <App route={route} dict={dict} />
-  </StrictMode>
-)
+/*
+ * On a phone the first paint comes first: the app's code would hold the main thread while the hero's
+ * still and words are waiting to paint, and nothing on the first screen needs it (the links are
+ * links). It starts once the page has loaded and painted, at the latest after CAP_MS.
+ */
+const PHONE = '(max-width: 767px)'
+const CAP_MS = 2500
 
-// Prerendered pages hydrate; the dev server serves an empty shell and renders fresh.
-// GitHub Pages has one 404.html, in English, for every path: a miss under /de/ renders fresh in its language.
-const lang = locales[route.locale].lang
-if (root.firstElementChild && document.documentElement.lang === lang) hydrateRoot(root, app)
+const start = () => void import('./hydrate')
+
+if (!matchMedia(PHONE).matches) start()
 else {
-  document.documentElement.lang = lang
-  createRoot(root).render(app)
+  let started = false
+  const go = () => {
+    if (started) return
+    started = true
+    start()
+  }
+  setTimeout(go, CAP_MS)
+  const afterPaint = () => requestAnimationFrame(() => requestAnimationFrame(() => setTimeout(go)))
+  if (document.readyState === 'complete') afterPaint()
+  else addEventListener('load', afterPaint, { once: true })
 }

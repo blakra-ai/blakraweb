@@ -56,7 +56,7 @@ export const needs: Record<NeedId, { layers: readonly LayerId[]; work: WorkSlug 
   panel: { layers: ['cloud', 'data', 'design', 'apps'], work: 'vitrin-console' },
   shop: { layers: ['cloud', 'data', 'automation', 'design', 'apps', 'growth'], work: 'vitrin-app' },
   assistant: { layers: ['cloud', 'data', 'automation', 'apps', 'ai'], work: 'helya-ai' },
-  aidata: { layers: ['cloud', 'data', 'automation', 'ai'], work: 'nuvoq-vision' },
+  aidata: { layers: ['cloud', 'data', 'automation', 'ai'], work: 'helya-ai' },
   app: { layers: ['cloud', 'data', 'design', 'apps'], work: 'veyra-money' },
   warehouse: { layers: ['cloud', 'data', 'automation', 'apps'], work: 'vitrin-app' },
   bots: { layers: ['cloud', 'data', 'automation'], work: 'flowline-automation' },

@@ -88,7 +88,7 @@ export interface Dict {
     eyebrow: string
     title: string
     body: string
-    /** Phones: the body cut to two sentences, and its parts as the vendor grid and the one-contract card. */
+    /** Phones: the body cut to one sentence, and its parts as the vendor grid and the one-contract card. */
     bodyShort: string
     usualShort: string
     withUsLabelShort: string
@@ -158,7 +158,6 @@ export interface Dict {
     symbol: string
     usedAt: string
     crownTitle: string
-    crownSource: string
     /** Marks the layer the visitor picked in the pulse. */
     focus: string
     /** The stage's counter: "Layers in orbit 03 / 07" and, with a pick, "It takes 04 / 07". */
@@ -213,6 +212,8 @@ export interface Dict {
     submitting: string
     success: string
     failure: string
+    /** The form without an endpoint: shown after it opens the visitor's mail app; it points at the address above it. */
+    mailFallback: string
     privacy: string
     privacyLink: string
     /** Under the form: the event horizon. */

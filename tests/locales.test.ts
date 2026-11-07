@@ -24,6 +24,19 @@ const budgets = (t: Dict): [string, string, number][] => {
   ]
 }
 
+// Copy in a tight layout (the hero's facts, the status chip, the phone-only short lines, the two
+// card titles): no language runs more than 15 % over English (run 2026-11-06-polish).
+const tight = (t: Dict): [string, string][] => [
+  ['prologue.facts', t.prologue.facts],
+  ['products.stage.working', t.products.stage.working],
+  ['products.title', t.products.title],
+  ['products.items.skin.lineShort', t.products.items.skin.lineShort],
+  ['pulse.bodyShort', t.pulse.bodyShort],
+  ['engine.ledeShort', t.engine.ledeShort],
+  ['ai.ledeShort', t.ai.ledeShort],
+  ['process.title', t.process.title],
+]
+
 describe('locales', () => {
   it('ships all four languages', () => {
     expect(codes.sort()).toEqual(['de', 'en', 'es', 'fr'])
@@ -43,6 +56,22 @@ describe('locales', () => {
     it(`${code}: labels fit their controls`, () => {
       const over = budgets(t).filter(([, text, max]) => text.length > max).map(([k, text, max]) => `${k} (${text.length}/${max}): ${text}`)
       expect(over).toEqual([])
+    })
+
+    it(`${code}: tight-layout copy stays within 15 % of English`, () => {
+      const source = Object.fromEntries(tight(en))
+      const over = tight(t).filter(([k, text]) => text.length > Math.round(source[k].length * 1.15)).map(([k, text]) => `${k} (${text.length}, English ${source[k].length}): ${text}`)
+      expect(over).toEqual([])
+    })
+
+    it(`${code}: the contact field asks the question the page has been asking`, () => {
+      expect(t.contact.doors.commission.msg).toBe(t.pulse.ask)
+    })
+
+    it(`${code}: nothing the owner keeps off the site`, () => {
+      const text = JSON.stringify(t)
+      expect(text).not.toMatch(/Gartner/) // FACTS.md: deliberately absent
+      expect(text).not.toMatch(/[\u0600-\u06ff]/) // no Persian anywhere
     })
   }
 })

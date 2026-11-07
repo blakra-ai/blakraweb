@@ -1,163 +1,298 @@
-/* /about: paper, the 64 px margin, a 12-column reading grid; each block a mono label (columns 1–4) and its text (6–12). */
-.page {
-  max-width: var(--max-w);
-  margin: 0 auto;
-  padding: calc(var(--header-h) + clamp(4rem, 10vh, 7rem)) 64px clamp(5rem, 10vw, 8rem);
+/* /about: ink opening, paper story, ink leadership, paper commitments, ink way of working, paper reference, ink close. */
+
+/* The opening: as tall as the first screen; the ring low on the right, cut by the window's edges. */
+.hero {
+  display: flex;
+  flex-direction: column;
+  min-height: calc(100svh - var(--header-h) - var(--win-inset));
+  padding-block: 28px 40px;
 }
-.crumbs {
-  margin-bottom: 32px;
+.heroRing {
+  --ring-d: min(96vh, 900px);
+  --ring-x: 100%;
+  --ring-y: 90%;
 }
-.intro {
+.heroWords {
   display: grid;
   gap: 24px;
-  max-width: 980px;
-  padding-bottom: clamp(3rem, 6vw, 5rem);
+  max-width: 11.5em;
+  margin-block: auto;
+  padding-block: 48px;
+  font-size: var(--h1);
+}
+.heroWords > :first-child {
+  font-size: var(--mono-size);
 }
 .title {
-  max-width: 18ch;
   hyphens: auto;
   overflow-wrap: break-word;
 }
-.story {
-  display: grid;
-  gap: 1rem;
-  max-width: 62ch;
-  margin-top: 12px;
+.heroFoot {
+  max-width: 34em;
+  padding-top: 18px;
+  border-top: 1px solid var(--hair);
   font-size: var(--lead);
-  line-height: 1.5;
-}
-/* The orange thread marks where the story starts. */
-.story p:first-child {
-  position: relative;
-  padding-left: 18px;
-}
-.story p:first-child::before {
-  content: '';
-  position: absolute;
-  left: 0;
-  top: 0.3em;
-  bottom: 0.3em;
-  width: 2px;
-  background: var(--accent);
-}
-.story p + p {
-  color: var(--grey);
+  line-height: 1.45;
 }
 
-.block {
+/* The story and the name's drawing, on its own ink plate: gold stays on ink. */
+.story {
   display: grid;
   grid-template-columns: repeat(12, minmax(0, 1fr));
   column-gap: var(--gutter);
-  padding: 40px 0 56px;
+  align-items: start;
+  padding-top: var(--sec);
+}
+.storyText {
+  grid-column: 1 / 8;
+  display: grid;
+  gap: 1.25rem;
+  font-size: var(--body-size);
+  line-height: 1.6;
+}
+.storyText > p:not(.statement) {
+  max-width: 36em;
+  color: var(--grey);
+}
+.statement {
+  margin-bottom: 1rem;
+  font-size: clamp(1.625rem, 1rem + 1.7vw, 2.5rem);
+  font-weight: 300;
+  line-height: 1.2;
+  letter-spacing: -0.02em;
+}
+.plate {
+  grid-column: 9 / 13;
+  display: grid;
+  place-items: center;
+  aspect-ratio: 1;
+  padding: 8%;
+  border-radius: var(--r-window);
+  background: var(--body);
+}
+.rings {
+  width: 100%;
+  height: auto;
+}
+
+/* A section's head: its index, then a real headline. */
+.head {
+  display: grid;
+  gap: 14px;
+}
+.head :global(.mono) {
+  color: var(--grey);
+}
+.head h2 {
+  max-width: 14em;
+  hyphens: auto;
+}
+.head h2:focus-visible {
+  outline: none;
+}
+
+.section {
+  padding-top: var(--sec);
+}
+/* The headline left, its matter right, on the page's 12 columns. */
+.split {
+  display: grid;
+  grid-template-columns: repeat(12, minmax(0, 1fr));
+  column-gap: var(--gutter);
+  row-gap: 28px;
+}
+.split > .head {
+  grid-column: 1 / 7;
+  align-self: start;
+}
+.right {
+  grid-column: 7 / 13;
+}
+
+/* Ink stretches: the section keeps the top space, so a link to it lands with the window below the bar. */
+.inkSection {
+  padding-top: var(--sec);
+}
+.ink {
+  padding-block: clamp(2.5rem, 5vw, 4.5rem);
+}
+.inkLede {
+  max-width: 36em;
+  margin-top: 20px;
+  font-size: var(--lead);
+  line-height: 1.45;
+  color: var(--grey);
+}
+
+/* Three people: cards on the panel colour, gold numbers. */
+.roles {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: var(--gutter);
+  margin-top: clamp(2rem, 4vw, 3.5rem);
+}
+.roles li {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  padding: 28px;
+  border: 1px solid var(--hair);
+  border-radius: var(--r-card);
+  background: var(--panel);
+}
+.roles :global(.mono) {
+  color: var(--accent);
+}
+.roles h3 {
+  font-size: clamp(1.5rem, 1rem + 0.8vw, 1.875rem);
+  font-weight: 300;
+  line-height: 1.15;
+  text-wrap: balance;
+}
+.roles p {
+  font-size: var(--body-size);
+  line-height: 1.5;
+  color: var(--grey);
+}
+.roles .ask {
+  margin-top: auto;
+  padding-top: 14px;
   border-top: 1px solid var(--hair);
+  color: var(--porcelain);
 }
-.block > :first-child {
-  grid-column: 1 / 5;
+/* Five practices across one hairline row. */
+.practices {
+  display: grid;
+  grid-template-columns: repeat(5, minmax(0, 1fr));
+  margin-top: clamp(2.5rem, 5vw, 4rem);
+  border-block: 1px solid var(--hair);
 }
-.block > :last-child {
-  grid-column: 6 / 13;
-  max-width: 720px;
-}
-.label {
+.practices li {
   display: grid;
   align-content: start;
   gap: 10px;
-}
-.label :global(.mono) {
-  color: var(--grey);
-}
-.h2 {
-  font-size: 1.875rem;
-  font-weight: 400;
-  letter-spacing: -0.02em;
+  padding: 20px 16px 22px;
+  border-left: 1px solid var(--hair);
+  font-size: clamp(1.125rem, 0.9rem + 0.6vw, 1.5rem);
+  font-weight: 300;
   line-height: 1.15;
-  max-width: 14ch;
+  letter-spacing: -0.01em;
+  hyphens: auto;
 }
-.lead {
-  font-size: 1.125rem;
-  line-height: 1.5;
+.practices li:first-child {
+  padding-left: 0;
+  border-left: 0;
 }
-.lead a,
-.note a {
-  color: inherit;
-  text-decoration: underline;
-  text-decoration-thickness: 1px;
-  text-underline-offset: 3px;
+.practices :global(.mono) {
+  color: var(--grey);
 }
-.note {
-  margin-top: 18px;
-  font-size: 0.9375rem;
+.bench {
+  max-width: 44em;
+  margin-top: 20px;
   line-height: 1.5;
   color: var(--grey);
 }
 
-.rows {
-  margin-top: 4px;
-}
-.lead + .rows {
-  margin-top: 24px;
-}
-.rows li {
-  display: grid;
-  grid-template-columns: minmax(0, 15rem) minmax(0, 1fr);
-  gap: 6px var(--gutter);
-  padding: 16px 0;
-  border-top: 1px solid var(--hair);
-}
-.rows li:first-child {
-  border-top: 0;
-  padding-top: 0;
-}
-.lead + .rows li:first-child {
-  border-top: 1px solid var(--hair);
-  padding-top: 16px;
-}
-.rows b {
-  font-weight: 500;
-  line-height: 1.35;
-}
-.rows span {
-  color: var(--grey);
-  line-height: 1.5;
-}
-
-/* The commitments: a numbered column of short lines, each on its hairline. */
+/* The commitments: nine short lines in three columns. */
 .trust {
-  counter-reset: t;
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 0 var(--gutter);
+  margin-top: clamp(2rem, 4vw, 3.5rem);
 }
 .trust li {
-  counter-increment: t;
   display: grid;
-  grid-template-columns: 2.5rem minmax(0, 1fr);
-  padding: 14px 0;
+  align-content: start;
+  gap: 12px;
+  padding: 20px 0 36px;
   border-top: 1px solid var(--hair);
-  font-size: 1.0625rem;
-  line-height: 1.45;
+  font-size: clamp(1.0625rem, 0.95rem + 0.35vw, 1.3125rem);
+  line-height: 1.35;
+  text-wrap: pretty;
 }
-.trust li:first-child {
-  border-top: 0;
-  padding-top: 0;
-}
-.trust li::before {
-  content: counter(t, decimal-leading-zero);
-  font: 400 var(--mono-size) / 2 var(--font-mono);
-  letter-spacing: var(--mono-track);
-  color: var(--accent-ink, var(--grey));
+.trust :global(.mono) {
+  color: var(--grey);
 }
 
-.tags {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 8px;
+/* The way of working: a gold line through four nodes. */
+.steps {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 0 var(--gutter);
+  margin-top: clamp(2.5rem, 5vw, 4rem);
 }
-.tags li {
-  padding: 7px 14px;
-  border: 1px solid var(--hair);
-  border-radius: var(--r-pill);
-  font-size: 0.9375rem;
+.steps li {
+  position: relative;
+  display: grid;
+  align-content: start;
+  gap: 12px;
+  padding-top: 32px;
+}
+.steps li::before {
+  content: '';
+  position: absolute;
+  left: 0;
+  right: calc(-1 * var(--gutter));
+  top: 5px;
+  height: 1px;
+  background: rgba(var(--accent-rgb), 0.6);
+}
+.steps li:last-child::before {
+  right: 0;
+}
+.steps li::after {
+  content: '';
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: 11px;
+  height: 11px;
+  border-radius: 50%;
+  background: var(--accent);
+  box-shadow: 0 0 12px 1px rgba(var(--accent-rgb), 0.6);
+}
+.steps h3 {
+  font-weight: 300;
+  text-wrap: balance;
+}
+.steps p {
+  line-height: 1.5;
+  color: var(--grey);
+  text-wrap: pretty;
 }
 
-/* The FAQ: native disclosures on hairlines; the marker is a plus that turns. */
+/* Industries: set as type on hairlines, two columns. */
+.industries {
+  columns: 2;
+  column-gap: var(--gutter);
+}
+.industries li {
+  break-inside: avoid;
+  padding: 12px 0;
+  border-top: 1px solid var(--hair);
+  font-size: clamp(1.0625rem, 0.95rem + 0.35vw, 1.3125rem);
+  line-height: 1.3;
+  letter-spacing: -0.01em;
+}
+.nda {
+  position: relative;
+  max-width: 36em;
+  margin-top: 28px;
+  padding-left: 16px;
+  line-height: 1.5;
+  color: var(--grey);
+}
+.nda::before {
+  content: '';
+  position: absolute;
+  left: 0;
+  top: 0.25em;
+  bottom: 0.25em;
+  width: 2px;
+  background: var(--accent);
+}
+
+/* The FAQ: native disclosures on hairlines; the marker a plus that turns. */
 .faq details {
   border-top: 1px solid var(--hair);
 }
@@ -166,80 +301,173 @@
 }
 .faq summary {
   display: grid;
-  grid-template-columns: minmax(0, 1fr) 20px;
+  grid-template-columns: minmax(0, 1fr) 24px;
   gap: var(--gutter);
   align-items: center;
+  min-height: 44px;
   padding: 18px 0;
-  font-size: 1.0625rem;
-  font-weight: 500;
-  line-height: 1.35;
-  cursor: pointer;
+  font-size: clamp(1.0625rem, 0.95rem + 0.35vw, 1.3125rem);
+  line-height: 1.3;
+  letter-spacing: -0.01em;
   list-style: none;
-  border-radius: 4px;
+  cursor: pointer;
+  text-wrap: pretty;
 }
 .faq summary::-webkit-details-marker {
   display: none;
 }
 .faq summary::after {
   content: '+';
-  font: 300 1.5rem/1 var(--font-sans);
+  font: 300 1.625rem/1 var(--font-sans);
   text-align: center;
   color: var(--grey);
   transition: transform 0.3s var(--ease);
 }
 .faq details[open] summary::after {
   transform: rotate(45deg);
-  color: var(--accent);
-}
-.faq summary:focus-visible {
-  outline: 2px solid var(--porcelain);
-  outline-offset: 4px;
+  color: var(--porcelain);
 }
 .faq details p {
-  max-width: 60ch;
-  padding: 0 44px 22px 0;
-  color: var(--grey);
+  max-width: 36em;
+  padding: 0 48px 24px 0;
   line-height: 1.55;
+  color: var(--grey);
 }
 
-.cta {
-  margin-top: 28px;
-  height: 48px;
-  padding: 0 24px;
-  gap: 8px;
-  background: var(--porcelain);
-  border-color: var(--porcelain);
-  color: var(--body);
+.join {
+  max-width: 36em;
+  font-size: var(--body-size);
+  line-height: 1.6;
 }
-.cta:hover {
-  background: #26262e;
-}
-.cta:focus-visible {
-  outline: 2px solid var(--porcelain);
-  outline-offset: 3px;
+.join a {
+  text-decoration: underline;
+  text-decoration-thickness: 1px;
+  text-underline-offset: 3px;
 }
 
-@media (max-width: 899px) {
-  .page {
-    padding-left: var(--margin);
-    padding-right: var(--margin);
+@media (max-width: 1099px) {
+  .storyText {
+    grid-column: 1 / 8;
   }
-  .block {
-    display: grid;
+  .plate {
+    grid-column: 8 / 13;
+  }
+  .roles {
     grid-template-columns: minmax(0, 1fr);
-    row-gap: 20px;
-    padding: 32px 0 44px;
   }
-  .block > :first-child,
-  .block > :last-child {
-    grid-column: 1;
+  .roles li {
+    display: grid;
+    grid-template-columns: 40px minmax(0, 2fr) minmax(0, 3fr);
+    gap: 8px 16px;
   }
-  .h2 {
-    font-size: 1.5rem;
+  .roles h3 {
+    grid-column: 2;
+    grid-row: 1 / span 2;
+    margin: 0;
+  }
+  .roles p {
+    grid-column: 3;
+  }
+  .roles .ask {
+    margin: 4px 0 0;
+  }
+  .trust {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+  .steps {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    row-gap: 40px;
+  }
+  .steps li:nth-child(2n)::before {
+    right: 0;
+  }
+  .split > .head,
+  .right {
+    grid-column: 1 / -1;
+  }
+}
+@media (max-width: 767px) {
+  .hero {
+    min-height: min(calc(100svh - var(--header-h) - var(--win-inset)), 720px);
+    padding-block: 20px 24px;
+  }
+  /* The ring has its own band between the headline and the facts, so no line of text crosses its edge. */
+  .heroWords {
+    margin-block: 0;
+    padding-block: 32px 300px;
     max-width: none;
   }
-  .rows li {
+  .heroRing {
+    --ring-d: 400px;
+    --ring-x: 56%;
+    --ring-y: calc(100% - 276px);
+  }
+  .heroFoot {
+    position: relative;
+    margin-top: auto;
+  }
+  .story {
+    display: block;
+  }
+  .plate {
+    width: min(100%, 320px);
+    margin: 36px auto 0;
+  }
+  .roles li {
+    display: flex;
+    padding: 22px 20px;
+  }
+  .practices {
     grid-template-columns: minmax(0, 1fr);
+    border-bottom: 0;
+  }
+  .practices li,
+  .practices li:first-child {
+    grid-template-columns: 36px minmax(0, 1fr);
+    align-items: baseline;
+    padding: 14px 0;
+    border-left: 0;
+    border-bottom: 1px solid var(--hair);
+  }
+  .trust {
+    grid-template-columns: minmax(0, 1fr);
+  }
+  .trust li {
+    grid-template-columns: 36px minmax(0, 1fr);
+    gap: 0;
+    padding: 16px 0;
+  }
+  /* The line runs down the side on phones. */
+  .steps {
+    grid-template-columns: minmax(0, 1fr);
+    row-gap: 28px;
+    padding-left: 28px;
+  }
+  .steps li {
+    padding-top: 0;
+    gap: 8px;
+  }
+  .steps li::before,
+  .steps li:nth-child(2n)::before {
+    left: -23px;
+    right: auto;
+    top: 6px;
+    bottom: -34px;
+    width: 1px;
+    height: auto;
+  }
+  .steps li:last-child::before {
+    bottom: 0;
+  }
+  .steps li::after {
+    left: -28px;
+    top: 6px;
+  }
+  .industries {
+    columns: 1;
+  }
+  .faq details p {
+    padding-right: 0;
   }
 }
 @media (prefers-reduced-motion: reduce) {

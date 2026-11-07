@@ -7,11 +7,12 @@ import { locales, useI18n } from '../i18n'
 import { pathFor } from '../routes'
 import { intents, limits, sendContact, validate, type ContactFields, type FieldErrors } from '../lib/contact'
 import { onPulse } from '../motion/pulse'
+import { composeMail } from './contactMail'
 import { Section } from './Section'
 import s from './Contact.module.css'
 
 const endpoint: string = import.meta.env.VITE_CONTACT_ENDPOINT ?? ''
-type Status = 'idle' | 'sending' | 'sent' | 'failed'
+type Status = 'idle' | 'sending' | 'sent' | 'failed' | 'mailed'
 
 interface FieldProps {
   name: 'org' | 'email' | 'msg'
@@ -56,10 +57,13 @@ function Field({ name, label, error, textarea, maxLength, ...input }: FieldProps
  * 10 Contact, the closing stage (art pass v1): the window with the horizon, the disk grown to
  * fill its right half (painted by the world for kind "contact"); the form on a panel in columns
  * 1–5: eyebrow, H2, lede, three doors as radios (a check mark on the chosen one), three fields,
- * Send in gold (one of the frame's three gold elements), the privacy line; the line under the disk. States: inline errors with a
- * focused summary, sending (aria-busy, fields disabled, text kept), success as a static
- * role="status" that takes focus, failure as an alert that keeps every field's text. On phones
- * the window is a 232 px band with the hole and her line, and the form is plain DOM below it.
+ * Send in gold (one of the frame's three gold elements), the privacy line; the panel hugs them, and
+ * her line stands on the disk's ink, under her ear (under the panel below 1200 px). States: inline
+ * errors with a focused summary, sending (aria-busy, fields disabled, text kept), success as a
+ * static role="status" that takes focus, failure as an alert that keeps every field's text. A build
+ * without an endpoint keeps the same form: Send validates, then opens the visitor's own mail app
+ * with the message composed (no fetch), and a status line says so; the address stands above it. On
+ * phones the window is a band with the ring at 70 vw and her line inside it, the form plain DOM below.
  */
 export function Contact() {
   const { t, locale } = useI18n()
@@ -67,6 +71,7 @@ export function Contact() {
   const ref = useRef<HTMLElement>(null)
   const formRef = useRef<HTMLFormElement>(null)
   const doneRef = useRef<HTMLDivElement>(null)
+  const mailedRef = useRef<HTMLDivElement>(null)
   const summaryRef = useRef<HTMLDivElement>(null)
   const [hydrated, setHydrated] = useState(false)
   const [intent, setIntent] = useState<Intent>('commission')
@@ -91,6 +96,7 @@ export function Contact() {
 
   useEffect(() => {
     if (status === 'sent') doneRef.current?.focus()
+    if (status === 'mailed') mailedRef.current?.focus()
   }, [status])
 
   // The picker's answer starts the message while the field is empty or still holds an earlier answer.
@@ -113,7 +119,21 @@ export function Contact() {
     setErrors(found)
     if (Object.keys(found).length) {
       // The summary is read first; its links lead to each field.
+      if (status === 'mailed') setStatus('idle')
       requestAnimationFrame(() => summaryRef.current?.focus())
+      return
+    }
+    if (!endpoint) {
+      // No endpoint in this build: the message goes out through the visitor's own mail app. A bot
+      // (the honeypot, or an instant submit) gets the same words and opens nothing.
+      if (!data.get('website') && performance.now() >= limits.minMs) {
+        const link = document.createElement('a')
+        link.href = composeMail(company.email, fields, { door: door.label, org: door.org, email: c.email })
+        link.click()
+        obs.transmitAt = obs.clock
+      }
+      setStatus('mailed')
+      requestAnimationFrame(() => mailedRef.current?.focus())
       return
     }
     setStatus('sending')
@@ -151,108 +171,116 @@ export function Contact() {
         <p className={`mono ${s.tag}`} aria-hidden="true">
           10 / 10
         </p>
-        {/* The horizon's line: under the disk, on its left, where the form ends. */}
-        <div className={s.voice}>
-          <p className="voice" data-caret>
-            {t.navigator.lines.contact}
-          </p>
-        </div>
       </Window>
 
       {/* The panel: over the window's left columns on desktop, plain DOM under the band on phones. */}
-      <div className={`dark ${s.panel}`}>
-        <p className="eyebrow mono">{c.eyebrow}</p>
-        <h2 id="contact-title" className={`h2 ${s.title}`} data-focus tabIndex={-1}>
-          {c.title}
-        </h2>
-        <p className={`lede ${s.lede}`}>{c.lede}</p>
+      <div className={`dark ${s.stack}`}>
+        <div className={s.panel}>
+          <p className="eyebrow mono">{c.eyebrow}</p>
+          <h2 id="contact-title" className={`h2 ${s.title}`} data-focus tabIndex={-1}>
+            {c.title}
+          </h2>
+          <p className={`lede ${s.lede}`}>{c.lede}</p>
 
-        {status === 'sent' ? (
-          <>
-            <div ref={doneRef} className={s.done} role="status" tabIndex={-1}>
-              <p>{c.success}</p>
-            </div>
-            <p className={s.after}>{c.horizon}</p>
-            <p className={s.after}>
-              {c.direct} {mail}
-            </p>
-          </>
-        ) : !endpoint ? (
-          <p className={s.after}>
-            {c.direct} {mail}
-          </p>
-        ) : (
-          <form ref={formRef} className={s.form} method="post" noValidate onSubmit={onSubmit} aria-describedby="contact-privacy" aria-busy={sending || undefined}>
-            {errorKeys.length > 0 && (
-              <div ref={summaryRef} className={s.summary} role="alert" tabIndex={-1}>
-                <b>{c.errorsTitle}</b>
-                {errorKeys.map((k) => (
-                  <a key={k} href={`#contact-${k}`} onClick={(e) => { e.preventDefault(); formRef.current?.querySelector<HTMLElement>(`[name="${k}"]`)?.focus() }}>
-                    {c.errors[errors[k]!]}
-                  </a>
-                ))}
+          {status === 'sent' ? (
+            <>
+              <div ref={doneRef} className={s.done} role="status" tabIndex={-1}>
+                <p>{c.success}</p>
               </div>
-            )}
-            <fieldset className={s.doors} disabled={sending}>
-              <legend className={`mono ${s.label}`} id="contact-doors">
-                {c.doorsLabel}
-              </legend>
-              <div className={s.pills} role="radiogroup" aria-labelledby="contact-doors">
-                {intents.map((id, k) => (
-                  <button
-                    key={id}
-                    type="button"
-                    role="radio"
-                    name="intent"
-                    value={id}
-                    aria-checked={intent === id}
-                    tabIndex={intent === id ? 0 : -1}
-                    className={`pill ${s.door}`}
-                    onClick={() => setIntent(id)}
-                    onKeyDown={(e) => onDoorKey(e, k)}
-                  >
-                    {c.doors[id].label}
-                  </button>
-                ))}
-              </div>
-              <p className={s.hint}>{door.hint}</p>
-            </fieldset>
-            <fieldset className={s.fields} disabled={sending}>
-              <Field name="org" label={door.org} autoComplete="organization" error={err('org')} maxLength={limits.org} />
-              <Field name="email" label={c.email} type="email" autoComplete="email" error={err('email')} maxLength={limits.email} />
-              <Field name="msg" label={door.msg} placeholder={door.placeholder} textarea error={err('msg')} maxLength={limits.msg} />
-            </fieldset>
-            {/* The honeypot: hidden from everyone and every reader; a bot that fills it sends nothing. */}
-            <div className={s.trap} aria-hidden="true">
-              <label>
-                Website
-                <input name="website" type="text" tabIndex={-1} autoComplete="off" />
-              </label>
-            </div>
-            <div role="alert" className={s.failure}>
-              {status === 'failed' && (
-                <p>
-                  {c.failure} {mail}
+              <p className={s.after}>{c.horizon}</p>
+              <p className={s.after}>
+                {c.direct} {mail}
+              </p>
+            </>
+          ) : (
+            <form ref={formRef} className={s.form} method="post" noValidate onSubmit={onSubmit} aria-describedby="contact-privacy" aria-busy={sending || undefined}>
+              {!endpoint && (
+                <p className={s.direct}>
+                  {c.direct} {mail}
                 </p>
               )}
-            </div>
-            <div className={s.send}>
-              <button type="submit" className={`pill ${s.submit}`} data-solid disabled={!hydrated || sending} aria-disabled={sending || undefined}>
-                {sending && <i className={s.spin} aria-hidden="true" />}
-                {sending ? c.submitting : door.submit}
-              </button>
-              <p id="contact-privacy" className={s.privacy}>
-                {c.privacy} <a href={pathFor('privacy', locale)}>{c.privacyLink}</a>
-              </p>
-            </div>
-            <p className={s.after}>{c.horizon}</p>
-            <noscript>
-              <p className={s.privacy}>
-                {c.noScript} {mail}
-              </p>
-            </noscript>
-          </form>
-        )}
+              {errorKeys.length > 0 && (
+                <div ref={summaryRef} className={s.summary} role="alert" tabIndex={-1}>
+                  <b>{c.errorsTitle}</b>
+                  {errorKeys.map((k) => (
+                    <a key={k} href={`#contact-${k}`} onClick={(e) => { e.preventDefault(); formRef.current?.querySelector<HTMLElement>(`[name="${k}"]`)?.focus() }}>
+                      {c.errors[errors[k]!]}
+                    </a>
+                  ))}
+                </div>
+              )}
+              <fieldset className={s.doors} disabled={sending}>
+                <legend className={`mono ${s.label}`} id="contact-doors">
+                  {c.doorsLabel}
+                </legend>
+                <div className={s.pills} role="radiogroup" aria-labelledby="contact-doors">
+                  {intents.map((id, k) => (
+                    <button
+                      key={id}
+                      type="button"
+                      role="radio"
+                      name="intent"
+                      value={id}
+                      aria-checked={intent === id}
+                      tabIndex={intent === id ? 0 : -1}
+                      className={`pill ${s.door}`}
+                      onClick={() => setIntent(id)}
+                      onKeyDown={(e) => onDoorKey(e, k)}
+                    >
+                      {c.doors[id].label}
+                    </button>
+                  ))}
+                </div>
+                <p className={s.hint}>{door.hint}</p>
+              </fieldset>
+              <fieldset className={s.fields} disabled={sending}>
+                <Field name="org" label={door.org} autoComplete="organization" error={err('org')} maxLength={limits.org} />
+                <Field name="email" label={c.email} type="email" autoComplete="email" error={err('email')} maxLength={limits.email} />
+                <Field name="msg" label={door.msg} placeholder={door.placeholder} textarea error={err('msg')} maxLength={limits.msg} />
+              </fieldset>
+              {/* The honeypot: hidden from everyone and every reader; a bot that fills it sends nothing. */}
+              <div className={s.trap} aria-hidden="true">
+                <label>
+                  Website
+                  <input name="website" type="text" tabIndex={-1} autoComplete="off" />
+                </label>
+              </div>
+              <div role="alert" className={s.failure}>
+                {status === 'failed' && (
+                  <p>
+                    {c.failure} {mail}
+                  </p>
+                )}
+              </div>
+              {status === 'mailed' && (
+                <div ref={mailedRef} className={s.done} role="status" tabIndex={-1}>
+                  <p>{c.mailFallback}</p>
+                </div>
+              )}
+              <div className={s.send}>
+                <button type="submit" className={`pill ${s.submit}`} data-solid disabled={!hydrated || sending} aria-disabled={sending || undefined}>
+                  {sending && <i className={s.spin} aria-hidden="true" />}
+                  {sending ? c.submitting : door.submit}
+                </button>
+                <p id="contact-privacy" className={s.privacy}>
+                  {c.privacy} <a href={pathFor('privacy', locale)}>{c.privacyLink}</a>
+                </p>
+              </div>
+              <p className={s.after}>{c.horizon}</p>
+              <noscript>
+                <p className={s.privacy}>
+                  {c.noScript} {mail}
+                </p>
+              </noscript>
+            </form>
+          )}
+        </div>
+      {/* Her closing line: on the disk's ink from 1200 px, in the disk on phones, under the panel between (Contact.module.css). */}
+      <div className={s.voice}>
+        <p className="voice" data-caret>
+          {t.navigator.lines.contact}
+        </p>
+      </div>
       </div>
     </Section>
   )
