@@ -5,52 +5,75 @@
     <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
     <!-- Before the first paint: the motion layout (sticky sections) is in place from the start, so the page never re-lays out on load.
          If the app never starts (a script that fails to load, an old browser), the still layout returns at once or 5 s after load, so no content stays hidden.
-         On the first page of a session it also sets `loading`, which shows the brand loader (#boot, below; src/boot.ts counts and lifts it).
+         On the first page of a session it also sets `loading`, which shows the brand loader (#boot, below; src/boot.ts counts and lifts it), and the phone timings counted from navigation start.
          Allowed by its hash in the CSP (deploy/blakra-headers.conf). -->
-    <script>(function(c){c.add('js');var off;try{off=localStorage.getItem('blakra:motion')==='off'}catch(e){}c.add(off||matchMedia('(prefers-reduced-motion: reduce)').matches?'motion-off':'motion-on');try{sessionStorage.getItem('blakra:loaded')||c.add('loading')}catch(e){}function still(){c.remove('loading');if(!c.contains('booted')){c.remove('motion-on');c.add('motion-off')}}addEventListener('error',function(e){var t=e.target;if(t&&t.tagName==='SCRIPT')still()},true);addEventListener('load',function(){setTimeout(still,5000)})})(document.documentElement.classList)</script>
+    <script>(function(c){c.add('js');var off;try{off=localStorage.getItem('blakra:motion')==='off'}catch(e){}c.add(off||matchMedia('(prefers-reduced-motion: reduce)').matches?'motion-off':'motion-on');try{if(!sessionStorage.getItem('blakra:loaded')){c.add('loading');var n=performance.now(),h=document.documentElement.style;h.setProperty('--b-cap',Math.max(0,1200-n)+'ms');h.setProperty('--b-show',Math.max(0,300-n)+'ms')}}catch(e){}function still(){c.remove('loading');if(!c.contains('booted')){c.remove('motion-on');c.add('motion-off')}}addEventListener('error',function(e){var t=e.target;if(t&&t.tagName==='SCRIPT')still()},true);addEventListener('load',function(){setTimeout(still,5000)})})(document.documentElement.classList)</script>
     <style>
       /* The brand loader: a thin gold ring round a black hole, the mark, a count 000 → 100. Shown only
-         while <html> has `loading` (set above, JavaScript only, first page of a session); src/boot.ts
-         drives --p and the count, then lifts it. If nothing ever lifts it, it leaves by itself at 6 s. */
+         while <html> has `loading` (set above, JavaScript only, first page of a session). src/boot.ts lifts it:
+         the ring travels to the hero's ring and becomes it while the curtain clears. Transform and opacity only.
+         Phones: no count, the ring only after 300 ms, and it lifts by itself at 1.2 s (--b-cap) even before the script runs. Elsewhere it leaves by itself at 6 s. */
       #boot{display:none}
-      html.loading #boot{display:grid}
+      html.loading #boot{display:block}
       /* The page's scrollbar goes dark under the loader (hiding it would change the width and shift the hero). */
       html.loading{scrollbar-color:#1a1a1c #050506}
       /* Only the page's own scrollbar: stopped at <body>, so lifting `loading` restyles two elements, not the whole document. */
       body{scrollbar-color:auto}
-      #boot{position:fixed;inset:0;z-index:2147483000;place-items:center;align-content:center;gap:28px;background:#050506;color:#ece9e2;pointer-events:none;will-change:opacity;--p:0;animation:b-safety 0s linear 6s forwards}
-      #boot::before{content:"";position:absolute;inset:0;background:radial-gradient(closest-side at 50% 50%,rgba(217,164,65,.09),rgba(217,164,65,0) 70%) center/min(90vw,640px) min(90vw,640px) no-repeat;transition:opacity .6s}
-      #boot .b-core{position:relative;width:132px;height:132px;display:grid;place-items:center;transition:transform .6s cubic-bezier(.7,0,.2,1),opacity .5s cubic-bezier(.7,0,.2,1)}
+      #boot{position:fixed;inset:0;z-index:2147483000;color:#ece9e2;pointer-events:none;--p:0;--s:84px;animation:b-safety 0s linear 6s forwards}
+      #boot::before{content:"";position:absolute;inset:0;background:radial-gradient(closest-side,rgba(217,164,65,.09),rgba(217,164,65,0) 70%) center/min(90vw,640px) min(90vw,640px) no-repeat,#050506;will-change:opacity}
+      /* Whole pixels from the centre: a half pixel blurs the mark's own layer. */
+      #boot .b-core{position:absolute;left:calc(50% - var(--s));left:calc(round(down,50%,1px) - var(--s));top:calc(50% - var(--s));top:calc(round(down,50%,1px) - var(--s));width:calc(var(--s)*2);height:calc(var(--s)*2)}
       #boot svg{position:absolute;overflow:visible}
-      #boot .b-ring{inset:0;width:100%;height:100%;transform:rotate(-90deg)}
+      #boot .b-ring,#boot .b-disc{inset:0;width:100%;height:100%}
+      #boot .b-ring{transform:rotate(-90deg)}
       #boot .b-track{fill:none;stroke:#d9a441;stroke-opacity:.16;stroke-width:.75}
-      #boot .b-arc{fill:none;stroke:#d9a441;stroke-width:1.1;stroke-linecap:round;stroke-dasharray:100 100;stroke-dashoffset:calc(100 - var(--p) * 100)}
-      #boot .b-disc{fill:#000;stroke:#d9a441;stroke-opacity:.35;stroke-width:.5}
-      #boot .b-orbit{position:absolute;inset:0;animation:b-turn 2.8s linear infinite}
+      #boot .b-arc{fill:none;stroke:#e6b552;stroke-width:1.1;stroke-linecap:round;stroke-dasharray:100 100;stroke-dashoffset:calc(100 - var(--p)*100)}
+      #boot .b-disc circle{fill:#000;stroke:#d9a441;stroke-opacity:.35;stroke-width:.5}
+      #boot .b-face,#boot .b-orbit{position:absolute;inset:0}
+      #boot .b-orbit{animation:b-turn 2.8s linear infinite}
       #boot .b-orbit::after{content:"";position:absolute;left:50%;top:-1.5px;width:3px;height:3px;margin-left:-1.5px;border-radius:50%;background:#f0c875;box-shadow:0 0 8px 2px rgba(217,164,65,.55)}
-      #boot .b-mark{width:40px;height:27px;color:#ece9e2;animation:b-breathe 2.8s ease-in-out infinite}
-      #boot .b-num{font:400 11px/1 'Geist Mono',ui-monospace,SFMono-Regular,Menlo,monospace;letter-spacing:.32em;margin-right:-.32em;color:rgba(236,233,226,.62);font-variant-numeric:tabular-nums;transition:opacity .25s}
-      #boot.out{opacity:0;transition:opacity .45s cubic-bezier(.7,0,.2,1) .15s}
-      #boot.out::before,#boot.out .b-num{opacity:0}
-      #boot.out .b-core{transform:scale(9);opacity:0}
+      #boot .b-mark{left:calc(var(--s) - 50px);top:calc(var(--s) - 32px);width:100px;height:64px;animation:b-breathe 2.8s ease-in-out infinite}
+      #boot .b-num{position:absolute;left:0;right:0;top:calc(50% + var(--s) + 26px);text-align:center;font:400 11px/1 'Geist Mono',ui-monospace,SFMono-Regular,Menlo,monospace;letter-spacing:.32em;text-indent:.32em;color:rgba(236,233,226,.62);font-variant-numeric:tabular-nums}
+      /* The exit (boot.ts sets --x, --y, --k): the ring lands in .75 s, in the dark; the curtain clears round it; then the ring gives way to the real one. */
+      #boot.out .b-core{transform:translate(var(--x,0),var(--y,0)) scale(var(--k,3));transition:transform .75s cubic-bezier(.62,.02,.18,1)}
+      #boot.out::before{opacity:0;transition:opacity .5s cubic-bezier(.5,0,.4,1) .26s}
+      #boot.out .b-ring{opacity:0;transition:opacity .22s linear .54s}
+      #boot.out .b-face,#boot.out .b-orbit,#boot.out .b-num{opacity:0;transition:opacity .18s linear}
       @keyframes b-turn{to{transform:rotate(360deg)}}
-      @keyframes b-breathe{50%{opacity:.7}}
+      @keyframes b-breathe{50%{opacity:.82}}
       @keyframes b-safety{to{visibility:hidden;opacity:0}}
-      @media (max-width:767px){#boot{gap:22px}#boot .b-core{width:104px;height:104px}#boot .b-mark{width:28px;height:19px}}
-      /* Reduced motion: no turning, no expanding; the overlay simply fades. */
-      html.motion-off #boot .b-orbit,html.motion-off #boot .b-mark{animation:none}
+      @keyframes b-lift{to{visibility:hidden;opacity:0}}
+      @keyframes b-show{to{opacity:1}}
+      @keyframes b-fill{to{stroke-dashoffset:3}}
+      @media (max-width:767px){
+        #boot{--s:62px;animation:b-lift .45s linear var(--b-cap,1.2s) forwards}
+        #boot .b-core{opacity:0;animation:b-show .15s linear var(--b-show,.3s) forwards}
+        #boot .b-mark{left:calc(var(--s) - 36px);top:calc(var(--s) - 23px);width:72px;height:46px}
+        #boot .b-num{display:none}
+        #boot .b-arc{animation:b-fill 1.2s cubic-bezier(.2,.7,.3,1) forwards}
+        #boot.out{animation:none}
+        #boot.out .b-arc{animation:none;stroke-dashoffset:0}
+        #boot.out .b-core{transition-duration:.42s}
+        #boot.out::before{transition-duration:.3s;transition-delay:.12s}
+        #boot.out .b-ring{transition-duration:.14s;transition-delay:.3s}
+      }
+      /* Reduced motion: no turning, no travelling; the overlay simply fades. */
+      html.motion-off #boot .b-orbit,html.motion-off #boot .b-mark,html.motion-off #boot .b-arc{animation:none}
       html.motion-off #boot.out{opacity:0;transition:opacity .3s linear}
-      html.motion-off #boot.out .b-core{transform:none}
-      @media (prefers-reduced-motion:reduce){#boot .b-orbit,#boot .b-mark{animation:none}#boot.out{opacity:0;transition:opacity .3s linear}#boot.out .b-core{transform:none}}
+      html.motion-off #boot.out .b-core{transform:none;transition:none}
+      @media (prefers-reduced-motion:reduce){#boot .b-orbit,#boot .b-mark,#boot .b-arc{animation:none}#boot.out{opacity:0;transition:opacity .3s linear}#boot.out .b-core{transform:none;transition:none}}
     </style>
     <!--head-->
   </head>
   <body>
     <div id="boot" aria-hidden="true">
       <div class="b-core">
-        <svg class="b-ring" viewBox="0 0 132 132"><circle class="b-track" cx="66" cy="66" r="65" /><circle class="b-arc" cx="66" cy="66" r="65" pathLength="100" /><circle class="b-disc" cx="66" cy="66" r="40" /></svg>
+        <svg class="b-ring" viewBox="0 0 168 168"><circle class="b-track" cx="84" cy="84" r="83" /><circle class="b-arc" cx="84" cy="84" r="83" pathLength="100" /></svg>
         <i class="b-orbit"></i>
+        <div class="b-face">
+        <svg class="b-disc" viewBox="0 0 168 168"><circle cx="84" cy="84" r="66" /></svg>
         <svg class="b-mark" viewBox="667 386 1721 1113" fill="currentColor"><path d="M1554 391h1c2.2 12.1 2.2 24.8 2.4 37v4.4l.3 11.5.2 9.8.5 23q0 10.5.4 21c1.3 66.2 1.3 66.2 1.5 90.7v16.5c-.3 3.3-.8 4.8-3.3 7.1-3 .4-3 .4-6 0-2-1.5-2.9-2.4-3.4-5v-20.9l.1-7.2q.2-29.4 1.5-58.8.8-23.7 1.3-47.4l.1-2.9.6-28.7.3-10.7.1-7.4c.5-23.6.5-23.6 2.4-32m16 268a33 33 0 0 1 10.5 20.4c-1.3 9-4.6 16.5-11.5 22.6a28 28 0 0 1-21.5 3.4A29 29 0 0 1 1532 693c-3-7.1-3.3-15.8-1-23.2a30 30 0 0 1 13.7-14.8 27 27 0 0 1 25.3 4m316 79.4h2.2q40.9.5 81.8 2.6l3.8.2c91.5 4.7 183.2 12.8 377.2 63.8l2.9 1.5q21 11.7 29.4 33.9a47 47 0 0 1-8 35.7A153 153 0 0 1 2360 894l-1.8 2c-16.4 17.4-39 30.5-59.2 43l-2.5 1.5a534 534 0 0 1-41.2 22.8l-11.3 5.9a784 784 0 0 1-45 21.8l-2.3 1-19.8 9a904 904 0 0 1-51 21.3q-22.2 9-44.8 17.1l-5.2 1.9-2.5 1-17 6.5q-9 3.5-18.2 6.5-12 3.9-23.7 8.3a1071 1071 0 0 1-77.3 25.5 1447 1447 0 0 1-69.8 19.7l-6.2 1.6-2.8.8a94 94 0 0 1-16.4 2.8c1-2.6 1.7-3.8 4.1-5.2l2.8-1.1 3.2-1.3 3.9-1.4 2.2-.8 15.4-5.5 8.5-3 19.6-7a818 818 0 0 0 38.5-15l16.2-6.4a1383 1383 0 0 0 40.5-17l8-3.4 4.1-1.8 3.3-1.4 9.3-4.5a385 385 0 0 1 19.4-9q23-10 44.8-22.2l16.9-9.2q16.9-9 33.3-18.8l2.1-1.3a563 563 0 0 0 98.8-72c16.4-14.3 30.2-35 33.1-56.7a39 39 0 0 0-10.3-27.3l-4.7-4.7-1.8-1.9c-48.3-46.6-148-49-211.2-56.1l-3.8-.4a1484 1484 0 0 0-50.3-5 697 697 0 0 0-36.8-3l-3.2-.2a4346 4346 0 0 0-141.7-5.8l-33.8-1-2.6-.1c-5-.2-9.1-1-13.8-2.5v-1q6.2-1.3 12.6-1.5l2.2-.2 24.6-.8 7.6-.2c27.7-.7 55.3-.3 83 0M1601 769l2.4.4q7.9 1.6 15.6 3.6l2.5.6a219 219 0 0 1 56.5 23q19.6 10.4 37 24.4l3.1 2.5A211 211 0 0 1 1756 863l1.5 2c13.1 17.8 24.1 37 30.5 58.3l.6 2c1.2 4 1.6 7.6 1.4 11.7-3.9-.9-3.9-.9-5-2-2.7-.4-2.7-.4-6 0-2.6 2.8-2.6 2.8-3.8 4.5-1.7 2.1-3.8 3.1-6.2 4.5l-2.2 2.3c-3 3-6.2 5.1-9.7 7.3l-1.8 1.2q-6.6 4.4-14 7.1c-2.7 1.3-3.3 2.4-4.3 5.1-3-1-3-1-4.8-4l-1.9-4-2.1-4.5-2.2-4.5a222 222 0 0 0-29.4-47.7 164 164 0 0 0-23.1-23.6 182 182 0 0 0-117.4-43h-2.3a153 153 0 0 0-34.8 3.3l-2 .4a182 182 0 0 0-90.5 48.8c-31.2 27.4-50 67.3-56.5 107.8l-.5 3.3a107 107 0 0 0-.8 14.1c-.2 18.1.4 35 5.3 52.6l.7 2.5a154 154 0 0 0 14.4 33.6 166 166 0 0 0 19.3 28.8l2.2 2.7 2 2.3 1.4 2.1-1 3c-2.7 1-2.7 1-6.4 1.9l-4.1 1-2.2.5-11.3 3-2.3.7-9.4 2.6c-16 4.3-16 4.3-23.4 7.6-1.9.7-1.9.7-5 1-7.3-3.2-11.8-11.8-15.8-18.3l-1.6-2.5c-29-47.3-41.6-108-30.5-162.5l.4-2.2q6.4-32.2 20.6-61.8l1-2.3a239 239 0 0 1 71.2-86.3l5.8-4.6c10.1-8 20.7-14.6 32-20.8l2.4-1.3A257 257 0 0 1 1495 773l2.3-.6c32.6-9 70.5-9.5 103.7-3.4m-321 66a656 656 0 0 1-50 16.8l-40.7 12.5-6.6 2q-32 10-63.7 20.7l-2.8 1-17.6 5.9-5.6 2a896 896 0 0 0-38.6 13.8 1466 1466 0 0 0-102.2 41.2c-19.6 8.3-39 17-57.8 27.3l-9 4.6a387 387 0 0 0-47 27.3c-16.3 11-35.6 24.7-42.4 43.9a22 22 0 0 0 3 17l1.9 2.9c29.4 33.5 104.3 37.5 145.1 42.1l3 .3a1015 1015 0 0 0 64.4 5.2 1226 1226 0 0 0 48.3 2.1 2092 2092 0 0 0 68.3.5h100.9q14.3 0 28.4-.4h2.9l20.8-.8c4.8-.1 8.5.6 13 2.1-5 6-12.7 7.3-20 8.9l-2.2.5-7.1 1.5-5 1.1-9.5 2.1-9.6 2.1c-15.7 3.6-31.7 5.6-47.6 7.8q-1 0-2 .3l-13.4 1.8-3.3.5q-32.1 4.2-64.4 6.5l-3.6.2c-99 7-200.9 7.4-425.3-44.3-5.5-5.2-10.4-10.6-11.5-18.3 0-12.4 3.6-19.4 12-28.3C740 1011.1 833.9 980 920 946.5l10.4-4q21.7-8.4 43.5-16.2l3-1q28.5-10.5 57.1-20l4.6-1.5 7.2-2.4 16.7-5.6q43.8-14.5 88-28l5-1.6c32-9.7 64-19.2 96.4-27.3l3.3-.9c19.5-4.8 19.5-4.8 24.8-3m749 68a11 11 0 0 1-5.8 6.5l-2.5 1.4-2.6 1.4-2.8 1.6-9.3 5.1-6.7 3.7q-5 3-10.3 5.7-26.7 15-53 30.6l-2.6 1.5a2214 2214 0 0 0-59.6 36.8q-15 9.6-30 18.7-11.2 6.6-22.2 13.9-17.5 11.5-35.6 22.1l-2.2 1.3-17.4 10.2a513 513 0 0 0-31.3 19.4q-4 2.7-8 5.1c-3.1 2-3.1 2-4.1 4l2.8-.7c12.4-2.8 19-3.6 30.2 2.7l5.8 3 5.7 3.1 6.8 3.5a25 25 0 0 1 7.7 5.4c1.7 21-19.5 48.3-32 64l-6.7 7.5-5.6 6.3a188 188 0 0 1-38 34.3 265 265 0 0 1-46.7 27.9l-2.1 1a234 234 0 0 1-65.4 19.6l-2.8.4q-20.3 2.5-40.7 2h-3.9c-26-1-52.5-7.3-77-16l-2.7-1c-5.5-2-10.9-4.3-15.4-8v-2c2.5-1.3 4.9-1.3 7.7-1.5a264 264 0 0 0 75.3-18l2.7-1.1c14.8-6.3 14.8-6.3 17.3-11.5 1-1.9 1-1.9 2.8-2.9l4.5-1.3q5.6-1.5 11.3-2.7a232 232 0 0 0 132.4-86l4.1-5q8-10.2 14.9-21-10 2.8-19.5 7.2l-5.3 2.4-2.7 1.2q-5.6 2.7-11.2 5l-21.3 9.7c-19.4 8.9-19.4 8.9-27.5 12.4l-5.2 2.3c-18.3 8-37 14.8-55.9 21.6l-1.9.7c-38.8 14-38.8 14-57 20l-3 1-8.5 2.8-6.6 2.2a2342 2342 0 0 1-86.9 27.2 636 636 0 0 1-78.3 18.5l-12.8 2.4-13 2.4-6.4 1.2q-21 4-42 6.8l-3.2.4a914 914 0 0 1-106.7 9 1148 1148 0 0 1-100.1-.4l-3.9-.2A677 677 0 0 1 939 1239l-2.7-.5c-24.2-4.5-24.2-4.5-32.3-8.5v-2c5.3-1.2 9.9-.8 15.2 0l5.5.6 3 .4 15 1.7 3 .4a614 614 0 0 0 125.3-.1l3.3-.3a1061 1061 0 0 0 207.2-37.5l27.5-7.6 5.5-1.6q18.4-5 36.3-11.5 11.8-4 23.7-7.8 20.9-6.7 41.3-14.5a1188 1188 0 0 1 32.3-11.7q32.7-11.5 64.9-24.5l3.2-1.3a967 967 0 0 0 102.5-47.5q21.3-10.6 41.5-22.9 7.5-4.3 15.5-7.9l2.6-1.1a241 241 0 0 1 36.2-12.3 513 513 0 0 0 44.8-14.3l2.7-1q8.8-3 17.7-5.8l2.4-.8 4.8-1.5c34.1-10.9 68-23 101-37.2l10-4.3q15.8-6.6 31.5-13.7 15-6.6 30.3-13l12.8-5.4 13-5.5 7.6-3.2 10.7-4.5 4.1-1.8 5.8-2.5 3.4-1.4c4.2-1.6 7.4-2.2 11.9-2.1m-464.8 423c6.3 3.6 10.5 8 12.8 15 .9 7.3.7 13.8-3.4 20-4 5-9.3 8.8-15.6 10-7.1 0-12.7-1.8-17.9-6.8-5.5-6-8.8-11.7-8.5-20a28 28 0 0 1 4.4-10.2l1.6-2.7c7.7-7.5 16.8-9.6 26.6-5.2M1548 1402c0-3 12-3 12 0l-4.6 92c-.2 2.4-2.6 2.4-2.8 0z"/></svg>
+        </div>
       </div>
       <span class="b-num" data-count>000</span>
     </div>

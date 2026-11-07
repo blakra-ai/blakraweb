@@ -15,7 +15,7 @@ const prefix = (l) => (l === 'en' ? '' : `/${l}`)
 
 const font = (f) => `data:font/woff2;base64,${readFileSync(join(root, 'src/assets/fonts', f)).toString('base64')}`
 const dataUrl = (file, type) => `data:${type};base64,${readFileSync(file).toString('base64')}`
-const hero = dataUrl(join(root, 'src/assets/observatory/hero-still.jpg'), 'image/jpeg')
+const hero = dataUrl(join(root, 'src/assets/observatory/og-still.jpg'), 'image/jpeg')
 const ink = '#0b0b10'
 const paper = '#f2f0eb'
 // The official logo (src/assets/brand): the symbol and the BLAKRA lettering, in ink.

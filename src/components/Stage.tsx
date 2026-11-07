@@ -1,20 +1,28 @@
-import { useEffect, useRef, useState, type CSSProperties } from 'react'
+import { useEffect, useRef, useState, type CSSProperties, type RefObject } from 'react'
 import { chakraColors, chakraOf, needOrder, needs } from '../content/shared'
 import type { LayerId } from '../content/types'
-import { useStation } from '../features/observatory/Gauge'
-import { chip } from '../features/observatory/gaugeMath'
 import { handoverAt, holdAt, inOrbit, LAYERS_N, ORBIT_END } from '../features/observatory/orbit'
 import { obs } from '../features/observatory/state'
 import { InkWell, WellGrid } from '../features/observatory/Well'
 import { useI18n } from '../i18n'
+import { PHONE } from '../mobile/swipe'
 import { useMotion } from '../motion/MotionProvider'
 import { getPulse, onPulse, setPulse, type PulseChoice } from '../motion/pulse'
 import { onReflow } from '../motion/reflow'
+import { pathFor } from '../routes'
 import { Section } from './Section'
 import s from './Stage.module.css'
 
 /** The vendor grid's four areas (design, the app, backend, AI) as their layers' chakra indices. */
 const VENDOR_CHAKRA = [3, 4, 0, 6] as const
+/** The held disc's radius in the well's own units; its seven rings reach 97 further (Well.tsx). */
+const DISC_R = 300
+const REACH = DISC_R + 97
+/** The rings' radii, for the empty orbits drawn under the ones that have formed. */
+const RING_R = Array.from({ length: LAYERS_N }, (_, k) => DISC_R + 16 + k * 11)
+
+const two = (n: number) => String(n).padStart(2, '0')
+const clamp01 = (v: number) => Math.max(0, Math.min(1, v))
 
 /**
  * Phones: the seven layers as rings round the black disc with its gold rim (root inside, crown
@@ -42,72 +50,81 @@ function Orbit({ lit, settle, className }: { lit: readonly LayerId[] | null; set
 /** The seven layers root to crown (the chakra order), by id. */
 const ROOT_TO_CROWN: readonly LayerId[] = ['cloud', 'data', 'automation', 'design', 'apps', 'growth', 'ai']
 
+/** Which words are on screen beside the disc: its rings wait, form, then answer the picker. */
+type Phase = 'why' | 'layers' | 'picker'
+
 /**
- * 03 · 04 · 05 The seven-layer stage (art pass v2, on paper): the object held by `position: sticky`
- * inside a section whose CSS height is 2.4 screens, no pins. The page's grid bends into a small ink
- * well (Well.tsx, static SVG); as the hold scrubs, the seven layers draw themselves round it as
- * hairline rings, inner to outer, one every tenth of the hold; this file names each
- * layer ONCE in large type at the moment its band forms (Geist 300, 40 px, the layer's colour as
- * the 2 px line under the name, a 24 px transform on entry), keeps her line on the object's
- * tangent, and lets the words scroll over the window in the left columns: 03 why one team,
- * 04 seven layers, 05 the picker ("What do you need built?"), which keeps the chosen bands lit
- * and dims the rest (obs.picker → the world). The hold's progress is one number per scroll frame
- * (obs.hold); the ring hands over to the gauge's marker across the last tenth (obs.handover).
- * Reduced motion: every band formed and every name shown, the words in flow.
+ * The held object (desktop): the grid bends into a disc of about 40 % of the screen's height, its
+ * seven orbits drawn empty. As "Seven layers" is read the scroll forms them one by one, root to
+ * crown, each in its layer's colour, and the disc names the layer forming now and says what it
+ * does; at the picker the chosen rings stay lit. This component alone re-renders with the scroll
+ * (one SVG and one list), and it writes nothing to the section's style; phones hold nothing, so
+ * they neither listen nor render on scroll.
  */
-export function Stage() {
+function Held({ section, picked, pickedTag }: { section: RefObject<HTMLElement | null>; picked: readonly LayerId[] | null; pickedTag: string | null }) {
   const { t } = useI18n()
   const { enabled } = useMotion()
-  const station = useStation()
-  const ref = useRef<HTMLElement>(null)
   // All seven formed is the final state (prerendered, reduced motion); the scroll scrubs it back.
-  const [orbit, setOrbit] = useState(LAYERS_N)
-  const [bandsNow, setBandsNow] = useState(LAYERS_N)
-  const [choice, setChoice] = useState<PulseChoice>(null)
+  const [bands, setBands] = useState<number>(LAYERS_N)
+  const [phase, setPhase] = useState<Phase>('picker')
+  const [bend, setBend] = useState({ cx: 0.64, cy: 0.5, sigma: 380 })
+  const well = useRef<HTMLDivElement>(null)
 
+  // The page's grid bends toward wherever the disc stands at this size (read on reflow only).
   useEffect(() => {
-    setChoice(getPulse().choice)
-    return onPulse(setChoice)
+    const measure = () => {
+      const el = well.current
+      const box = el?.parentElement
+      if (!el || !box || !box.clientWidth) return
+      const a = el.getBoundingClientRect()
+      const b = box.getBoundingClientRect()
+      setBend({ cx: (a.left + a.width / 2 - b.left) / b.width, cy: (a.top + a.height / 2 - b.top) / b.height, sigma: Math.round(a.width * 0.75) })
+    }
+    measure()
+    return onReflow(measure)
   }, [])
 
-  // The hold: the scroll becomes obs.hold / obs.inOrbit / obs.handover, once per frame; the section's
-  // top and height are read on reflow only.
+  // The scroll, once per frame: where the reader is against the section's blocks, read on reflow only.
   useEffect(() => {
-    const el = ref.current
+    const el = section.current
     if (!el) return
-    if (!enabled) {
+    if (!enabled || window.matchMedia(PHONE).matches) {
       obs.hold = 1
       obs.inOrbit = LAYERS_N
       obs.handover = 1
-      setOrbit(LAYERS_N)
-      setBandsNow(LAYERS_N)
-      el.style.removeProperty('--hold')
+      setBands(LAYERS_N)
+      setPhase('picker')
       return
     }
     let top = 0
     let height = 1
+    let layersTop = 0
+    let pickerTop = 1
     let frame = 0
-    let last = -1
     const update = () => {
       frame = 0
-      const hold = holdAt(window.scrollY, top, height, window.innerHeight)
-      obs.hold = hold
-      obs.handover = handoverAt(hold)
-      const n = inOrbit(hold)
-      obs.inOrbit = n
-      el.style.setProperty('--hold', hold.toFixed(3))
-      // The rings draw round as the hold scrubs (one state update per 2 % of a band).
-      const b = Math.min(LAYERS_N, (hold / ORBIT_END) * LAYERS_N)
-      setBandsNow(Math.round(b * 50) / 50)
-      if (n !== last) {
-        last = n
-        setOrbit(n)
-      }
+      const y = window.scrollY
+      const vh = window.innerHeight
+      // The rings form while "Seven layers" is being read: from its entrance until the picker's words are well in.
+      const from = layersTop - 0.6 * vh
+      const to = pickerTop - 0.3 * vh
+      const b = LAYERS_N * clamp01((y - from) / Math.max(1, to - from))
+      // What the world reads: its strips take the colour of the band forming now (World.tsx: hold / ORBIT_END).
+      const formed = (b / LAYERS_N) * ORBIT_END
+      obs.hold = formed
+      obs.inOrbit = inOrbit(formed)
+      obs.handover = handoverAt(holdAt(y, top, height, vh))
+      // One state update per 2 % of a band; React skips the same value.
+      setBands(Math.round(b * 50) / 50)
+      setPhase(y < from ? 'why' : y < pickerTop - 0.25 * vh ? 'layers' : 'picker')
     }
     const measure = () => {
       const r = el.getBoundingClientRect()
       top = r.top + window.scrollY
       height = r.height
+      const at = (station: number) => (el.querySelector(`[data-station="${station}"]`)?.getBoundingClientRect().top ?? 0) + window.scrollY
+      layersTop = at(4)
+      pickerTop = at(5)
       update()
     }
     const onScroll = () => {
@@ -121,7 +138,89 @@ export function Stage() {
       window.removeEventListener('scroll', onScroll)
       cancelAnimationFrame(frame)
     }
-  }, [enabled])
+  }, [enabled, section])
+
+  const orbit = bands <= 0 ? 0 : Math.min(LAYERS_N, Math.floor(bands) + 1)
+  const atPicker = phase === 'picker'
+  // The layer named now: the last band that formed, while its words are on screen.
+  const current = enabled && phase === 'layers' ? orbit - 1 : -1
+  const lit = picked ? ROOT_TO_CROWN.map((id) => picked.includes(id)) : null
+
+  return (
+    <div className={s.hold} data-hold>
+      {/* The object on paper: the grid bends into the disc; the seven bands form round it. */}
+      <div className={s.object} data-phase={phase}>
+        <WellGrid cx={bend.cx} cy={bend.cy} sigma={bend.sigma} pull={0.62} />
+        <div ref={well} className={s.well}>
+          <svg className={s.ghost} viewBox={`0 0 ${REACH * 2} ${REACH * 2}`} aria-hidden="true">
+            {RING_R.map((r) => (
+              <circle key={r} cx={REACH} cy={REACH} r={r} />
+            ))}
+          </svg>
+          <InkWell r={DISC_R} bands={enabled ? bands : LAYERS_N} lit={lit} />
+        </div>
+
+        {/* Inside the disc: the instrument's readout, then the layer forming now, named once, and what it does. */}
+        <div className={s.tangent}>
+          <p className={`mono ${s.readout}`} aria-hidden="true">
+            {atPicker && picked ? (
+              <>
+                {t.engine.itTakes} {two(picked.length)} / {two(LAYERS_N)}
+              </>
+            ) : (
+              <>
+                {t.engine.inOrbit} {two(orbit)} / {two(LAYERS_N)}
+              </>
+            )}
+          </p>
+          {atPicker && pickedTag && (
+            <p className={s.pick} aria-hidden="true">
+              {pickedTag}
+            </p>
+          )}
+          <ul className={s.layers} aria-label={t.engine.title}>
+            {ROOT_TO_CROWN.map((id, k) => {
+              const on = k < orbit
+              const isPicked = picked ? picked.includes(id) : on
+              return (
+                <li
+                  key={id}
+                  id={`layer-${id}`}
+                  className={s.layer}
+                  data-on={on || undefined}
+                  data-now={k === current || undefined}
+                  data-picked={picked ? isPicked : undefined}
+                  style={{ '--chakra': chakraColors[chakraOf[id]] } as CSSProperties}
+                >
+                  <span className={s.name}>{t.engine.layers[id].name}</span>
+                  <span className={s.layerText}>{t.engine.layers[id].text}</span>
+                </li>
+              )
+            })}
+          </ul>
+        </div>
+      </div>
+    </div>
+  )
+}
+
+/**
+ * 03 · 04 · 05 The seven-layer stage (on paper): the object held by `position: sticky` inside a
+ * section whose height comes from its three word blocks in CSS, no pins. The words scroll over the
+ * left columns: 03 why one team, with the usual hand-offs drawn as a diagram; 04 the seven layers,
+ * which the disc names as they form; 05 the picker ("What do you need built?"), which keeps the
+ * chosen bands lit and dims the rest. Reduced motion: every band formed and every layer listed
+ * with its text beside the disc, the words in flow.
+ */
+export function Stage() {
+  const { t, locale } = useI18n()
+  const ref = useRef<HTMLElement>(null)
+  const [choice, setChoice] = useState<PulseChoice>(null)
+
+  useEffect(() => {
+    setChoice(getPulse().choice)
+    return onPulse(setChoice)
+  }, [])
 
   const pick = (next: PulseChoice) => {
     const value = choice === next ? null : next
@@ -131,58 +230,24 @@ export function Stage() {
   }
 
   const picked: readonly LayerId[] | null = choice === 'all' ? ROOT_TO_CROWN : choice ? needs[choice].layers : null
-  const pickedIdx = picked ? ROOT_TO_CROWN.map((l, i) => (picked.includes(l) ? i + 1 : 0)).filter(Boolean) : []
+  const pickedRoot = picked ? ROOT_TO_CROWN.filter((id) => picked.includes(id)) : []
+  const pickedTag = choice === 'all' ? t.pulse.allTag : choice ? t.pulse.needs[choice].tag : null
   const nearWork = choice && choice !== 'all' ? needs[choice].work : null
-  const at = Math.min(5, Math.max(3, station))
-  // The layer named now: the last band that formed (none before the first); all seven without motion.
-  const current = orbit - 1
 
   return (
     <Section ref={ref} id="stage" beat="systems" surface="body" className={s.stage} aria-labelledby="stage-title">
-      <div className={s.hold} data-hold>
-        {/* The object on paper: the grid bends into the ink well; the seven bands form as hairline rings round it. */}
-        <div className={s.object}>
-          <WellGrid cx={0.58} cy={0.47} sigma={300} pull={0.62} />
-          <div className={s.well}>
-            <InkWell r={64} bands={enabled ? bandsNow : LAYERS_N} lit={picked ? ROOT_TO_CROWN.map((id) => picked.includes(id)) : null} />
-          </div>
-          <p className={`mono ${s.tag}`} aria-hidden="true">
-            {chip(at)}
-          </p>
+      <Held section={ref} picked={picked} pickedTag={pickedTag} />
 
-          {/* The object's tangent: the layer forming now, named once, in large type. */}
-          <div className={s.tangent}>
-            <ul className={s.layers} aria-label={t.engine.title}>
-              {ROOT_TO_CROWN.map((id, k) => {
-                const on = k < orbit
-                const isPicked = picked ? picked.includes(id) : on
-                return (
-                  <li
-                    key={id}
-                    id={`layer-${id}`}
-                    className={s.layer}
-                    data-on={on || undefined}
-                    data-now={(enabled && k === current) || undefined}
-                    data-picked={picked ? isPicked : undefined}
-                    style={{ '--chakra': chakraColors[chakraOf[id]] } as CSSProperties}
-                  >
-                    <span className={s.name}>{t.engine.layers[id].name}</span>
-                  </li>
-                )
-              })}
-            </ul>
-          </div>
-        </div>
-      </div>
-
-      {/* The words scroll over the held window: one block per station, columns 1–5 (an opaque band on phones). */}
+      {/* The words scroll over the held window: one block per station in the left columns (plain blocks on phones). */}
       <div className={s.words}>
         <div className={s.block} data-station={3}>
-          <p className="eyebrow mono">{t.pulse.eyebrow}</p>
+          <p className="eyebrow mono">
+            {two(3)} / 10 &nbsp;·&nbsp; {t.pulse.eyebrow}
+          </p>
           <h2 className={`h2 ${s.h2}`}>{t.pulse.title}</h2>
           <p className={`d-only lede ${s.lede}`}>{t.pulse.body}</p>
-          {/* Phones: the argument drawn: four vendors drift apart, one gold wire joins the four layers. */}
-          <div className={`m-only ${s.why}`}>
+          {/* The argument drawn: four vendors drift apart, one gold wire joins the four layers. */}
+          <div className={s.why}>
             <p className={`mono ${s.whyLabel}`}>{t.pulse.usualShort}</p>
             <ul className={s.vendors}>
               {t.pulse.vendorsShort.map((v, i) => (
@@ -192,7 +257,7 @@ export function Stage() {
                 </li>
               ))}
             </ul>
-            <div className={s.withUs} data-m-surface="ink">
+            <div className={`dark ${s.withUs}`} data-m-surface="ink">
               <p className={`mono ${s.whyLabel}`}>{t.pulse.withUsLabelShort}</p>
               <div className={s.wire} aria-hidden="true">
                 <i className={s.wireLine} />
@@ -202,11 +267,13 @@ export function Stage() {
               </div>
               <p className={s.withText}>{t.pulse.withUsShort}</p>
             </div>
-            <p className={`lede ${s.lede}`}>{t.pulse.bodyShort}</p>
+            <p className={`m-only lede ${s.lede}`}>{t.pulse.bodyShort}</p>
           </div>
         </div>
-        <div className={s.block} data-station={4} data-m-surface="ink">
-          <p className="eyebrow mono">{t.engine.eyebrow}</p>
+        <div className={`${s.block} ${s.layersBlock}`} data-station={4} data-m-surface="ink">
+          <p className="eyebrow mono">
+            {two(4)} / 10 &nbsp;·&nbsp; {t.engine.eyebrow}
+          </p>
           <h2 id="stage-title" className={`h2 ${s.h2}`} data-focus tabIndex={-1}>
             {t.engine.title}
           </h2>
@@ -231,7 +298,8 @@ export function Stage() {
           <p className={`lede ${s.crown}`}>{t.engine.crownTitle}</p>
         </div>
         <div className={`${s.block} ${s.picker}`} data-station={5} id="pulse">
-          <h2 id="pulse-title" className={`h2 ${s.ask}`} data-focus tabIndex={-1}>
+          <p className="eyebrow mono">{two(5)} / 10</p>
+          <h2 id="pulse-title" className={`h2 ${s.h2}`} data-focus tabIndex={-1}>
             {t.pulse.ask}
           </h2>
           <div className={s.pills} role="radiogroup" aria-labelledby="pulse-title">
@@ -244,14 +312,28 @@ export function Stage() {
           </div>
           <Orbit className={`m-only ${s.mini}`} lit={picked} />
           <div className={s.takes} aria-live="polite">
-            {choice && <p className={`lede ${s.verdict}`}>{choice === 'all' ? t.pulse.verdictAll : t.pulse.verdict}</p>}
             {choice && (
-              <p className={s.usesLine}>
-                {t.pulse.uses} {pickedIdx.join(', ')} ·{' '}
-                <a className={s.proof} href={nearWork ? `#work-${nearWork}` : '#work'}>
-                  {t.pulse.proof} <span aria-hidden="true">↓</span>
-                </a>
-              </p>
+              <>
+                <p className={`lede ${s.verdict}`}>{choice === 'all' ? t.pulse.verdictAll : t.pulse.verdict}</p>
+                <div className={s.uses}>
+                  <p className={`mono ${s.usesLabel}`}>{t.pulse.uses}</p>
+                  <ul className={s.usesList}>
+                    {pickedRoot.map((id) => (
+                      <li key={id} style={{ '--chakra': chakraColors[chakraOf[id]] } as CSSProperties}>
+                        {t.engine.layers[id].name}
+                      </li>
+                    ))}
+                  </ul>
+                </div>
+                <p className={s.next}>
+                  <a className="pill" data-primary data-size="lg" href={`${pathFor('home', locale)}#contact`}>
+                    {t.pulse.tell} <span aria-hidden="true">→</span>
+                  </a>
+                  <a className={s.proof} href={nearWork ? `#work-${nearWork}` : '#work'}>
+                    {t.pulse.proof} <span aria-hidden="true">↓</span>
+                  </a>
+                </p>
+              </>
             )}
           </div>
         </div>

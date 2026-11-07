@@ -9,23 +9,26 @@ const APP_UI = { cta: 'Read my skin', steps: ['Photo', 'Read', 'Routine'], reads
 
 /**
  * 02 Our products, the product stage (owner brief 2026-11-02): one full-width ink window. Left:
- * the head, the status chip, the product's name and two value lines, the offer strip
+ * the head, the status chip, the product's name and its value lines. Right: the gold ring and its
+ * black hole, with a phone drawn in front of it in CSS (a neutral recreation of the app's public
+ * look, no user data), whole and centred beside them. Across the foot: the offer strip
  * (sponsor · license · acquire) and the call to action that opens the contact form on
- * "Sponsor or buy a product". Right: the gold ring and its black hole, with a phone drawn in
- * front of it in CSS (a neutral recreation of the app's public look, no user data). The scan
- * line moves only with motion allowed.
+ * "Sponsor or buy a product". The scan line moves only with motion allowed.
  */
 export function ProductStage() {
   const { t, locale } = useI18n()
   const p = products[0]
   if (!p) return null
   const tx = t.products.items[p.id]
-  const uses = p.layers.map((l) => ORDER.indexOf(l) + 1).sort((a, b) => a - b)
+  const uses = ORDER.filter((l) => p.layers.includes(l))
+    .map((l) => t.engine.layers[l].name)
+    .join(', ')
   return (
     <div className={`dark ${s.stage}`} data-loop>
       <div className={s.copy}>
+        <div className={s.lead}>
         <p className="eyebrow mono">02 / 10 &nbsp;·&nbsp; {t.products.eyebrow}</p>
-        <h2 id="products-title" className={`h3 ${s.h}`} data-focus tabIndex={-1}>
+        <h2 id="products-title" className={`h2 ${s.h}`} data-focus tabIndex={-1}>
           {t.products.title}
         </h2>
         <p className={`d-only ${s.lede}`}>{t.products.lede}</p>
@@ -41,10 +44,12 @@ export function ProductStage() {
           <p className={`m-only ${s.note}`}>{tx.noteShort}</p>
           <p className={`d-only ${s.detail}`}>{tx.detail}</p>
           <p className={`d-only mono ${s.uses}`}>
-            {t.pulse.uses} {uses.join(', ')}
+            {t.pulse.uses} {uses}
           </p>
         </div>
+        </div>
 
+        <div className={s.foot}>
         <div className={s.offer}>
           <p className={`mono ${s.offerLabel}`}>{t.products.offer}</p>
           <ul className={s.strip}>
@@ -64,6 +69,7 @@ export function ProductStage() {
           </a>
         </div>
         <p className={`d-only ${s.more}`}>{t.products.more}</p>
+        </div>
 
         {/* Phones: the rest of the story behind "Details +" (concept.md §3). */}
         <details className={`m-only m-details ${s.details}`}>
@@ -71,7 +77,7 @@ export function ProductStage() {
           <p>{t.products.lede}</p>
           <p>{tx.detail}</p>
           <p className="mono">
-            {t.pulse.uses} {uses.join(', ')}
+            {t.pulse.uses} {uses}
           </p>
           <p>{tx.offer}</p>
           <p>{t.products.more}</p>

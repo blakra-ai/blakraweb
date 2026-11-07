@@ -1,29 +1,37 @@
-/* Selected client work: paper, the proof's 64 px margin; each card an ink window with one screen. */
+/* Selected client work and How we work: paper, the page's edges; each client card an ink window with one screen. */
 .work {
   position: relative;
   background: var(--body);
-  max-width: var(--max-w);
-  margin: 0 auto;
-  padding: 96px 64px 112px;
+  padding: var(--section-top) var(--page-r) var(--section-bottom) var(--page-x);
 }
 .head {
   display: grid;
-  gap: 18px;
-  max-width: 760px;
+  grid-template-columns: minmax(0, 7fr) minmax(0, 5fr);
+  column-gap: 48px;
+  align-items: end;
+}
+.headMain {
+  display: grid;
+  gap: 20px;
+}
+.headSide {
+  display: grid;
+  gap: 14px;
 }
 .title {
-  font-size: clamp(2rem, 0.5rem + 3.6vw, 3.75rem);
+  outline: none;
+  hyphens: auto;
+  overflow-wrap: break-word;
 }
 .lede {
-  max-width: 560px;
-  font-size: 1rem;
+  font-size: var(--body-size);
+  line-height: 1.5;
 }
 /* The private-client note: one quiet line with the orange thread before it. */
 .note {
   position: relative;
-  max-width: 560px;
   padding-left: 16px;
-  font-size: 0.875rem;
+  font-size: var(--small);
   line-height: 1.5;
   color: var(--grey);
 }
@@ -40,14 +48,14 @@
 .grid {
   display: grid;
   grid-template-columns: repeat(3, minmax(0, 1fr));
-  gap: 56px var(--gutter);
-  margin-top: 56px;
-  padding-top: 32px;
+  gap: 28px var(--gutter);
+  margin-top: 32px;
+  padding-top: 24px;
   border-top: 1px solid var(--hair);
 }
 .card {
   display: grid;
-  gap: 8px;
+  gap: 6px;
   color: var(--porcelain);
   text-decoration: none;
   border-radius: var(--r-window);
@@ -56,11 +64,11 @@
   outline: 2px solid var(--porcelain);
   outline-offset: 6px;
 }
-/* The window: a fixed 4 : 3 ink frame, so nothing shifts while the screen loads. */
+/* The window: a fixed 8 : 5 ink frame, so nothing shifts while the screen loads. */
 .window {
   position: relative;
   display: block;
-  aspect-ratio: 4 / 3;
+  aspect-ratio: 8 / 5;
   margin-bottom: 10px;
   overflow: hidden;
   border-radius: var(--r-window);
@@ -71,41 +79,47 @@
   left: 50%;
   height: auto;
   transform: translateX(-50%);
-  transition: transform 0.5s var(--ease);
+  transition: transform 0.6s var(--ease);
 }
 /* A phone stands in the window, cut by its lower edge; a browser sits low and wide, cut the same way. */
 .window[data-frame='phone'] img {
   top: 9%;
   width: 46%;
+  transform-origin: 50% 0;
 }
 .window[data-frame='browser'] img {
   top: 14%;
   width: 92%;
   left: 12%;
   transform: none;
+  transform-origin: 0 0;
 }
-.card:hover .window[data-frame='phone'] img {
-  transform: translate(-50%, -6px);
-}
-.card:hover .window[data-frame='browser'] img {
-  transform: translateY(-6px);
+/* The hover: the screen comes forward inside its window, transform only. */
+@media (hover: hover) {
+  .card:hover .window[data-frame='phone'] img {
+    transform: translateX(-50%) scale(1.02);
+  }
+  .card:hover .window[data-frame='browser'] img {
+    transform: scale(1.02);
+  }
+  .card:hover .name {
+    text-decoration: underline;
+    text-decoration-thickness: 1px;
+    text-underline-offset: 4px;
+  }
 }
 .cat {
+  font-size: 0.8125rem;
   color: var(--grey);
 }
 .name {
   font-weight: 400;
 }
 .line {
-  max-width: 40ch;
-  font-size: 0.9375rem;
+  font-size: var(--body-size);
   line-height: 1.45;
   color: var(--grey);
-}
-.card:hover .name {
-  text-decoration: underline;
-  text-decoration-thickness: 1px;
-  text-underline-offset: 4px;
+  text-wrap: pretty;
 }
 
 /* Only the wide desktop card shows more than one phone. */
@@ -117,9 +131,9 @@
   .item:first-child {
     grid-column: span 2;
   }
-  /* Same height as its neighbours' 4 : 3 windows: (2 w + gutter) / 0.75 w. */
+  /* Same height as its neighbours' 8 : 5 windows: (2 w + gutter) / (5 w / 8). */
   .item:first-child .window {
-    aspect-ratio: 2.7 / 1;
+    aspect-ratio: 3.3 / 1;
   }
   .item:first-child .window[data-frame='phone'] img {
     width: 21%;
@@ -139,117 +153,147 @@
   outline: none;
 }
 
-/* Further industries, under the grid: one quiet line. */
+/* The close: further industries as a larger line, and the way forward. */
+.closing {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 20px 48px;
+  margin-top: 32px;
+  padding-top: 24px;
+  border-top: 1px solid var(--hair);
+}
 .also {
-  margin-top: 40px;
-  max-width: 640px;
-  font-size: 0.9375rem;
-  line-height: 1.5;
-  color: var(--grey);
+  flex: 1 1 420px;
+  max-width: 720px;
+  font-size: clamp(1.375rem, 1rem + 0.9vw, 1.75rem);
+  font-weight: 300;
+  line-height: 1.25;
+  letter-spacing: -0.015em;
+  text-wrap: pretty;
 }
 
-/* 07 How we work: the strip that closes the screen. */
-.process {
+/* 07 How we work: the head, the steps in a full-width row under large numerals, the commitments in an ink band. */
+.processHead {
   display: grid;
-  grid-template-columns: minmax(0, 530px) 1fr;
-  column-gap: 136px;
-  align-items: start;
-  margin-top: 96px;
+  gap: 20px;
 }
-.processTitle {
-  margin-top: 8px;
-  outline: none;
+.processLede {
+  max-width: 640px;
 }
 .steps {
   display: grid;
-  grid-template-columns: repeat(3, 1fr);
+  grid-template-columns: repeat(3, minmax(0, 1fr));
   column-gap: var(--gutter);
-  margin-top: 8px;
+  margin-top: 40px;
+  padding: 0;
+  list-style: none;
 }
 .steps li {
-  border-top: 1px solid var(--hair);
-  padding-top: 12px;
+  display: grid;
+  align-content: start;
+  padding-top: 16px;
+  border-top: 1px solid var(--porcelain);
+}
+.stepN {
+  display: block;
+  margin-bottom: 18px;
+  font-family: var(--font-sans);
+  font-size: clamp(4.5rem, 2rem + 5.6vw, 7.5rem);
+  font-style: normal;
+  font-weight: 200;
+  line-height: 0.9;
+  letter-spacing: -0.05em;
+  color: var(--porcelain);
 }
 .steps b {
   display: block;
-  font-weight: 500;
-  font-size: 0.9375rem;
-  margin-bottom: 6px;
+  margin-bottom: 8px;
+  font-size: var(--h3);
+  font-weight: 400;
+  line-height: 1.2;
+  letter-spacing: -0.015em;
+  text-wrap: balance;
 }
 .steps span {
   display: block;
+  font-size: var(--body-size);
+  line-height: 1.5;
   color: var(--grey);
-  font-size: 0.8125rem;
-  line-height: 1.45;
+  text-wrap: pretty;
 }
-/* The porthole's margin (≥ 1200 px with the world running): the right column stops short of it. */
-:global(html.porthole-margin) .work {
-  padding-right: var(--porthole-pad, 64px);
+.terms {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 0 var(--gutter);
+  margin-top: 40px;
+  padding: 16px 32px;
+  border-radius: var(--r-window);
+  background: var(--body);
+  color: var(--porcelain);
+}
+/* The five commitments and the button fill one 3 × 2 grid: the list's cells join the band's. */
+.termList {
+  display: contents;
+}
+.termList li {
+  position: relative;
+  padding: 16px 0 16px 20px;
+  font-size: var(--body-size);
+  line-height: 1.4;
+  text-wrap: pretty;
+}
+.termList li::before {
+  content: '';
+  position: absolute;
+  left: 0;
+  top: calc(16px + 0.5em);
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: var(--accent);
+}
+.termsCta {
+  align-self: center;
+  justify-self: start;
+  margin: 12px 0;
 }
 
 @media (max-width: 1099px) {
-  .process {
-    column-gap: 48px;
+  .head {
+    grid-template-columns: minmax(0, 1fr);
+    row-gap: 18px;
   }
-  .work {
-    padding: 80px var(--inset) 96px;
+  .headSide {
+    max-width: 640px;
   }
   .grid {
     grid-template-columns: repeat(2, minmax(0, 1fr));
   }
-}
-@media (max-width: 699px) {
-  .work {
-    padding: 64px var(--inset) 72px;
-  }
-  .grid {
-    grid-template-columns: minmax(0, 1fr);
-    gap: 44px;
-    margin-top: 40px;
-  }
-  .process {
-    grid-template-columns: minmax(0, 1fr);
-    row-gap: 20px;
-    margin-top: 64px;
-  }
-  .steps {
-    grid-template-columns: minmax(0, 1fr);
-    row-gap: 16px;
+  .terms {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
   }
 }
 @media (prefers-reduced-motion: reduce) {
   .window img {
     transition: none;
   }
-  .card:hover .window[data-frame='phone'] img {
-    transform: translateX(-50%);
-  }
-  .card:hover .window[data-frame='browser'] img {
-    transform: none;
-  }
-}
-
-/* 07 How we work as its own station: the strip on the paper, without the grid's top margin. */
-.processSection .process {
-  margin-top: 0;
-}
-.processLede {
-  margin-top: 14px;
-  max-width: 460px;
-  font-size: 1rem;
 }
 
 /* ---------- Phones, run 2026-11-02-mobile (concept.md 07 · 09) ---------- */
 @media (max-width: 767px) {
   .work {
     --swipe-pad: 20px;
-    padding: 64px 20px 56px;
+    padding: var(--section-top) 20px var(--section-bottom);
   }
-  .head .note {
+  .note {
     margin-top: 4px;
   }
   /* Client work: one project per screen width, the screen cropped to its readable corner. */
   .grid {
+    grid-template-columns: minmax(0, 1fr);
+    gap: 12px;
     margin-top: 28px;
     padding-top: 0;
     border-top: 0;
@@ -278,18 +322,23 @@
     font-size: 2rem;
     font-weight: 300;
   }
-  /* How we work: a vertical timeline, a gold line through three nodes. */
-  .processSection {
-    padding-top: 64px;
+  .closing {
+    margin-top: 28px;
+    padding-top: 24px;
   }
-  .processTitle {
-    font-size: 2rem;
-    font-weight: 300;
+  .also {
+    flex-basis: 100%;
+    font-size: 1.25rem;
+  }
+  /* How we work: a vertical timeline, a gold line through three nodes. */
+  .stepN {
+    display: none;
   }
   .steps {
     position: relative;
+    grid-template-columns: minmax(0, 1fr);
     row-gap: 28px;
-    margin-top: 12px;
+    margin-top: 28px;
     padding-left: 28px;
   }
   .steps::before {
@@ -319,11 +368,30 @@
     border: 2px solid #d9a441;
   }
   .steps b {
+    margin-bottom: 6px;
     font-size: 1.25rem;
-    font-weight: 400;
   }
   .steps span {
     font-size: 1rem;
+  }
+  .terms {
+    grid-template-columns: minmax(0, 1fr);
+    margin-top: 32px;
+    padding: 12px 20px 20px;
+  }
+  .termList li {
+    padding: 12px 0 12px 20px;
+    font-size: 1rem;
+  }
+  .termList li::before {
+    top: calc(12px + 0.5em);
+  }
+  .termList li + li {
+    border-top: 1px solid var(--hair);
+  }
+  .termsCta {
+    justify-self: stretch;
+    margin: 8px 0 0;
   }
 }
 @media (max-width: 767px) and (prefers-reduced-motion: no-preference) {

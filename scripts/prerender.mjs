@@ -4,6 +4,7 @@ import { readFile, writeFile, mkdir, readdir, rm } from 'node:fs/promises'
 import { dirname, join } from 'node:path'
 import { fileURLToPath, pathToFileURL } from 'node:url'
 import { execFileSync } from 'node:child_process'
+import { criticalCss, firstScreenClasses } from './critical-css.mjs'
 
 const root = join(dirname(fileURLToPath(import.meta.url)), '..')
 const dist = join(root, 'dist')
@@ -27,18 +28,51 @@ const stillPreload = phoneStill ? [`<link rel="preload" href="${BASE}assets/${ph
 // The desktop still too: the brand loader waits on it, and it is the first screen until the world runs.
 const deskStill = assets.find((f) => /^hero-still-[\w-]+\.jpg$/.test(f) && !f.startsWith('hero-still-phone'))
 if (deskStill) stillPreload.push(`<link rel="preload" href="${BASE}assets/${deskStill}" as="image" media="(min-width: 768px)" fetchpriority="high">`)
-const preload = [...fontPreload, ...stillPreload].join('\n    ')
+// The hero's still first: it is the phone's LCP; the fonts follow in the order the first screen needs them.
+const preload = [...stillPreload, ...fontPreload].join('\n    ')
+
+// The app is not needed for the first paint (phones start it after it, src/entry-client.tsx), so its code is fetched at low priority behind the still and the fonts.
+const appChunks = (key, seen = new Set()) => {
+  const entry = manifest[key]
+  if (!entry || seen.has(key)) return seen
+  seen.add(key)
+  for (const dep of entry.imports ?? []) appChunks(dep, seen)
+  return seen
+}
+const entryKey = 'src/entry-client.tsx'
+const inEntry = appChunks(entryKey)
+const modulePreloads = (keys) => [...keys].filter((k) => !inEntry.has(k)).map((k) => `<link rel="modulepreload" fetchpriority="low" href="${BASE}${manifest[k].file}">`)
+const appPreload = modulePreloads(appChunks('src/hydrate.tsx'))
+
+// The stylesheet leaves <head>: the first screen's rules go inline (scripts/critical-css.mjs) and the
+// whole sheet loads at the end of <body>, where it blocks no paint of what came before it. The content below
+// the first screen waits for it (hiddenUntilSheet, so it is never laid out unstyled), and on phones it stays
+// out of the first layouts until it is near the screen or the app releases it (src/motion/lazySections.ts).
+const cssFile = assets.find((f) => f.endsWith('.css'))
+if (!cssFile) throw new Error('prerender: stylesheet not found in dist/assets')
+const fullCss = await readFile(join(dist, 'assets', cssFile), 'utf8')
+const sheetTag = template.match(/<link rel="stylesheet"[^>]*>/)?.[0]
+if (!sheetTag) throw new Error('prerender: stylesheet link not found in the template')
+const belowFold = 'main>:not(:first-child):not(:last-child),footer'
+const hiddenUntilSheet = `${belowFold}{content-visibility:hidden}`
+const afterSheet = `<style>${belowFold}{content-visibility:visible}@media (max-width:767px){${belowFold}{content-visibility:auto;contain-intrinsic-size:auto 900px}}</style>`
+const criticalCache = new Map()
 
 const images = new Map()
 for (const route of routes) {
   const { html, head, lang, locale } = render(route.path)
   // Preload this page's language chunk so hydration never waits on a second round trip.
   const dict = manifest[`src/content/locales/${locale}.ts`]?.file
-  const dictPreload = dict ? `\n    <link rel="modulepreload" href="${BASE}${dict}">` : ''
+  const dictPreload = dict ? [`<link rel="modulepreload" fetchpriority="low" href="${BASE}${dict}">`] : []
+  // The first screen's rules, per set of classes on it (the four languages of a page share one).
+  const classes = firstScreenClasses(html)
+  const key = [...classes].sort().join(' ')
+  if (!criticalCache.has(key)) criticalCache.set(key, criticalCss(fullCss, classes))
   const page = template
+    .replace(sheetTag, '')
     .replace('<html lang="en">', `<html lang="${lang}">`)
-    .replace('<!--head-->', `${head}\n    ${preload}${dictPreload}`)
-    .replace('<!--app-->', html)
+    .replace('<!--head-->', [head, preload, ...appPreload, ...dictPreload, `<style>${criticalCache.get(key)}${hiddenUntilSheet}</style>`].join('\n    '))
+    .replace('<div id="root"><!--app--></div>', `<div id="root">${html}</div>\n    ${sheetTag}${afterSheet}`)
   // The page's content images (described ones only, decorative alt="" skipped) for the image sitemap.
   images.set(route.path, [...html.matchAll(/<img src="([^"]*\/assets\/[^"]+)"[^>]*alt="([^"]+)"/g)].map((m) => stripBase(m[1])))
   const out = join(dist, route.file)

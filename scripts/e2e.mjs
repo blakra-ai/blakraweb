@@ -137,6 +137,8 @@ try {
     const submit = page.locator('#contact button[type="submit"]')
 
     await submit.click()
+    // The summary takes focus on the next frame: frames are slow under software rendering.
+    await page.waitForFunction(() => document.activeElement?.getAttribute('role') === 'alert', null, { timeout: 2000 }).catch(() => {})
     const invalid = await page.locator('#contact [aria-invalid="true"]').count()
     // The error summary (role="alert") takes focus first; each of its links leads to a field (d-05-form-states).
     const focused = await page.evaluate(() => ({ role: document.activeElement?.getAttribute('role'), links: document.querySelectorAll('#contact [role="alert"] a[href^="#contact-"]').length }))
@@ -361,9 +363,13 @@ try {
       msg: document.querySelector('#contact-msg')?.value ?? '',
       // The stage's layers: the ones the answer takes are picked (AI among them), the others not.
       lit: [...document.querySelectorAll('#stage li[id^="layer-"]')].filter((li) => li.dataset.picked === 'true').map((li) => li.id),
-      uses: document.querySelector('#pulse [aria-live]')?.textContent.includes('1, 2, 3, 5, 7'),
     }))
-    check('P1', 'the pulse answer lights its layers, links its proof and starts the message', res.pressed.includes(need) && res.verdict.includes(dicts.en.pulse.verdict) && res.proof === '#work-helya-ai' && res.msg.startsWith(need) && res.lit.includes('layer-ai') && !res.lit.includes('layer-design') && res.uses, JSON.stringify({ ...res, verdict: res.verdict.slice(0, 60) }))
+    // The answer names the layers it takes, in words, never as digits.
+    const answer = await page.locator('#pulse [aria-live]').textContent()
+    const a = dicts.en.engine.layers
+    res.uses = [a.cloud, a.data, a.automation, a.apps, a.ai].every((l) => answer.includes(l.name)) && !answer.includes(a.design.name) && !/\d/.test(answer)
+    res.next = await page.evaluate(() => !!document.querySelector('#pulse [aria-live] a[href$="#contact"]'))
+    check('P1', 'the pulse answer lights its layers, links its proof and starts the message', res.pressed.includes(need) && res.verdict.includes(dicts.en.pulse.verdict) && res.proof === '#work-helya-ai' && res.msg.startsWith(need) && res.lit.includes('layer-ai') && !res.lit.includes('layer-design') && res.uses && res.next, JSON.stringify({ ...res, verdict: res.verdict.slice(0, 60) }))
     await page.close()
   }
 
@@ -381,13 +387,26 @@ try {
     // The stage holds the screen with sticky positioning and the scroll brings the layers into orbit.
     const engine = await page.evaluate(async () => {
       const el = document.getElementById('stage')
-      const top = el.getBoundingClientRect().top + scrollY
-      window.scrollTo({ top: top + (el.offsetHeight - innerHeight) * 0.6, behavior: 'instant' })
-      await new Promise((r) => setTimeout(r, 600))
+      const well = () => el.querySelectorAll('[data-ink-well] circle').length - 1
+      const go = async (top) => {
+        window.scrollTo({ top, behavior: 'instant' })
+        await new Promise((r) => setTimeout(r, 600))
+      }
+      const pageTop = (node) => node.getBoundingClientRect().top + scrollY
+      await go(pageTop(el))
+      const before = well()
+      // Halfway through "Seven layers": the disc names the layer forming now.
+      const seven = el.querySelector('[data-station="4"]')
+      await go(pageTop(seven) + seven.offsetHeight * 0.2)
+      const during = well()
+      const named = el.querySelectorAll('#stage li[data-now]').length
       const w = el.querySelector('[data-hold]').getBoundingClientRect()
-      return { held: w.top >= 0 && w.bottom <= innerHeight + 1, p: Number(el.style.getPropertyValue('--hold')), orbit: el.querySelectorAll('#stage li[data-on]').length }
+      const held = w.top >= 0 && w.bottom <= innerHeight + 1
+      // At the picker: all seven formed.
+      await go(pageTop(document.getElementById('pulse')))
+      return { held, before, during, named, orbit: el.querySelectorAll('#stage li[data-on]').length, rings: well() }
     })
-    check('S1', 'the stage holds the screen and the scroll brings the layers into orbit', engine.held && engine.p > 0.3 && engine.p < 0.9 && engine.orbit === 7, JSON.stringify(engine))
+    check('S1', 'the stage holds the screen and the scroll brings the layers into orbit', engine.held && engine.before === 0 && engine.during > 0 && engine.during < 7 && engine.named === 1 && engine.orbit === 7 && engine.rings === 7, JSON.stringify(engine))
     // Selected client work: one card per project, each with its screen loaded at its final size.
     const proof = await page.evaluate(async () => {
       const el = document.getElementById('work')

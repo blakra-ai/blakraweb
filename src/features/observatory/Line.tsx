@@ -1,5 +1,6 @@
 import { useEffect, useRef } from 'react'
 import { useMotion } from '../../motion/MotionProvider'
+import { onLifted } from './ready'
 import { obs } from './state'
 
 /*
@@ -12,8 +13,8 @@ import { obs } from './state'
  */
 
 export const CPS = 34
-/** The line begins this long after the hero mounts: the grid's bend (900 ms) is the only motion on load. */
-const START_MS = 1000
+/** The line begins this long after the loader starts to lift: as the curtain clears round the landed ring. */
+const START_MS = 500
 
 export function Voice({ text, delay = START_MS, className = 'voice' }: { text: string; delay?: number; className?: string }) {
   const { enabled } = useMotion()
@@ -29,11 +30,13 @@ export function Voice({ text, delay = START_MS, className = 'voice' }: { text: s
       b.textContent = text.slice(n)
       obs.line.typed = n
     }
-    if (!enabled) {
+    // Typed only where nobody has read it yet: under the brand loader. A line already on screen (a repeat visit) never vanishes to be retyped.
+    if (!enabled || !document.documentElement.classList.contains('loading')) {
       obs.line = { text, typed: text.length, from: 0 }
       print(text.length)
       return
     }
+    print(0)
     let timer = 0
     let tick = 0
     const total = (text.length / CPS) * 1000
@@ -48,8 +51,11 @@ export function Voice({ text, delay = START_MS, className = 'voice' }: { text: s
       }
       step()
     }
-    timer = window.setTimeout(start, delay)
+    const off = onLifted(() => {
+      timer = window.setTimeout(start, delay)
+    })
     return () => {
+      off()
       clearTimeout(timer)
       clearTimeout(tick)
     }

@@ -15,6 +15,33 @@ export function markWorldReady() {
 
 export const isWorldReady = () => ready
 
+/* The loader's lift (src/boot.ts): what waits for the curtain, such as her line being typed. */
+let lifted = false
+const lifting = new Set<() => void>()
+export function markLifted() {
+  lifted = true
+  for (const w of lifting) w()
+  lifting.clear()
+}
+export function onLifted(cb: () => void): () => void {
+  if (lifted) {
+    cb()
+    return () => {}
+  }
+  lifting.add(cb)
+  return () => lifting.delete(cb)
+}
+
+/*
+ * The handover: from her first frame until the still starts to fade (html.gl-live), she stays exactly
+ * as the still shows her; her life (pose, float, breath, the sky's clock) starts at this moment.
+ */
+let handedOver = false
+export const markHandover = () => {
+  handedOver = true
+}
+export const isHandedOver = () => handedOver
+
 /** Calls `cb` once the world is ready (at once if it already is); returns an unsubscribe. */
 export function onWorldReady(cb: () => void): () => void {
   if (ready) {

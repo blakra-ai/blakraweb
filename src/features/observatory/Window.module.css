@@ -26,21 +26,56 @@
   overflow: hidden;
   background: var(--body);
 }
-/* The handover to the world: a crossfade, then out of the way (the world draws the same frame). */
+/* The handover to the world: a crossfade from her first frame, then out of the way (the world draws the same pixels). */
 :global(html.gl-live) .still {
   opacity: 0;
   visibility: hidden;
-  transition: opacity 0.6s cubic-bezier(0.4, 0, 0.2, 1), visibility 0s linear 0.6s;
+  transition: opacity 0.45s linear, visibility 0s linear 0.45s;
 }
 .stillImage {
   position: absolute;
   top: 0;
   right: 0;
   bottom: 0;
-  width: 50%;
+  width: 60%;
   height: 100%;
   object-fit: cover;
-  object-position: right center;
+  object-position: left center;
+}
+@media (min-width: 768px) {
+  /* The ink and the quiet grid as the world's well paints them (shaders/well.ts: #0d0d10, lines on 12 + 24 n px at about 2.4 %), so nothing changes left of the image either. */
+  .still {
+    container-type: size;
+    background:
+      linear-gradient(90deg, transparent 11px, rgba(236, 233, 226, 0.024) 11px 13px, transparent 13px) -1px 0 / 24px 24px,
+      linear-gradient(transparent 11px, rgba(236, 233, 226, 0.024) 11px 13px, transparent 13px) 0 -1px / 24px 24px,
+      #0d0d10;
+    will-change: opacity;
+  }
+  /*
+   * The image is the hero window as the world draws it at 1440 × 900 (scripts/hero-still.mjs prints these numbers, in px at a ring of 180):
+   * its ring lands on the world's ring at every size (windows.ts frameWindow: 62 % across, 322/788 down, 180 px × min(w, 1392) / 1392).
+   * 100cq is the padding box: the window's border box is 2 px larger, and the world draws to the border box.
+   */
+  @supports (width: 1cqw) {
+    .stillImage {
+      --unit: calc(min(100cqw + 2px, 1392px) / 1392);
+      right: auto;
+      bottom: auto;
+      width: calc(var(--unit) * 1001.8);
+      height: calc(var(--unit) * 878.47);
+      left: calc((100cqw + 2px) * 0.62 - 1px - var(--unit) * 472.84);
+      top: calc((100cqh + 2px) * 0.408629 - 1px - var(--unit) * 358.88);
+      object-fit: fill;
+    }
+  }
+  /* Every edge dissolves into the ink: no seam at any size. */
+  .stillImage {
+    -webkit-mask-image: linear-gradient(to right, transparent, #000 110px, #000 calc(100% - 24px), transparent), linear-gradient(to bottom, transparent, #000 24px, #000 calc(100% - 32px), transparent);
+    mask-image: linear-gradient(to right, transparent, #000 110px, #000 calc(100% - 24px), transparent), linear-gradient(to bottom, transparent, #000 24px, #000 calc(100% - 32px), transparent);
+    -webkit-mask-composite: source-in;
+    mask-composite: intersect;
+  }
 }
 /* The rendered still already holds the ring; the CSS ring stands in only where there is no still. */
 picture + .hole {

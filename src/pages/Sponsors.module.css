@@ -1,0 +1,390 @@
+/* For sponsors and buyers: one ink stage (words and object, the product, the offer), paper, then the closing window. */
+.stage {
+  display: grid;
+  grid-template-columns: repeat(12, minmax(0, 1fr));
+  column-gap: var(--gutter);
+  padding-block: 28px clamp(40px, 5vw, 64px);
+}
+.crumbs {
+  grid-column: 1 / -1;
+}
+.words {
+  position: relative;
+  grid-column: 1 / 8;
+  display: grid;
+  justify-items: start;
+  align-content: start;
+  gap: 24px;
+  margin-top: clamp(40px, 7vh, 72px);
+}
+.title {
+  hyphens: auto;
+  overflow-wrap: break-word;
+}
+.lede {
+  max-width: 32em;
+  font-size: var(--lead);
+  line-height: 1.5;
+  color: var(--grey);
+  text-wrap: pretty;
+}
+
+/* The object: the ring and the hole behind, the phone in front, standing through the words and the product. */
+.object {
+  position: relative;
+  grid-column: 8 / 13;
+  grid-row: 2 / span 2;
+  display: grid;
+  place-items: center;
+  align-self: center;
+  min-height: 680px;
+}
+.objectRing {
+  --ring-d: min(44vw, 680px);
+}
+.phone {
+  position: relative;
+  width: min(100%, 290px);
+  aspect-ratio: 9 / 19;
+  padding: 10px;
+  border-radius: 44px;
+  background: linear-gradient(160deg, #2a2a30, #0f0f12 40%, #1c1c21);
+  box-shadow: 0 0 0 1px rgba(255, 255, 255, 0.08), 0 40px 80px -20px rgba(0, 0, 0, 0.8), 0 0 60px -10px rgba(var(--accent-rgb), 0.25);
+  rotate: -4deg;
+}
+.screen {
+  display: grid;
+  grid-template-rows: auto 1fr auto auto auto;
+  gap: 14px;
+  height: 100%;
+  padding: 14px 16px 18px;
+  border-radius: 34px;
+  background: radial-gradient(120% 60% at 50% 30%, #17161a, #08080a);
+  font-size: 11px;
+  color: #ece9e2;
+}
+.bar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  color: #8a8781;
+  font: 500 10px/1 var(--font-mono);
+}
+.bar b {
+  color: var(--accent);
+  letter-spacing: 0.24em;
+  font-weight: 500;
+}
+.scan {
+  position: relative;
+  display: grid;
+  place-items: center;
+  overflow: hidden;
+  border-radius: 18px;
+  background: rgba(255, 255, 255, 0.025);
+}
+.face {
+  width: 62%;
+  fill: none;
+  stroke: rgba(236, 233, 226, 0.75);
+  stroke-width: 1.2;
+  stroke-linecap: round;
+}
+.corners {
+  position: absolute;
+  inset: 14px;
+  background:
+    linear-gradient(var(--accent), var(--accent)) left top / 18px 1.5px no-repeat,
+    linear-gradient(var(--accent), var(--accent)) left top / 1.5px 18px no-repeat,
+    linear-gradient(var(--accent), var(--accent)) right top / 18px 1.5px no-repeat,
+    linear-gradient(var(--accent), var(--accent)) right top / 1.5px 18px no-repeat,
+    linear-gradient(var(--accent), var(--accent)) left bottom / 18px 1.5px no-repeat,
+    linear-gradient(var(--accent), var(--accent)) left bottom / 1.5px 18px no-repeat,
+    linear-gradient(var(--accent), var(--accent)) right bottom / 18px 1.5px no-repeat,
+    linear-gradient(var(--accent), var(--accent)) right bottom / 1.5px 18px no-repeat;
+}
+.button {
+  display: grid;
+  place-items: center;
+  height: 40px;
+  border-radius: 999px;
+  background: var(--accent);
+  color: #0b0b0d;
+  font-weight: 600;
+  font-size: 12px;
+}
+.appSteps {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 6px;
+}
+.appSteps li {
+  display: grid;
+  gap: 3px;
+  padding-top: 7px;
+  border-top: 1.5px solid rgba(236, 233, 226, 0.15);
+  color: #8a8781;
+}
+.appSteps li[data-on] {
+  border-color: var(--accent);
+  color: #ece9e2;
+}
+.appSteps em {
+  font: 400 9px/1 var(--font-mono);
+  font-style: normal;
+  color: var(--accent);
+}
+.reads {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 5px;
+}
+.reads li {
+  padding: 4px 8px;
+  border: 1px solid rgba(236, 233, 226, 0.14);
+  border-radius: 999px;
+  font-size: 9.5px;
+  color: #b8b4ac;
+}
+
+/* The product. */
+.product {
+  position: relative;
+  grid-column: 1 / 8;
+  display: grid;
+  justify-items: start;
+  gap: 16px;
+  margin-top: clamp(40px, 6vw, 80px);
+  padding-top: 20px;
+  border-top: 1px solid var(--hair);
+}
+.label {
+  font-weight: 500;
+  color: var(--grey);
+}
+.chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  padding: 6px 12px;
+  border: 1px solid rgba(var(--accent-rgb), 0.5);
+  border-radius: var(--r-pill);
+  color: var(--accent);
+}
+.chip i {
+  flex: none;
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: var(--accent);
+  box-shadow: 0 0 0 4px rgba(var(--accent-rgb), 0.18);
+}
+.name {
+  font-size: var(--h1);
+  font-weight: 300;
+  letter-spacing: -0.04em;
+  line-height: 0.95;
+}
+.line {
+  max-width: 34em;
+  font-size: var(--lead);
+  line-height: 1.45;
+}
+.detail {
+  max-width: 40em;
+  font-size: var(--body-size);
+  line-height: 1.5;
+  color: var(--grey);
+}
+
+/* The offer: three words across the window, on a gold thread; each opens the contact form on the right door. */
+.offer {
+  position: relative;
+  grid-column: 1 / -1;
+  margin-top: clamp(48px, 6vw, 88px);
+}
+.strip {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  margin-top: 14px;
+  border-top: 1px solid var(--accent);
+  border-bottom: 1px solid var(--hair);
+}
+.strip li + li {
+  border-left: 1px solid var(--hair);
+}
+.strip a {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 12px;
+  padding: clamp(20px, 2.6vw, 36px) clamp(16px, 2vw, 28px);
+  font-size: clamp(2rem, 0.6rem + 3.9vw, 4.5rem);
+  font-weight: 300;
+  letter-spacing: -0.03em;
+  line-height: 1.05;
+  hyphens: auto;
+  transition: background-color 0.2s var(--ease);
+}
+.strip li:first-child a {
+  padding-left: 0;
+}
+.strip a span {
+  flex: none;
+  font-size: 0.5em;
+  color: var(--accent);
+  transition: transform 0.3s var(--ease);
+}
+.strip a:hover span {
+  transform: translateX(6px);
+}
+.strip a:focus-visible {
+  outline-offset: -4px;
+}
+.ask {
+  max-width: 36em;
+  margin-top: 24px;
+  font-family: var(--font-serif);
+  font-style: italic;
+  font-size: var(--voice);
+  line-height: 1.25;
+  text-wrap: pretty;
+}
+
+/* On paper: what a serious party receives, and why we build our own. */
+.section {
+  padding-top: var(--sec);
+}
+.split {
+  display: grid;
+  grid-template-columns: repeat(12, minmax(0, 1fr));
+  column-gap: var(--gutter);
+  row-gap: 24px;
+}
+.split .h {
+  grid-column: 1 / 7;
+}
+.h {
+  hyphens: auto;
+}
+.statement {
+  grid-column: 7 / 13;
+  font-size: clamp(1.625rem, 1rem + 1.7vw, 2.5rem);
+  font-weight: 300;
+  line-height: 1.2;
+  letter-spacing: -0.02em;
+}
+.thesis {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 0 var(--gutter);
+  margin-top: clamp(2rem, 4vw, 3.5rem);
+}
+.thesis li {
+  display: grid;
+  align-content: start;
+  gap: 14px;
+  padding-top: 20px;
+  border-top: 1px solid var(--hair);
+}
+.thesis :global(.mono) {
+  color: var(--grey);
+}
+.thesis p {
+  font-size: var(--lead);
+  line-height: 1.35;
+}
+
+/* The closing window's lines. */
+.note {
+  max-width: 40em;
+  line-height: 1.5;
+}
+.note a {
+  text-decoration: underline;
+  text-decoration-thickness: 1px;
+  text-underline-offset: 3px;
+  overflow-wrap: anywhere;
+}
+.fine {
+  max-width: 44em;
+  padding-top: 16px;
+  border-top: 1px solid var(--hair);
+  font-size: 0.875rem;
+  line-height: 1.5;
+  color: var(--grey);
+}
+
+@media (max-width: 1099px) {
+  .words,
+  .product {
+    grid-column: 1 / 8;
+  }
+  .object {
+    min-height: 560px;
+  }
+  .phone {
+    width: min(100%, 240px);
+    border-radius: 38px;
+  }
+  .screen {
+    border-radius: 30px;
+    gap: 10px;
+  }
+  .split .h,
+  .statement {
+    grid-column: 1 / -1;
+  }
+}
+/* Phones: words, the object, the product, the offer stacked; each offer its own full row. */
+@media (max-width: 767px) {
+  .stage {
+    display: block;
+    padding-block: 20px 24px;
+  }
+  .words {
+    margin-top: 28px;
+    gap: 18px;
+  }
+  .object {
+    min-height: 500px;
+    margin: 28px calc(-1 * var(--win-pad)) 0;
+  }
+  .objectRing {
+    --ring-d: 430px;
+  }
+  .phone {
+    width: 216px;
+    border-radius: 36px;
+  }
+  .product {
+    margin-top: 12px;
+  }
+  .name {
+    font-size: 3.5rem;
+  }
+  .strip {
+    grid-template-columns: minmax(0, 1fr);
+    border-bottom: 0;
+  }
+  .strip li + li {
+    border-left: 0;
+  }
+  .strip li {
+    border-bottom: 1px solid var(--hair);
+  }
+  .strip a,
+  .strip li:first-child a {
+    padding: 16px 0;
+    font-size: 2.5rem;
+  }
+  .thesis {
+    grid-template-columns: minmax(0, 1fr);
+    row-gap: 24px;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .strip a span {
+    transition: none;
+  }
+}

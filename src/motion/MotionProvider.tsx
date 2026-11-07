@@ -1,5 +1,6 @@
 import { createContext, useCallback, useContext, useEffect, useMemo, useRef, useState, type ReactNode } from 'react'
 import type Lenis from 'lenis'
+import { releaseSectionsNow } from './lazySections'
 import { reflow, reflowNow } from './reflow'
 import { whenMotionIdle } from './schedule'
 
@@ -184,6 +185,8 @@ export function MotionProvider({ children }: { children: ReactNode }) {
   }, [])
 
   const scrollToHash = useCallback((hash: string, immediate = false) => {
+    // A jump needs the real heights of everything above its target.
+    releaseSectionsNow()
     const id = decodeURIComponent(hash.replace(/^#/, ''))
     const custom = anchors.get(id)?.()
     if (custom) {
@@ -253,6 +256,7 @@ export function MotionProvider({ children }: { children: ReactNode }) {
   }, [scrollToHash])
 
   const setUserOff = useCallback((off: boolean) => {
+    releaseSectionsNow()
     // Remember where the reader is, so rebuilding the motion contexts doesn't move them.
     const centre = window.innerHeight / 2
     const el = [...document.querySelectorAll<HTMLElement>('main > section, main > div')].find((node) => {
