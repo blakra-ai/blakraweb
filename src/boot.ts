@@ -24,7 +24,7 @@ const EXIT_PHONE_MS = 450
 const EXIT_CALM_MS = 320
 const PHONE_CAP_MS = 1200
 /** A phone running the world waits for her first frame this long at most (from navigation start). */
-const PHONE_WORLD_CAP_MS = 6000
+const PHONE_WORLD_CAP_MS = 15000
 const PHONE_SKIP_MS = 300
 /** After the exit, how long the page is left alone before the world's heavy work resumes. */
 const SETTLE_MS = 1000
@@ -139,7 +139,7 @@ export function boot() {
   }
 
   // Arriving after the CSS has already lifted it, the overlay stays lifted (the phone path below clears it).
-  if (phoneWorld && performance.now() <= PHONE_CAP_MS) {
+  if (phoneWorld) {
     // index.html's CSS would lift the overlay at 1.2 s by itself: this script holds it for the world instead.
     el.style.animation = 'none'
     void Promise.all(tasks).then(() => setTimeout(finish, 80))
@@ -151,9 +151,8 @@ export function boot() {
     const now = performance.now()
     // Later than the cap: the CSS is already lifting it (or has); this only clears it away.
     if (now > PHONE_CAP_MS + 50) {
-      finished = true
-      remember()
-      setTimeout(remove, Math.max(0, PHONE_CAP_MS + EXIT_PHONE_MS - now))
+      // A slow first load: the page is already in by now, so the overlay leaves at once.
+      finish()
       return
     }
     void Promise.all(tasks).then(() => {
