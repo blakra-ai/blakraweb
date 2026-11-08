@@ -1,0 +1,276 @@
+# BLAKRA
+
+> Operations and inventory systems, admin panels, online shops, web and mobile apps, bots and AI on your own data. Designed, built and run by one team.
+
+- Legal name: BLAKRA LLC, founded 2024, 901 H St Ste 120, Sacramento, CA 95814-1817, USA
+- Contact: hello@blakra.us (reply within 24 hours) or the form at https://blakra.us/#contact
+- Languages of this site: English (https://blakra.us/), Deutsch (https://blakra.us/de/), Français (https://blakra.us/fr/), Español (https://blakra.us/es/)
+
+## Pages
+
+- [Home](https://blakra.us/): Operations and inventory systems, admin panels, online shops, web and mobile apps, bots and AI on your own data. Designed, built and run by one team.
+- [About](https://blakra.us/about/): BLAKRA LLC, founded in 2024: five practices, one contract and one accountable team. What you can count on, how we engage, the industries we serve and answers to common questions.
+- [Sponsors and buyers](https://blakra.us/investors/): Software products BLAKRA built, open to a sponsor, a licensee or a buyer. Demo and code review under NDA.
+- [Privacy](https://blakra.us/privacy/): What BLAKRA collects through this site, why, and what happens to it.
+- [Legal notice](https://blakra.us/legal/): Who runs blakra.us: BLAKRA LLC, its address and how to reach it.
+
+## Selected client work
+All delivered under NDA to private clients, who own what we built. Screens are representative: no client names, no user data.
+
+- [Vitrin: Storefront and stockroom app](https://blakra.us/work/vitrin-app/): One app for the shop’s customers and its stockroom, on one stock record.
+- [Veyra: Consumer money app](https://blakra.us/work/veyra-money/): A money app that starts with what can be spent now.
+- [Vitrin Console: Store operations dashboard](https://blakra.us/work/vitrin-console/): A back office for a retailer with several locations.
+- [Flowline: Workflow automation](https://blakra.us/work/flowline-automation/): A canvas for approvals and hand-offs that used to run through email.
+- [Helya: Knowledge assistant](https://blakra.us/work/helya-ai/): An assistant that answers from the organization’s own documents and shows its sources.
+- [Nuvoq: Production-line inspection](https://blakra.us/work/nuvoq-vision/): A quality-control screen for a line that moves faster than a person can look.
+- [Tiravan: Dispatch and driver app](https://blakra.us/work/tiravan-logistics/): A dispatch screen and a driver app that share one view of the day.
+- [Raah: Assessment and learning analytics](https://blakra.us/work/raah-learning/): An exam app for students and a results view for teachers.
+
+## Products
+
+- LIOXSA (iOS, https://lioxsa.com): LIOXSA reads one photo of the face for tone, texture, redness and pores, explains the result in plain words and recommends professional products. Cosmetic guidance, not a medical diagnosis.
+
+## We build what organizations run on.
+One team designs, builds and runs it all: operations and inventory systems, admin panels and online shops, web and mobile apps, bots, and AI on your own data. Our leadership team stays hands-on from the first scope to production.
+Fixed-price first system · You own the code · 24-hour reply
+
+## Seven layers. One team.
+One team means owning every layer. Many organizations hire a separate vendor for each of these; we cover all seven as one system, foundation first, because each layer rests on the one beneath it.
+
+- AI: AI assistants that read, answer and act inside your work, on your own data, with a person one step away.
+- Launch and search: Technical SEO, content and media for launch, so the people a product is for can find it.
+- Web and mobile: Web apps, admin panels, online shops and dashboards, and native apps for iOS and Android.
+- Product design: Research, UX and interface design, so each screen fits the people who use it and the work they do.
+- Automation and bots: Workflows and bots that take over the repetitive work, in chat, on the web or inside your tools.
+- Data and integrations: Databases, pipelines and integrations that put your tools, systems and devices on one source of truth.
+- Cloud and backend: APIs, servers, cloud and security, monitored from day one.
+
+## Any AI tool you need, on open source or platforms.
+We build it end to end, from the data to the screen people use, model training and machine learning included. Open-source models run on our servers or on yours; on yours, sensitive data stays inside your walls. Commercial platforms take you to production fastest. We choose the right one for each project.
+
+- Agents that act: They read, answer and take the next step inside the tools your team already uses. A person approves what matters.
+- Answers from your documents: Every answer cites its document and page. Access follows each reader’s permissions.
+- Documents into data: OCR and extraction turn scans, forms and invoices into records your systems can use.
+- Vision: Models that inspect images and video, from defects on a production line to facial skin.
+- Training and machine learning: We prepare and label data, train and fine-tune models, build classic predictive models, and deploy and monitor them in production.
+- Evaluation and guardrails: Tested against your own cases before launch, held to limits you set, with costs we track from the first run.
+
+- Open-source: Hosted by us or on your servers; on yours, your data stays inside. Trained or fine-tuned on your data when the task needs it. (Llama, Mistral, Qwen, Whisper)
+- Platforms: Commercial models, and the AI services of Azure, AWS and Google Cloud. (OpenAI, Anthropic Claude, Google Gemini, Azure, AWS, Google Cloud)
+
+Your system stays open to new models: you can change the model later and keep everything built around it.
+
+## Proof starts with an AI product of our own.
+A sponsor or buyer can judge our work the way an engineer would: under NDA, see LIOXSA live, walk through its architecture and review its code.
+
+- LIOXSA: LIOXSA reads one photo of the face for tone, texture, redness and pores, explains the result in plain words and recommends professional products. Cosmetic guidance, not a medical diagnosis. Written from scratch, with no third-party dependencies. Images are never sent to outside services. Demo under NDA. Sponsorship, a license, or outright sale with source code and IP
+Other products of our own are in development. We discuss them under NDA.
+
+## You know the price before we build.
+Whatever you need built, AI included, it starts the same way: an NDA, an exact scope, a fixed price. You own the code and the data.
+
+- Scope the problem: We walk through the work with the people who do it, and name the process that costs you most. The first conversation and the technical assessment are free.
+- Build the first system: A fixed scope, a fixed price and an agreed bar for done. Working software every two weeks, so you judge progress by using it.
+- Run it with you: After launch, we monitor, fix and improve it with your team, under a written support agreement.
+
+- You own the code and the data.
+- Standard, documented tools, so the system stays yours to run and extend.
+- A named account lead for your project.
+- A reply within 24 hours.
+- An NDA before you share details.
+
+Best fit: software that runs a real process, from operations to AI.
+
+## The people you meet are the people who build.
+Our leadership team leads every step, hands-on, from the first scope until the system runs in production.
+
+- Founder and Chief Technology Officer: AI strategy and systems architecture, from the first diagram to production.
+- Senior Full-Stack Engineer and Backend Lead: The foundation of each system: backends, data platforms and reliability.
+- Head of Operations and Corporate Compliance: Corporate governance, compliance and vendors, so the business side runs as cleanly as the code.
+Five practices carry the work: Engineering, Product Design, Data & AI, Cloud & DevOps and Delivery. We staff each project from our specialist network, under one contract and with a named account lead.
+
+## One company, from the first scope to the finished product.
+BLAKRA LLC was founded in 2024, with its registered office in Sacramento, California. Our teams work remotely.
+The name joins black hole and chakra. We build in seven layers on one axis, from cloud and backend at the root to AI at the crown, and each layer rests on the one beneath it.
+BLAKRA is a software company organized in five practices: Engineering, Product Design, Data & AI, Cloud & DevOps, and Delivery. Our leadership team scopes and leads every project, and staffs it from a growing network of specialists, so each part of the work has the right expert. One contract and one accountable team carry it from the first scope to the finished product and its support after launch.
+Alongside client work across a growing range of industries, we build products of our own; LIOXSA is the first.
+
+### What you can count on
+- Our leadership team stays hands-on from scope to production.
+- A named account lead for your project, from the first call onward.
+- QA and documentation as standard parts of every delivery.
+- The first conversation and the technical assessment are free, and you leave them knowing plainly what the work will take.
+- The first system has a fixed scope, a fixed price and an agreed bar for done.
+- Working software in your hands every two weeks.
+- You own the code and the data, built on standard, documented tools.
+- An NDA in place before you share details, and your name kept confidential.
+- A written support agreement that keeps the system running after launch.
+
+
+### How we engage
+- A clear first project: After a free assessment, the first system gets a fixed price, a fixed scope and an agreed bar for done, so you know the cost and the result before work starts.
+- A defined delivery process: Scope, design, build, QA, launch. Working software every two weeks, documented as it is built.
+- After launch: We monitor, fix and improve the system under a written support agreement. Further work by agreement.
+- Partners: Partners who build, sell or integrate can bring us in as their engineering team.
+
+
+### Industries we’ve delivered for
+Retail and e-commerce, Finance, Logistics, Manufacturing, Education, Healthcare and wellness, Real estate, Hospitality, Professional services, Media, Public sector and non-profit, Energy, AI products, Robotics
+Client work is confidential under NDA. We walk you through what’s relevant to your project on a call.
+
+### Questions buyers ask
+
+**Who owns the code and the data?**
+You do. Everything is built on standard, documented tools, so it stays fully yours to run and extend.
+
+**Do you sign an NDA?**
+Yes, as the first step, before you share any details.
+
+**Who will we work with?**
+A named account lead, a team staffed from our practices for your project, and our leadership team, hands-on throughout. Everyone works under one BLAKRA contract.
+
+**How do you work across time zones?**
+At kickoff we fix a daily overlap with your working hours, and we keep it for the whole project.
+
+**What language do projects run in?**
+English, or another language agreed at kickoff.
+
+**How do you protect our data?**
+An NDA comes first. Your code and data stay yours. Access is limited to the people who need it for their part of the work. When the data is sensitive, we run the system, open-source models included, on your own infrastructure.
+
+**What happens after launch?**
+We monitor, fix and improve the system with your team under a written support agreement.
+
+**What kind of work do you take on?**
+Software that runs a real process: operations, data, apps and AI, from a first system to all seven layers.
+
+**How do we start?**
+Describe the work. Within 24 hours, an engineer who would build it replies with what it involves, the risks we see and a clear first step.
+
+## Products we designed and built for private clients.
+The same team and the same method, delivered for clients: apps, operations platforms and AI tools. Open any project to read the problem and the decisions we made.
+All delivered under NDA to private clients, who own what we built. Screens are representative: no client names, no user data.
+
+### Vitrin: Storefront and stockroom app
+https://blakra.us/work/vitrin-app/
+One app for the shop’s customers and its stockroom, on one stock record.
+Built for a clothing retailer that sells in store and online. Customers browse the catalog; staff count and receive stock in the same system, so a size shown as available is a size on the shelf.
+Platforms: iOS and Android
+The problem: Sales were recorded in one tool and stock in another. Availability lagged behind the shop floor, and deliveries were counted on paper before anyone entered them.
+
+What we decided:
+- Product screens read availability from the record the staff side writes, so the two views cannot disagree.
+- The stockroom screen opens on a scan field: a barcode returns the item, the size and the current count.
+- Low-stock items come first, ordered by how quickly they sell.
+- Deliveries are received per size rather than as one total, so the count stays usable afterwards.
+- Staff controls live in a separate mode that a customer holding the phone cannot open.
+
+### Veyra: Consumer money app
+https://blakra.us/work/veyra-money/
+A money app that starts with what can be spent now.
+Built for people who want a clearer account of everyday spending than a bank app gives. The balance, its change over the month and the activity behind it share one screen.
+Platforms: iOS and Android
+The problem: Bank apps list transactions without saying what they add up to. A balance that still includes bills due looks available when it is not, and the gap shows only when a payment fails.
+
+What we decided:
+- The home screen states the balance first, then the change over the month, then the activity behind both.
+- Spending is grouped by category and set against the previous month.
+- Transfers keep recipient, amount and fee in view together, with a keypad sized for one hand.
+- Card controls sit beneath the card itself, not in a settings area.
+- A dark field with one accent color keeps amounts legible at small sizes.
+
+### Vitrin Console: Store operations dashboard
+https://blakra.us/work/vitrin-console/
+A back office for a retailer with several locations.
+Built for store managers who need the morning picture before the first customer: what sold, what is running low and which orders need a decision.
+Platforms: Desktop web
+The problem: Managers assembled that picture from exports and messages. Each location sent the same figure in a different format, and the version on screen was rarely the current one.
+
+What we decided:
+- Key figures sit at the top, each with the period it is compared against.
+- Revenue is drawn over the week, and the tables below stay filtered to the same range.
+- Orders filter by store and by status, with the number of matches stated above the list.
+- Loading and empty states are designed: a quiet morning is a normal state for a dashboard.
+- Table text is set at a readable size first; density is added around the type, not into it.
+
+### Flowline: Workflow automation
+https://blakra.us/work/flowline-automation/
+A canvas for approvals and hand-offs that used to run through email.
+Built for an operations team whose approval chains passed through a shared mailbox. Every request now has a visible state and a named owner.
+Platforms: Desktop web
+The problem: An approval that lives in email loses its state. Nobody could say which request was waiting on whom without reading a thread, and a stalled request left no trace of where it stopped.
+
+What we decided:
+- Steps are placed on a canvas in the order they run, joined by connectors.
+- A condition step shows its field, operator and value in a panel beside the canvas.
+- Approval steps name the person or role responsible, so a waiting request has an owner.
+- Run history records every step with its time and result.
+- A failed run restarts from the step that failed, not from the beginning.
+
+### Helya: Knowledge assistant
+https://blakra.us/work/helya-ai/
+An assistant that answers from the organization’s own documents and shows its sources.
+Built for teams whose procedures live in long documents. It answers in plain prose and cites the document and page behind each part of the answer.
+Platforms: Desktop web
+The problem: Policies and maintenance notes were written for completeness and filed in shared drives. Finding the current clause took longer than the task it described, so people asked a colleague instead.
+
+What we decided:
+- Every answer cites document and page beside each claim; the source passage opens in a side panel.
+- Access follows the reader’s permissions, not the index, so a restricted file stays restricted.
+- Questions it cannot answer are collected as gaps: the clearest signal of what the documents are missing.
+- The answer column stays narrow, because the content is prose, not tables.
+- The question field holds its place at the bottom instead of moving between turns.
+
+### Nuvoq: Production-line inspection
+https://blakra.us/work/nuvoq-vision/
+A quality-control screen for a line that moves faster than a person can look.
+Built for line operators and shift supervisors. It shows the camera feeds, the current defect call and the record for each batch.
+Platforms: Desktop web and shop-floor screens
+The problem: Manual inspection at line speed was inconsistent, and its only record was a paper sheet. A missed defect was found by the customer, after the batch had shipped.
+
+What we decided:
+- All camera feeds are shown together, each labeled with its position on the line.
+- A detection box stays attached to its frame and names the defect class and the model’s confidence.
+- One summary row states what was inspected, what passed and what failed in the current shift.
+- Batch reports keep the annotated image next to each recorded defect, so any call can be reviewed later.
+- States use shape as well as color, because the screen is read in low light and at a glance.
+
+### Tiravan: Dispatch and driver app
+https://blakra.us/work/tiravan-logistics/
+A dispatch screen and a driver app that share one view of the day.
+Built for a freight operator that coordinated drivers by phone. Dispatch sees route progress; the driver sees the next stop, and keeps it when the signal drops.
+Platforms: Desktop web, iOS and Android
+The problem: A dispatcher who could not see progress called the driver to ask. A driver who lost signal lost the stop list with it, and proof of delivery became a phone call later.
+
+What we decided:
+- The map marks completed and remaining stops differently on every route.
+- The route list states, per driver, the stops done against the stops assigned.
+- The driver app keeps the stop list on the device, so a lost connection does not lose the day.
+- Proof of delivery is a photo with a timestamp, taken at the stop.
+- Arrival times are estimated from completed stops, not from a fixed average.
+
+### Raah: Assessment and learning analytics
+https://blakra.us/work/raah-learning/
+An exam app for students and a results view for teachers.
+Built for schools that ran mock exams on paper. The exam app records answers as they are chosen; the results view turns them into topics a teacher can act on that week.
+Platforms: Desktop web, iOS and Android
+The problem: A paper exam became data only after someone typed it in. By the time a teacher saw which topic had failed, the class had moved on, and the same mistake returned in the next test.
+
+What we decided:
+- The exam screen keeps timer, question number and progress in one bar.
+- Answers save as they are selected, and the screen says when the last save happened.
+- Results compare topics, not students against each other.
+- Weak topics are listed with the questions that revealed them, so the teacher can reread the question.
+- Question text is set larger than the labels around it, because it is read under time pressure.
+
+## For sponsors and buyers.
+Some of the software we build is our own. We look for sponsors to take it further, or buyers to own it outright. This page sets out what exists, what is on offer and what you can inspect first.
+We build software for clients, and products of our own.
+LIOXSA is our own: written from scratch, with no third-party dependencies, and working and ready.
+A sponsor or a buyer starts from software that exists, and can inspect it before agreeing to anything.
+Sponsorship of a product’s next stage, a license to use it, or an outright sale with the source code and IP.
+A live demo, a walkthrough of the architecture and a review of the code, with the engineers who wrote it.
+
+## Tell us what you need built.
+Within 24 hours, an engineer who would build it replies with a first read: what it involves, the risks we see and a clear first step. The first conversation is free, and an NDA comes before any details.
+hello@blakra.us

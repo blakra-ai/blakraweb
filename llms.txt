@@ -1,0 +1,34 @@
+# BLAKRA
+
+> Operations and inventory systems, admin panels, online shops, web and mobile apps, bots and AI on your own data. Designed, built and run by one team.
+
+- Legal name: BLAKRA LLC, founded 2024, 901 H St Ste 120, Sacramento, CA 95814-1817, USA
+- Contact: hello@blakra.us (reply within 24 hours) or the form at https://blakra.us/#contact
+- Languages of this site: English (https://blakra.us/), Deutsch (https://blakra.us/de/), Français (https://blakra.us/fr/), Español (https://blakra.us/es/)
+
+## Pages
+
+- [Home](https://blakra.us/): Operations and inventory systems, admin panels, online shops, web and mobile apps, bots and AI on your own data. Designed, built and run by one team.
+- [About](https://blakra.us/about/): BLAKRA LLC, founded in 2024: five practices, one contract and one accountable team. What you can count on, how we engage, the industries we serve and answers to common questions.
+- [Sponsors and buyers](https://blakra.us/investors/): Software products BLAKRA built, open to a sponsor, a licensee or a buyer. Demo and code review under NDA.
+- [Privacy](https://blakra.us/privacy/): What BLAKRA collects through this site, why, and what happens to it.
+- [Legal notice](https://blakra.us/legal/): Who runs blakra.us: BLAKRA LLC, its address and how to reach it.
+
+## Selected client work
+All delivered under NDA to private clients, who own what we built. Screens are representative: no client names, no user data.
+
+- [Vitrin: Storefront and stockroom app](https://blakra.us/work/vitrin-app/): One app for the shop’s customers and its stockroom, on one stock record.
+- [Veyra: Consumer money app](https://blakra.us/work/veyra-money/): A money app that starts with what can be spent now.
+- [Vitrin Console: Store operations dashboard](https://blakra.us/work/vitrin-console/): A back office for a retailer with several locations.
+- [Flowline: Workflow automation](https://blakra.us/work/flowline-automation/): A canvas for approvals and hand-offs that used to run through email.
+- [Helya: Knowledge assistant](https://blakra.us/work/helya-ai/): An assistant that answers from the organization’s own documents and shows its sources.
+- [Nuvoq: Production-line inspection](https://blakra.us/work/nuvoq-vision/): A quality-control screen for a line that moves faster than a person can look.
+- [Tiravan: Dispatch and driver app](https://blakra.us/work/tiravan-logistics/): A dispatch screen and a driver app that share one view of the day.
+- [Raah: Assessment and learning analytics](https://blakra.us/work/raah-learning/): An exam app for students and a results view for teachers.
+
+## Products
+
+- LIOXSA (iOS, https://lioxsa.com): LIOXSA reads one photo of the face for tone, texture, redness and pores, explains the result in plain words and recommends professional products. Cosmetic guidance, not a medical diagnosis.
+
+## Optional
+- [Full text of the site](https://blakra.us/llms-full.txt): the site's English text in one file

@@ -1,0 +1,28 @@
+{
+  "name": "BLAKRA",
+  "short_name": "BLAKRA",
+  "description": "Software with gravity.",
+  "start_url": "/blakraweb/",
+  "scope": "/blakraweb/",
+  "display": "browser",
+  "background_color": "#0a0a0a",
+  "theme_color": "#05060a",
+  "icons": [
+    {
+      "src": "/blakraweb/icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png"
+    },
+    {
+      "src": "/blakraweb/icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png"
+    },
+    {
+      "src": "/blakraweb/icon-maskable-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "maskable"
+    }
+  ]
+}

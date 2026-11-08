@@ -1,0 +1,27 @@
+# blakra.us — every page is public and may be crawled, indexed and cited.
+# Search engines and AI answer engines are welcome: we want BLAKRA's own words quoted accurately.
+# Policy (2026-11-03): allow search, answer and training crawlers alike.
+
+User-agent: *
+Allow: /
+
+# Search and AI answer engines (named so the policy is explicit, not just inherited from *)
+User-agent: Googlebot
+User-agent: Google-Extended
+User-agent: Bingbot
+User-agent: Applebot
+User-agent: Applebot-Extended
+User-agent: OAI-SearchBot
+User-agent: ChatGPT-User
+User-agent: GPTBot
+User-agent: Claude-SearchBot
+User-agent: Claude-User
+User-agent: ClaudeBot
+User-agent: PerplexityBot
+User-agent: Perplexity-User
+User-agent: CCBot
+User-agent: DuckAssistBot
+User-agent: meta-externalagent
+Allow: /
+
+Sitemap: https://blakra.us/sitemap.xml
