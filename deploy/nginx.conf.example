@@ -22,7 +22,7 @@ server {
     # Explicit, because nginx before 1.23.4 still enables TLS 1.0 and 1.1 by default.
     ssl_protocols TLSv1.2 TLSv1.3;
 
-    root /var/www/blakra/dist;
+    root /var/www/blakra.us;
     index index.html;
 
     gzip on;
