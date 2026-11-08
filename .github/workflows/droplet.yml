@@ -1,0 +1,35 @@
+# Builds the site and uploads dist/ to the DigitalOcean droplet served by nginx (deploy/nginx.conf.example).
+# Required repository secrets: DROPLET_HOST (IP), DROPLET_USER, DROPLET_SSH_KEY (private key).
+name: Droplet
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+concurrency:
+  group: droplet
+  cancel-in-progress: true
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+      - run: npm ci
+      - run: npm run build
+        env:
+          SITE_BASE: /
+          VITE_CONTACT_ENDPOINT: ${{ vars.VITE_CONTACT_ENDPOINT }}
+      - name: Upload to droplet
+        env:
+          HOST: ${{ secrets.DROPLET_HOST }}
+          USER: ${{ secrets.DROPLET_USER }}
+          KEY: ${{ secrets.DROPLET_SSH_KEY }}
+        run: |
+          mkdir -p ~/.ssh
+          echo "$KEY" > ~/.ssh/id_deploy && chmod 600 ~/.ssh/id_deploy
+          ssh-keyscan -H "$HOST" >> ~/.ssh/known_hosts
+          ssh -i ~/.ssh/id_deploy "$USER@$HOST" "mkdir -p /var/www/blakra/dist"
+          rsync -az --delete -e "ssh -i ~/.ssh/id_deploy" dist/ "$USER@$HOST:/var/www/blakra/dist/"
