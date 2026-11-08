@@ -21,10 +21,13 @@ export const company = {
   replyHours: 24,
   /**
    * Only accounts BLAKRA owns (they show in the footer and as sameAs in the structured data).
-   * Empty since 2026-10-27: github.com/blakra belongs to someone else, and the LinkedIn and
-   * X pages the old site linked do not exist (FACTS.md).
+   * Owner, 2026-11-08: blakraai on Instagram, X and Facebook. LinkedIn and GitHub follow (FACTS.md).
    */
-  social: [] as readonly { label: string; href: string }[],
+  social: [
+    { label: 'Instagram', href: 'https://www.instagram.com/blakraai/' },
+    { label: 'X', href: 'https://x.com/blakraai' },
+    { label: 'Facebook', href: 'https://www.facebook.com/blakraai' },
+  ] as readonly { label: string; href: string }[],
 } as const
 
 /** Top to bottom, the way the column is drawn: crown (AI) down to root (cloud and backend). */

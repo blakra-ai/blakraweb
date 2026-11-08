@@ -18,7 +18,7 @@ badge on any product marked `draft: true` in `shared.ts`.
 | The skin-analysis AI's product name and platforms | Products, Sponsors and buyers, structured data | LIOXSA, iOS, lioxsa.com (owner, 2026-11-02) | — |
 | What a party receives under NDA: live demo, architecture walkthrough, code review | Products lede (offered to a sponsor or buyer) and card, Sponsors and buyers, contact door | confirm all three exist (owner confirmed the product is working and ready) | shown as written (writer default, 2026-10-27) |
 | Enquiry retention: 12 months after the last exchange | Privacy | confirm the period | shown as written (default) |
-| Photos and LinkedIn for the three principals; social accounts BLAKRA owns | People, footer, structured data | optional; add each account to `company.social` once it exists | drawn portraits; no social links |
+| Photos and LinkedIn for the three principals; BLAKRA's LinkedIn and GitHub | People, footer, structured data | owner sends the LinkedIn and GitHub links (promised 2026-11-08); add them to `company.social` | drawn portraits; Instagram, X, Facebook linked |
 | Cloud and backend tech (Node.js, Kubernetes, CI/CD, multi-cloud) | Seven layers | confirm it is still accurate | as on the live site |
 | Launch and search layer: technical SEO, content and media for launch | Seven layers, pulse (online shop) | owner listed SEO and media (2026-10-26); no case study shows it | framed as part of launch, no standalone claim |
 
@@ -37,7 +37,7 @@ badge on any product marked `draft: true` in `shared.ts`.
 | Contact: hello@blakra.us on the site; postal address on the Legal notice and Privacy pages and in the structured data | Contact, footer, Legal notice, Privacy, structured data | owner, 2026-10-26 (email) and 2026-10-27 (address, phone) | confirmed |
 | Legal entity: BLAKRA LLC, 901 H St Ste 120, Sacramento, CA 95814-1817, USA | Footer, Legal notice, Privacy ("Who we are"), structured data | owner, 2026-10-27; phone removed from the site and the code 2026-11-02 | confirmed |
 | Founded in 2024 (footer years, structured data foundingDate) | Footer, structured data | owner, 2026-10-26 (the live site says 2024 in its timeline and 2019 in its structured data) | confirmed |
-| Social links: none | Footer, structured data | checked 2026-10-27: github.com/blakra is an unrelated personal account ("Blaž", one 2018 repo); linkedin.com/company/blakra and x.com/blakra do not exist | removed (the old site's links were wrong) |
+| Social links: Instagram, X and Facebook, all `blakraai` | Footer, structured data (sameAs) | owner, 2026-11-08 (github.com/blakra is someone else's, checked 2026-10-27) | confirmed by owner |
 | Titles: Founder and Chief Technology Officer; Senior Full-Stack Engineer and Backend Lead; Head of Operations and Corporate Compliance, United States | People, structured data (founder) | live site team section | confirmed |
 | Live-site figures (35+ engineers, 48+ clients, 22 countries, 99.97% uptime, years of experience) | not on this site | owner chose no headline stats | deliberately absent |
 | Start with one fixed-scope project; after launch, further work and support by agreement | How we work | owner, 2026-10-27 (support after launch: yes, by agreement) | confirmed |
@@ -69,7 +69,7 @@ training bots included (owner goal: be found and cited).
 | Bing Webmaster Tools ownership | "Import from Google Search Console", or build with `VITE_BING_SITE_VERIFICATION=<token>` (msvalidate.01) | no tag |
 | IndexNow (Bing, Yandex, Seznam, Naver) | Generate a key, put `public/<key>.txt` containing the key, ping https://api.indexnow.org/indexnow after each deploy | not set up |
 | Google Business Profile | Only if BLAKRA serves customers at an address; the Sacramento address is a registered office, so a service-area profile with a hidden address is the only accurate option | not created |
-| Social accounts | Create them, add to `company.social`; they become `sameAs` | no sameAs |
+| Social accounts | Add LinkedIn and GitHub to `company.social` when they exist; each becomes `sameAs` | sameAs: Instagram, X, Facebook (2026-11-08) |
 | OG images | Re-run `npm run build && npm run og:pages` after changing a page's headline or description, commit public/og | images match the copy as of 2026-11-03 |
 
 ## Illustrations
