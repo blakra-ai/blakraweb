@@ -21,7 +21,7 @@ jobs:
       - run: npm run build
         env:
           SITE_BASE: /
-          VITE_CONTACT_ENDPOINT: ${{ vars.VITE_CONTACT_ENDPOINT }}
+          VITE_CONTACT_ENDPOINT: /api/contact
       - name: Upload to droplet
         env:
           HOST: ${{ secrets.DROPLET_HOST }}
@@ -35,3 +35,5 @@ jobs:
           ssh-keyscan -H "$HOST" >> ~/.ssh/known_hosts
           ssh -i ~/.ssh/id_deploy "$USER@$HOST" "mkdir -p /var/www/blakra.us"
           rsync -az --delete -e "ssh -i ~/.ssh/id_deploy" dist/ "$USER@$HOST:/var/www/blakra.us/"
+          rsync -az -e "ssh -i ~/.ssh/id_deploy" server/contact/ "$USER@$HOST:/opt/blakra-contact/"
+          ssh -i ~/.ssh/id_deploy "$USER@$HOST" "cp /opt/blakra-contact/blakra-contact.service /etc/systemd/system/ && systemctl daemon-reload && systemctl enable --now blakra-contact && systemctl restart blakra-contact"

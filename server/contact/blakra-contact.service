@@ -1,0 +1,20 @@
+[Unit]
+Description=blakra.us contact form endpoint
+After=network-online.target
+
+[Service]
+ExecStart=/usr/bin/node /opt/blakra-contact/server.mjs
+EnvironmentFile=-/etc/blakra-contact.env
+Environment=NODE_ENV=production
+DynamicUser=yes
+StateDirectory=blakra-contact
+Environment=CONTACT_DATA=/var/lib/blakra-contact
+Restart=always
+RestartSec=2
+NoNewPrivileges=yes
+ProtectSystem=strict
+ProtectHome=yes
+PrivateTmp=yes
+
+[Install]
+WantedBy=multi-user.target

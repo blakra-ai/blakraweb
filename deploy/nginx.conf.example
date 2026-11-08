@@ -49,6 +49,14 @@ server {
         default_type application/manifest+json;
     }
 
+    # The contact form (server/contact/server.mjs on 127.0.0.1:8787, systemd blakra-contact).
+    location = /api/contact {
+        include /etc/nginx/snippets/blakra-headers.conf;
+        client_max_body_size 16k;
+        proxy_set_header X-Real-IP $remote_addr;
+        proxy_pass http://127.0.0.1:8787;
+    }
+
     # Hashed build assets never change: cache them for a year.
     location /assets/ {
         include /etc/nginx/snippets/blakra-headers.conf;
