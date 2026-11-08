@@ -54,11 +54,13 @@
 }
 .wordMark {
   width: 34px;
-  height: 22px;
+  height: 27px;
+  flex: none;
 }
 .wordType {
   width: 92px;
   height: 8.3px;
+  flex: none;
 }
 .links {
   display: flex;
