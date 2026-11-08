@@ -314,7 +314,7 @@
     color: #a9a59d;
   }
 }
-@media (max-width: 767px) and (prefers-reduced-motion: no-preference) {
+@media (max-width: 767px) {
   :global(html:not(.motion-off)) .ripples circle {
     animation: m-suck 3.6s cubic-bezier(0.5, 0, 0.75, 0) infinite;
   }

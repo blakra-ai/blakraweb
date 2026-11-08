@@ -359,7 +359,7 @@
     grid-row: auto;
   }
 }
-@media (prefers-reduced-motion: reduce) {
+@media not all {
   .orbit,
   .sweep {
     animation: none;
@@ -475,7 +475,7 @@
     scale: 0.66;
   }
 }
-@media (max-width: 767px) and (prefers-reduced-motion: no-preference) {
+@media (max-width: 767px) {
   @supports (animation-timeline: view()) {
     :global(html:not(.motion-off)) .phone {
       animation: m-tilt linear both;

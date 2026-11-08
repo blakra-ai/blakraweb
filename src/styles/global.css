@@ -523,7 +523,7 @@ html:not(.custom-cursor) .cursor-ring {
 
 /* Reduced motion, and the page switch: the HTML is the final state. Nothing types, scrubs or
    transitions; sticky holds become flow (the held sections opt in with [data-hold]). */
-@media (prefers-reduced-motion: reduce) {
+@media not all {
   @view-transition {
     navigation: none;
   }
@@ -686,7 +686,7 @@ main > section {
     transform: translate3d(-10px, -6px, 0) scale(1.035);
   }
 }
-@media (max-width: 767px) and (prefers-reduced-motion: no-preference) {
+@media (max-width: 767px) {
   /* Loops stop while off screen (mobile.ts toggles data-paused). */
   [data-paused],
   [data-paused] * {

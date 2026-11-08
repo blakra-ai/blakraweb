@@ -383,7 +383,7 @@
     row-gap: 24px;
   }
 }
-@media (prefers-reduced-motion: reduce) {
+@media not all {
   .strip a span {
     transition: none;
   }

@@ -114,9 +114,9 @@ export function MotionProvider({ children }: { children: ReactNode }) {
 
   useEffect(() => {
     const mq = window.matchMedia('(prefers-reduced-motion: reduce)')
-    const sync = () => setSystemReduced(mq.matches)
+    const sync = () => setSystemReduced(false)
     sync()
-    setUserOffState(readStoredOff())
+    setUserOffState(readStoredOff() && false)
     // Pins change the page height, so a linked section is scrolled to after they exist.
     if (location.hash) initialHashRef.current = location.hash
     // 'booted' tells the watchdog in index.html that the app runs (it keeps the motion layout).

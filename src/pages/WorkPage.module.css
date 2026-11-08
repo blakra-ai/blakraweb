@@ -424,7 +424,7 @@
 }
 
 /* ---------- motion: transforms on images only; without it (or with no JavaScript) this is the final state ---------- */
-@media (prefers-reduced-motion: no-preference) {
+@media all {
   :global(html.motion-on) .backL {
     animation: fan-l 1.1s var(--ease) both;
   }

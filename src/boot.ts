@@ -72,7 +72,7 @@ export function boot() {
   }
   const count = el.querySelector<HTMLElement>('[data-count]')
   const phone = matchMedia(PHONE).matches
-  const calm = matchMedia('(prefers-reduced-motion: reduce)').matches || html.classList.contains('motion-off')
+  const calm = html.classList.contains('motion-off')
   const exitMs = calm ? EXIT_CALM_MS : phone ? EXIT_PHONE_MS : EXIT_MS
   const cap = 3000
   // Desktop's world (her GLB and first frame) may need a little longer: lifting without it means a

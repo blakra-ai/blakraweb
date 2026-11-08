@@ -23,7 +23,7 @@ import { createRing, fitRing, glowAt } from './shaders/ring'
 import { createWell, fitWell } from './shaders/well'
 import { BEND_MS, bendAt, FRAME_RADIUS, getWindows, GRID_CELL, holeFor, onScreen, onWindows, stickyOf, stickyViewY, toGl, type Rect, type Sticky } from './windows'
 import { LAYERS_N } from './orbit'
-import { markHandover, onWorldReady } from './ready'
+import { isHandedOver, markHandover, onWorldReady } from './ready'
 
 /*
  * The Observatory's world: ONE fixed, full-viewport canvas behind the document, drawing the one
@@ -347,7 +347,7 @@ function Passes({ handle, onDpr }: { handle: ReturnType<typeof createGuideHandle
     s.kicked = false
     const gap = now - s.last
     // The render scale follows the frames (a change re-allocates the canvas once). Started after a second: by then the renderer's dpr is settled.
-    if (!s.governor && obs.clock > 1) s.governor = createGovernor(gl.getPixelRatio(), now)
+    if (!s.governor && obs.clock > 3 && isHandedOver()) s.governor = createGovernor(gl.getPixelRatio(), now)
     const scale = s.governor ? stepGovernor(s.governor, gap, s.period, now) : null
     if (scale !== null) onDpr(scale)
     const dt = Math.min(0.1, gap / 1000)

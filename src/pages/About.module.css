@@ -470,7 +470,7 @@
     padding-right: 0;
   }
 }
-@media (prefers-reduced-motion: reduce) {
+@media not all {
   .faq summary::after {
     transition: none;
   }

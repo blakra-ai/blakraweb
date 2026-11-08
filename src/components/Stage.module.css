@@ -571,7 +571,7 @@
     opacity: 0.18;
   }
 }
-@media (max-width: 767px) and (prefers-reduced-motion: no-preference) {
+@media (max-width: 767px) {
   @supports (animation-timeline: view()) {
     :global(html:not(.motion-off)) .orbit circle[data-ring] {
       transform-box: view-box;

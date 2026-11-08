@@ -118,7 +118,7 @@
     display: block;
   }
 }
-@media (prefers-reduced-motion: reduce) {
+@media not all {
   .threadLine {
     transition: none;
   }

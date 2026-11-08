@@ -7,7 +7,7 @@
          If the app never starts (a script that fails to load, an old browser), the still layout returns at once or 5 s after load, so no content stays hidden.
          On the first page of a session it also sets `loading`, which shows the brand loader (#boot, below; src/boot.ts counts and lifts it), and the phone timings counted from navigation start.
          Allowed by its hash in the CSP (deploy/blakra-headers.conf). -->
-    <script>(function(c){c.add('js');var off;try{off=localStorage.getItem('blakra:motion')==='off'}catch(e){}c.add(off||matchMedia('(prefers-reduced-motion: reduce)').matches?'motion-off':'motion-on');try{if(!sessionStorage.getItem('blakra:loaded')){c.add('loading');var n=performance.now(),h=document.documentElement.style;h.setProperty('--b-cap',Math.max(0,1200-n)+'ms');h.setProperty('--b-show',Math.max(0,300-n)+'ms')}}catch(e){}function still(){c.remove('loading');if(!c.contains('booted')){c.remove('motion-on');c.add('motion-off')}}addEventListener('error',function(e){var t=e.target;if(t&&t.tagName==='SCRIPT')still()},true);addEventListener('load',function(){setTimeout(still,5000)})})(document.documentElement.classList)</script>
+    <script>(function(c){c.add('js');c.add('motion-on');try{if(!sessionStorage.getItem('blakra:loaded')){c.add('loading');var n=performance.now(),h=document.documentElement.style;h.setProperty('--b-cap',Math.max(0,1200-n)+'ms');h.setProperty('--b-show',Math.max(0,300-n)+'ms')}}catch(e){}function still(){c.remove('loading');if(!c.contains('booted')){c.remove('motion-on');c.add('motion-off')}}addEventListener('error',function(e){var t=e.target;if(t&&t.tagName==='SCRIPT')still()},true);})(document.documentElement.classList)</script>
     <style>
       /* The brand loader: a thin gold ring round a black hole, the mark, a count 000 → 100. Shown only
          while <html> has `loading` (set above, JavaScript only, first page of a session). src/boot.ts lifts it:
@@ -61,7 +61,7 @@
       html.motion-off #boot .b-orbit,html.motion-off #boot .b-mark,html.motion-off #boot .b-arc{animation:none}
       html.motion-off #boot.out{opacity:0;transition:opacity .3s linear}
       html.motion-off #boot.out .b-core{transform:none;transition:none}
-      @media (prefers-reduced-motion:reduce){#boot .b-orbit,#boot .b-mark,#boot .b-arc{animation:none}#boot.out{opacity:0;transition:opacity .3s linear}#boot.out .b-core{transform:none;transition:none}}
+      @media not all{#boot .b-orbit,#boot .b-mark,#boot .b-arc{animation:none}#boot.out{opacity:0;transition:opacity .3s linear}#boot.out .b-core{transform:none;transition:none}}
     </style>
     <!--head-->
   </head>
