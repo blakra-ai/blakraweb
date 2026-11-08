@@ -744,6 +744,6 @@ main > section {
     to { translate: 0 -12px; scale: 1.06; }
   }
   @keyframes m-hero-out {
-    to { translate: 0 18vh; opacity: 0.15; }
+    to { opacity: 0.15; }
   }
 }

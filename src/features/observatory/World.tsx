@@ -424,12 +424,16 @@ function Passes({ handle, onDpr }: { handle: ReturnType<typeof createGuideHandle
     type Framed = { view: Rect; rect: Rect; g: NonNullable<ReturnType<typeof getWindows>[number]['framing']['guide']> }
     let hero = null as Framed | null
     let contact = null as Framed | null
+    // Phones: the canvas scrolls with the page (absolute at its top, below), so the hero is drawn as if
+    // unscrolled and the browser moves it on its own scroll thread: no frame of lag, no jump.
+    const wy = s.phone ? 0 : y
     for (const w of windows) {
+      if (s.phone && y > w.rect.y + w.rect.h) continue
       const g = w.framing.guide
-      const view = onScreen(w.rect, y, viewport, w.sticky)?.view ?? { x: w.rect.x, y: w.rect.y - y, w: w.rect.w, h: w.rect.h }
+      const view = onScreen(w.rect, wy, viewport, w.sticky)?.view ?? { x: w.rect.x, y: w.rect.y - wy, w: w.rect.w, h: w.rect.h }
       if (w.kind === 'hero' && g) hero = { view, rect: w.rect, g }
       if (w.kind === 'contact' && g) contact = { view, rect: w.rect, g }
-      const on = onScreen(w.rect, y, viewport, w.sticky)
+      const on = onScreen(w.rect, wy, viewport, w.sticky)
       if (!on) continue
       clearOnce()
       const { clip } = on
@@ -567,8 +571,9 @@ function Passes({ handle, onDpr }: { handle: ReturnType<typeof createGuideHandle
         qC = qC >= 0.5 ? 1 : 0
       }
       // Which dark window the opening belongs to, and how far into the porthole it is (k: 0 window … 1 docked).
-      const win = qC > 0 && contact ? contact : tH < 1 && hero ? hero : null
-      const k = win === contact ? 1 - qC : win ? tH : 1
+      // Phones have no porthole: she stays framed by the hero and scrolls away with it (the canvas does).
+      const win = s.phone ? hero : qC > 0 && contact ? contact : tH < 1 && hero ? hero : null
+      const k = s.phone ? 0 : win === contact ? 1 - qC : win ? tH : 1
       if (hidden && (!win || k > 0)) return false
       const frameR = FRAME_RADIUS
       const ap = win ? apertureBetween(win.view, l, hidden ? 0 : k, frameR) : apertureBetween({ x: l.cx - l.d / 2, y: l.cy - l.d / 2, w: l.d, h: l.d }, l, 1, frameR)
@@ -813,7 +818,7 @@ export default function World() {
   }, [])
   if (PROFILE) (globalThis as Record<string, unknown>).__obsWorld = { nav, frames }
   return createPortal(
-    <div className="obs-world" aria-hidden="true" style={{ position: 'fixed', left: 0, right: 0, top: 0, height: '100lvh', zIndex: 0, pointerEvents: 'none' }}>
+    <div className="obs-world" aria-hidden="true" style={{ position: isPhone() ? 'absolute' : 'fixed', left: 0, right: 0, top: 0, height: '100lvh', zIndex: 0, pointerEvents: 'none' }}>
       <Canvas
         frameloop="demand"
         dpr={dpr}
