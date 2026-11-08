@@ -5,6 +5,7 @@ import { useI18n } from '../i18n'
 import { pathFor, workPath } from '../routes'
 import { Section } from './Section'
 import { useSwipe } from '../mobile/swipe'
+import { SwipeControls } from '../mobile/SwipeControls'
 import s from './Ai.module.css'
 
 const ORDER: readonly AiBlockId[] = ['agents', 'documents', 'extraction', 'vision', 'training', 'evaluation']
@@ -21,7 +22,8 @@ const two = (n: number) => String(n).padStart(2, '0')
 export function Ai() {
   const { t, locale } = useI18n()
   const a = t.ai
-  const { list, count } = useSwipe<HTMLUListElement>()
+  const swipe = useSwipe<HTMLUListElement>()
+  const { list } = swipe
   const lioxsa = products.find((p) => p.id === 'skin')
   const proof: Partial<Record<AiBlockId, { href: string; label: string; external?: boolean }[]>> = {
     documents: [{ href: workPath('helya-ai', locale), label: 'Helya' }],
@@ -76,7 +78,7 @@ export function Ai() {
           ))}
         </ul>
 
-        <p ref={count} className="m-only m-count" aria-hidden="true" />
+        <SwipeControls swipe={swipe} />
 
         {/* The closing band: the two ways to build, split down the middle, then the closing line and the gold button. */}
         <div className={s.band}>

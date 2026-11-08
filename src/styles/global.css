@@ -655,6 +655,53 @@ main > section {
   .m-swipe:focus-visible {
     outline-offset: -2px;
   }
+  /* The swipe row's bar: previous, counter, next, autoplay. 44 px targets. */
+  .m-ctrl {
+    display: flex !important;
+    align-items: center;
+    gap: 8px;
+    margin-top: 8px;
+  }
+  .m-ctrl .m-count {
+    margin: 0 4px;
+    min-width: 4.5ch;
+    text-align: center;
+  }
+  .m-ctrl button {
+    display: grid;
+    place-items: center;
+    width: 44px;
+    height: 44px;
+    border-radius: 50%;
+    border: 1px solid color-mix(in srgb, currentColor 28%, transparent);
+    background: transparent;
+    color: inherit;
+    cursor: pointer;
+    transition: background-color 0.2s, transform 0.15s;
+  }
+  .m-ctrl button:active {
+    transform: scale(0.92);
+  }
+  .m-ctrl button[data-auto] {
+    margin-left: auto;
+  }
+  .m-ctrl svg {
+    width: 16px;
+    height: 16px;
+    fill: none;
+    stroke: currentColor;
+    stroke-width: 1.6;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+  }
+  .m-ctrl .m-ctrl-play {
+    fill: currentColor;
+    stroke: none;
+  }
+  .m-ctrl[data-auto-on] .m-ctrl-play,
+  .m-ctrl:not([data-auto-on]) .m-ctrl-pause {
+    display: none;
+  }
   /* The swipe row's counter: a readable place marker, not a footnote. */
   .m-count {
     margin-top: 8px;

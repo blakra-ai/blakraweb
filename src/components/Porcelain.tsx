@@ -9,6 +9,7 @@ import { pathFor } from '../routes'
 import { ProductStage } from './ProductStage'
 import { Section } from './Section'
 import { useSwipe } from '../mobile/swipe'
+import { SwipeControls } from '../mobile/SwipeControls'
 import s from './Porcelain.module.css'
 
 const ORDER: readonly LayerId[] = ['cloud', 'data', 'automation', 'design', 'apps', 'growth', 'ai']
@@ -33,7 +34,8 @@ export function Products() {
 export function People() {
   const { t, locale } = useI18n()
   const [choice, setChoice] = useState<PulseChoice>(null)
-  const { list, count } = useSwipe<HTMLUListElement>()
+  const swipe = useSwipe<HTMLUListElement>()
+  const { list } = swipe
   useEffect(() => {
     setChoice(getPulse().choice)
     return onPulse(setChoice)
@@ -67,7 +69,7 @@ export function People() {
               </li>
             ))}
           </ul>
-          <p ref={count} className="m-only m-count" aria-hidden="true" />
+          <SwipeControls swipe={swipe} />
           <p className={`d-only ${s.bench}`}>{t.people.bench}</p>
           <ul className={`m-only ${s.practices}`}>
             {t.people.practicesShort.map((x) => (

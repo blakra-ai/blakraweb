@@ -3,6 +3,7 @@ import { useI18n } from '../i18n'
 import { pathFor, workPath } from '../routes'
 import { Section } from './Section'
 import { useSwipe } from '../mobile/swipe'
+import { SwipeControls } from '../mobile/SwipeControls'
 import s from './Work.module.css'
 
 const two = (n: number) => String(n).padStart(2, '0')
@@ -17,7 +18,8 @@ const two = (n: number) => String(n).padStart(2, '0')
 export function Work() {
   const { t, locale } = useI18n()
   const w = t.work
-  const { list, count } = useSwipe<HTMLUListElement>()
+  const swipe = useSwipe<HTMLUListElement>()
+  const { list } = swipe
   return (
     <Section id="work" beat="proof" surface="body" station={9} className={s.work} aria-labelledby="work-title">
       <div className={s.head}>
@@ -56,7 +58,7 @@ export function Work() {
           )
         })}
       </ul>
-      <p ref={count} className="m-only m-count" aria-hidden="true" />
+      <SwipeControls swipe={swipe} />
       <div className={s.closing}>
         <p className={s.also}>{w.also}</p>
         <a className="pill" data-primary data-size="lg" href={`${pathFor('home', locale)}#contact`}>

@@ -4,6 +4,7 @@ import { useI18n } from '../i18n'
 import { Section } from '../components/Section'
 import { Breadcrumbs } from '../components/Breadcrumbs'
 import { useSwipe } from '../mobile/swipe'
+import { SwipeControls } from '../mobile/SwipeControls'
 import { pathFor, workPath } from '../routes'
 import { Closing, Ring, two } from './Inner'
 import i from './Inner.module.css'
@@ -108,7 +109,8 @@ function Band({ project, kind }: { project: WorkProject; kind: Kind }) {
   const { t } = useI18n()
   const w = t.work
   const captions = w.projects[project.slug].shots
-  const { list, count } = useSwipe<HTMLUListElement>()
+  const swipe = useSwipe<HTMLUListElement>()
+  const { list } = swipe
   const browser = project.shots[0]
   const phoneIndex = project.shots.findIndex((x) => x.frame === 'phone')
   return (
@@ -129,7 +131,7 @@ function Band({ project, kind }: { project: WorkProject; kind: Kind }) {
                 </li>
               ))}
             </ul>
-            <p ref={count} className="m-only m-count" aria-hidden="true" />
+            <SwipeControls swipe={swipe} />
           </>
         )}
         {kind === 'browser' && (
