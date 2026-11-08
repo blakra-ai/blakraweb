@@ -27,11 +27,12 @@ const clamp01 = (v: number) => Math.max(0, Math.min(1, v))
 /**
  * Phones: the seven layers as rings round the black disc with its gold rim (root inside, crown
  * outside). `lit` dims the rings not chosen (opacity on strokes only); `settle` lets the rings
- * settle into orbit with the scroll (CSS view timeline; the final state without it).
+ * settle into orbit with the scroll (useSettle; the final state without it).
  */
 function Orbit({ lit, settle, className }: { lit: readonly LayerId[] | null; settle?: boolean; className?: string }) {
+  const ref = useSettle(!!settle)
   return (
-    <svg className={className} viewBox="0 0 360 360" aria-hidden="true" data-settle={settle || undefined}>
+    <svg ref={ref} className={className} viewBox="0 0 360 360" aria-hidden="true" data-settle={settle || undefined}>
       <defs>
         <radialGradient id={settle ? 'm-glow' : 'm-glow-mini'}>
           <stop offset="0.55" stopColor="#d9a441" stopOpacity="0.28" />
@@ -40,11 +41,51 @@ function Orbit({ lit, settle, className }: { lit: readonly LayerId[] | null; set
       </defs>
       <circle cx="180" cy="180" r="96" fill={`url(#${settle ? 'm-glow' : 'm-glow-mini'})`} />
       {ROOT_TO_CROWN.map((id, i) => (
-        <circle key={id} cx="180" cy="180" r={84 + i * 15} fill="none" stroke={chakraColors[chakraOf[id]]} strokeWidth="1.6" data-ring={i} data-dim={(lit && !lit.includes(id)) || undefined} />
+        <circle key={id} cx="180" cy="180" r={84 + i * 15} fill="none" stroke={chakraColors[chakraOf[id]]} strokeWidth="1.6" data-ring={i} style={{ '--k': i } as CSSProperties} data-dim={(lit && !lit.includes(id)) || undefined} />
       ))}
       <circle cx="180" cy="180" r="66" fill="#000" stroke="#d9a441" strokeWidth="1.6" />
     </svg>
   )
+}
+
+/**
+ * The phone rings' settle, scrubbed by the scroll in every browser (Safari has no view timeline): `--settle`
+ * runs 0 → 1 as the orbit rises from the bottom of the screen to its upper third; Stage.module.css turns it
+ * into each ring's scale and turn (transform and opacity only). Listens only while the orbit is near the screen.
+ */
+function useSettle(on: boolean) {
+  const ref = useRef<SVGSVGElement>(null)
+  const { enabled } = useMotion()
+  useEffect(() => {
+    const el = ref.current
+    if (!on || !el || !enabled || !window.matchMedia(PHONE).matches) return
+    let frame = 0
+    const update = () => {
+      frame = 0
+      const r = el.getBoundingClientRect()
+      const vh = window.innerHeight
+      el.style.setProperty('--settle', clamp01((vh - r.top) / (0.75 * vh)).toFixed(3))
+    }
+    const onScroll = () => {
+      if (!frame) frame = requestAnimationFrame(update)
+    }
+    const io = new IntersectionObserver(([e]) => {
+      if (e?.isIntersecting) window.addEventListener('scroll', onScroll, { passive: true })
+      else window.removeEventListener('scroll', onScroll)
+      update()
+    }, { rootMargin: '25% 0px' })
+    el.dataset.scrub = ''
+    io.observe(el)
+    update()
+    return () => {
+      io.disconnect()
+      window.removeEventListener('scroll', onScroll)
+      cancelAnimationFrame(frame)
+      delete el.dataset.scrub
+      el.style.removeProperty('--settle')
+    }
+  }, [on, enabled])
+  return ref
 }
 
 /** The seven layers root to crown (the chakra order), by id. */
@@ -85,6 +126,7 @@ function Held({ section, picked, pickedTag }: { section: RefObject<HTMLElement |
   }, [])
 
   // The scroll, once per frame: where the reader is against the section's blocks, read on reflow only.
+  // Phones do not show this hold (Stage.module.css): their rings settle with the scroll in <Orbit settle> instead.
   useEffect(() => {
     const el = section.current
     if (!el) return

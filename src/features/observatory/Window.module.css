@@ -138,3 +138,15 @@ picture + .hole {
     object-position: center center;
   }
 }
+/* A phone running the world: it draws the hero's band only (World.tsx), so that window turns transparent
+   for the canvas and every other window keeps its own ink and still. */
+@media (max-width: 767px) {
+  :global(html.gl-live) .window[data-window='hero'] {
+    background: transparent;
+  }
+  :global(html.gl-live) .window:not([data-window='hero']) .still {
+    opacity: 1;
+    visibility: visible;
+    transition: none;
+  }
+}

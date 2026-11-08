@@ -1,6 +1,7 @@
 import { createContext, useCallback, useContext, useEffect, useMemo, useRef, useState, type ReactNode } from 'react'
 import type Lenis from 'lenis'
 import { releaseSectionsNow } from './lazySections'
+import { startMobileReveal } from './mobileReveal'
 import { reflow, reflowNow } from './reflow'
 import { whenMotionIdle } from './schedule'
 
@@ -137,7 +138,8 @@ export function MotionProvider({ children }: { children: ReactNode }) {
   // never jump; ?smooth=native leaves the browser's own scrolling for comparison.
   useEffect(() => {
     if (!enabled || new URLSearchParams(location.search).get('smooth') === 'native') return
-    // Phones scroll natively: no Lenis and no GSAP there (run 2026-11-02-mobile budgets).
+    // Phones keep the browser's own touch scrolling (no Lenis); their motion is scroll-linked instead
+    // (mobileReveal.ts, the world, the rings' settle).
     if (window.matchMedia('(max-width: 767px)').matches) return
     // Lenis is not in the boot bundle: it arrives after the page is interactive (TBT on phones).
     let lenis: Lenis | null = null
@@ -162,6 +164,12 @@ export function MotionProvider({ children }: { children: ReactNode }) {
       currentLenis = null
       gsap?.ticker.lagSmoothing(500, 33)
     }
+  }, [enabled])
+
+  // Phones: the sections' blocks rise into place as they are reached.
+  useEffect(() => {
+    if (!enabled || !window.matchMedia('(max-width: 767px)').matches) return
+    return startMobileReveal()
   }, [enabled])
 
   // Content that changes height after load (the pulse answer opening) moves everything

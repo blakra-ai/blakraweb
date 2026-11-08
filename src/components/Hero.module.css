@@ -328,3 +328,19 @@
     animation: m-drift 14s ease-in-out infinite alternate;
   }
 }
+
+/* A phone running the world: her figure (drawn live under the words) fades into the ink above the
+   eyebrow, as the still's band does, and the words sit on plain ink below it. */
+@media (max-width: 767px) {
+  :global(html.gl-live) .inner::before {
+    content: '';
+    position: absolute;
+    left: 0;
+    right: 0;
+    top: calc(var(--still-h) - 190px);
+    bottom: 0;
+    z-index: -1;
+    pointer-events: none;
+    background: linear-gradient(to bottom, rgba(11, 11, 13, 0) 0, rgba(11, 11, 13, 0.85) 120px, #0b0b0d 170px);
+  }
+}

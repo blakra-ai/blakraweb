@@ -6,14 +6,15 @@ boot()
 /*
  * On a phone the first paint comes first: the app's code would hold the main thread while the hero's
  * still and words are waiting to paint, and nothing on the first screen needs it (the links are
- * links). It starts once the page has loaded and painted, at the latest after CAP_MS.
+ * links). It starts once the page has loaded and painted, at the latest after CAP_MS. Under the first
+ * visit's brand loader the page is covered, and the world (Stage.tsx) needs the app: it starts at once.
  */
 const PHONE = '(max-width: 767px)'
 const CAP_MS = 2500
 
 const start = () => void import('./hydrate')
 
-if (!matchMedia(PHONE).matches) start()
+if (!matchMedia(PHONE).matches || document.documentElement.classList.contains('loading')) start()
 else {
   let started = false
   const go = () => {

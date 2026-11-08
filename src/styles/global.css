@@ -693,3 +693,32 @@ main > section {
     animation-play-state: paused !important;
   }
 }
+
+/* Phones: blocks rise into place as they are reached (src/motion/mobileReveal.ts adds the classes;
+   without the script nothing is hidden). translate and opacity only. */
+@media (max-width: 767px) {
+  html.motion-on .m-rv {
+    opacity: 0;
+    translate: 0 28px;
+  }
+  html.motion-on .m-rv.m-rv-h {
+    translate: 0 44px;
+  }
+  html.motion-on .m-rv.m-rv-card {
+    translate: 0 36px;
+    scale: 0.9;
+  }
+  html.motion-on .m-rv.m-rv-in {
+    opacity: 1;
+    translate: 0 0;
+    scale: 1;
+    transition:
+      opacity 0.6s cubic-bezier(0.2, 0.7, 0.2, 1) var(--rv-delay, 0ms),
+      translate 0.7s cubic-bezier(0.2, 0.7, 0.2, 1) var(--rv-delay, 0ms),
+      scale 0.8s cubic-bezier(0.2, 0.7, 0.2, 1) var(--rv-delay, 0ms);
+  }
+  /* Section headings drift against the scroll (mobileReveal.ts writes --px); `transform`, so it adds to the reveal's `translate`. */
+  html.motion-on .m-px {
+    transform: translate3d(0, var(--px, 0px), 0);
+  }
+}

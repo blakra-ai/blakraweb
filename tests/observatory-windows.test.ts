@@ -1,5 +1,6 @@
 import { describe, expect, it } from 'vitest'
-import { FIGURE, frameWindow, guideInView, HEAD_SHARE, HEAD_SHARE_CONTACT, onScreen, RING, ringScale, stickyViewY, toGl, WORDS_COLUMN, type Rect } from '../src/features/observatory/windows'
+import { FIGURE, frameWindow, guideInView, HEAD_SHARE, HEAD_SHARE_CONTACT, onScreen, PHONE_BAND, RING, ringScale, stickyViewY, toGl, WORDS_COLUMN, type Rect } from '../src/features/observatory/windows'
+import { phoneRing } from '../src/boot'
 
 const desktop: Rect = { x: 24, y: 88, w: 1392, h: 788 }
 const phone: Rect = { x: 16, y: 80, w: 358, h: 232 }
@@ -32,7 +33,8 @@ describe('window framing', () => {
     const f = frameWindow('hero', desktop)
     const g = f.guide!
     expect(g.headPx).toBeCloseTo(HEAD_SHARE * desktop.h)
-    expect(frameWindow('hero', { x: 0, y: 0, w: 320, h: 568 }).guide!.headPx).toBeCloseTo(HEAD_SHARE * 568)
+    // A short phone window keeps the same share; a tall full-bleed phone hero is framed on its band (below).
+    expect(frameWindow('hero', { x: 0, y: 0, w: 568, h: 320 }).guide!.headPx).toBeCloseTo(HEAD_SHARE * 320)
     // Her head overlaps the ring's lower-right quadrant: the rim is behind her, on the words' side.
     expect(g.x).toBeGreaterThan(f.ring.x)
     expect(g.x - 0.5 * g.headPx).toBeLessThan(f.ring.x + f.ring.r)
@@ -68,6 +70,24 @@ describe('window framing', () => {
         expect(g.y - 0.5 * g.headPx).toBeGreaterThanOrEqual(-1e-6)
       }
     }
+  })
+})
+
+describe('the phone hero band', () => {
+  it('draws the ring exactly where the phone still has it, her head right of it, above the words', () => {
+    const rect = { x: 0, y: 56, w: 390, h: 788 }
+    const f = frameWindow('hero', rect)
+    const band = (390 * PHONE_BAND.h) / PHONE_BAND.w
+    // The loader lands on the still's ring (boot.ts phoneRing); the world draws the same ring.
+    const still = phoneRing({ x: 0, y: 0, w: 390, h: band })
+    expect(f.ring.x).toBeCloseTo(still.x)
+    expect(f.ring.y).toBeCloseTo(still.y)
+    expect(f.ring.r).toBeCloseTo(still.r)
+    const g = f.guide!
+    expect(g.x).toBeGreaterThan(f.ring.x)
+    expect(g.x + 1.5 * g.headPx).toBeLessThanOrEqual(rect.w + 1e-6)
+    expect(g.y + g.headPx).toBeLessThan(band)
+    expect(f.fade).toBe(0)
   })
 })
 

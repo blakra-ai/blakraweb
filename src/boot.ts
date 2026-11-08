@@ -1,5 +1,6 @@
 import { holdWorld, isWorldReady, markLifted, onWorldReady } from './features/observatory/ready'
-import { frameWindow } from './features/observatory/windows'
+import { frameWindow, PHONE_BAND } from './features/observatory/windows'
+import { canRunWorld } from './features/experience/capable'
 
 /*
  * The brand loader's driver. The overlay itself is drawn by index.html's CSS (#boot, shown while
@@ -9,9 +10,10 @@ import { frameWindow } from './features/observatory/windows'
  *
  * Desktop: counts 000 → 100 against real work (the fonts, the hero's still, the world's first frame).
  * Caps: 3.0 s, held to a hard 4.5 s while the world is still coming (counted from navigation start).
- * Phones: speed first. No count and no minimum: it lifts the moment the fonts and the still are ready,
- * at 1.2 s at the latest (index.html's CSS lifts it by itself if this script arrives later than that),
- * and it is not shown at all when everything is ready within 300 ms (cached).
+ * Phones: no count and no minimum. Without the world (a weak device, ?film=off, any page but home) it
+ * lifts the moment the fonts and the still are ready, at 1.2 s at the latest (index.html's CSS lifts it
+ * by itself if this script arrives later than that), and it is not shown at all when everything is
+ * ready within 300 ms (cached). With the world it waits for her first frame like desktop, up to 6 s.
  * Plain DOM, outside #root: nothing here touches hydration.
  */
 
@@ -21,13 +23,15 @@ const EXIT_MS = 780
 const EXIT_PHONE_MS = 450
 const EXIT_CALM_MS = 320
 const PHONE_CAP_MS = 1200
+/** A phone running the world waits for her first frame this long at most (from navigation start). */
+const PHONE_WORLD_CAP_MS = 6000
 const PHONE_SKIP_MS = 300
 /** After the exit, how long the page is left alone before the world's heavy work resumes. */
 const SETTLE_MS = 1000
 /** The loader ring's radius as a share of its box (index.html: r 83 in a 168 box). */
 const RING_SHARE = 83 / 168
 /** The ring in the phone still (hero-still-phone.webp, 780 × 900; Hero.tsx's ripples draw on it). */
-export const PHONE_STILL_RING = { x: 198 / 780, y: 402 / 900, r: 206 / 780 }
+export const PHONE_STILL_RING = PHONE_BAND.ring
 
 interface Box {
   x: number
@@ -84,8 +88,10 @@ export function boot() {
   const still = document.querySelector<HTMLImageElement>('#top [data-still] img')
   // Decoded, so the frame that reveals it already has it.
   if (still) tasks.push(still.decode().catch(() => {}))
-  // Only the home page has a world to wait for.
-  if (!phone && document.querySelector('#top [data-window="hero"]')) tasks.push(new Promise<void>((r) => onWorldReady(r)))
+  // Only the home page has a world to wait for; a phone only when it will run one (Stage.tsx decides the same way).
+  const home = !!document.querySelector('#top [data-window="hero"]')
+  const phoneWorld = phone && home && new URLSearchParams(location.search).get('film') !== 'off' && canRunWorld()
+  if (home && (!phone || phoneWorld)) tasks.push(new Promise<void>((r) => onWorldReady(r)))
 
   let done = 0
   let shown = 0
@@ -107,9 +113,9 @@ export function boot() {
   const land = () => {
     if (calm) return
     const core = el.querySelector('.b-core')
-    const win = phone ? still?.closest('[data-still]') : document.querySelector('#top [data-window="hero"]')
+    const win = phone && !phoneWorld ? still?.closest('[data-still]') : document.querySelector('#top [data-window="hero"]')
     if (!core || !win) return
-    const to = exitTo(box(core), phone ? phoneRing(box(win)) : deskRing(box(win)), { w: innerWidth, h: innerHeight })
+    const to = exitTo(box(core), phone && !phoneWorld ? phoneRing(box(win)) : deskRing(box(win)), { w: innerWidth, h: innerHeight })
     if (!to) return
     el.style.setProperty('--x', `${to.x.toFixed(2)}px`)
     el.style.setProperty('--y', `${to.y.toFixed(2)}px`)
@@ -125,11 +131,20 @@ export function boot() {
     remember()
     // Lifting before her first frame: her remaining heavy work waits out the exit and a settling second
     // (the still shows her meanwhile, then hands over with a crossfade), so nothing stalls the reveal.
-    if (!phone && !isWorldReady()) holdWorld(exitMs + SETTLE_MS)
+    if ((!phone || phoneWorld) && !isWorldReady()) holdWorld(exitMs + SETTLE_MS)
     land()
     // The exit is the overlay's own class; <html> changes once, at the end (one page-wide style pass, not two).
     el.classList.add('out')
     setTimeout(remove, exitMs)
+  }
+
+  // Arriving after the CSS has already lifted it, the overlay stays lifted (the phone path below clears it).
+  if (phoneWorld && performance.now() <= PHONE_CAP_MS) {
+    // index.html's CSS would lift the overlay at 1.2 s by itself: this script holds it for the world instead.
+    el.style.animation = 'none'
+    void Promise.all(tasks).then(() => setTimeout(finish, 80))
+    setTimeout(finish, Math.max(0, PHONE_WORLD_CAP_MS - performance.now()))
+    return
   }
 
   if (phone) {

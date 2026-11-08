@@ -8,16 +8,15 @@ const World = lazy(() => import('./World'))
  * Mounts the Observatory's world after the page has loaded and gone idle (at once under the first
  * visit's brand loader, which covers the page), so it never competes
  * with the first paint, and only on devices with real graphics hardware (`canRunWorld`; `?gl=force`
- * runs it anyway, `?film=off` keeps the still). Under 768 px there is no three.js at all (the
- * storyboard's phone path: her still, the CSS ring). Others keep the prerendered still in every
+ * runs it anyway, `?film=off` keeps the still). Phones run it too when they pass the same test
+ * (the hero's band is framed for them: windows.ts); weak devices keep the prerendered still in every
  * window, decided at mount (`gl-off` on <html>).
  */
-const PHONE = '(max-width: 767px)'
 export function ObservatoryStage() {
   const [go, setGo] = useState(false)
   useEffect(() => {
     const off = new URLSearchParams(location.search).get('film') === 'off'
-    if (off || window.matchMedia(PHONE).matches || !canRunWorld()) {
+    if (off || !canRunWorld()) {
       document.documentElement.classList.add('gl-off')
       markWorldReady()
       return

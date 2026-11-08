@@ -573,19 +573,6 @@
 }
 @media (max-width: 767px) {
   @supports (animation-timeline: view()) {
-    :global(html:not(.motion-off)) .orbit circle[data-ring] {
-      transform-box: view-box;
-      transform-origin: center;
-      animation: m-settle linear both;
-      animation-timeline: view();
-    }
-    :global(html:not(.motion-off)) .orbit circle[data-ring='0'] { animation-range: entry 0% cover 30%; }
-    :global(html:not(.motion-off)) .orbit circle[data-ring='1'] { animation-range: entry 5% cover 33%; }
-    :global(html:not(.motion-off)) .orbit circle[data-ring='2'] { animation-range: entry 10% cover 36%; }
-    :global(html:not(.motion-off)) .orbit circle[data-ring='3'] { animation-range: entry 15% cover 39%; }
-    :global(html:not(.motion-off)) .orbit circle[data-ring='4'] { animation-range: entry 20% cover 42%; }
-    :global(html:not(.motion-off)) .orbit circle[data-ring='5'] { animation-range: entry 25% cover 45%; }
-    :global(html:not(.motion-off)) .orbit circle[data-ring='6'] { animation-range: entry 30% cover 48%; }
     :global(html:not(.motion-off)) .wireLine {
       animation: m-wire linear both;
       animation-timeline: view();
@@ -600,8 +587,16 @@
     :global(html:not(.motion-off)) .vendors li:nth-child(even) { --dx: 4px; --rot: 2deg; }
   }
 }
-@keyframes m-settle {
-  from { transform: scale(0.42) rotate(-40deg); }
+/* The rings settle with the scroll (Stage.tsx useSettle writes --settle 0 → 1): each ring k starts a little later. */
+@media (max-width: 767px) {
+  :global(html:not(.motion-off)) .orbit[data-scrub] circle[data-ring] {
+    --pk: clamp(0, calc((var(--settle, 1) - var(--k, 0) * 0.07) / 0.5), 1);
+    transform-box: view-box;
+    transform-origin: center;
+    transform: scale(calc(0.42 + 0.58 * var(--pk))) rotate(calc(-40deg * (1 - var(--pk))));
+    opacity: calc(0.15 + 0.85 * var(--pk));
+    transition: none;
+  }
 }
 @keyframes m-wire {
   from { transform: scaleX(0); }

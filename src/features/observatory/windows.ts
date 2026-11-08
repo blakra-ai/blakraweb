@@ -83,6 +83,8 @@ export const FIGURE = {
   phone: { share: 1.9, eyeX: 0.76, eyeY: 0.56 },
 } as const
 export const PHONE_W = 768
+/** The phone hero's band: the still's 780 × 900 crop and its ring (boot.ts lands the loader on it). */
+export const PHONE_BAND = { w: 780, h: 900, ring: { x: 198 / 780, y: 402 / 900, r: 206 / 780 } } as const
 export const WORDS_COLUMN = 0.5
 export const FRAME_RADIUS = 16
 export const GRID_CELL = 24
@@ -106,6 +108,7 @@ export function frameWindow(kind: WindowKind, rect: Rect, hint?: { x: number; y:
     ring.r = r
   }
   let guide: Framing['guide'] = null
+  let fade: number = FADE[kind]
   if (kind === 'contact') {
     // The closing stage: a fuller figure at a fifth of the height, standing inside the disk right
     // of its centre (her line keeps the disk's left), the lit rim below and left of her (her key
@@ -120,6 +123,23 @@ export function frameWindow(kind: WindowKind, rect: Rect, hint?: { x: number; y:
     x = Math.min(x, rect.w - 1.5 * headPx)
     x = Math.max(x, WORDS_COLUMN * rect.w + 0.5 * headPx)
     y = Math.max(y, 0.5 * headPx)
+    guide = { x, y, headPx, figurePx, key: -1 }
+  } else if (kind === 'hero' && rect.w < PHONE_W && rect.h >= 1.2 * rect.w) {
+    // The phone hero (a full-bleed tall window, Hero.module.css): the world draws the still's band
+    // (780 × 900 at the window's width) live: the ring left exactly where the still has it, her head
+    // and neck right of it, the words below the band.
+    const band = (rect.w * PHONE_BAND.h) / PHONE_BAND.w
+    ring.x = PHONE_BAND.ring.x * rect.w
+    ring.y = PHONE_BAND.ring.y * band
+    ring.r = PHONE_BAND.ring.r * rect.w
+    r = ring.r
+    // The words sit under the band, not beside it: the grid runs the full width.
+    fade = 0
+    const headPx = Math.min(HEAD_SHARE * band, 0.22 * rect.w)
+    const figurePx = FIGURE.phone.share * band
+    let x = Math.min(FIGURE.phone.eyeX * rect.w, rect.w - 1.5 * headPx)
+    x = Math.max(x, WORDS_COLUMN * rect.w + 0.5 * headPx)
+    const y = Math.max(0.5 * band, 0.5 * headPx)
     guide = { x, y, headPx, figurePx, key: -1 }
   } else {
     // 24 % of the window's height, and never so large that she cannot fit in the right half.
@@ -138,7 +158,7 @@ export function frameWindow(kind: WindowKind, rect: Rect, hint?: { x: number; y:
     y = Math.max(y, 0.5 * headPx)
     guide = { x, y, headPx, figurePx, key: -1 }
   }
-  return { ring, sigma: SIGMA[kind] * s, pull: PULL[kind], fade: FADE[kind], guide }
+  return { ring, sigma: SIGMA[kind] * s, pull: PULL[kind], fade, guide }
 }
 
 /**

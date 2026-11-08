@@ -51,6 +51,9 @@ const SCROLL_V_DAMP = 8
 /** The dpr cap for discrete GPUs; integrated ones (Intel UHD/Iris, Mali, Adreno, Apple) start and stay at 1. */
 const DPR_MAX = 1.25
 const INTEGRATED = /intel|uhd|iris|mali|adreno|apple|powervr/i
+/** Phones (under 768 px) start sharper than the integrated rule (their screens are 2–3×), and the governor steps down from here. */
+const PHONE_DPR = 1.5
+const isPhone = () => window.matchMedia('(max-width: 767px)').matches
 /** A window larger than this (device px) is shaded live: its copy would cost more memory than it saves. */
 const SKY_MAX_PX = 12_000_000
 /** A window's copy is freed this long after it left the screen. */
@@ -248,7 +251,7 @@ function Passes({ handle, onDpr }: { handle: ReturnType<typeof createGuideHandle
     return { ...p, scenes: { bg: make(p.bg), mask: make(p.mask), fade: make(p.fade) } }
   }, [])
   const portScenes = port.scenes
-  const t = useRef({ last: 0, lastY: 0, bendStart: -1, inputAt: 0, frames: 0, ms: 0, since: 0, kicked: false, timer: 0, period: 0, drew: true, shown: true, maxScroll: 0, governor: null as Governor | null, guideShown: false, viewport: { w: 1, h: 1 }, opacity: 1, paper: 0, layout: null as PortholeLayout | null, cy: NaN, cyV: 0, read: { host: null, start: 0, line: 0, nodAt: -10, y: NaN, at: 0, box: null, rects: [], chars: 0 } as ReadState })
+  const t = useRef({ last: 0, lastY: 0, bendStart: -1, inputAt: 0, frames: 0, ms: 0, since: 0, kicked: false, timer: 0, period: 0, drew: true, shown: true, maxScroll: 0, governor: null as Governor | null, guideShown: false, viewport: { w: 1, h: 1 }, opacity: 1, paper: 0, layout: null as PortholeLayout | null, cy: NaN, cyV: 0, phone: false, read: { host: null, start: 0, line: 0, nodAt: -10, y: NaN, at: 0, box: null, rects: [], chars: 0 } as ReadState })
 
   useEffect(() => {
     gl.autoClear = false
@@ -266,10 +269,26 @@ function Passes({ handle, onDpr }: { handle: ReturnType<typeof createGuideHandle
     }
     // The cursor moves only her gaze: without her on screen a move needs no frame.
     const move = (e: PointerEvent) => {
+      if (e.pointerType === 'touch') return
       obs.pointer.x = e.clientX
       obs.pointer.y = e.clientY
       obs.pointer.on = e.pointerType === 'mouse'
       if (s.guideShown) input()
+    }
+    // Phones: her gaze follows the finger while it touches (and scrolls) the page, then lets go.
+    let release = 0
+    const touch = (e: TouchEvent) => {
+      const t = e.touches[0]
+      if (!t) return
+      clearTimeout(release)
+      obs.pointer.x = t.clientX
+      obs.pointer.y = t.clientY
+      obs.pointer.on = true
+      if (s.guideShown) input()
+    }
+    const untouch = () => {
+      clearTimeout(release)
+      release = window.setTimeout(leave, 1200)
     }
     const leave = () => {
       obs.pointer.on = false
@@ -293,6 +312,7 @@ function Passes({ handle, onDpr }: { handle: ReturnType<typeof createGuideHandle
     const relayout = () => {
       const l = portholeLayout(window.innerWidth, window.innerHeight)
       s.layout = l
+      s.phone = isPhone()
       const root = document.documentElement
       root.classList.toggle('porthole-margin', l.mode === 'margin')
       root.style.setProperty('--porthole-gutter', `${l.gutter}px`)
@@ -304,6 +324,9 @@ function Passes({ handle, onDpr }: { handle: ReturnType<typeof createGuideHandle
     relayout()
     window.addEventListener('scroll', input, { passive: true })
     window.addEventListener('pointermove', move, { passive: true })
+    window.addEventListener('touchstart', touch, { passive: true })
+    window.addEventListener('touchmove', touch, { passive: true })
+    window.addEventListener('touchend', untouch, { passive: true })
     document.documentElement.addEventListener('pointerleave', leave)
     document.addEventListener('focusin', focus)
     document.addEventListener('focusout', blur)
@@ -314,6 +337,10 @@ function Passes({ handle, onDpr }: { handle: ReturnType<typeof createGuideHandle
     return () => {
       window.removeEventListener('scroll', input)
       window.removeEventListener('pointermove', move)
+      window.removeEventListener('touchstart', touch)
+      window.removeEventListener('touchmove', touch)
+      window.removeEventListener('touchend', untouch)
+      clearTimeout(release)
       document.documentElement.removeEventListener('pointerleave', leave)
       document.removeEventListener('focusin', focus)
       document.removeEventListener('focusout', blur)
@@ -367,7 +394,8 @@ function Passes({ handle, onDpr }: { handle: ReturnType<typeof createGuideHandle
     const viewport = s.viewport
     viewport.w = size.width
     viewport.h = size.height
-    const windows = getWindows()
+    // Phones draw the hero's band only: the other windows keep their CSS still there (Window.module.css).
+    const windows = s.phone ? getWindows().filter((w) => w.kind === 'hero') : getWindows()
     // The load device starts the first time a hero window is on screen; still frames are the final state.
     if (s.bendStart < 0 && windows.some((w) => w.kind === 'hero' && onScreen(w.rect, y, viewport, w.sticky))) s.bendStart = now
     const bend = still ? 1 : s.bendStart < 0 ? 0 : bendAt(now - s.bendStart)
@@ -592,7 +620,8 @@ function Passes({ handle, onDpr }: { handle: ReturnType<typeof createGuideHandle
         place = {
           x: lerp(wx, bust.x, ex),
           y: lerp(wy, bust.y, ey),
-          figurePx: Math.exp(lerp(Math.log(win.g.figurePx), Math.log(bust.figurePx), ey)),
+          // Phones have no porthole (its size is 0): she stays framed by the window, never log(0).
+          figurePx: ey <= 0 ? win.g.figurePx : Math.exp(lerp(Math.log(win.g.figurePx), Math.log(bust.figurePx), ey)),
           // In the contact window she turns toward the closing line and the form on her left.
           facing: lerp(win === contact ? -60 : 0, bust.facing, ey),
           pitch: lerp(0, bust.pitch, ey),
@@ -792,7 +821,8 @@ export default function World() {
         style={{ width: '100%', height: '100%' }}
         onCreated={({ gl }) => {
           const name = rendererName(gl)
-          if (INTEGRATED.test(name)) setDpr(1)
+          if (isPhone()) setDpr(Math.max(1, Math.min(PHONE_DPR, window.devicePixelRatio || 1)))
+          else if (INTEGRATED.test(name)) setDpr(1)
           // The driver's logs are never read in production, and asking for them waits on every link.
           if (import.meta.env.PROD) gl.debug.checkShaderErrors = false
           if (PROFILE) console.info(`[observatory] renderer ${name}: dpr ${INTEGRATED.test(name) ? 1 : `1 … ${DPR_MAX}`}`)
