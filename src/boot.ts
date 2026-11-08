@@ -20,12 +20,7 @@ import { canRunWorld } from './features/experience/capable'
 const FLAG = 'blakra:loaded'
 const PHONE = '(max-width: 767px)'
 const EXIT_MS = 780
-const EXIT_PHONE_MS = 450
 const EXIT_CALM_MS = 320
-const PHONE_CAP_MS = 1200
-/** A phone running the world waits for her first frame this long at most (from navigation start). */
-const PHONE_WORLD_CAP_MS = 15000
-const PHONE_SKIP_MS = 300
 /** After the exit, how long the page is left alone before the world's heavy work resumes. */
 const SETTLE_MS = 1000
 /** The loader ring's radius as a share of its box (index.html: r 83 in a 168 box). */
@@ -77,7 +72,7 @@ export function boot() {
   const count = el.querySelector<HTMLElement>('[data-count]')
   const phone = matchMedia(PHONE).matches
   const calm = html.classList.contains('motion-off')
-  const exitMs = calm ? EXIT_CALM_MS : phone ? EXIT_PHONE_MS : EXIT_MS
+  const exitMs = calm ? EXIT_CALM_MS : EXIT_MS
   const cap = 3000
   // Desktop's world (her GLB and first frame) may need a little longer: lifting without it means a
   // handover from the still after the reveal, so the loader waits for it up to this hard cap.
@@ -136,35 +131,6 @@ export function boot() {
     // The exit is the overlay's own class; <html> changes once, at the end (one page-wide style pass, not two).
     el.classList.add('out')
     setTimeout(remove, exitMs)
-  }
-
-  // Arriving after the CSS has already lifted it, the overlay stays lifted (the phone path below clears it).
-  if (phoneWorld) {
-    // index.html's CSS would lift the overlay at 1.2 s by itself: this script holds it for the world instead.
-    el.style.animation = 'none'
-    void Promise.all(tasks).then(() => setTimeout(finish, 80))
-    setTimeout(finish, Math.max(0, PHONE_WORLD_CAP_MS - performance.now()))
-    return
-  }
-
-  if (phone) {
-    const now = performance.now()
-    // Later than the cap: the CSS is already lifting it (or has); this only clears it away.
-    if (now > PHONE_CAP_MS + 50) {
-      // A slow first load: the page is already in by now, so the overlay leaves at once.
-      finish()
-      return
-    }
-    void Promise.all(tasks).then(() => {
-      if (finished) return
-      if (performance.now() <= PHONE_SKIP_MS) {
-        finished = true
-        remember()
-        remove()
-      } else finish()
-    })
-    setTimeout(finish, PHONE_CAP_MS - now)
-    return
   }
 
   // The number: the share of finished work, plus a creep over time so it never sits still, eased.

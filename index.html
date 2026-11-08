@@ -45,18 +45,6 @@
       @keyframes b-lift{to{visibility:hidden;opacity:0}}
       @keyframes b-show{to{opacity:1}}
       @keyframes b-fill{to{stroke-dashoffset:3}}
-      @media (max-width:767px){
-        #boot{--s:62px}
-        #boot .b-core{opacity:0;animation:b-show .15s linear var(--b-show,.3s) forwards}
-        #boot .b-mark{left:calc(var(--s) - 35px);top:calc(var(--s) - 28px);width:70px;height:56px}
-        #boot .b-num{display:none}
-        #boot .b-arc{animation:b-fill 1.2s cubic-bezier(.2,.7,.3,1) forwards}
-        #boot.out{animation:none}
-        #boot.out .b-arc{animation:none;stroke-dashoffset:0}
-        #boot.out .b-core{transition-duration:.42s}
-        #boot.out::before{transition-duration:.3s;transition-delay:.12s}
-        #boot.out .b-ring{transition-duration:.14s;transition-delay:.3s}
-      }
       /* Reduced motion: no turning, no travelling; the overlay simply fades. */
       html.motion-off #boot .b-orbit,html.motion-off #boot .b-mark,html.motion-off #boot .b-arc{animation:none}
       html.motion-off #boot.out{opacity:0;transition:opacity .3s linear}
