@@ -718,7 +718,32 @@ main > section {
       scale 0.8s cubic-bezier(0.2, 0.7, 0.2, 1) var(--rv-delay, 0ms);
   }
   /* Section headings drift against the scroll (mobileReveal.ts writes --px); `transform`, so it adds to the reveal's `translate`. */
-  html.motion-on .m-px {
-    transform: translate3d(0, var(--px, 0px), 0);
+}
+@supports (animation-timeline: view()) {
+  @media (max-width: 767px) {
+    html.motion-on .m-px {
+      animation: m-px linear both;
+      animation-timeline: view();
+    }
+    html.motion-on .m-px-img {
+      animation: m-px-img linear both;
+      animation-timeline: view();
+    }
+    html.motion-on .m-hero-out {
+      animation: m-hero-out linear both;
+      animation-timeline: scroll(root);
+      animation-range: 0 80vh;
+    }
+  }
+  @keyframes m-px {
+    from { translate: 0 22px; }
+    to { translate: 0 -22px; }
+  }
+  @keyframes m-px-img {
+    from { translate: 0 12px; scale: 1.06; }
+    to { translate: 0 -12px; scale: 1.06; }
+  }
+  @keyframes m-hero-out {
+    to { translate: 0 18vh; opacity: 0.15; }
   }
 }

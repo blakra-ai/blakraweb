@@ -118,62 +118,20 @@ export function startMobileReveal(): () => void {
 }
 
 /*
- * Scroll-linked depth on phones, one rAF per scroll, writes only (`translate`, `scale`, `opacity` on a
- * handful of elements; the reads are cached and refreshed on resize):
- * - the hero's words drift up slower than the page and fade as they leave, over the live world;
- * - each section heading (h2) moves a little against the scroll while it crosses the screen;
- * - images inside figures shift inside their frames (scaled 6 % so no edge ever shows).
+ * Scroll-linked depth on phones, run by the browser's compositor (CSS scroll-driven animations,
+ * global.css: .m-px, .m-px-img, .m-hero-out), never by script on scroll: script on a phone's native
+ * scroll lags the finger and jumps. Browsers without scroll timelines simply keep everything still.
  */
 function startParallax(): () => void {
   const words = document.querySelector<HTMLElement>('#top [data-window="hero"] h1')?.parentElement ?? null
   const heads = [...document.querySelectorAll<HTMLElement>('main > :not(:first-child) h2')]
   const imgs = [...document.querySelectorAll<HTMLElement>('main figure img')]
-  let frame = 0
-  const update = () => {
-    frame = 0
-    const vh = window.innerHeight
-    const y = window.scrollY
-    if (words) {
-      const k = Math.min(1, y / (0.8 * vh))
-      words.style.translate = `0 ${(0.22 * Math.min(y, vh)).toFixed(1)}px`
-      words.style.opacity = (1 - 0.85 * k).toFixed(3)
-    }
-    for (const el of heads) {
-      const r = el.getBoundingClientRect()
-      if (r.bottom < -vh * 0.2 || r.top > vh * 1.2) continue
-      const d = (r.top + r.height / 2 - vh / 2) / vh
-      el.style.setProperty('--px', `${(d * 22).toFixed(1)}px`)
-    }
-    for (const el of imgs) {
-      const r = el.getBoundingClientRect()
-      if (r.bottom < 0 || r.top > vh) continue
-      const d = (r.top + r.height / 2 - vh / 2) / vh
-      el.style.scale = '1.06'
-      el.style.translate = `0 ${(d * -14).toFixed(1)}px`
-    }
-  }
-  const onScroll = () => {
-    if (!frame) frame = requestAnimationFrame(update)
-  }
+  words?.classList.add('m-hero-out')
   heads.forEach((el) => el.classList.add('m-px'))
-  window.addEventListener('scroll', onScroll, { passive: true })
-  window.addEventListener('resize', onScroll, { passive: true })
-  update()
+  imgs.forEach((el) => el.classList.add('m-px-img'))
   return () => {
-    window.removeEventListener('scroll', onScroll)
-    window.removeEventListener('resize', onScroll)
-    cancelAnimationFrame(frame)
-    if (words) {
-      words.style.removeProperty('translate')
-      words.style.removeProperty('opacity')
-    }
-    heads.forEach((el) => {
-      el.classList.remove('m-px')
-      el.style.removeProperty('--px')
-    })
-    imgs.forEach((el) => {
-      el.style.removeProperty('scale')
-      el.style.removeProperty('translate')
-    })
+    words?.classList.remove('m-hero-out')
+    heads.forEach((el) => el.classList.remove('m-px'))
+    imgs.forEach((el) => el.classList.remove('m-px-img'))
   }
 }

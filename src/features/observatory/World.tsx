@@ -813,7 +813,7 @@ export default function World() {
   }, [])
   if (PROFILE) (globalThis as Record<string, unknown>).__obsWorld = { nav, frames }
   return createPortal(
-    <div className="obs-world" aria-hidden="true" style={{ position: 'fixed', inset: 0, zIndex: 0, pointerEvents: 'none' }}>
+    <div className="obs-world" aria-hidden="true" style={{ position: 'fixed', left: 0, right: 0, top: 0, height: '100lvh', zIndex: 0, pointerEvents: 'none' }}>
       <Canvas
         frameloop="demand"
         dpr={dpr}
