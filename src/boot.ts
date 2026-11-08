@@ -77,7 +77,7 @@ export function boot() {
   const cap = 3000
   // Desktop's world (her GLB and first frame) may need a little longer: lifting without it means a
   // handover from the still after the reveal, so the loader waits for it up to this hard cap.
-  const hard = 4500
+  const hard = 15000
 
   const tasks: Promise<unknown>[] = []
   tasks.push(document.fonts?.ready ?? Promise.resolve())
@@ -156,13 +156,13 @@ export function boot() {
   // The number: the share of finished work, plus a creep over time so it never sits still, eased.
   const tick = () => {
     const now = performance.now()
-    const time = Math.min(1, now / cap)
+    const time = 1 - Math.exp(-now / cap)
     const target = Math.min(100, Math.max((done / total) * 100, time * 92 + Math.max(0, (now - cap) / (hard - cap + 1)) * 7))
     shown += (target - shown) * 0.18
     if (count) count.textContent = String(Math.min(99, Math.floor(shown))).padStart(3, '0')
     el.style.setProperty('--p', (shown / 100).toFixed(3))
     if (done >= total && shown > 97) return void setTimeout(finish, 120)
-    if (now >= hard || (now >= cap && (isWorldReady() || done >= total))) return finish()
+    if (now >= hard || (now >= cap && done >= total)) return finish()
     raf = requestAnimationFrame(tick)
   }
   raf = requestAnimationFrame(tick)

@@ -19,7 +19,7 @@
       html.loading{scrollbar-color:#1a1a1c #050506}
       /* Only the page's own scrollbar: stopped at <body>, so lifting `loading` restyles two elements, not the whole document. */
       body{scrollbar-color:auto}
-      #boot{position:fixed;inset:0;z-index:2147483000;color:#ece9e2;pointer-events:none;--p:0;--s:84px;animation:b-safety 0s linear 6s forwards}
+      #boot{position:fixed;inset:0;z-index:2147483000;color:#ece9e2;pointer-events:none;--p:0;--s:84px;animation:b-safety 0s linear 16s forwards}
       #boot::before{content:"";position:absolute;inset:0;background:radial-gradient(closest-side,rgba(217,164,65,.09),rgba(217,164,65,0) 70%) center/min(90vw,640px) min(90vw,640px) no-repeat,#050506;will-change:opacity}
       /* Whole pixels from the centre: a half pixel blurs the mark's own layer. */
       #boot .b-core{position:absolute;left:calc(50% - var(--s));left:calc(round(down,50%,1px) - var(--s));top:calc(50% - var(--s));top:calc(round(down,50%,1px) - var(--s));width:calc(var(--s)*2);height:calc(var(--s)*2)}
