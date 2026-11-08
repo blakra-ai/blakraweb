@@ -80,7 +80,7 @@ export const HEAD_SHARE_CONTACT = 0.16
 export const FIGURE = {
   hero: { share: 1.3, eyeX: 0.72, eyeY: 0.42 },
   contact: { share: 1.1, eyeX: 0.84, eyeY: 0.47 },
-  phone: { share: 1.9, eyeX: 0.76, eyeY: 0.56 },
+  phone: { share: 0.92, eyeX: 0.7, eyeY: 0.56 },
 } as const
 export const PHONE_W = 768
 /** The phone hero's band: the still's 780 × 900 crop and its ring (boot.ts lands the loader on it). */
@@ -135,11 +135,11 @@ export function frameWindow(kind: WindowKind, rect: Rect, hint?: { x: number; y:
     r = ring.r
     // The words sit under the band, not beside it: the grid runs the full width.
     fade = 0
-    const headPx = Math.min(HEAD_SHARE * band, 0.22 * rect.w)
+    const headPx = Math.min(HEAD_SHARE * band, 0.13 * rect.w)
     const figurePx = FIGURE.phone.share * band
     let x = Math.min(FIGURE.phone.eyeX * rect.w, rect.w - 1.5 * headPx)
     x = Math.max(x, WORDS_COLUMN * rect.w + 0.5 * headPx)
-    const y = Math.max(0.5 * band, 0.5 * headPx)
+    const y = Math.max(0.42 * band, 0.5 * headPx)
     guide = { x, y, headPx, figurePx, key: -1 }
   } else {
     // 24 % of the window's height, and never so large that she cannot fit in the right half.
