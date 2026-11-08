@@ -31,5 +31,5 @@ jobs:
           mkdir -p ~/.ssh
           echo "$KEY" > ~/.ssh/id_deploy && chmod 600 ~/.ssh/id_deploy
           ssh-keyscan -H "$HOST" >> ~/.ssh/known_hosts
-          ssh -i ~/.ssh/id_deploy "$USER@$HOST" "mkdir -p /var/www/blakra/dist"
-          rsync -az --delete -e "ssh -i ~/.ssh/id_deploy" dist/ "$USER@$HOST:/var/www/blakra/dist/"
+          ssh -i ~/.ssh/id_deploy "$USER@$HOST" "mkdir -p /var/www/blakra.us"
+          rsync -az --delete -e "ssh -i ~/.ssh/id_deploy" dist/ "$USER@$HOST:/var/www/blakra.us/"
