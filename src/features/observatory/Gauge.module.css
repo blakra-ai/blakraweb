@@ -131,6 +131,11 @@
   display: none;
 }
 @media (max-width: 767px) {
+  /* Never wider than the header leaves between the logo and the menu: the name shortens with … instead. */
+  .chip {
+    flex: 0 1 auto;
+    min-width: 0;
+  }
   .chip .chipDot {
     background: var(--dot, var(--porcelain));
   }

@@ -283,6 +283,11 @@
 }
 /* Phones: the switch moves into the panel; the call to action is compact from 360 px, gone below. */
 @media (max-width: 767px) {
+  /* The chip shrinks (its name ends in …) so the menu button always stays on screen. */
+  .right {
+    min-width: 0;
+    flex: 0 1 auto;
+  }
   .bar {
     gap: 0.5rem;
     padding: 0 12px;
