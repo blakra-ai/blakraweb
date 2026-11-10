@@ -1,0 +1,3635 @@
+{
+  "openapi": "3.1.0",
+  "info": {
+    "title": "Blakrasocial API",
+    "version": "0.1.0"
+  },
+  "paths": {
+    "/health": {
+      "get": {
+        "tags": [
+          "health"
+        ],
+        "summary": "Liveness probe",
+        "operationId": "health_health_get",
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "additionalProperties": {
+                    "type": "string"
+                  },
+                  "type": "object",
+                  "title": "Response Health Health Get"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/auth/login": {
+      "post": {
+        "tags": [
+          "auth"
+        ],
+        "summary": "Sign in with email and password",
+        "operationId": "login_auth_login_post",
+        "parameters": [
+          {
+            "name": "X-Requested-With",
+            "in": "header",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "X-Requested-With"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/LoginRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SessionResponse"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/auth/refresh": {
+      "post": {
+        "tags": [
+          "auth"
+        ],
+        "summary": "New access token from the session cookie",
+        "operationId": "refresh_auth_refresh_post",
+        "parameters": [
+          {
+            "name": "X-Requested-With",
+            "in": "header",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "X-Requested-With"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SessionResponse"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/auth/logout": {
+      "post": {
+        "tags": [
+          "auth"
+        ],
+        "summary": "Sign out",
+        "operationId": "logout_auth_logout_post",
+        "parameters": [
+          {
+            "name": "X-Requested-With",
+            "in": "header",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "X-Requested-With"
+            }
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "Successful Response"
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/auth/me": {
+      "get": {
+        "tags": [
+          "auth"
+        ],
+        "summary": "The signed-in user",
+        "operationId": "me_auth_me_get",
+        "parameters": [
+          {
+            "name": "authorization",
+            "in": "header",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Authorization"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/UserOut"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/auth/password": {
+      "post": {
+        "tags": [
+          "auth"
+        ],
+        "summary": "Change password (signs out other devices)",
+        "operationId": "change_password_auth_password_post",
+        "parameters": [
+          {
+            "name": "X-Requested-With",
+            "in": "header",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "X-Requested-With"
+            }
+          },
+          {
+            "name": "authorization",
+            "in": "header",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Authorization"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ChangePasswordRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SessionResponse"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/auth/invites/{token}": {
+      "get": {
+        "tags": [
+          "auth"
+        ],
+        "summary": "Who a set-password link is for",
+        "operationId": "inspect_invite_auth_invites__token__get",
+        "parameters": [
+          {
+            "name": "token",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "title": "Token"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/InviteInfo"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "tags": [
+          "auth"
+        ],
+        "summary": "Set a password from an invite or reset link",
+        "operationId": "accept_invite_auth_invites__token__post",
+        "parameters": [
+          {
+            "name": "token",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "title": "Token"
+            }
+          },
+          {
+            "name": "X-Requested-With",
+            "in": "header",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "X-Requested-With"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/SetPasswordRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SessionResponse"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/admin/users": {
+      "get": {
+        "tags": [
+          "admin"
+        ],
+        "summary": "All accounts",
+        "operationId": "list_users_admin_users_get",
+        "parameters": [
+          {
+            "name": "authorization",
+            "in": "header",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Authorization"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AdminUsersResponse"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "tags": [
+          "admin"
+        ],
+        "summary": "Create an account + link",
+        "operationId": "create_user_admin_users_post",
+        "parameters": [
+          {
+            "name": "authorization",
+            "in": "header",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Authorization"
+            }
+          },
+          {
+            "name": "X-Requested-With",
+            "in": "header",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "X-Requested-With"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateUserRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/InviteLinkResponse"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/admin/users/{user_id}/link": {
+      "post": {
+        "tags": [
+          "admin"
+        ],
+        "summary": "New set-password link (invite or reset)",
+        "operationId": "new_link_admin_users__user_id__link_post",
+        "parameters": [
+          {
+            "name": "user_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "title": "User Id"
+            }
+          },
+          {
+            "name": "authorization",
+            "in": "header",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Authorization"
+            }
+          },
+          {
+            "name": "X-Requested-With",
+            "in": "header",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "X-Requested-With"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/InviteLinkResponse"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/admin/users/{user_id}/disable": {
+      "post": {
+        "tags": [
+          "admin"
+        ],
+        "summary": "Block sign-in and end sessions",
+        "operationId": "disable_admin_users__user_id__disable_post",
+        "parameters": [
+          {
+            "name": "user_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "title": "User Id"
+            }
+          },
+          {
+            "name": "authorization",
+            "in": "header",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Authorization"
+            }
+          },
+          {
+            "name": "X-Requested-With",
+            "in": "header",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "X-Requested-With"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AdminUserOut"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/admin/users/{user_id}/enable": {
+      "post": {
+        "tags": [
+          "admin"
+        ],
+        "summary": "Allow sign-in again",
+        "operationId": "enable_admin_users__user_id__enable_post",
+        "parameters": [
+          {
+            "name": "user_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "title": "User Id"
+            }
+          },
+          {
+            "name": "authorization",
+            "in": "header",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Authorization"
+            }
+          },
+          {
+            "name": "X-Requested-With",
+            "in": "header",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "X-Requested-With"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AdminUserOut"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/admin/users/{user_id}": {
+      "delete": {
+        "tags": [
+          "admin"
+        ],
+        "summary": "Delete the account with its connections, posts and media (cannot be undone)",
+        "operationId": "delete_user_admin_users__user_id__delete",
+        "parameters": [
+          {
+            "name": "user_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "title": "User Id"
+            }
+          },
+          {
+            "name": "authorization",
+            "in": "header",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Authorization"
+            }
+          },
+          {
+            "name": "X-Requested-With",
+            "in": "header",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "X-Requested-With"
+            }
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "Successful Response"
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/admin/users/{user_id}/whatsapp": {
+      "put": {
+        "tags": [
+          "admin"
+        ],
+        "summary": "Attach a WhatsApp Business number (Cloud API) to this account",
+        "operationId": "set_whatsapp_admin_users__user_id__whatsapp_put",
+        "parameters": [
+          {
+            "name": "user_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "title": "User Id"
+            }
+          },
+          {
+            "name": "authorization",
+            "in": "header",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Authorization"
+            }
+          },
+          {
+            "name": "X-Requested-With",
+            "in": "header",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "X-Requested-With"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/WhatsAppNumberRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "204": {
+            "description": "Successful Response"
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/platforms/rules": {
+      "get": {
+        "tags": [
+          "platforms"
+        ],
+        "summary": "Per-network limits the backend enforces (public, cacheable)",
+        "operationId": "rules_platforms_rules_get",
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PlatformRulesResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/profiles": {
+      "post": {
+        "tags": [
+          "profiles"
+        ],
+        "summary": "Create a customer profile (server-to-server, host platform only)",
+        "operationId": "create_profile_profiles_post",
+        "parameters": [
+          {
+            "name": "X-Service-Key",
+            "in": "header",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "X-Service-Key"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateProfileRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CreateProfileResponse"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/profiles/whatsapp": {
+      "put": {
+        "tags": [
+          "profiles"
+        ],
+        "summary": "Attach a WhatsApp Business number to a profile (server-to-server, direct mode)",
+        "operationId": "setup_whatsapp_profiles_whatsapp_put",
+        "parameters": [
+          {
+            "name": "X-Service-Key",
+            "in": "header",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "X-Service-Key"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/WhatsAppSetupRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "204": {
+            "description": "Successful Response"
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/accounts/connect-url": {
+      "get": {
+        "tags": [
+          "accounts"
+        ],
+        "summary": "Linking page URL to open in a popup",
+        "operationId": "connect_url_accounts_connect_url_get",
+        "parameters": [
+          {
+            "name": "platform",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "$ref": "#/components/schemas/Platform"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Platform"
+            }
+          },
+          {
+            "name": "redirectUrl",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string",
+                  "maxLength": 2048
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Redirecturl"
+            }
+          },
+          {
+            "name": "origin",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string",
+                  "maxLength": 255
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Origin"
+            }
+          },
+          {
+            "name": "X-Profile-Key",
+            "in": "header",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "X-Profile-Key"
+            }
+          },
+          {
+            "name": "authorization",
+            "in": "header",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Authorization"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ConnectUrlResponse"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/accounts": {
+      "get": {
+        "tags": [
+          "accounts"
+        ],
+        "summary": "Connected networks with account names and avatars",
+        "operationId": "list_accounts_accounts_get",
+        "parameters": [
+          {
+            "name": "X-Profile-Key",
+            "in": "header",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "X-Profile-Key"
+            }
+          },
+          {
+            "name": "authorization",
+            "in": "header",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Authorization"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AccountsResponse"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/accounts/tiktok/creator-info": {
+      "get": {
+        "tags": [
+          "accounts"
+        ],
+        "summary": "TikTok account's current posting options (read before each TikTok post, as TikTok requires)",
+        "operationId": "tiktok_creator_info_accounts_tiktok_creator_info_get",
+        "parameters": [
+          {
+            "name": "X-Profile-Key",
+            "in": "header",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "X-Profile-Key"
+            }
+          },
+          {
+            "name": "authorization",
+            "in": "header",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Authorization"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/TikTokCreatorInfoResponse"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/accounts/{platform}": {
+      "delete": {
+        "tags": [
+          "accounts"
+        ],
+        "summary": "Disconnect a network",
+        "operationId": "unlink_accounts__platform__delete",
+        "parameters": [
+          {
+            "name": "platform",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "$ref": "#/components/schemas/Platform"
+            }
+          },
+          {
+            "name": "X-Profile-Key",
+            "in": "header",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "X-Profile-Key"
+            }
+          },
+          {
+            "name": "authorization",
+            "in": "header",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Authorization"
+            }
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "Successful Response"
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/media/upload-url": {
+      "post": {
+        "tags": [
+          "media"
+        ],
+        "summary": "Presigned single-use upload URL + signed media reference",
+        "operationId": "upload_url_media_upload_url_post",
+        "parameters": [
+          {
+            "name": "X-Profile-Key",
+            "in": "header",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "X-Profile-Key"
+            }
+          },
+          {
+            "name": "authorization",
+            "in": "header",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Authorization"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UploadUrlRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/UploadUrlResponse"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/posts": {
+      "post": {
+        "tags": [
+          "posts"
+        ],
+        "summary": "Publish now or schedule (send scheduleAt) to one or more networks",
+        "operationId": "publish_posts_post",
+        "parameters": [
+          {
+            "name": "X-Profile-Key",
+            "in": "header",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "X-Profile-Key"
+            }
+          },
+          {
+            "name": "authorization",
+            "in": "header",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Authorization"
+            }
+          },
+          {
+            "name": "Idempotency-Key",
+            "in": "header",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Idempotency-Key"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/PublishPostRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PublishPostResponse"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      },
+      "get": {
+        "tags": [
+          "posts"
+        ],
+        "summary": "Recent posts with per-network status",
+        "operationId": "list_posts_posts_get",
+        "parameters": [
+          {
+            "name": "limit",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "maximum": 100,
+              "minimum": 1,
+              "default": 25,
+              "title": "Limit"
+            }
+          },
+          {
+            "name": "platform",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "$ref": "#/components/schemas/Platform"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Platform"
+            }
+          },
+          {
+            "name": "lastDays",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "maximum": 365,
+              "minimum": 1,
+              "default": 30,
+              "title": "Lastdays"
+            }
+          },
+          {
+            "name": "X-Profile-Key",
+            "in": "header",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "X-Profile-Key"
+            }
+          },
+          {
+            "name": "authorization",
+            "in": "header",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Authorization"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PostListResponse"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/posts/{post_id}": {
+      "get": {
+        "tags": [
+          "posts"
+        ],
+        "summary": "Status per network",
+        "operationId": "get_post_posts__post_id__get",
+        "parameters": [
+          {
+            "name": "post_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 128,
+              "pattern": "^[A-Za-z0-9_\\-]+$",
+              "title": "Post Id"
+            }
+          },
+          {
+            "name": "X-Profile-Key",
+            "in": "header",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "X-Profile-Key"
+            }
+          },
+          {
+            "name": "authorization",
+            "in": "header",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Authorization"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PostStatusOut"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      },
+      "delete": {
+        "tags": [
+          "posts"
+        ],
+        "summary": "Delete or cancel a post",
+        "operationId": "delete_post_posts__post_id__delete",
+        "parameters": [
+          {
+            "name": "post_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 128,
+              "pattern": "^[A-Za-z0-9_\\-]+$",
+              "title": "Post Id"
+            }
+          },
+          {
+            "name": "X-Profile-Key",
+            "in": "header",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "X-Profile-Key"
+            }
+          },
+          {
+            "name": "authorization",
+            "in": "header",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Authorization"
+            }
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "Successful Response"
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/meta/{network}/deauthorize": {
+      "post": {
+        "tags": [
+          "meta-callbacks"
+        ],
+        "summary": "Meta: the user removed our app",
+        "operationId": "deauthorize_meta__network__deauthorize_post",
+        "parameters": [
+          {
+            "name": "network",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "enum": [
+                "facebook",
+                "instagram"
+              ],
+              "type": "string",
+              "title": "Network"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/x-www-form-urlencoded": {
+              "schema": {
+                "$ref": "#/components/schemas/Body_deauthorize_meta__network__deauthorize_post"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "additionalProperties": {
+                    "type": "boolean"
+                  },
+                  "title": "Response Deauthorize Meta  Network  Deauthorize Post"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/meta/{network}/data-deletion": {
+      "post": {
+        "tags": [
+          "meta-callbacks"
+        ],
+        "summary": "Meta: the user asked us to delete their data",
+        "operationId": "data_deletion_meta__network__data_deletion_post",
+        "parameters": [
+          {
+            "name": "network",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "enum": [
+                "facebook",
+                "instagram"
+              ],
+              "type": "string",
+              "title": "Network"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/x-www-form-urlencoded": {
+              "schema": {
+                "$ref": "#/components/schemas/Body_data_deletion_meta__network__data_deletion_post"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "additionalProperties": {
+                    "type": "string"
+                  },
+                  "title": "Response Data Deletion Meta  Network  Data Deletion Post"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "schemas": {
+      "AccountResponse": {
+        "properties": {
+          "platform": {
+            "$ref": "#/components/schemas/Platform"
+          },
+          "displayName": {
+            "type": "string",
+            "title": "Displayname"
+          },
+          "username": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Username"
+          },
+          "avatarUrl": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Avatarurl"
+          },
+          "profileUrl": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Profileurl"
+          },
+          "accountType": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Accounttype"
+          },
+          "needsReconnect": {
+            "type": "boolean",
+            "title": "Needsreconnect"
+          }
+        },
+        "additionalProperties": false,
+        "type": "object",
+        "required": [
+          "platform",
+          "displayName",
+          "username",
+          "avatarUrl",
+          "profileUrl",
+          "accountType",
+          "needsReconnect"
+        ],
+        "title": "AccountResponse"
+      },
+      "AccountsResponse": {
+        "properties": {
+          "accounts": {
+            "items": {
+              "$ref": "#/components/schemas/AccountResponse"
+            },
+            "type": "array",
+            "title": "Accounts"
+          }
+        },
+        "additionalProperties": false,
+        "type": "object",
+        "required": [
+          "accounts"
+        ],
+        "title": "AccountsResponse"
+      },
+      "AdminUserOut": {
+        "properties": {
+          "id": {
+            "type": "string",
+            "title": "Id"
+          },
+          "email": {
+            "type": "string",
+            "title": "Email"
+          },
+          "title": {
+            "type": "string",
+            "title": "Title"
+          },
+          "role": {
+            "$ref": "#/components/schemas/UserRole"
+          },
+          "disabled": {
+            "type": "boolean",
+            "title": "Disabled"
+          },
+          "passwordSet": {
+            "type": "boolean",
+            "title": "Passwordset"
+          },
+          "createdAt": {
+            "type": "string",
+            "format": "date-time",
+            "title": "Createdat"
+          },
+          "lastLoginAt": {
+            "anyOf": [
+              {
+                "type": "string",
+                "format": "date-time"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Lastloginat"
+          }
+        },
+        "additionalProperties": false,
+        "type": "object",
+        "required": [
+          "id",
+          "email",
+          "title",
+          "role",
+          "disabled",
+          "passwordSet",
+          "createdAt",
+          "lastLoginAt"
+        ],
+        "title": "AdminUserOut"
+      },
+      "AdminUsersResponse": {
+        "properties": {
+          "users": {
+            "items": {
+              "$ref": "#/components/schemas/AdminUserOut"
+            },
+            "type": "array",
+            "title": "Users"
+          }
+        },
+        "additionalProperties": false,
+        "type": "object",
+        "required": [
+          "users"
+        ],
+        "title": "AdminUsersResponse"
+      },
+      "Body_data_deletion_meta__network__data_deletion_post": {
+        "properties": {
+          "signed_request": {
+            "type": "string",
+            "maxLength": 4096,
+            "title": "Signed Request"
+          }
+        },
+        "type": "object",
+        "required": [
+          "signed_request"
+        ],
+        "title": "Body_data_deletion_meta__network__data_deletion_post"
+      },
+      "Body_deauthorize_meta__network__deauthorize_post": {
+        "properties": {
+          "signed_request": {
+            "type": "string",
+            "maxLength": 4096,
+            "title": "Signed Request"
+          }
+        },
+        "type": "object",
+        "required": [
+          "signed_request"
+        ],
+        "title": "Body_deauthorize_meta__network__deauthorize_post"
+      },
+      "ChangePasswordRequest": {
+        "properties": {
+          "currentPassword": {
+            "type": "string",
+            "maxLength": 128,
+            "minLength": 1,
+            "format": "password",
+            "title": "Currentpassword",
+            "writeOnly": true
+          },
+          "newPassword": {
+            "type": "string",
+            "maxLength": 128,
+            "minLength": 1,
+            "format": "password",
+            "title": "Newpassword",
+            "writeOnly": true
+          }
+        },
+        "additionalProperties": false,
+        "type": "object",
+        "required": [
+          "currentPassword",
+          "newPassword"
+        ],
+        "title": "ChangePasswordRequest"
+      },
+      "ConnectUrlResponse": {
+        "properties": {
+          "url": {
+            "type": "string",
+            "title": "Url"
+          },
+          "expiresAt": {
+            "anyOf": [
+              {
+                "type": "string",
+                "format": "date-time"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Expiresat"
+          }
+        },
+        "additionalProperties": false,
+        "type": "object",
+        "required": [
+          "url",
+          "expiresAt"
+        ],
+        "title": "ConnectUrlResponse"
+      },
+      "ContentSpecOut": {
+        "properties": {
+          "contentType": {
+            "$ref": "#/components/schemas/ContentType"
+          },
+          "media": {
+            "items": {
+              "$ref": "#/components/schemas/MediaConstraintsOut"
+            },
+            "type": "array",
+            "title": "Media"
+          },
+          "minMedia": {
+            "type": "integer",
+            "title": "Minmedia"
+          },
+          "maxMedia": {
+            "type": "integer",
+            "title": "Maxmedia"
+          },
+          "allowMixedKinds": {
+            "type": "boolean",
+            "title": "Allowmixedkinds"
+          },
+          "maxCaptionLength": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Maxcaptionlength"
+          },
+          "captionIgnored": {
+            "type": "boolean",
+            "title": "Captionignored"
+          },
+          "maxHashtags": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Maxhashtags"
+          },
+          "maxMentions": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Maxmentions"
+          },
+          "schedulable": {
+            "type": "boolean",
+            "title": "Schedulable"
+          }
+        },
+        "additionalProperties": false,
+        "type": "object",
+        "required": [
+          "contentType",
+          "media",
+          "minMedia",
+          "maxMedia",
+          "allowMixedKinds",
+          "maxCaptionLength",
+          "captionIgnored",
+          "maxHashtags",
+          "maxMentions",
+          "schedulable"
+        ],
+        "title": "ContentSpecOut"
+      },
+      "ContentType": {
+        "type": "string",
+        "enum": [
+          "post",
+          "reel",
+          "story",
+          "carousel",
+          "video",
+          "photo",
+          "document",
+          "message"
+        ],
+        "title": "ContentType"
+      },
+      "CreateProfileRequest": {
+        "properties": {
+          "title": {
+            "type": "string",
+            "maxLength": 120,
+            "minLength": 1,
+            "title": "Title",
+            "description": "Unique, shown on the linking page"
+          }
+        },
+        "additionalProperties": false,
+        "type": "object",
+        "required": [
+          "title"
+        ],
+        "title": "CreateProfileRequest"
+      },
+      "CreateProfileResponse": {
+        "properties": {
+          "profileKey": {
+            "type": "string",
+            "title": "Profilekey"
+          }
+        },
+        "additionalProperties": false,
+        "type": "object",
+        "required": [
+          "profileKey"
+        ],
+        "title": "CreateProfileResponse"
+      },
+      "CreateUserRequest": {
+        "properties": {
+          "email": {
+            "type": "string",
+            "maxLength": 254,
+            "minLength": 3,
+            "title": "Email"
+          },
+          "title": {
+            "type": "string",
+            "maxLength": 120,
+            "minLength": 1,
+            "title": "Title"
+          },
+          "role": {
+            "$ref": "#/components/schemas/UserRole",
+            "default": "customer"
+          }
+        },
+        "additionalProperties": false,
+        "type": "object",
+        "required": [
+          "email",
+          "title"
+        ],
+        "title": "CreateUserRequest"
+      },
+      "FacebookOptionsIn": {
+        "properties": {
+          "title": {
+            "anyOf": [
+              {
+                "type": "string",
+                "maxLength": 255
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Title"
+          },
+          "thumbnailUrl": {
+            "anyOf": [
+              {
+                "type": "string",
+                "maxLength": 2048,
+                "pattern": "^https://"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Thumbnailurl"
+          }
+        },
+        "additionalProperties": false,
+        "type": "object",
+        "title": "FacebookOptionsIn"
+      },
+      "FacebookTarget": {
+        "properties": {
+          "contentType": {
+            "$ref": "#/components/schemas/ContentType"
+          },
+          "platform": {
+            "type": "string",
+            "const": "facebook",
+            "title": "Platform"
+          },
+          "options": {
+            "$ref": "#/components/schemas/FacebookOptionsIn"
+          }
+        },
+        "additionalProperties": false,
+        "type": "object",
+        "required": [
+          "contentType",
+          "platform"
+        ],
+        "title": "FacebookTarget"
+      },
+      "HTTPValidationError": {
+        "properties": {
+          "detail": {
+            "items": {
+              "$ref": "#/components/schemas/ValidationError"
+            },
+            "type": "array",
+            "title": "Detail"
+          }
+        },
+        "type": "object",
+        "title": "HTTPValidationError"
+      },
+      "InstagramOptionsIn": {
+        "properties": {
+          "shareReelsToFeed": {
+            "type": "boolean",
+            "title": "Sharereelstofeed",
+            "default": true
+          },
+          "coverImageUrl": {
+            "anyOf": [
+              {
+                "type": "string",
+                "maxLength": 2048,
+                "pattern": "^https://"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Coverimageurl"
+          },
+          "thumbnailOffsetMs": {
+            "anyOf": [
+              {
+                "type": "integer",
+                "minimum": 0.0
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Thumbnailoffsetms"
+          },
+          "collaborators": {
+            "items": {
+              "type": "string",
+              "maxLength": 30
+            },
+            "type": "array",
+            "maxItems": 3,
+            "title": "Collaborators"
+          },
+          "isAiGenerated": {
+            "type": "boolean",
+            "title": "Isaigenerated",
+            "default": false
+          }
+        },
+        "additionalProperties": false,
+        "type": "object",
+        "title": "InstagramOptionsIn"
+      },
+      "InstagramTarget": {
+        "properties": {
+          "contentType": {
+            "$ref": "#/components/schemas/ContentType"
+          },
+          "platform": {
+            "type": "string",
+            "const": "instagram",
+            "title": "Platform"
+          },
+          "options": {
+            "$ref": "#/components/schemas/InstagramOptionsIn"
+          }
+        },
+        "additionalProperties": false,
+        "type": "object",
+        "required": [
+          "contentType",
+          "platform"
+        ],
+        "title": "InstagramTarget"
+      },
+      "InviteInfo": {
+        "properties": {
+          "email": {
+            "type": "string",
+            "title": "Email"
+          },
+          "title": {
+            "type": "string",
+            "title": "Title"
+          },
+          "passwordSet": {
+            "type": "boolean",
+            "title": "Passwordset"
+          }
+        },
+        "additionalProperties": false,
+        "type": "object",
+        "required": [
+          "email",
+          "title",
+          "passwordSet"
+        ],
+        "title": "InviteInfo"
+      },
+      "InviteLinkResponse": {
+        "properties": {
+          "user": {
+            "$ref": "#/components/schemas/AdminUserOut"
+          },
+          "link": {
+            "type": "string",
+            "title": "Link"
+          },
+          "expiresIn": {
+            "type": "integer",
+            "title": "Expiresin"
+          }
+        },
+        "additionalProperties": false,
+        "type": "object",
+        "required": [
+          "user",
+          "link",
+          "expiresIn"
+        ],
+        "title": "InviteLinkResponse"
+      },
+      "LinkedInOptionsIn": {
+        "properties": {
+          "visibility": {
+            "$ref": "#/components/schemas/LinkedInVisibility",
+            "default": "public"
+          },
+          "documentTitle": {
+            "anyOf": [
+              {
+                "type": "string",
+                "maxLength": 400
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Documenttitle"
+          },
+          "disableShare": {
+            "type": "boolean",
+            "title": "Disableshare",
+            "default": false
+          }
+        },
+        "additionalProperties": false,
+        "type": "object",
+        "title": "LinkedInOptionsIn"
+      },
+      "LinkedInTarget": {
+        "properties": {
+          "contentType": {
+            "$ref": "#/components/schemas/ContentType"
+          },
+          "platform": {
+            "type": "string",
+            "const": "linkedin",
+            "title": "Platform"
+          },
+          "options": {
+            "$ref": "#/components/schemas/LinkedInOptionsIn"
+          }
+        },
+        "additionalProperties": false,
+        "type": "object",
+        "required": [
+          "contentType",
+          "platform"
+        ],
+        "title": "LinkedInTarget"
+      },
+      "LinkedInVisibility": {
+        "type": "string",
+        "enum": [
+          "public",
+          "connections",
+          "loggedin"
+        ],
+        "title": "LinkedInVisibility"
+      },
+      "LoginRequest": {
+        "properties": {
+          "email": {
+            "type": "string",
+            "maxLength": 254,
+            "minLength": 3,
+            "title": "Email"
+          },
+          "password": {
+            "type": "string",
+            "maxLength": 128,
+            "minLength": 1,
+            "format": "password",
+            "title": "Password",
+            "writeOnly": true
+          }
+        },
+        "additionalProperties": false,
+        "type": "object",
+        "required": [
+          "email",
+          "password"
+        ],
+        "title": "LoginRequest"
+      },
+      "MediaConstraintsOut": {
+        "properties": {
+          "kind": {
+            "$ref": "#/components/schemas/MediaKind"
+          },
+          "extensions": {
+            "items": {
+              "type": "string"
+            },
+            "type": "array",
+            "title": "Extensions"
+          },
+          "maxSizeBytes": {
+            "type": "integer",
+            "title": "Maxsizebytes"
+          },
+          "aspectRatios": {
+            "items": {
+              "type": "string"
+            },
+            "type": "array",
+            "title": "Aspectratios"
+          },
+          "aspectRatioRanges": {
+            "items": {
+              "prefixItems": [
+                {
+                  "type": "number"
+                },
+                {
+                  "type": "number"
+                }
+              ],
+              "type": "array",
+              "maxItems": 2,
+              "minItems": 2
+            },
+            "type": "array",
+            "title": "Aspectratioranges"
+          },
+          "minDurationS": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Mindurations"
+          },
+          "maxDurationS": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Maxdurations"
+          },
+          "minWidth": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Minwidth"
+          },
+          "minHeight": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Minheight"
+          }
+        },
+        "additionalProperties": false,
+        "type": "object",
+        "required": [
+          "kind",
+          "extensions",
+          "maxSizeBytes",
+          "aspectRatios",
+          "aspectRatioRanges",
+          "minDurationS",
+          "maxDurationS",
+          "minWidth",
+          "minHeight"
+        ],
+        "title": "MediaConstraintsOut"
+      },
+      "MediaKind": {
+        "type": "string",
+        "enum": [
+          "image",
+          "video",
+          "document"
+        ],
+        "title": "MediaKind"
+      },
+      "MediaRefIn": {
+        "properties": {
+          "url": {
+            "type": "string",
+            "maxLength": 2048,
+            "pattern": "^https://",
+            "title": "Url"
+          },
+          "token": {
+            "type": "string",
+            "maxLength": 512,
+            "minLength": 10,
+            "title": "Token"
+          }
+        },
+        "additionalProperties": false,
+        "type": "object",
+        "required": [
+          "url",
+          "token"
+        ],
+        "title": "MediaRefIn"
+      },
+      "Platform": {
+        "type": "string",
+        "enum": [
+          "instagram",
+          "facebook",
+          "tiktok",
+          "linkedin",
+          "whatsapp"
+        ],
+        "title": "Platform"
+      },
+      "PlatformResultOut": {
+        "properties": {
+          "platform": {
+            "$ref": "#/components/schemas/Platform"
+          },
+          "state": {
+            "$ref": "#/components/schemas/PublishState"
+          },
+          "providerPostId": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Providerpostid"
+          },
+          "liveUrl": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Liveurl"
+          },
+          "error": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Error"
+          }
+        },
+        "additionalProperties": false,
+        "type": "object",
+        "required": [
+          "platform",
+          "state",
+          "providerPostId",
+          "liveUrl",
+          "error"
+        ],
+        "title": "PlatformResultOut"
+      },
+      "PlatformRulesOut": {
+        "properties": {
+          "platform": {
+            "$ref": "#/components/schemas/Platform"
+          },
+          "connectable": {
+            "type": "boolean",
+            "title": "Connectable"
+          },
+          "contentTypes": {
+            "items": {
+              "$ref": "#/components/schemas/ContentSpecOut"
+            },
+            "type": "array",
+            "title": "Contenttypes"
+          }
+        },
+        "additionalProperties": false,
+        "type": "object",
+        "required": [
+          "platform",
+          "connectable",
+          "contentTypes"
+        ],
+        "title": "PlatformRulesOut"
+      },
+      "PlatformRulesResponse": {
+        "properties": {
+          "platforms": {
+            "items": {
+              "$ref": "#/components/schemas/PlatformRulesOut"
+            },
+            "type": "array",
+            "title": "Platforms"
+          }
+        },
+        "additionalProperties": false,
+        "type": "object",
+        "required": [
+          "platforms"
+        ],
+        "title": "PlatformRulesResponse"
+      },
+      "PostListResponse": {
+        "properties": {
+          "items": {
+            "items": {
+              "$ref": "#/components/schemas/PostStatusOut"
+            },
+            "type": "array",
+            "title": "Items"
+          },
+          "total": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Total"
+          }
+        },
+        "additionalProperties": false,
+        "type": "object",
+        "required": [
+          "items",
+          "total"
+        ],
+        "title": "PostListResponse"
+      },
+      "PostStatusOut": {
+        "properties": {
+          "id": {
+            "type": "string",
+            "title": "Id"
+          },
+          "state": {
+            "$ref": "#/components/schemas/PublishState"
+          },
+          "createdAt": {
+            "anyOf": [
+              {
+                "type": "string",
+                "format": "date-time"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Createdat"
+          },
+          "scheduleAt": {
+            "anyOf": [
+              {
+                "type": "string",
+                "format": "date-time"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Scheduleat"
+          },
+          "caption": {
+            "type": "string",
+            "title": "Caption"
+          },
+          "mediaUrls": {
+            "items": {
+              "type": "string"
+            },
+            "type": "array",
+            "title": "Mediaurls"
+          },
+          "results": {
+            "items": {
+              "$ref": "#/components/schemas/PlatformResultOut"
+            },
+            "type": "array",
+            "title": "Results"
+          }
+        },
+        "additionalProperties": false,
+        "type": "object",
+        "required": [
+          "id",
+          "state",
+          "createdAt",
+          "scheduleAt",
+          "caption",
+          "mediaUrls",
+          "results"
+        ],
+        "title": "PostStatusOut"
+      },
+      "ProblemIssue": {
+        "properties": {
+          "code": {
+            "type": "string",
+            "title": "Code"
+          },
+          "platform": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Platform"
+          },
+          "field": {
+            "type": "string",
+            "title": "Field"
+          },
+          "severity": {
+            "type": "string",
+            "title": "Severity",
+            "default": "error"
+          },
+          "message": {
+            "type": "string",
+            "title": "Message"
+          },
+          "params": {
+            "additionalProperties": true,
+            "type": "object",
+            "title": "Params"
+          }
+        },
+        "type": "object",
+        "required": [
+          "code",
+          "field",
+          "message"
+        ],
+        "title": "ProblemIssue"
+      },
+      "PublishPostRequest": {
+        "properties": {
+          "caption": {
+            "type": "string",
+            "maxLength": 63206,
+            "title": "Caption",
+            "default": ""
+          },
+          "media": {
+            "items": {
+              "$ref": "#/components/schemas/MediaRefIn"
+            },
+            "type": "array",
+            "maxItems": 35,
+            "title": "Media"
+          },
+          "targets": {
+            "items": {
+              "oneOf": [
+                {
+                  "$ref": "#/components/schemas/InstagramTarget"
+                },
+                {
+                  "$ref": "#/components/schemas/FacebookTarget"
+                },
+                {
+                  "$ref": "#/components/schemas/TikTokTarget"
+                },
+                {
+                  "$ref": "#/components/schemas/LinkedInTarget"
+                },
+                {
+                  "$ref": "#/components/schemas/WhatsAppTarget"
+                }
+              ],
+              "discriminator": {
+                "propertyName": "platform",
+                "mapping": {
+                  "facebook": "#/components/schemas/FacebookTarget",
+                  "instagram": "#/components/schemas/InstagramTarget",
+                  "linkedin": "#/components/schemas/LinkedInTarget",
+                  "tiktok": "#/components/schemas/TikTokTarget",
+                  "whatsapp": "#/components/schemas/WhatsAppTarget"
+                }
+              }
+            },
+            "type": "array",
+            "maxItems": 5,
+            "minItems": 1,
+            "title": "Targets"
+          },
+          "scheduleAt": {
+            "anyOf": [
+              {
+                "type": "string",
+                "format": "date-time"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Scheduleat"
+          }
+        },
+        "additionalProperties": false,
+        "type": "object",
+        "required": [
+          "targets"
+        ],
+        "title": "PublishPostRequest"
+      },
+      "PublishPostResponse": {
+        "properties": {
+          "id": {
+            "type": "string",
+            "title": "Id"
+          },
+          "state": {
+            "$ref": "#/components/schemas/PublishState"
+          },
+          "createdAt": {
+            "anyOf": [
+              {
+                "type": "string",
+                "format": "date-time"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Createdat"
+          },
+          "scheduleAt": {
+            "anyOf": [
+              {
+                "type": "string",
+                "format": "date-time"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Scheduleat"
+          },
+          "caption": {
+            "type": "string",
+            "title": "Caption"
+          },
+          "mediaUrls": {
+            "items": {
+              "type": "string"
+            },
+            "type": "array",
+            "title": "Mediaurls"
+          },
+          "results": {
+            "items": {
+              "$ref": "#/components/schemas/PlatformResultOut"
+            },
+            "type": "array",
+            "title": "Results"
+          },
+          "warnings": {
+            "items": {
+              "$ref": "#/components/schemas/ProblemIssue"
+            },
+            "type": "array",
+            "title": "Warnings"
+          },
+          "replayed": {
+            "type": "boolean",
+            "title": "Replayed"
+          }
+        },
+        "additionalProperties": false,
+        "type": "object",
+        "required": [
+          "id",
+          "state",
+          "createdAt",
+          "scheduleAt",
+          "caption",
+          "mediaUrls",
+          "results",
+          "warnings",
+          "replayed"
+        ],
+        "title": "PublishPostResponse"
+      },
+      "PublishState": {
+        "type": "string",
+        "enum": [
+          "pending",
+          "scheduled",
+          "published",
+          "failed",
+          "partial",
+          "deleted"
+        ],
+        "title": "PublishState"
+      },
+      "SessionResponse": {
+        "properties": {
+          "accessToken": {
+            "type": "string",
+            "title": "Accesstoken"
+          },
+          "expiresIn": {
+            "type": "integer",
+            "title": "Expiresin"
+          },
+          "user": {
+            "$ref": "#/components/schemas/UserOut"
+          }
+        },
+        "additionalProperties": false,
+        "type": "object",
+        "required": [
+          "accessToken",
+          "expiresIn",
+          "user"
+        ],
+        "title": "SessionResponse"
+      },
+      "SetPasswordRequest": {
+        "properties": {
+          "password": {
+            "type": "string",
+            "maxLength": 128,
+            "minLength": 1,
+            "format": "password",
+            "title": "Password",
+            "writeOnly": true
+          }
+        },
+        "additionalProperties": false,
+        "type": "object",
+        "required": [
+          "password"
+        ],
+        "title": "SetPasswordRequest"
+      },
+      "TikTokCreatorInfoResponse": {
+        "properties": {
+          "nickname": {
+            "type": "string",
+            "title": "Nickname"
+          },
+          "username": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Username"
+          },
+          "avatarUrl": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Avatarurl"
+          },
+          "privacyLevels": {
+            "items": {
+              "$ref": "#/components/schemas/TikTokVisibility"
+            },
+            "type": "array",
+            "title": "Privacylevels"
+          },
+          "commentDisabled": {
+            "type": "boolean",
+            "title": "Commentdisabled"
+          },
+          "duetDisabled": {
+            "type": "boolean",
+            "title": "Duetdisabled"
+          },
+          "stitchDisabled": {
+            "type": "boolean",
+            "title": "Stitchdisabled"
+          },
+          "maxVideoSeconds": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Maxvideoseconds"
+          },
+          "canPost": {
+            "type": "boolean",
+            "title": "Canpost"
+          },
+          "reason": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Reason"
+          }
+        },
+        "additionalProperties": false,
+        "type": "object",
+        "required": [
+          "nickname",
+          "username",
+          "avatarUrl",
+          "privacyLevels",
+          "commentDisabled",
+          "duetDisabled",
+          "stitchDisabled",
+          "maxVideoSeconds",
+          "canPost",
+          "reason"
+        ],
+        "title": "TikTokCreatorInfoResponse",
+        "description": "Shown above the TikTok options; the composer may offer only these choices (TikTok UX rules)."
+      },
+      "TikTokOptionsIn": {
+        "properties": {
+          "visibility": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/TikTokVisibility"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "description": "Required for direct posts: no default audience"
+          },
+          "sendToInbox": {
+            "type": "boolean",
+            "title": "Sendtoinbox",
+            "description": "Send to the creator's TikTok inbox to finish in the TikTok app",
+            "default": false
+          },
+          "disableComments": {
+            "type": "boolean",
+            "title": "Disablecomments",
+            "default": false
+          },
+          "disableDuet": {
+            "type": "boolean",
+            "title": "Disableduet",
+            "default": false
+          },
+          "disableStitch": {
+            "type": "boolean",
+            "title": "Disablestitch",
+            "default": false
+          },
+          "isAiGenerated": {
+            "type": "boolean",
+            "title": "Isaigenerated",
+            "default": false
+          },
+          "isBrandedContent": {
+            "type": "boolean",
+            "title": "Isbrandedcontent",
+            "default": false
+          },
+          "isBrandOrganic": {
+            "type": "boolean",
+            "title": "Isbrandorganic",
+            "default": false
+          },
+          "autoAddMusic": {
+            "type": "boolean",
+            "title": "Autoaddmusic",
+            "default": false
+          },
+          "title": {
+            "anyOf": [
+              {
+                "type": "string",
+                "maxLength": 90
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Title"
+          },
+          "coverIndex": {
+            "type": "integer",
+            "minimum": 0.0,
+            "title": "Coverindex",
+            "default": 0
+          },
+          "thumbnailOffsetMs": {
+            "anyOf": [
+              {
+                "type": "integer",
+                "minimum": 0.0
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Thumbnailoffsetms"
+          }
+        },
+        "additionalProperties": false,
+        "type": "object",
+        "title": "TikTokOptionsIn"
+      },
+      "TikTokTarget": {
+        "properties": {
+          "contentType": {
+            "$ref": "#/components/schemas/ContentType"
+          },
+          "platform": {
+            "type": "string",
+            "const": "tiktok",
+            "title": "Platform"
+          },
+          "options": {
+            "$ref": "#/components/schemas/TikTokOptionsIn"
+          }
+        },
+        "additionalProperties": false,
+        "type": "object",
+        "required": [
+          "contentType",
+          "platform"
+        ],
+        "title": "TikTokTarget"
+      },
+      "TikTokVisibility": {
+        "type": "string",
+        "enum": [
+          "public",
+          "private",
+          "followers",
+          "friends"
+        ],
+        "title": "TikTokVisibility"
+      },
+      "UploadUrlRequest": {
+        "properties": {
+          "fileName": {
+            "type": "string",
+            "maxLength": 255,
+            "minLength": 3,
+            "title": "Filename"
+          },
+          "contentType": {
+            "type": "string",
+            "maxLength": 100,
+            "minLength": 3,
+            "title": "Contenttype"
+          },
+          "sizeBytes": {
+            "type": "integer",
+            "exclusiveMinimum": 0.0,
+            "title": "Sizebytes"
+          }
+        },
+        "additionalProperties": false,
+        "type": "object",
+        "required": [
+          "fileName",
+          "contentType",
+          "sizeBytes"
+        ],
+        "title": "UploadUrlRequest"
+      },
+      "UploadUrlResponse": {
+        "properties": {
+          "uploadUrl": {
+            "type": "string",
+            "title": "Uploadurl"
+          },
+          "accessUrl": {
+            "type": "string",
+            "title": "Accessurl"
+          },
+          "contentType": {
+            "type": "string",
+            "title": "Contenttype"
+          },
+          "uploadExpiresAt": {
+            "anyOf": [
+              {
+                "type": "string",
+                "format": "date-time"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Uploadexpiresat"
+          },
+          "mediaToken": {
+            "type": "string",
+            "title": "Mediatoken"
+          },
+          "mediaExpiresAt": {
+            "type": "string",
+            "format": "date-time",
+            "title": "Mediaexpiresat"
+          }
+        },
+        "additionalProperties": false,
+        "type": "object",
+        "required": [
+          "uploadUrl",
+          "accessUrl",
+          "contentType",
+          "uploadExpiresAt",
+          "mediaToken",
+          "mediaExpiresAt"
+        ],
+        "title": "UploadUrlResponse"
+      },
+      "UserOut": {
+        "properties": {
+          "id": {
+            "type": "string",
+            "title": "Id"
+          },
+          "email": {
+            "type": "string",
+            "title": "Email"
+          },
+          "title": {
+            "type": "string",
+            "title": "Title"
+          },
+          "role": {
+            "$ref": "#/components/schemas/UserRole"
+          },
+          "profileKey": {
+            "type": "string",
+            "title": "Profilekey"
+          }
+        },
+        "additionalProperties": false,
+        "type": "object",
+        "required": [
+          "id",
+          "email",
+          "title",
+          "role",
+          "profileKey"
+        ],
+        "title": "UserOut"
+      },
+      "UserRole": {
+        "type": "string",
+        "enum": [
+          "admin",
+          "customer"
+        ],
+        "title": "UserRole"
+      },
+      "ValidationError": {
+        "properties": {
+          "loc": {
+            "items": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "integer"
+                }
+              ]
+            },
+            "type": "array",
+            "title": "Location"
+          },
+          "msg": {
+            "type": "string",
+            "title": "Message"
+          },
+          "type": {
+            "type": "string",
+            "title": "Error Type"
+          },
+          "input": {
+            "title": "Input"
+          },
+          "ctx": {
+            "type": "object",
+            "title": "Context"
+          }
+        },
+        "type": "object",
+        "required": [
+          "loc",
+          "msg",
+          "type"
+        ],
+        "title": "ValidationError"
+      },
+      "WhatsAppNumberRequest": {
+        "properties": {
+          "phoneNumberId": {
+            "type": "string",
+            "maxLength": 32,
+            "minLength": 5,
+            "title": "Phonenumberid"
+          },
+          "accessToken": {
+            "type": "string",
+            "format": "password",
+            "title": "Accesstoken",
+            "writeOnly": true
+          },
+          "displayName": {
+            "type": "string",
+            "maxLength": 120,
+            "minLength": 1,
+            "title": "Displayname"
+          },
+          "phoneDisplay": {
+            "anyOf": [
+              {
+                "type": "string",
+                "maxLength": 32
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Phonedisplay"
+          }
+        },
+        "additionalProperties": false,
+        "type": "object",
+        "required": [
+          "phoneNumberId",
+          "accessToken",
+          "displayName"
+        ],
+        "title": "WhatsAppNumberRequest"
+      },
+      "WhatsAppOptionsIn": {
+        "properties": {
+          "recipients": {
+            "items": {
+              "type": "string",
+              "maxLength": 32
+            },
+            "type": "array",
+            "maxItems": 200,
+            "title": "Recipients"
+          }
+        },
+        "additionalProperties": false,
+        "type": "object",
+        "title": "WhatsAppOptionsIn"
+      },
+      "WhatsAppSetupRequest": {
+        "properties": {
+          "profileKey": {
+            "type": "string",
+            "maxLength": 256,
+            "minLength": 8,
+            "title": "Profilekey"
+          },
+          "phoneNumberId": {
+            "type": "string",
+            "maxLength": 32,
+            "minLength": 5,
+            "title": "Phonenumberid",
+            "description": "Phone number ID from WhatsApp Manager"
+          },
+          "accessToken": {
+            "type": "string",
+            "format": "password",
+            "title": "Accesstoken",
+            "description": "System-user token with whatsapp_business_messaging",
+            "writeOnly": true
+          },
+          "displayName": {
+            "type": "string",
+            "maxLength": 120,
+            "minLength": 1,
+            "title": "Displayname"
+          },
+          "phoneDisplay": {
+            "anyOf": [
+              {
+                "type": "string",
+                "maxLength": 32
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Phonedisplay",
+            "description": "e.g. +98 912 123 4567"
+          }
+        },
+        "additionalProperties": false,
+        "type": "object",
+        "required": [
+          "profileKey",
+          "phoneNumberId",
+          "accessToken",
+          "displayName"
+        ],
+        "title": "WhatsAppSetupRequest"
+      },
+      "WhatsAppTarget": {
+        "properties": {
+          "contentType": {
+            "$ref": "#/components/schemas/ContentType"
+          },
+          "platform": {
+            "type": "string",
+            "const": "whatsapp",
+            "title": "Platform"
+          },
+          "options": {
+            "$ref": "#/components/schemas/WhatsAppOptionsIn"
+          }
+        },
+        "additionalProperties": false,
+        "type": "object",
+        "required": [
+          "contentType",
+          "platform"
+        ],
+        "title": "WhatsAppTarget"
+      }
+    }
+  }
+}
